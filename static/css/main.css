@@ -1,0 +1,335 @@
+img {
+    /* display: inline-block; */
+    /* margin-left: auto;
+    margin-right: auto; */
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+}
+
+/* Variables
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+:root {
+    --primary-c: #2196F3;
+    --secondary-c: #B2D7F5;
+
+    --white: #FDFBFB;
+
+    --text: #082943;
+    --bg: var(--primary-c);
+}
+
+
+/* Basic Config
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+html,
+body {
+  /* background-image: url("../images/banner_bg.jpg"); */
+  /* background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url("../images/banner_bg.jpg"); */
+    background-size: cover;
+    /* fallback for old browsers */
+    /* Chrome 10-25, Safari 5.1-6 */
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    /* background: -webkit-linear-gradient(to right, #5B86E5, #36D1DC); */
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
+/* Background animation
+-------------------------------------------------- */
+
+
+/* Card
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.card {
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.25);
+    /* width: 100%; */
+    margin-top: 40px;
+    padding: 20px 25px;
+    border-radius: 20px;
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.13);
+}
+
+
+.container1 {
+    display: block;
+    position: relative;
+    margin: 50px auto;
+    height: auto;
+
+    /* width: 100%; */
+    padding: 20px;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+h2.title {
+    /* margin-left: auto;
+    margin-right: auto;
+    width: 50%; */
+    text-align: center;
+    max-width: 400px;
+}
+
+h6 {
+
+    font-family: "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans-serif;
+}
+
+.sidebar-container {
+    position: fixed;
+    width: 300px;
+    height: 100%;
+    left: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.content-container {
+    padding-top: 20px;
+}
+
+.sidebar-logo {
+    padding: 10px;
+    font-size: 20px;
+    background-color: #1a1a1a;
+    margin: auto;
+}
+
+.sidebar-logo h2 {
+    text-align:center;
+}
+
+.sidebar-logo img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.sidebar-navigation {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    position: relative;
+}
+
+.sidebar-navigation li {
+    background-color: transparent;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    line-height: 30px;
+}
+
+.sidebar-navigation li a {
+    padding: 10px 15px 10px 30px;
+    display: block;
+    color: #fff;
+}
+
+.sidebar-navigation li .fa {
+    margin-right: 10px;
+}
+
+.sidebar-navigation li a:active,
+.sidebar-navigation li a:hover,
+.sidebar-navigation li a:focus {
+    text-decoration: none;
+    outline: none;
+}
+
+.sidebar-navigation li::before {
+    background-color: #ffffff;
+    position: absolute;
+    content: '';
+    height: 100%;
+    left: 0;
+    top: 0;
+    -webkit-transition: width 0.2s ease-in;
+    transition: width 0.2s ease-in;
+    width: 3px;
+    z-index: -1;
+}
+
+.sidebar-navigation li:hover::before {
+    width: 100%;
+}
+
+.sidebar-navigation .header {
+    font-size: 12px;
+    text-transform: uppercase;
+    background-color: #ffffff;
+    padding: 10px 15px 10px 30px;
+}
+
+.sidebar-navigation .header::before {
+    background-color: transparent;
+}
+
+.content-container {
+    padding-left: 300px;
+}
+
+@keyframes click-wave {
+    0% {
+        height: 40px;
+        width: 40px;
+        opacity: 0.35;
+        position: relative;
+    }
+
+    100% {
+        height: 200px;
+        width: 200px;
+        margin-left: -80px;
+        margin-top: -80px;
+        opacity: 0;
+    }
+}
+
+.option-input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+    position: relative;
+    top: 13.33333px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 40px;
+    width: 40px;
+    transition: all 0.15s ease-out 0s;
+    background: #ffffff;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    margin-right: 0.5rem;
+    outline: none;
+    position: relative;
+    z-index: 1000;
+}
+
+.option-input:hover {
+    background: #9faab7;
+}
+
+.option-input:checked {
+    background: #3bc1ff;
+}
+
+.option-input:checked::before {
+    height: 40px;
+    width: 40px;
+    position: absolute;
+    content: '✔';
+    display: inline-block;
+    font-size: 26.66667px;
+    text-align: center;
+    line-height: 40px;
+}
+
+.option-input:checked::after {
+    -webkit-animation: click-wave 0.65s;
+    -moz-animation: click-wave 0.65s;
+    animation: click-wave 0.65s;
+    background: #3bc1ff;
+    content: '';
+    display: block;
+    position: relative;
+    z-index: 100;
+}
+
+.option-input.radio {
+    border-radius: 50%;
+}
+
+.option-input.radio::after {
+    border-radius: 50%;
+}
+
+/* body {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: box;
+    background: #e8ebee;
+    color: #9faab7;
+    font-family: "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans-serif;
+    text-align: center;
+}
+
+body div {
+    padding: 5rem;
+}
+
+body label {
+    display: block;
+    line-height: 40px;
+} */
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap");
+
+.pay nav {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    /* justify-content: space-between; */
+    padding: 10px 20px;
+    margin: 0 auto;
+}
+
+.pay nav .title p {
+    font-weight: 600;
+    font-size: 30px;
+    letter-spacing: 5px;
+}
+
+.pay nav .nav {
+    -ms-flex-item-align: center;
+    -ms-grid-row-align: center;
+    align-self: center;
+}
+
+.pay nav .nav ul {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    /* justify-content: space-between; */
+}
+
+.pay nav .nav ul a {
+    text-decoration: none;
+    color: black;
+}
+
+.pay nav .nav ul a li {
+    padding-top: 5px;
+    margin-left: 20px;
+    border-radius: .5em;
+    font-weight: 600;
+}
+
+.pay img {
+    padding-right: 20px;
+}
+
+/** Scroll Animation*/

@@ -1,0 +1,190 @@
+{% load static %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+<body>
+    {% include 'atm_sidebar.html' %}
+
+    <div class="content-container">
+        <center>
+            <h2> SELECT BANK</h2>
+        </center>
+        <br>
+        <div style="width: 800px; margin: 0 auto" class="pay">
+            <nav>
+                <div class="title">
+                    <!-- <p>RJ</p>  -->
+                    <img src="{% static '/images/brazil_logo.jpg' %}" alt="" style="width:50px;">
+                    <h5 style="display: inline-block; font-weight:600; width:150px">BRAZIL</h5>
+                </div>
+                <div class="nav">
+                    <ul>
+                        <a href="{% url 'atm_functions:TyDeposit' %}">
+                            <li><img src="{% static '/images/mercado_logo.png' %}" alt="" style="width: 100px;"></li>
+                        </a>
+                        <a href="{% url 'atm_functions:TyDeposit' %}">
+                            <li><img src="{% static '/images/paypal_logo.png' %}" alt="" style="width: 100px;"></li>
+                        </a>
+                        <a href="{% url 'atm_functions:TyDeposit' %}">
+                            <li><img src="{% static '/images/picpay_logo.png' %}" alt="" style="width: 100px;"></li>
+                        </a>
+
+                    </ul>
+                </div>
+
+            </nav>
+            <hr>
+            <nav>
+                <div class="title">
+                    <!-- <p>RJ</p>  -->
+                    <img src="{% static '/images/argentina_logo.jpg' %}" alt="" style="width: 50px;">
+                    <h5 style="display: inline-block; font-weight:600; width:150px">ARGENTINA</h5>
+                </div>
+                <div class="nav">
+                    <ul>
+                        <a href="{% url 'atm_functions:TyDeposit' %}">
+                            <li><img src="{% static '/images/mercado_logo.png' %}" alt="" style="width: 100px;"></li>
+                        </a>
+
+                    </ul>
+                </div>
+
+            </nav>
+            <hr>
+            <nav>
+                <div class="title">
+                    <!-- <p>RJ</p>  -->
+                    <img src="{% static '/images/mexico_logo.jpg' %}" alt="" style="width: 50px;">
+                    <h5 style="display: inline-block; font-weight:600; width:150px">MEXICO</h5>
+                </div>
+                <div class="nav">
+                    <ul>
+                        <a href="{% url 'atm_functions:TyDeposit' %}">
+                            <li><img src="{% static '/images/mercado_logo.png' %}" alt="" style="width: 100px;"></li>
+                        </a>
+
+                    </ul>
+                </div>
+
+            </nav>
+            <hr>
+            <nav>
+                <div class="title">
+                    <!-- <p>RJ</p>  -->
+                    <img src="{% static '/images/colombia_logo.jpg' %}" alt="" style="width: 50px;">
+                    <h5 style="display: inline-block; font-weight:600; width:150px">COLOMBIA</h5>
+                </div>
+                <div class="nav">
+                    <ul>
+                        <a href="{% url 'atm_functions:TyDeposit' %}">
+                            <li><img src="{% static '/images/nequi_logo.png' %}" alt="" style="width: 100px;"></li>
+                        </a>
+                        <a href="{% url 'atm_functions:TyDeposit' %}">
+                            <li><img src="{% static '/images/rappipay_logo.png' %}" alt="" style="width: 100px;"></li>
+                        </a>
+                    </ul>
+                </div>
+
+            </nav>
+            <hr>
+            <nav>
+                <div class="title">
+                    <!-- <p>RJ</p>  -->
+                    <img src="{% static '/images/chile_logo.jpg' %}" alt="" style="width: 50px;">
+                    <h5 style="display: inline-block; font-weight:600; width:150px">CHILE</h5>
+                </div>
+                <div class="nav">
+                    <ul>
+                        <a href="{% url 'atm_functions:TyDeposit' %}">
+                            <li><img src="{% static '/images/mach_logo.png' %}" alt="" style="width: 100px;"></li>
+                        </a>
+
+                    </ul>
+                </div>
+
+            </nav>
+
+        </div>
+
+
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+
+
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+
+    <!-- <div class="row">
+                <div class="col-5 d-flex justify-content-center text-center">
+                    <div class="card container1">
+                        <h2 class="text-primary">HAVE FUN USING CRYPTOSHARE!!!</h2>
+                        <br>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">Create Account</button>
+                        <button type="submit" class="btn btn-secondary btn-lg btn-block">Login to Account</button>
+                    </div>
+                </div>
+                <div class="col-xl-7 d-flex justify-content-center text-center">
+                    <div class="card container1">
+                        <h2 class="text-primary">CREATED BY :</h2>
+
+                        <h5>Anade Davis - Data Science Manager </h5>
+                        <h5>Shailee R. Desai - (Project Lead) Data Analyst </h5>
+                        <h5>Alexander Rodriguez - (Project Lead) Data Analyst </h5>
+                        <h5>William Munson - Data Scientist</h5>
+                        <h5>Harleen Bagga - Data Scientist</h5>
+                    </div>
+                </div>
+            </div> -->
+
+
+
+
+
+    <!-- <div class="hero" style="></div> -->
+
+
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

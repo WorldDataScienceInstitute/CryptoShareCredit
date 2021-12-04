@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.env
+testing.py
+testingapto.py
+.DS_Store
+db.sqlite3
