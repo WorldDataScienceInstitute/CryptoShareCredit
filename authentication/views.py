@@ -16,7 +16,6 @@ from traceback import print_exc
 from coinbase.wallet.client import OAuthClient
 
 
-
 def home(request):
     if request.user.is_authenticated:
         u = User.objects.get(pk=request.user.pk)
