@@ -24,6 +24,26 @@
                 </li>
             </ol>
         </nav>
+            {% if request.session.wallet_conn %}
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Currency</th>
+                <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for account, amount in accounts.items %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }} </th>
+                        <td>{{ account }} </td>
+                        <td>{{ amount }} </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+            {% endif %}
         {% else %}
         <h5 class="ml-5">You are not currently signed in. To sign in or make an account, <a href="{% url 'authentication:Signing' %}">click or tap here.</a></h5>
         {% endif %}
