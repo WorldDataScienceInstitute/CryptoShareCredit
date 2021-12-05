@@ -1,6 +1,6 @@
 {% load static %}
 {% static "images" as baseUrl %}
-{% if auth_level > 0 %}
+{% if name is not None %}
 {% include 'a_sessiontimeout.html' %}
 {% endif %}
 <div class="sidebar-container">

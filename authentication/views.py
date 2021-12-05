@@ -311,10 +311,6 @@ def logout(request):
         coinbase_client.revoke()
     except:
         pass
-    # ---------- ¡We need to optimize this! ----------
-    request.session['wallet_conn'] = False
-    request.session['access_token'] = None
-    request.session['refresh_token'] = None
 
     auth.logout(request)
     if request.method == 'POST':
