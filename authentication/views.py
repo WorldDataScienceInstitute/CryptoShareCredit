@@ -56,7 +56,7 @@ def email(request):
             return render(request, 'email.html', context)
         else:
             pin = request.POST.get('pin')
-            email = request.POST.get('email')
+            email = request.POST.get('email').lower()
             first_name = request.POST.get('fname')
             last_name = request.POST.get('lname')
             user = User.objects.create_user(
@@ -279,11 +279,8 @@ def login(request):
         messages.info(request, "You are already signed in.")
         return redirect('authentication:Signing')
     if request.method == "POST":
-        username = request.POST.get('username')
+        username = request.POST.get('username').lower()
         password = request.POST.get('pin')
-        # remove space/dash in case code was copied and pasted
-        password = password.replace(' ', '')
-        password = password.replace('-', '')
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             # log the user in
