@@ -78,28 +78,9 @@ state_dict = {
 
 currency_list = ['USD', 'COL', 'BRL']
 
-APTO_URL = os.environ['APTO_URL']
-APTO_KEY = os.environ['APTO_KEY']
-
-# mobile API headers
-# used for verification and card issuance
-headers = {
-    'Api-Key': f'Bearer {APTO_KEY}',
-    'Content-Type': 'application/json'
-    }
-
-# core API headers
-# used for transactions and other cardholder things
-# CORE_PUB_KEY = os.environ['CORE_PUBLIC_KEY']
-# CORE_PRIV_KEY = os.environ['CORE_SECRET_KEY']
-# key_string = os.environ['CORE_PUBLIC_KEY']+":"+os.environ['CORE_SECRET_KEY']
-# CORE_AUTH = b64encode(key_string.encode('utf-8'))
-# core API headers
-# used for transactions and other cardholder things
-# core_headers = {
-#     'Content-Type': 'application/json',
-#     "Authorization": f'Basic {CORE_AUTH}'
-# }
+APTO_KEY = ''
+APTO_URL = ''
+headers = {}
 
 ###########################
 # Begin User Verification #

@@ -6,7 +6,7 @@
 {% include 'header.html' %}
 <body>
     {% include 'banner.html' %}
-    {% if auth_level > 0 %}
+    {% if name is not None %}
     {% include 'a_sessiontimeout.html' %}
     {% endif %}
     <div class="container my-4">
@@ -66,13 +66,7 @@
         </div>
     </div>
 
-    <div class="row d-flex justify-content-center text-center" style="margin-left: 0;margin-right: 0;">
-        <div class="card">
-            <h2 class="text-primary">Crypto$hare</h2>
-            <br>
-            <p>Borrow and Lend Money!</p>
-        </div>
-    </div>
+    {% include 'info_card.html' %}
 
     <!-- Code provided by Google -->
     <script type="text/javascript">
