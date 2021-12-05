@@ -189,7 +189,6 @@ def atm_settings(request):
     return render(request, 'atm_settings.html', context)
 
 def connect_wallet(request):
-
     if request.session['wallet_conn']:
         return redirect('atm_functions:CheckBalance')
 
