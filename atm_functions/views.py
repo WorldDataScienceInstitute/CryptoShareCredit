@@ -10,9 +10,20 @@ import json
 
 
 def check_balance(request):
+
+    accounts = {}
+
     if 'wallet_conn' in request.session:
         if request.session['wallet_conn']:
             wallet_conn = request.session['wallet_conn']
+
+            coinbase_client = OAuthClient(request.session['access_token'], request.session['refresh_token'])
+            all_accounts = coinbase_client.get_accounts()["data"]
+
+            #Get into dict only the accounts that have a balance greater than 0            
+            for account in all_accounts:
+                if float(account['balance']['amount']) > 0:
+                    accounts[account['currency']] = account['balance']['amount']
         else:
             wallet_conn = False
     else:
@@ -38,12 +49,14 @@ def check_balance(request):
             'currency': current_currency,
             # 'debit_last_four': "NEED_TO_CHANGE_THIS!!!!!",
             'name': name,
-            'wallet_conn': wallet_conn
+            'wallet_conn': wallet_conn,
+            'accounts': accounts
             }
     else:
         context = {
             'name': None,
-            'wallet_conn': wallet_conn
+            'wallet_conn': wallet_conn,
+            'accounts': accounts
             }   
     return render(request, 'check_balance.html', context)
 
@@ -199,7 +212,7 @@ def connect_wallet(request):
     else:
         name = None
     context = {'name': name}
-    print(request.session['wallet_conn'])
+    # print(request.session['wallet_conn'])
 
     return render(request, 'connect_wallet.html', context)
 
@@ -220,7 +233,7 @@ def approve_wallet(request):
         #POST request to get access token
         response = requests.post('https://api.coinbase.com/oauth/token', data = data).json()
 
-        print(response)
+        # print(response)
         request.session['access_token'] = response['access_token']
         request.session['refresh_token'] = response['refresh_token']
         request.session['wallet_conn'] = True
