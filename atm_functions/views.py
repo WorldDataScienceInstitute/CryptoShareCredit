@@ -10,10 +10,11 @@ import json
 
 
 def check_balance(request):
-
-    if request.session['wallet_conn']:
-        wallet_conn = request.session['wallet_conn']
-
+    if 'wallet_conn' in request.session:
+        if request.session['wallet_conn']:
+            wallet_conn = request.session['wallet_conn']
+        else:
+            wallet_conn = False
     else:
         wallet_conn = False
 
