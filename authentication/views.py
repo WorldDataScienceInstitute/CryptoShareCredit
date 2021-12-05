@@ -70,6 +70,9 @@ def email(request):
     else:
         return render(request, 'email.html', context)
 
+def give_back(request):
+    return render(request, 'give_back.html')
+
 
 def verify(request):
     """Page for the user to submit their verification code"""

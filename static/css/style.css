@@ -143,6 +143,7 @@ p {
 
 p.signed_in {
  text-align: center;
+ color:black;
 }
 
 h1,

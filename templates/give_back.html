@@ -1,0 +1,52 @@
+{% load static %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+<body>
+    {% include 'banner.html' %}
+    {% if name is not None %}
+    {% include 'a_sessiontimeout.html' %}
+    {% endif %}
+    <div class="container my-4">
+        <div class="row">
+            <h3 class="text-primary" style="margin:auto;padding-bottom: 15px;">Greetings, CryptoSharers!</h3>
+            <p style="color:black;">Our initiative is to help People of Color have access to cryptocurrency
+                and fund projects for Hispanics, Black, and Brown people around the world.
+            </p>
+        </div>
+        <br>
+        <h2 class="text-primary" style="margin:auto;text-align: center;">Ways to Give Back</h2>
+        <br>
+        <p style="color:black;">Coinbase Wallet users can donate cryptocurrency directly to our username, @cryptoshare.</p>
+        <p style="color:black;">We also accept donations to the following networks/addresses:</p>
+        <ul>
+            <li>Etheruem (ETH), ERC-20 tokens (DAI, USDC, LINK, etc.): 0x895489603d8E45C97EF5bd7FDD2D5674A8425835</li>
+            <li>Bitcoin Cash (BCH): <a href="bitcoincash:qqwwanl6wwr2m25d43h42u6vsvtypy3wzs92cgvd8m">qqwwanl6wwr2m25d43h42u6vsvtypy3wzs92cgvd8m</a></li>
+            <!-- <li>Bitcoin Cash (BCH) (legacy): 13dz1MEEx8rwGFNtEowXGXKBP5ehXkqMTE  &nbsp; <i>(please do not send Bitcoin (BTC) to this address)</i></li> -->
+            <li>XRP: rscbBFJ4y1eWDk4usSzqYTnnpwd86i8dDH</li>
+        </ul>
+        <br>
+        <table width="100%">
+            <tr>
+                <td width="33%"><img src="{% static '/images/donation/ERC20_QR.png' %}" class="qr"></td>
+                <td width="33%"><img src="{% static '/images/donation/BCH_QR.png' %}" class="qr"></td>
+                <td width="33%"><img src="{% static '/images/donation/XRP_QR.png' %}" class="qr"></td>
+            </tr>
+        </table>
+        <br><br>
+        <a href="{% url 'authentication:Signing' %}"><button type="button" class="btn btn-primary">Back</button>
+        </a>
+    </div>
+    <br>
+    {% include 'info_card.html' %}
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% include 'footer.html' %}
+    
+</body>
+</html>
