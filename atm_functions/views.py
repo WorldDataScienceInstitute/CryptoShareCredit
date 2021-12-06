@@ -47,7 +47,6 @@ def check_balance(request):
             'balance': balance,
             'balance_conv': balance_conv,
             'currency': current_currency,
-            # 'debit_last_four': "NEED_TO_CHANGE_THIS!!!!!",
             'name': name,
             'wallet_conn': wallet_conn,
             'accounts': accounts
@@ -204,6 +203,7 @@ def atm_settings(request):
 
 def connect_wallet(request):
     if request.session['wallet_conn']:
+        messages.info(request, "Your Coinbase account has already been connected.")
         return redirect('atm_functions:CheckBalance')
 
     if request.user.is_authenticated:
