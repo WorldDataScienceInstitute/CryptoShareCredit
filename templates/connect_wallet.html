@@ -6,10 +6,6 @@
 {% include 'header.html' %}
 <body>
     {% include 'atm_sidebar.html' %}
-
-    {% if auth_level > 0 %}
-    {% include 'a_sessiontimeout.html' %}
-    {% endif %}
     <div class="content-container">
         <h2 class="ml-4">Hi {{ name }}!</h2>
         <h2 class="ml-4">Connect your Coinbase Wallet</h2>
