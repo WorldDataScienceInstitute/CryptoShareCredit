@@ -194,7 +194,7 @@ a:hover {
 }
 
 .site-navbar {
-  margin-bottom: 0px;
+  margin-bottom: 10px !important;
   margin-top: 0px !important;
   z-index: 1999;
   position: relative;
