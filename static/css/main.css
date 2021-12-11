@@ -54,6 +54,11 @@ footer {
     margin-top: auto;
 }
 
+.row-adj {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
 /* Card
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .card {
