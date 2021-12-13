@@ -29,19 +29,19 @@ def home(request):
 
 
 def signing(request):
-    if request.method == "POST":
-        context = {'country_codes': country_codes}
-        return render(request, 'email.html', context)
+    # if request.method == "POST":
+    #     context = {'country_codes': country_codes}
+    #     return render(request, 'email.html', context)
+    # else:
+    if request.user.is_authenticated:
+        u = User.objects.get(pk=request.user.pk)
+        name = u.first_name
     else:
-        if request.user.is_authenticated:
-            u = User.objects.get(pk=request.user.pk)
-            name = u.first_name
-        else:
-            name = None
-        context = {
+        name = None
+    context = {
         'name': name
         }
-        return render(request, 'signin-up.html', context)
+    return render(request, 'home.html', context)
 
 
 def email(request):

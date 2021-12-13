@@ -6,13 +6,14 @@
 {% include 'header.html' %}
 <body>
     {% include 'banner.html' %}
-    {% include 'messages.html' %}
     {% if name is not None %}
     {% include 'a_sessiontimeout.html' %}
     {% endif %}
     <!-- <p id="demo" style="font-size:1rem;color:blue; font-weight:550"></p> -->
     
     <div class="container container-language my-4">
+        
+        {% include 'messages.html' %}
         <div class="row">
             <div class="container1 card container-language">
                 <h2 class="text-primary">
