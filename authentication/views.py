@@ -22,10 +22,10 @@ def home(request):
     context = {
         'name': name
         }
-    if request.method == "POST":
-        return render(request, 'signin-up.html', context)
-    else:
-        return render(request, 'language.html', context)
+    # if request.method == "POST":
+    #     return render(request, 'signin-up.html', context)
+    # else:
+    return render(request, 'home.html', context)
 
 
 def signing(request):
