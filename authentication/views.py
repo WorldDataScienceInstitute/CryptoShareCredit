@@ -7,10 +7,12 @@ from atm_functions.models import Account
 from django.contrib import messages
 from django.conf import settings
 from django.utils.safestring import mark_safe
-from common.utils import  state_dict, country_codes
+from common.utils import  get_user_count, state_dict, country_codes
 from common.Confirm_emails import Account_Creation_Email, Code_Creation_Email
 from traceback import print_exc
 from coinbase.wallet.client import OAuthClient
+
+user_count, last_check = get_user_count()
 
 
 def home(request):
@@ -20,7 +22,9 @@ def home(request):
     else:
         name = None
     context = {
-        'name': name
+        'name': name,
+        'user_count': user_count,
+        'last_check': last_check
         }
     # if request.method == "POST":
     #     return render(request, 'signin-up.html', context)
@@ -46,7 +50,11 @@ def signing(request):
 
 def email(request):
     """Page for the user to enter their email and phone number to begin registration"""
-    context = {'country_codes': country_codes}
+    context = {
+        'country_codes': country_codes,
+        'user_count': user_count,
+        'last_check': last_check
+        }
     if request.method == 'POST':
         if User.objects.filter(email=request.POST.get('email')).exists():
             messages.info(request, "An account with this email already exists.")
