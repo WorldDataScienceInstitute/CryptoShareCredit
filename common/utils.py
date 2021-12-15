@@ -9,7 +9,7 @@ load_dotenv()
 
 
 def get_user_count():
-    return Account.objects.count(), dt.now().strftime("%b %d, %H:%M")
+    return Account.objects.count(), dt.now().strftime("%b %d, %H:%M UTC")
 
 
 country_dict = {
