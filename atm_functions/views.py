@@ -258,3 +258,17 @@ def disconnect_wallet(request):
     request.session['refresh_token'] = None
 
     return redirect('atm_functions:ConnectWallet')
+
+def send_money(request):
+
+    if not request.session['wallet_conn']:
+        #Temporary redirect to connect wallet while CryptoApis implementation is in progress.
+        messages.info(request, "You must connect your Coinbase account to send money.")
+        return redirect('atm_functions:ConnectWallet')
+    
+    coinbase_client = OAuthClient(request.session['access_token'], request.session['refresh_token'])
+    user_data = coinbase_client.get_current_user()
+
+    context = {'user_name': user_data.name}
+
+    return render(request, 'send_money.html', context)

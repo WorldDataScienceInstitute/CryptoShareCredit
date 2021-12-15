@@ -17,6 +17,7 @@ urlpatterns = [
      path('EarnMoney/', views.earn_money, name="EarnMoney"),
      path('ConnectWallet/', views.connect_wallet, name="ConnectWallet"),
      path('ApproveWallet/', views.approve_wallet, name="ApproveWallet"),
-     path('DisconnectWallet/', views.disconnect_wallet, name="DisconnectWallet")
+     path('DisconnectWallet/', views.disconnect_wallet, name="DisconnectWallet"),
+     path('SendMoney/', views.send_money, name="SendMoney")
      # path('VerfyWallet/', views.verify_wallet, name="VerfyWallet"),
 ]
