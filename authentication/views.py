@@ -7,8 +7,8 @@ from atm_functions.models import Account
 from django.contrib import messages
 from django.conf import settings
 from django.utils.safestring import mark_safe
-from common.utils import  get_user_count, state_dict, country_codes
-from common.Confirm_emails import Account_Creation_Email, Code_Creation_Email
+from common.utils import  get_user_count, state_dict, country_codes, generate_pin
+from common.emails import Account_Creation_Email, code_creation_email, pin_reset_email
 from traceback import print_exc
 from coinbase.wallet.client import OAuthClient
 
@@ -69,14 +69,47 @@ def email(request):
                 first_name=first_name, last_name=last_name
                 )
             Account.objects.create(user=user, Email=email)
-            Code_Creation_Email(to_addr=email, pin=pin)
+            code_creation_email(to_addr=email, pin=pin)
             messages.success(request, mark_safe(
                 f"""A confirmation email has been sent to you from {settings.DEFAULT_FROM_EMAIL}.<br>
                 If you do not receive it within a few minutes, check your spam/junk folder.""")
                 )
-            return redirect('authentication:Signing')
+            return redirect('authentication:Home')
     else:
         return render(request, 'email.html', context)
+
+
+def reset_password(request):
+    if request.method == 'GET':
+        messages.info(
+            request,
+            f"A PIN reset email will be sent to you from {settings.DEFAULT_FROM_EMAIL}.")
+        return render(request, 'reset_password.html')
+    elif request.method == 'POST':
+        email = request.POST.get('email').lower()
+        if User.objects.filter(username=email).exists():
+            u = User.objects.get(username=email)
+            new_pin = generate_pin()
+            # print(new_pin)
+            u.set_password(new_pin)
+            u.save()
+            pin_reset_email(to_addr=email, pin=new_pin)
+            messages.success(
+                request, mark_safe(f"""An email with a new PIN  has been sent to you
+                from {settings.DEFAULT_FROM_EMAIL}. You will use this new PIN to sign in.
+                <br>
+                Be sure to check your spam/junk if you do not receive it
+                within a few minutes.""")
+                )
+            return redirect('authentication:Home')
+        else:
+            messages.info(
+                request, mark_safe(
+                    f"An account with that email ({email}) was not found."
+                    )
+                    )
+            return render(request, 'reset_password.html')
+
 
 def give_back(request):
     return render(request, 'give_back.html')
@@ -141,7 +174,7 @@ def login(request):
     """Page for the user to log in"""
     if request.user.is_authenticated:
         messages.info(request, "You are already signed in.")
-        return redirect('authentication:Signing')
+        return redirect('authentication:Home')
     if request.method == "POST":
         username = request.POST.get('username').lower()
         password = request.POST.get('pin')

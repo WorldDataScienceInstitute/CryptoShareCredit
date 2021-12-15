@@ -4,12 +4,18 @@ import os
 from datetime import datetime as dt
 from dotenv import load_dotenv
 from atm_functions.models import Account
+import random
+import string
 
 load_dotenv()
 
 
 def get_user_count():
     return Account.objects.count(), dt.now().strftime("%b %d, %H:%M UTC")
+
+
+def generate_pin():
+    return ''.join(random.choice(string.digits) for i in range(6))
 
 
 country_dict = {

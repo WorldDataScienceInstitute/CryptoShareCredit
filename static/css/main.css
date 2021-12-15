@@ -118,6 +118,12 @@ h2 {
     text-align:center;
 }
 
+.reset-pin {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 5px;
+}
+
 h2.title {
     /* margin-left: auto;
     margin-right: auto;

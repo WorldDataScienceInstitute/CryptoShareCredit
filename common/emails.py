@@ -82,12 +82,10 @@ def Account_Creation_Email(to_addr):
     return
 
 
-def Code_Creation_Email(to_addr, pin):
+def code_creation_email(to_addr, pin):
     port = settings.EMAIL_PORT
     msg = MIMEMultipart('alternative')
-    msg['Subject'] = "Crypto$hare Confirmation Pin"
-    #Code worked on stmp with gmail but not from domain.com
-    #msg['From'] = msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['Subject'] = "Crypto$hare PIN Confirmation"
 
     msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
     msg['To'] = to_addr
@@ -115,6 +113,46 @@ def Code_Creation_Email(to_addr, pin):
 
     msg.attach(part1)
     msg.attach(part2)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP('smtp.domain.com',port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, to_addr, msg.as_string())
+    s.quit()
+    return
+
+
+def pin_reset_email(to_addr, pin):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare PIN Reset"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = to_addr
+    
+    html = f"""
+    <html>
+    <head></head>
+        <body>
+        
+        <p>Hi there!</p>
+
+        <p>You are receiving this email because a PIN reset was requested at <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+
+        <p>Your new PIN for Crypto$hare is the following:</p>
+
+        <big><big><big><big><b>{pin}</b></big></big></big></big>
+
+        <p>If this was not you, please secure your account at <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+        </body>
+    </html>
+    """
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
 
     context = ssl.create_default_context()
     s = smtplib.SMTP('smtp.domain.com',port)
