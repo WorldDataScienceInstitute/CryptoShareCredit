@@ -4,23 +4,37 @@
 <!doctype html>
 <html lang="en">
 {% include 'header.html' %}
+
 <body>
     {% include 'atm_sidebar.html' %}
     <div class="content-container">
         {% include 'messages.html' %}
-        <h2 class="ml-4">Hi {{ name }}!</h2>
-        <h2 class="ml-4">Connect your Coinbase Wallet</h2>
+        {% if request.session.wallet_conn %}
+        <h2 class="ml-4">Hi {{ user_name }}, you are connected with your Coinbase Wallet</h2>
+        {% else %}
+        <h2 class="ml-4">Hi you are not connected with a Coinbase Wallet</h2>
+        {% endif %}
+        <div style="text-align:center" class="ml-4 mt-4" style="width:30%;min-width:400px;">
+            <form action="/atm/SendMoneyConfirmation/" method="post">
+                {% csrf_token %}
+                <input type="hidden" class="form-control" id="recipientUser" aria-describedby="recipientUser" name="recipientUser" value="{{ recipientUser }}">
+                <input type="hidden" class="form-control" id="sendingAccount" aria-describedby="sendingAccount" name="sendingAccount" value="{{ sendingAccount }}">
+                <input type="hidden" class="form-control" id="sendingAmount" aria-describedby="sendingAmount" name="sendingAmount" value="{{ sendingAmount }}">
+                <div class="form-group">
+                    <label for="authCode">2FA Code from your app</label>
+                    <input type="text" class="form-control" id="authCode" aria-describedby="authCode" name="authCode"
+                        placeholder="Enter your 2FA Code from your Auth App">
+                </div>  
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <!-- 
 
-        <h5 style="text-align:center" class="ml-4 mt-4">Click to connect Coinbase wallet:</h5>
-        <div style="text-align:center" class="ml-4 mt-4"  style="width:30%;min-width:400px;">
-            <a href="https://www.coinbase.com/oauth/authorize?response_type=code&client_id=35fb284ac9af15803924d53bb3cbc1890f147c526439f60cbc76f156004701e3&redirect_uri=https%3A//www.cryptoshareapp.com/atm/ApproveWallet/&scope=wallet:accounts:read,wallet:transactions:send&meta[send_limit_amount]=1">
-                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
-                id="button-withdraw">Connect wallet</button>
-            </a>
+            <input type="number" name="withdraw" class="form-control" min="1"
+                aria-label="Dollar amount (with dot and two decimal places)"> -->
         </div>
 
     </div>
-    
+
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
@@ -31,8 +45,8 @@
     </script>
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
     </script>
-    
-    
+
+
     <script type="text/javascript">
         function triggerHtmlEvent(element, eventName) {
             var event;
@@ -46,7 +60,7 @@
                 element.fireEvent('on' + event.eventType, event);
             }
         }
-        
+
         $('.translation-links a').click(function (e) {
             e.preventDefault();
             var lang = $(this).data('lang');
@@ -60,11 +74,11 @@
             });
         });
     </script>
-    
+
     <!-- <div class="hero" style="></div> -->
-    
-    
-    
+
+
+
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
