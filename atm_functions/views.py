@@ -45,8 +45,7 @@ def check_balance(request):
         if current_currency == 'USD':
             balance_conv = balance
         else:
-            balance_conv = 0 if balance == 0 else json.loads(
-                convert('USD', current_currency, balance))['amount']
+            balance_conv = 0 if balance == 0 else json.loads(convert('USD', current_currency, balance))['amount']
         context = {
             'balance': balance,
             'balance_conv': balance_conv,
@@ -88,8 +87,7 @@ def withdraw_money(request):
 
             # check if user is trying to withdraw more than balance
             if withdraw_amt > balance:
-                messages.info(
-                    request, f"Insufficient balance. You can only withdraw up to {balance} USD.")
+                messages.info(request, f"Insufficient balance. You can only withdraw up to {balance} USD.")
                 return render(request, 'withdraw_money.html', context)
 
             # user successfully withdraws money
@@ -210,8 +208,7 @@ def atm_settings(request):
 
 def connect_wallet(request):
     if request.session['wallet_conn']:
-        messages.info(
-            request, "Your Coinbase account has already been connected.")
+        messages.info(request, "Your Coinbase account has already been connected.")
         return redirect('atm_functions:CheckBalance')
 
     if request.user.is_authenticated:
@@ -226,7 +223,7 @@ def connect_wallet(request):
 
 
 def approve_wallet(request):
-    code = request.GET.get('code', '')
+    code = request.GET.get('code','')
 
     if code:
         # POST request template
