@@ -162,3 +162,53 @@ def pin_reset_email(to_addr, pin):
     s.sendmail(settings.EMAIL_HOST_USER, to_addr, msg.as_string())
     s.quit()
     return
+
+def transaction_email_sender(sender_email, concept, tx_amount, tx_native_amount, tx_state, creation_date, receiver):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare transaction"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = sender_email
+    
+    html = f"""
+    <html>
+    <head></head>
+        <body>
+        
+        <p>¡Hi there!</p>
+
+        <p>You are receiving this email because a transaction was made in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+
+        <p>The transaction details are as follows:</p>
+
+        <p>Transaction concept: {concept}</p>
+
+        <p>Sent to: {receiver}</p>
+
+        <p>Transaction amount {tx_amount['currency']} : {tx_amount['amount']} </p>
+
+        <p>Transaction native amount {tx_native_amount['currency']} : {tx_native_amount['amount']}</p>
+
+        <p>Transaction state: {tx_state}</p>
+
+        <p>Transaction creation date: {creation_date}</p>
+
+
+        <p>If this was not you, please secure your account at <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+        </body>
+    </html>
+    """
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP('smtp.domain.com',port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
+    s.quit()
+    return
