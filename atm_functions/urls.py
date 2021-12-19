@@ -20,5 +20,5 @@ urlpatterns = [
      path('DisconnectWallet/', views.disconnect_wallet, name="DisconnectWallet"),
      path('SendMoney/', views.send_money, name="SendMoney"),
      path('SendMoneyConfirmation/', views.send_money_confirmation, name="SendMoneyConfirmation")
-     # path('VerfyWallet/', views.verify_wallet, name="VerfyWallet"),
+     # path('NotificationService/', views.notification_service, name="NotificationService")
 ]

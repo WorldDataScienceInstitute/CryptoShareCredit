@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.shortcuts import redirect, render
 from .models import User
 from common.utils import currency_list
+from common.emails import transaction_email_sender
 from google_currency import convert
 from coinbase.wallet.client import OAuthClient
 from coinbase.wallet.error import TwoFactorRequiredError
@@ -233,6 +234,7 @@ def approve_wallet(request):
             'client_id': os.environ['COINBASE_CLIENT_ID'],
             'client_secret': os.environ['COINBASE_CLIENT_SECRET'],
             'redirect_uri': "https://www.cryptoshareapp.com/atm/ApproveWallet/"
+            # 'redirect_uri': "https://7361-2806-2f0-9020-ac47-e598-e859-b8ca-e292.ngrok.io/atm/ApproveWallet/"
         }
 
         # POST request to get access token
@@ -248,7 +250,6 @@ def approve_wallet(request):
             request.session['access_token'], request.session['refresh_token'])
 
         user_data = coinbase_client.get_current_user()
-
         context = {'user_name': user_data.name}
 
         return render(request, 'approve_wallet.html', context)
@@ -308,8 +309,7 @@ def send_money_confirmation(request):
     if not form_response:
         return redirect('atm_functions:SendMoney')
 
-    coinbase_client = OAuthClient(
-        request.session['access_token'], request.session['refresh_token'])
+    coinbase_client = OAuthClient(request.session['access_token'], request.session['refresh_token'])
 
     recipient_account = form_response["recipientUser"]
     account_info = form_response["sendingAccount"].split(" ")
@@ -318,10 +318,10 @@ def send_money_confirmation(request):
     amount = form_response["sendingAmount"]
 
     authCode = request.POST.get("authCode")
-    print(form_response)
-    print(authCode)
+    # print(form_response)
+    # print(authCode)
     if authCode:
-        print("Authcode detected")
+        # print("Authcode detected")
         authcode = form_response['authCode']
         try:
             tx = coinbase_client.send_money(
@@ -331,11 +331,25 @@ def send_money_confirmation(request):
                 currency = account_currency,
                 two_factor_token = authcode
             )
-            print(tx)
+
+            # print(tx)
             messages.info(request, "Money sent successfully.")
+
+            user_data = coinbase_client.get_current_user()
+
+            sender_email = user_data.email
+            concept = tx["details"]["header"]
+            tx_amount = tx["amount"]
+            tx_native_amount = tx["native_amount"]
+            tx_state = tx["details"]["health"]
+            receiver_email = tx["to"]["email"]
+            creation_date  = tx["created_at"]
+
+            transaction_email_sender(sender_email, concept, tx_amount, tx_native_amount, tx_state, creation_date, receiver_email)
+            
             return redirect('atm_functions:CheckBalance')
         except Exception as e:
-            print(e)
+            # print(e)
             messages.error(request, "Invalid authorization code. Please try again.")
             return redirect('atm_functions:SendMoney')
 
@@ -348,7 +362,7 @@ def send_money_confirmation(request):
                 amount=amount,
                 currency=account_currency
             )
-            print(tx)
+            # print(tx)
             messages.info(request, "Money sent successfully.")
             return redirect('atm_functions:CheckBalance')
 
@@ -362,6 +376,23 @@ def send_money_confirmation(request):
             return render(request, '2fa_token.html', context)
             # return redirect('atm_functions:SendMoney')
         except Exception as e:
-            print(e)
+            # print(e)
             messages.info(request, "Error sending money. Please try again.")
             return redirect('atm_functions:SendMoney')
+
+# <-------------- Do not delete please :) -------------->
+# def notification_service(request):
+
+#     # coinbase_client = OAuthClient(request.session['access_token'], request.session['refresh_token'])
+#     # notif = coinbase_client.get_notifications()
+
+#     # print(notif)
+#     form_response = request.POST
+#     print(form_response)
+
+#     coinbase_api_client = Client("nqMilldVNUH93ZbQ", "j6W4OWnyicqnRMdsp0VgT8mjUQNed4jS")
+#     print(request)
+#     #API KEY: nqMilldVNUH93ZbQ
+#     #API SECRET: j6W4OWnyicqnRMdsp0VgT8mjUQNed4jS
+#     return render(request, 'send_money.html')
+#     # return render(request, 'notification_service.html')
