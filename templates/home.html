@@ -55,10 +55,10 @@
         </div>
         {# {% include "animations/animations-1.html" %} #}
     </div>
-    <div class="container my-4">
-        <div class="row">
+    <div class="container my-4" style="padding:0px;">
+        <div class="row" style="margin:0px;">
             <video src="{% static '/images/how_cs_works.mp4' %}" id="demo"
-            style="margin-left:auto;margin-right:auto;zoom:85%;" autoplay loop muted>
+            style="margin-left:auto;margin-right:auto;zoom:85%;max-width: 100vw;" autoplay loop muted>
         </div>
         <script> $( window ).load(function() { $('#demo' ).get(0).play();}); </script>
     </div>
@@ -165,43 +165,6 @@
             });
         });
     </script>
-    
-    <!-- <script>
-        // Set the date we're counting down to
-        var countDownDate = new Date("Jan 5, 2022 15:37:25").getTime();
-        
-        // Update the count down every 1 second
-        var x = setInterval(function () {
-            
-            // Get today's date and time
-            var now = new Date().getTime();
-            
-            // Find the distance between now and the count down date
-            var distance = countDownDate - now;
-            
-            // Time calculations for days, hours, minutes and seconds
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            
-            // Output the result in an element with id="demo"
-            document.getElementById("demo").innerHTML = days + "d " + hours + "h " +
-            minutes + "m " + seconds + "s ";
-            
-            // If the count down is over, write some text
-            if (distance < 0) {
-                clearInterval(x);
-                document.getElementById("demo").innerHTML = "EXPIRED";
-            }
-        }, 1000);
-    </script> -->
-    
-    
-    <!-- <div class="hero" style="></div> -->
-    
-    
-    
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.j' %}s"></script>
