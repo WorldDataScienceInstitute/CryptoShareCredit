@@ -59,8 +59,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'ATM.urls'
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
+if not os.environ.get('testing'):
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
 
 TEMPLATES = [
     {
