@@ -53,12 +53,11 @@
             </div>
             <br>
         </div>
-        {# {% include "animations/animations-1.html" %} #}
     </div>
     <div class="container my-4" style="padding:0px;">
         <div class="row" style="margin:0px;">
             <video src="{% static '/images/how_cs_works.mp4' %}" id="demo"
-            style="margin-left:auto;margin-right:auto;zoom:85%;max-width: 100vw;" autoplay loop muted>
+            style="margin-left:auto;margin-right:auto;zoom:85%;max-width: 100vw;" autoplay loop muted playsinline>
         </div>
         <script> $( window ).load(function() { $('#demo' ).get(0).play();}); </script>
     </div>
@@ -167,9 +166,9 @@
     </script>
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.j' %}s"></script>
-    <script src="{% static 'js/jquery.sticky.j' %}s"></script>
-    <script src="{% static 'js/main.j' %}s"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
     {% include 'footer.html' %}
 </body>
 </html>
