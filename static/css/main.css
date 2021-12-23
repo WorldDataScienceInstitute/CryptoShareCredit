@@ -86,10 +86,6 @@ footer {
     max-height: 250px;
   }
 
-.container-language {
-    margin-bottom: 0px!important;
-}
-
 .lang-container {
     display: flex;
     flex-direction: row;
