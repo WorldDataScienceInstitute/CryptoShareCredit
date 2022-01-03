@@ -99,6 +99,7 @@ def withdraw_money(request):
 
 
 def deposit_selection(request):
+
     if request.user.is_authenticated:
         u = User.objects.get(pk=request.user.pk)
         name = u.first_name
@@ -379,6 +380,24 @@ def send_money_confirmation(request):
             # print(e)
             messages.info(request, "Error sending money. Please try again.")
             return redirect('atm_functions:SendMoney')
+
+
+def register_address(request):
+    if request.user.is_authenticated:
+        u = User.objects.get(pk=request.user.pk)
+        name = u.first_name
+    else:
+        return redirect('authentication:Home')
+    
+    #USDC, USDT, DAI, LITECOIN, BITCOIN, BITCOIN CASH, ETHEREUM, CARDANO
+
+    
+
+    context = {'name': name}
+
+    return render(request, 'register_address.html', context)
+
+
 
 # <-------------- Do not delete please :) -------------->
 # def notification_service(request):

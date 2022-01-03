@@ -21,6 +21,7 @@ requests = "==2.25.1"
 google-currency = "==1.0.9"
 python-dotenv = "==0.18.0"
 coinbase = "*"
+cryptoapis = "*"
 
 [dev-packages]
 
