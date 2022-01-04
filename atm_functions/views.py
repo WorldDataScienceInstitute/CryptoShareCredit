@@ -391,10 +391,18 @@ def register_address(request):
     
     #USDC, USDT, DAI, LITECOIN, BITCOIN, BITCOIN CASH, ETHEREUM, CARDANO
 
+    form_response_post = request.POST
+    form_response_get = request.GET
+
+    if not form_response_post:
+        print("NOT POST")
     
+    if not form_response_get:
+        print("NOT GET")
+
 
     context = {'name': name}
-
+    print(request)
     return render(request, 'register_address.html', context)
 
 
