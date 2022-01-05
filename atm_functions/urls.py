@@ -20,6 +20,7 @@ urlpatterns = [
      path('DisconnectWallet/', views.disconnect_wallet, name="DisconnectWallet"),
      path('SendMoney/', views.send_money, name="SendMoney"),
      path('SendMoneyConfirmation/', views.send_money_confirmation, name="SendMoneyConfirmation"),
+     path('ConfirmedTransactions/', views.confirmed_transactions, name="ConfirmedTransactions"),
      path('RegisterAddress/', views.register_address, name="RegisterAddress")
      # path('NotificationService/', views.notification_service, name="NotificationService")
 ]

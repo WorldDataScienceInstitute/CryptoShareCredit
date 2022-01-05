@@ -1,5 +1,8 @@
 from django.contrib import messages
 from django.shortcuts import redirect, render
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.http import HttpResponse
 from .models import User
 from common.utils import currency_list
 from common.emails import transaction_email_sender
@@ -396,30 +399,36 @@ def register_address(request):
 
     if not form_response_post:
         print("NOT POST")
-    
-    if not form_response_get:
-        print("NOT GET")
-
+    else:
+        print(form_response_post)
 
     context = {'name': name}
     print(request)
     return render(request, 'register_address.html', context)
 
+    # return HttpResponse(status=200)
 
+@csrf_exempt
+# @require_POST
+def confirmed_transactions(request):
+    # if request.user.is_authenticated:
+    #     u = User.objects.get(pk=request.user.pk)
+    #     name = u.first_name
+    # else:
+    #     return redirect('authentication:Home')
+    
+    #USDC, USDT, DAI, LITECOIN, BITCOIN, BITCOIN CASH, ETHEREUM, CARDANO
+    form_response = request.POST
+    # print(request.META)
+    # print(dict(request.POST.items()))
+    print(request.headers)
 
-# <-------------- Do not delete please :) -------------->
-# def notification_service(request):
+    test = request.POST
+    print(test)
 
-#     # coinbase_client = OAuthClient(request.session['access_token'], request.session['refresh_token'])
-#     # notif = coinbase_client.get_notifications()
-
-#     # print(notif)
-#     form_response = request.POST
-#     print(form_response)
-
-#     coinbase_api_client = Client("nqMilldVNUH93ZbQ", "j6W4OWnyicqnRMdsp0VgT8mjUQNed4jS")
-#     print(request)
-#     #API KEY: nqMilldVNUH93ZbQ
-#     #API SECRET: j6W4OWnyicqnRMdsp0VgT8mjUQNed4jS
-#     return render(request, 'send_money.html')
-#     # return render(request, 'notification_service.html')
+    if request.method == 'POST':
+        print("Data received from Webhook is: ", request.body)
+        return HttpResponse("Webhook received!")
+    # print(data)
+    # print(form_response["data"])
+    return HttpResponse(status=200)
