@@ -423,6 +423,9 @@ def confirmed_transactions(request):
     # print(dict(request.POST.items()))
     print(request.headers)
 
+    stream = request.META['wsgi.input']
+    print(stream.read())
+
     test = request.POST
     print(test)
 
