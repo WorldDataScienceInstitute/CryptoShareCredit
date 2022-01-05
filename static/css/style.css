@@ -176,6 +176,10 @@ a:hover {
   text-decoration: none !important;
 }
 
+.sidebar-navigation a:hover {
+  color:black;
+}
+
 .hero {
   height: 100vh;
   width: 100%;
