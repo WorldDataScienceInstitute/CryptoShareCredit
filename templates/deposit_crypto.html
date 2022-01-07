@@ -6,21 +6,41 @@
 {% include 'header.html' %}
 <body>
     {% include 'atm_sidebar.html' %}
-    {% if auth_level > 0 %}
-    {% include 'a_sessiontimeout.html' %}
-    {% endif %}
     <div class="content-container">
-        <h2 class="ml-4" style="text-align:center;">Deposit Money</h2>
+        <h2 class="ml-4 text-primary">Register your address</h2>
         <br>
-        <h3 class="ml-4" style="text-align:center;">Make a selection:</h3><br>
-        <h5 class="ml-4"><button type="button" class="btn btn-primary" disabled>Debit Card</button></h5>
-        <br>
-        <h5 class="ml-4"><a href="{% url 'atm_functions:DepositMoney' %}"><button type="button" class="btn btn-primary" disabled>Digital Wallet</button></a></h5>
-        <br>
-        <h5 class="ml-4"><a href="{% url 'atm_functions:DepositMoney' %}"></a><button type="button" class="btn btn-primary">Cryptocurrency Wallet</button></a></h5>
-        <br>
-        <h5 class="ml-4"><button type="button" class="btn btn-primary" disabled>ATM</button></h5>
-        <br>
+        {% include 'messages.html' %}
+        {% if authConfirmation %}
+        {% include 'a_sessiontimeout.html' %}
+        <!-- <h5 class="ml-5">Information for account ending in {{ debit_last_four }}</h5> -->
+            {% if request.session.wallet_conn %}
+            <h1> Coinbase Wallet usage is currently in progress, integration is not completely available for the moment</h1>
+            {% endif %}
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Symbol</th>
+                    <th scope="col">Currency</th>
+                    <th scope="col">Blockchain</th>
+                    <th scope="col">Network</th>
+                    <th scope="col">Address</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for address in addresses %}
+                        <tr>
+                            <td>{{ address.currency_name.symbol }} </td>
+                            <td>{{ address.currency_name.currency_name }} </td>
+                            <td>{{ address.currency_name.blockchain }} </td>
+                            <td>{{ address.currency_name.network }} </td>
+                            <td>{{ address.address }} </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+        <h5 class="ml-5">You are not currently signed in. To sign in or make an account, <a href="{% url 'authentication:Home' %}">click or tap here.</a></h5>
+        {% endif %}
     </div>
     
     <script type="text/javascript">
@@ -84,20 +104,10 @@
             </div>
         </div>
     </div> -->
-    
-    
-    
-    
-    
-    <!-- <div class="hero" style="></div> -->
-    
-    
-    
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.sticky.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
 </body>
-
 </html>

@@ -7,6 +7,7 @@ urlpatterns = [
      path('WithdrawMoney/', views.withdraw_money, name='WithdrawMoney'),
      path('DepositMoney/', views.deposit_money, name='DepositMoney'),
      path('DepositSelection/', views.deposit_selection, name='DepositSelection'),
+     path('DepositCrypto/', views.deposit_crypto, name='DepositCrypto'),
      path('SelectBank/', views.bank, name='SelectBank'),
      path('TyWithdraw/', views.ty_withdraw, name='TyWithdraw'),
      path('TyDeposit/', views.ty_deposit, name='TyDeposit'),
@@ -21,6 +22,7 @@ urlpatterns = [
      path('SendMoney/', views.send_money, name="SendMoney"),
      path('SendMoneyConfirmation/', views.send_money_confirmation, name="SendMoneyConfirmation"),
      path('ConfirmedTransactions/', views.confirmed_transactions, name="ConfirmedTransactions"),
+     path('MyAddresses/', views.my_addresses, name="MyAddresses"),
      path('RegisterAddress/', views.register_address, name="RegisterAddress")
      # path('NotificationService/', views.notification_service, name="NotificationService")
 ]

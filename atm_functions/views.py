@@ -4,11 +4,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 from .models import User
+from django.db.models import F
+from atm_functions.models import Account, Address, Cryptocurrency
 from common.utils import currency_list
 from common.emails import transaction_email_sender
 from google_currency import convert
 from coinbase.wallet.client import OAuthClient
 from coinbase.wallet.error import TwoFactorRequiredError
+
 import os
 import requests
 import json
@@ -124,6 +127,25 @@ def deposit_money(request):
     else:
         return render(request, 'deposit_money.html', context)
 
+def deposit_crypto(request):
+    if not request.user.is_authenticated:
+        return redirect('authentication:Home')
+    auth_confirmation = True
+
+    currencies = Address.objects.filter(email=request.user).values("currency_name")
+    #Get all wallet addresses from Cryptocurrency table that match currency_name field in currencies variable
+    addresses = Cryptocurrency.objects.filter(currency_name__in=currencies)
+
+    # print(addresses)
+    for address in addresses:
+        print(address.blockchain)
+
+    context = {
+        "authConfirmation": auth_confirmation,
+        "addresses": addresses
+    }
+
+    return render(request, 'deposit_crypto.html', context)
 
 def bank(request):
     if request.user.is_authenticated:
@@ -384,25 +406,55 @@ def send_money_confirmation(request):
             messages.info(request, "Error sending money. Please try again.")
             return redirect('atm_functions:SendMoney')
 
+def my_addresses(request):
+    if not request.user.is_authenticated:
+        return redirect('authentication:Home')
+    addresses = Address.objects.filter(email=request.user)
+    auth_confirmation = True
+
+    context = {
+            'authConfirmation': auth_confirmation, 
+            'addresses': addresses
+            }
+    return render(request, 'my_addresses.html', context)
+
+    pass
+
 
 def register_address(request):
-    if request.user.is_authenticated:
-        u = User.objects.get(pk=request.user.pk)
-        name = u.first_name
-    else:
+    if not request.user.is_authenticated:
         return redirect('authentication:Home')
-    
+
+    # print(request.user)
+
+    currencies = Cryptocurrency.objects.all()
+    auth_confirmation = True
+
+    context = {'authConfirmation': auth_confirmation, 
+                'currencies': currencies
+                }
+
+    if request.method == 'GET':
+        return render(request, 'register_address.html', context)
+
+
+    if request.method == 'POST':
+        form_response = request.POST
+        email_object = request.user
+        # email_object = Account.objects.get(user= email)
+
+        address = form_response["address"]
+        currency_name = form_response["currency"]
+        currency_object = Cryptocurrency.objects.get(currency_name=currency_name)
+
+        newAddress = Address(address=address, email=email_object, currency_name=currency_object)
+        newAddress.save()
+
+        # addresses = Address.objects.all()
+        # print(addresses)
+        
     #USDC, USDT, DAI, LITECOIN, BITCOIN, BITCOIN CASH, ETHEREUM, CARDANO
 
-    form_response_post = request.POST
-    form_response_get = request.GET
-
-    if not form_response_post:
-        print("NOT POST")
-    else:
-        print(form_response_post)
-
-    context = {'name': name}
     print(request)
     return render(request, 'register_address.html', context)
 
@@ -418,16 +470,21 @@ def confirmed_transactions(request):
     #     return redirect('authentication:Home')
     
     #USDC, USDT, DAI, LITECOIN, BITCOIN, BITCOIN CASH, ETHEREUM, CARDANO
-    form_response = request.POST
+    # form_response = request.POST
     # print(request.META)
     # print(dict(request.POST.items()))
-    print(request.headers)
+    # print(request.headers)
 
-    stream = request.META['wsgi.input']
-    print(stream.read())
+    # print(dict(request.POST.items()))
 
-    test = request.POST
-    print(test)
+    # stream = request.META['wsgi.input']
+    # print(stream.read())
+    # body = request.body.decode('utf-8')
+    # print(body)
+    
+
+    # test = request.POST
+    # print(test)
 
     if request.method == 'POST':
         print("Data received from Webhook is: ", request.body)
