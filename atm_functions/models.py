@@ -28,7 +28,7 @@ class Cryptocurrency(models.Model):
 class Address(models.Model):
     address = models.CharField(max_length=100, primary_key=True)
     email = models.ForeignKey(User, on_delete=models.CASCADE)
-    currency_name = models.ForeignKey(Cryptocurrency, on_delete=models.DO_NOTHING)
+    currency_name = models.ForeignKey(Cryptocurrency, on_delete=models.CASCADE)
 
 class Balance(models.Model):
     currency_name = models.ForeignKey(Cryptocurrency, on_delete=models.DO_NOTHING)
@@ -43,7 +43,7 @@ class TransactionA(models.Model):
     email = models.ForeignKey(User, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.DO_NOTHING)
     currency_name = models.ForeignKey(Cryptocurrency, on_delete=models.DO_NOTHING)
-    transactionType = models.CharField(max_length=15)
+    transaction_type = models.CharField(max_length=15)
     state = models.CharField(max_length=15)
     amount = models.DecimalField(max_digits=15, decimal_places=8)
 

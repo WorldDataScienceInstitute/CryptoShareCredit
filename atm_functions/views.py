@@ -4,10 +4,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 from .models import User
-from django.db.models import F
-from atm_functions.models import Account, Address, Cryptocurrency
+from decimal import Decimal
+from atm_functions.models import Account, Address, Balance, Cryptocurrency, TransactionA
 from common.utils import currency_list
 from common.emails import transaction_email_sender
+from common.cryptoapis import CryptoApis
 from google_currency import convert
 from coinbase.wallet.client import OAuthClient
 from coinbase.wallet.error import TwoFactorRequiredError
@@ -32,8 +33,7 @@ def check_balance(request):
             # Get into dict only the accounts that have a balance greater than 0
             for account in all_accounts:
                 if float(account['balance']['amount']) > 0:
-                    accounts[account['currency']
-                             ] = account['balance']['amount']
+                    accounts[account['currency']] = account['balance']['amount']
         else:
             wallet_conn = False
     else:
@@ -53,13 +53,18 @@ def check_balance(request):
             balance_conv = balance
         else:
             balance_conv = 0 if balance == 0 else json.loads(convert('USD', current_currency, balance))['amount']
+
+        #---------------------- CRYPTOAPIS ----------------------
+        cryptoapis_balances = Balance.objects.filter(email=request.user)
+
         context = {
             'balance': balance,
             'balance_conv': balance_conv,
             'currency': current_currency,
             'name': name,
             'wallet_conn': wallet_conn,
-            'accounts': accounts
+            'accounts': accounts,
+            'cryptoapis_balances': cryptoapis_balances
         }
     else:
         context = {
@@ -144,6 +149,12 @@ def deposit_crypto(request):
         "authConfirmation": auth_confirmation,
         "addresses": addresses
     }
+
+    # cryptoTest = CryptoApis()
+    # data = cryptoTest.confirmed_transactions("ethereum","ropsten")
+    # print(data)
+
+    print(request.user.pk)
 
     return render(request, 'deposit_crypto.html', context)
 
@@ -443,12 +454,23 @@ def register_address(request):
         email_object = request.user
         # email_object = Account.objects.get(user= email)
 
-        address = form_response["address"]
+        address = form_response["address"].lower()
         currency_name = form_response["currency"]
         currency_object = Cryptocurrency.objects.get(currency_name=currency_name)
 
         newAddress = Address(address=address, email=email_object, currency_name=currency_object)
         newAddress.save()
+
+        #Check if there is already a balance with that currency name for that email
+        balance_exists = Balance.objects.filter(email=email_object, currency_name=currency_object)
+        if not balance_exists:
+            # print("Balance does not exist")
+            newBalance = Balance(email=email_object, currency_name=currency_object, amount = 0)
+            newBalance.save()
+
+
+        messages.info(request, "Address registered successfully.")
+
 
         # addresses = Address.objects.all()
         # print(addresses)
@@ -463,32 +485,40 @@ def register_address(request):
 @csrf_exempt
 # @require_POST
 def confirmed_transactions(request):
-    # if request.user.is_authenticated:
-    #     u = User.objects.get(pk=request.user.pk)
-    #     name = u.first_name
-    # else:
-    #     return redirect('authentication:Home')
-    
-    #USDC, USDT, DAI, LITECOIN, BITCOIN, BITCOIN CASH, ETHEREUM, CARDANO
-    # form_response = request.POST
-    # print(request.META)
-    # print(dict(request.POST.items()))
-    # print(request.headers)
-
-    # print(dict(request.POST.items()))
-
-    # stream = request.META['wsgi.input']
-    # print(stream.read())
-    # body = request.body.decode('utf-8')
-    # print(body)
-    
-
-    # test = request.POST
-    # print(test)
-
     if request.method == 'POST':
-        print("Data received from Webhook is: ", request.body)
+        t =request.META.get('wsgi.input')
+        # print(t.stream.read1())
+        bpayload = t.stream.read1()
+        payload = bpayload.decode("utf-8")
+        start = payload.index("{")
+        end = payload.rindex("}") + 1
+
+        response = json.loads(payload[start:end])
+        
+        response_data = response["data"]["item"]
+
+        amount = response_data["amount"]
+        transaction_id = response_data["transactionId"]
+
+        cryptoapis_client = CryptoApis()
+        transaction_details = cryptoapis_client.get_transaction_details_by_transactionid(response_data["blockchain"], response_data["network"], transaction_id)
+        sender_address = transaction_details["senders"][0]["address"].lower()
+        # fee = transaction_details["fee"]["amount"]
+        # print(sender_address)
+
+        sender_object = Address.objects.get(address=sender_address)
+        currency_symbol_object = Cryptocurrency.objects.get(symbol=response_data["unit"])
+        sender_currency_balance = Balance.objects.get(email=sender_object.email, currency_name=currency_symbol_object)
+        
+        sender_currency_balance.amount += Decimal(amount)
+        sender_currency_balance.save()
+
+        transactionA = TransactionA(transaction_id=transaction_id, email=sender_object.email, address=sender_object, currency_name=currency_symbol_object, transaction_type="DEPOSIT", state="APPROVED",amount=amount)
+        transactionA.save()
+
+        # print(response)
+        
+        # print(payload.decode("utf-8"))
         return HttpResponse("Webhook received!")
-    # print(data)
-    # print(form_response["data"])
+
     return HttpResponse(status=200)
