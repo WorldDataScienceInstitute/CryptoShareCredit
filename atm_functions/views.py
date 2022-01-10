@@ -1,8 +1,10 @@
+from time import timezone
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
+from django.utils import timezone
 from .models import User
 from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, TransactionA, TransactionB
@@ -137,24 +139,14 @@ def deposit_crypto(request):
         return redirect('authentication:Home')
     auth_confirmation = True
 
-    currencies = Address.objects.filter(email=request.user).values("currency_name")
+    currencies = Balance.objects.filter(email=request.user).values("currency_name")
     #Get all wallet addresses from Cryptocurrency table that match currency_name field in currencies variable
     addresses = Cryptocurrency.objects.filter(currency_name__in=currencies)
-
-    # print(addresses)
-    for address in addresses:
-        print(address.blockchain)
 
     context = {
         "authConfirmation": auth_confirmation,
         "addresses": addresses
     }
-
-    # cryptoTest = CryptoApis()
-    # data = cryptoTest.confirmed_transactions("ethereum","ropsten")
-    # print(data)
-
-    print(request.user.pk)
 
     return render(request, 'deposit_crypto.html', context)
 
@@ -227,12 +219,59 @@ def lend_crypto(request):
     auth_confirmation = True
 
 
-    borrow_offers = TransactionB.objects.filter(transaction_type="BORROW", state="OPEN")
+    # borrow_offers = TransactionB.objects.filter(transaction_type="BORROW", state="OPEN")
+    borrow_offers = TransactionB.objects.exclude(emitter=request.user).filter(transaction_type="BORROW", state="OPEN")
+    # table1.objects.exclude(table2=some_param)
 
     context = {
         "authConfirmation": auth_confirmation,
         "borrow_offers": borrow_offers
     }
+
+    return render(request, 'lend_crypto.html', context)
+
+def lend_offer(request):
+    if not request.user.is_authenticated:
+        return redirect('authentication:Home')
+    auth_confirmation = True
+    context = {
+        "authConfirmation": auth_confirmation
+    }
+
+    transaction_primary_id = request.GET.get('id','')
+
+    if request.method == 'GET':
+        if not transaction_primary_id:
+            return redirect('atm_functions:LendMoney')
+        
+        transaction = TransactionB.objects.get(pk=transaction_primary_id)
+        context['offer'] = transaction
+
+        return render(request, 'lend_offer.html', context)
+    
+    if request.method == 'POST':
+        if not transaction_primary_id:
+            return HttpResponse(status=400)
+        
+        transaction = TransactionB.objects.get(pk=transaction_primary_id)
+
+        balance_usdc = Balance.objects.get(email=request.user, currency_name=transaction.currency_name)
+        # print(balance_usdc)
+        if balance_usdc.amount < transaction.amount:
+            messages.info(request, f"Insufficient balance. You can only borrow up to {balance_usdc.amount} {transaction.currency_name}.")
+            return redirect('atm_functions:LendMoney')
+        
+        balance_usdc.amount -= transaction.amount
+        balance_usdc.save()
+
+        transaction.state = "IN PROGRESS"
+        transaction.start_datetime = timezone.now()
+        transaction.receptor = request.user
+
+        transaction.save()
+
+        messages.info(request, f"The offer with ID: {transaction.id_b} has been started.")
+        return redirect('atm_functions:LendMoney')
 
     return render(request, 'lend_crypto.html', context)
 
@@ -285,39 +324,33 @@ def create_borrowing_offer(request):
         amount_collateral = request.POST.get('currency_amount_collateral')
         interest_rate = request.POST.get('interest_rate')
 
-        data = {
-            "currency": currency,
-            "amount": amount,
-            "currency_collateral": currency_collateral,
-            "amount_collateral": amount_collateral,
-            "interest_rate": interest_rate
-        }
-
-
-        transaction_counter = TransactionB.objects.filter(emitter=request.user).count()
-
-        address_emitter = Address.objects.get(email=request.user, currency_name__currency_name=currency_collateral)
-
         currency_object = Cryptocurrency.objects.get(currency_name=currency)
         currency__collateral_object = Cryptocurrency.objects.get(currency_name=currency_collateral)
-        # print(address_emitter)
 
+        collateral_balance = Balance.objects.get(email=request.user, currency_name=currency__collateral_object)
+        if collateral_balance.amount < float(amount_collateral):
+            messages.info(request, f"Insufficient collateral balance. You can only borrow up to {collateral_balance.amount} {currency_collateral}.")
+            return redirect('atm_functions:BorrowMoney')
+
+        collateral_balance.amount -= Decimal(float(amount_collateral))
+        collateral_balance.save()
+
+        transaction_counter = TransactionB.objects.filter(emitter=request.user).count()
         transaction_type = "BORROW"
         transaction_id = f"{str(request.user)}|{transaction_type}|{transaction_counter}|{currency}|{amount}|{currency_collateral}|{amount_collateral}|{interest_rate}"
 
-        print(transaction_id)
+        # print(transaction_id)
 
-        transaction_b = TransactionB(transaction_id=transaction_id, emitter=request.user, address_emitter=address_emitter, currency_name = currency_object, currency_name_collateral = currency__collateral_object, transaction_type=transaction_type, state="OPEN", amount=amount, amount_collateral=amount_collateral, interest_rate=interest_rate)
+        transaction_b = TransactionB(transaction_id=transaction_id, emitter=request.user, currency_name = currency_object, currency_name_collateral = currency__collateral_object, transaction_type=transaction_type, state="OPEN", amount=amount, amount_collateral=amount_collateral, interest_rate=interest_rate)
         transaction_b.save()
 
-        #Missing to check if the user has enough money to make the transaction
-        #Missing to substract the amount from the user's balance
+        #Missing to check if the user has enough money to make the transaction - Ready
+        #Missing to substract the amount from the user's balance - Ready
         
         #Missing to create a formal redirect page
-        
-        # print(data)
+
         messages.success(request, "Your borrowing offer has been created")
-        print("Transaction B created")
+        # print("Transaction B created")
 
     
 
