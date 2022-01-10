@@ -1,6 +1,7 @@
 import requests
 import json
 import time
+import os
 
 class CryptoApis:
     def __init__(self):
@@ -8,8 +9,7 @@ class CryptoApis:
         self.querystring = {"limit":20,"offset":0}
         self.HEADERS = {
         'Content-Type': "application/json",
-        'X-API-Key': "72b793e11a85dd231d46fc3a3f73d274a834b475"
-        # 'X-API-Key': os.environ['CRYPTOAPIS_API_KEY']
+        'X-API-Key': os.environ['CRYPTOAPIS_API_KEY']
         }
         # len(content["data"]["items"]
     def get_confirmed_transactions(self, blockchain, network):

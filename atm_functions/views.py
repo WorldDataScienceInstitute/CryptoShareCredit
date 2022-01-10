@@ -301,6 +301,8 @@ def create_borrowing_offer(request):
                 }
                 context["exchange_rates"].append(rate)
                 continue
+            elif balance.currency_name.currency_name == "ethereum_ropsten":
+                balance.currency_name.symbol = "ETH"
 
             cryptoapis_client = CryptoApis()
             exchange_rate = cryptoapis_client.get_exchange_rate_by_symbols(balance.currency_name.symbol, "USD")["rate"]
@@ -657,7 +659,10 @@ def confirmed_transactions(request):
         # print(sender_address)
 
         sender_object = Address.objects.get(address=sender_address)
-        currency_symbol_object = Cryptocurrency.objects.get(symbol=response_data["unit"])
+        if response_data["network"] == "ropsten":
+            currency_symbol_object = Cryptocurrency.objects.get(currency_name="ethereum_ropsten")
+        else:
+            currency_symbol_object = Cryptocurrency.objects.get(symbol=response_data["unit"])
         sender_currency_balance = Balance.objects.get(email=sender_object.email, currency_name=currency_symbol_object)
         
         sender_currency_balance.amount += Decimal(amount)
