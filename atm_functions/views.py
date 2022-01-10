@@ -5,7 +5,7 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 from .models import User
 from decimal import Decimal
-from atm_functions.models import Account, Address, Balance, Cryptocurrency, TransactionA
+from atm_functions.models import Account, Address, Balance, Cryptocurrency, TransactionA, TransactionB
 from common.utils import currency_list
 from common.emails import transaction_email_sender
 from common.cryptoapis import CryptoApis
@@ -54,7 +54,7 @@ def check_balance(request):
         else:
             balance_conv = 0 if balance == 0 else json.loads(convert('USD', current_currency, balance))['amount']
 
-        #---------------------- CRYPTOAPIS ----------------------
+        #---------------------- CRYPTOAPIS ----------------------#
         cryptoapis_balances = Balance.objects.filter(email=request.user)
 
         context = {
@@ -195,8 +195,22 @@ def borrow_money(request):
     else:
         name = None
     context = {'name': name}
-    return render(request, 'borrow_money.html', context)
+    return render(request, 'borrow_selection.html', context)
 
+def borrow_crypto(request):
+    if not request.user.is_authenticated:
+        return redirect('authentication:Home')
+    auth_confirmation = True
+
+
+    lend_offers = TransactionB.objects.filter(transaction_type="LEND", state="OPEN")
+
+    context = {
+        "authConfirmation": auth_confirmation,
+        "lend_offers": lend_offers
+    }
+
+    return render(request, 'borrow_crypto.html', context)
 
 def lend_money(request):
     if request.user.is_authenticated:
@@ -205,7 +219,109 @@ def lend_money(request):
     else:
         name = None
     context = {'name': name}
-    return render(request, 'lend_money.html', context)
+    return render(request, 'lend_selection.html', context)
+
+def lend_crypto(request):
+    if not request.user.is_authenticated:
+        return redirect('authentication:Home')
+    auth_confirmation = True
+
+
+    borrow_offers = TransactionB.objects.filter(transaction_type="BORROW", state="OPEN")
+
+    context = {
+        "authConfirmation": auth_confirmation,
+        "borrow_offers": borrow_offers
+    }
+
+    return render(request, 'lend_crypto.html', context)
+
+def create_borrowing_offer(request):
+    if not request.user.is_authenticated:
+        return redirect('authentication:Home')
+    auth_confirmation = True
+
+    balances = Balance.objects.filter(email=request.user)
+    currencies = Cryptocurrency.objects.all()
+
+    # print(balances)
+    context = {
+        "authConfirmation": auth_confirmation,
+        "currencies": currencies,
+        "balances": balances,
+        "exchange_rates": []
+    }
+
+    if request.method == 'GET':
+        for balance in balances:
+            if balance.currency_name.currency_name == "TEST_COIN":
+                rate = {
+                    "currency_name": balance.currency_name.currency_name,
+                    "symbol": balance.currency_name.symbol,
+                    "exchange_rate": 1
+                }
+                context["exchange_rates"].append(rate)
+                continue
+
+            cryptoapis_client = CryptoApis()
+            exchange_rate = cryptoapis_client.get_exchange_rate_by_symbols(balance.currency_name.symbol, "USD")["rate"]
+            rate = {
+                "currency_name": balance.currency_name.currency_name,
+                "symbol": balance.currency_name.symbol,
+                "exchange_rate": round(float(exchange_rate), 2)
+                }
+            context["exchange_rates"].append(rate)
+
+
+        
+
+        return render(request, 'create_borrowing_offer.html', context)
+
+
+    if request.method == 'POST':
+        currency = request.POST.get('currency').split(" ")[1]
+        amount = int(request.POST.get('currency_amount'))
+        currency_collateral = request.POST.get('currency_collateral').split(" ")[1]
+        amount_collateral = request.POST.get('currency_amount_collateral')
+        interest_rate = request.POST.get('interest_rate')
+
+        data = {
+            "currency": currency,
+            "amount": amount,
+            "currency_collateral": currency_collateral,
+            "amount_collateral": amount_collateral,
+            "interest_rate": interest_rate
+        }
+
+
+        transaction_counter = TransactionB.objects.filter(emitter=request.user).count()
+
+        address_emitter = Address.objects.get(email=request.user, currency_name__currency_name=currency_collateral)
+
+        currency_object = Cryptocurrency.objects.get(currency_name=currency)
+        currency__collateral_object = Cryptocurrency.objects.get(currency_name=currency_collateral)
+        # print(address_emitter)
+
+        transaction_type = "BORROW"
+        transaction_id = f"{str(request.user)}|{transaction_type}|{transaction_counter}|{currency}|{amount}|{currency_collateral}|{amount_collateral}|{interest_rate}"
+
+        print(transaction_id)
+
+        transaction_b = TransactionB(transaction_id=transaction_id, emitter=request.user, address_emitter=address_emitter, currency_name = currency_object, currency_name_collateral = currency__collateral_object, transaction_type=transaction_type, state="OPEN", amount=amount, amount_collateral=amount_collateral, interest_rate=interest_rate)
+        transaction_b.save()
+
+        #Missing to check if the user has enough money to make the transaction
+        #Missing to substract the amount from the user's balance
+        
+        #Missing to create a formal redirect page
+        
+        # print(data)
+        messages.success(request, "Your borrowing offer has been created")
+        print("Transaction B created")
+
+    
+
+    return render(request, 'create_borrowing_offer.html', context)
 
 
 def earn_money(request):
@@ -476,8 +592,6 @@ def register_address(request):
         # print(addresses)
         
     #USDC, USDT, DAI, LITECOIN, BITCOIN, BITCOIN CASH, ETHEREUM, CARDANO
-
-    print(request)
     return render(request, 'register_address.html', context)
 
     # return HttpResponse(status=200)
@@ -485,11 +599,14 @@ def register_address(request):
 @csrf_exempt
 # @require_POST
 def confirmed_transactions(request):
-    if request.method == 'POST':
-        t =request.META.get('wsgi.input')
-        # print(t.stream.read1())
-        bpayload = t.stream.read1()
+    if request.method == 'GET':
+        return redirect('atm_functions:CheckBalance')
+    elif request.method == 'POST':
+        request_reader =request.META.get('wsgi.input')
+
+        bpayload = request_reader.stream.read1()
         payload = bpayload.decode("utf-8")
+
         start = payload.index("{")
         end = payload.rindex("}") + 1
 
