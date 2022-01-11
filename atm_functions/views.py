@@ -255,7 +255,11 @@ def lend_offer(request):
         
         transaction = TransactionB.objects.get(pk=transaction_primary_id)
 
-        balance_usdc = Balance.objects.get(email=request.user, currency_name=transaction.currency_name)
+        try:
+            balance_usdc = Balance.objects.get(email=request.user, currency_name=transaction.currency_name)
+        except:
+            messages.info(request, "You do not have a balance in USDC, please make a deposit before accepting a offer.")
+            return redirect('atm_functions:LendMoney')
         # print(balance_usdc)
         if balance_usdc.amount < transaction.amount:
             messages.info(request, f"Insufficient balance. You can only borrow up to {balance_usdc.amount} {transaction.currency_name}.")
@@ -340,7 +344,7 @@ def create_borrowing_offer(request):
         collateral_balance = Balance.objects.get(email=request.user, currency_name=currency__collateral_object)
         if collateral_balance.amount < float(amount_collateral):
             messages.info(request, f"Insufficient collateral balance. You can only borrow up to {collateral_balance.amount} {currency_collateral}.")
-            return redirect('atm_functions:BorrowMoney')
+            return redirect('atm_functions:CreateBorrowingOffer')
 
         collateral_balance.amount -= Decimal(float(amount_collateral))
         collateral_balance.save()
@@ -614,7 +618,18 @@ def register_address(request):
         # email_object = Account.objects.get(user= email)
 
         address = form_response["address"].lower()
-        currency_name = form_response["currency"]
+
+        currency_details = form_response["currency"].split(" ")
+        currency_name = form_response["currency"][0]
+        currency_blockchain = form_response["currency"][1]
+        currency_network = form_response["currency"][1]
+
+        cryptoapis_client = CryptoApis()
+        is_valid_address = cryptoapis_client.is_valid_address(currency_blockchain, currency_network, address)
+        if not is_valid_address:
+            messages.info(request, "Invalid address. Please try again.")
+            return redirect('atm_functions:RegisterAddress')
+
         currency_object = Cryptocurrency.objects.get(currency_name=currency_name)
 
         newAddress = Address(address=address, email=email_object, currency_name=currency_object)

@@ -22,14 +22,14 @@
                     <!-- <label for="recipientUser">Recipient Address or Coinbase email</label> -->
                     <label for="address">Enter Public Address</label>
                     <input type="text" class="form-control" id="address" aria-describedby="address" name="address"
-                        placeholder="Example: 0xc6981d668ca9e04735efba2cf93110fee883191a">
+                        placeholder="Example: 0xc6981d668ca9e04735efba2cf93110fee883191a" required>
                 </div>
                 <div class="form-group">
                     <label for="address">Currency</label>
                     <select class="form-control" id="currency" aria-describedby="currency" name="currency">
                         <option disabled>Select one of the supported blockchains</option >
-                        <option value="ethereum_ropsten"> Blockchain: ethereum || Network: ropsten || ETH - ethereum_ropsten</option>
-                        <option value="ethereum"> Blockchain: ethereum || Network: mainnet || ETH - ethereum</option>
+                        <option value="ethereum_ropsten ethereum ropsten"> Blockchain: ethereum || Network: ropsten || ETH - ethereum_ropsten</option>
+                        <option value="ethereum thereum mainnet"> Blockchain: ethereum || Network: mainnet || ETH - ethereum</option>
                         
                         <!-- {% for currency in currencies %}
                         <option value="{{ currency.currency_name }}"> Blockchain: {{ currency.blockchain }} || Network: {{ currency.network }} || {{ currency.symbol }} - {{ currency.currency_name }}</option>

@@ -11,7 +11,7 @@ function SetCollateral(getAmountField, getCollateralCurrency, setCollateralField
 
     var collateral = (loan_amount / parseFloat(currencyExchangeRate))*1.2;
 
-    document.getElementById(setCollateralField).value = collateral.toFixed(2);
+    document.getElementById(setCollateralField).value = collateral.toFixed(4);
     
 }
 

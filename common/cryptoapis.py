@@ -9,7 +9,8 @@ class CryptoApis:
         self.querystring = {"limit":20,"offset":0}
         self.HEADERS = {
         'Content-Type': "application/json",
-        'X-API-Key': os.environ['CRYPTOAPIS_API_KEY']
+        'X-API-Key': "72b793e11a85dd231d46fc3a3f73d274a834b475"
+        # 'X-API-Key': os.environ['CRYPTOAPIS_API_KEY']
         }
         # len(content["data"]["items"]
     def get_confirmed_transactions(self, blockchain, network):
@@ -36,10 +37,27 @@ class CryptoApis:
         request = requests.get(url, headers=self.HEADERS).json()
         
         return request['data']["item"]
+    
+    def is_valid_address(self, blockchain, network, address):
+        url = self.BASE +  f"/blockchain-tools/{blockchain}/{network}/addresses/validate"
+        data ={
+                "context": "",
+                "data": {
+                    "item": {
+                        "address": f"{address}"
+                    }
+                }
+            }
+
+        request = requests.post(url, headers=self.HEADERS, json=data).json()
+        
+        return request["data"]["item"]["isValid"]
         
 
 if __name__ == "__main__":
     # cryptoapis_client = CryptoApis()
+    # data = cryptoapis_client.is_valid_address("ethereum", "mainnet", "0x392113e7C692108c16C2Bb642720D059066721D5")
+    # print(type(data)
     # exchange_rate = cryptoapis_client.get_exchange_rate_by_symbols("ETH", "USD")["rate"]
     # print(exchange_rate)
     # crypto = CryptoApis()
