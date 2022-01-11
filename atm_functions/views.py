@@ -681,6 +681,10 @@ def confirmed_transactions(request):
 
 @csrf_exempt
 def test_receiver(request):
+    if request.method == 'GET':
+        return redirect('authentication:Home')
+
+
     request_reader =request.META.get('wsgi.input')
 
     # data = {
@@ -702,7 +706,7 @@ def test_receiver(request):
     end = payload.rindex("}") + 1
 
     response = json.loads(payload[start:end])
-    
+
     return HttpResponse(str(response))
 
     # return HttpResponse(str(data))
