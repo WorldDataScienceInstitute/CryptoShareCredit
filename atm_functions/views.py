@@ -682,17 +682,20 @@ def confirmed_transactions(request):
 def test_receiver(request):
     request_reader =request.META.get('wsgi.input')
 
-    data = {
-        "request": str(dir(request_reader)),
-        "request_dict": str(request_reader.__dict__),
-        "buf_dir": str(dir(request_reader.buf)),
-        "buf_dict": str(request_reader.buf.__dict__),
-        "reader_dir": str(dir(request_reader.reader)),
-        "reader_dict": str(request_reader.reader.__dict__)
-    }
+    # data = {
+    #     "request": str(dir(request_reader)),
+    #     "request_dict": str(request_reader.__dict__),
+    #     "buf_dir": str(dir(request_reader.buf)),
+    #     "buf_dict": str(request_reader.buf.__dict__),
+    #     "reader_dir": str(dir(request_reader.reader)),
+    #     "reader_dict": str(request_reader.reader.__dict__)
+    # }
 
 
     # print(str(dir(request_reader)))
+    
+    bpayload = request_reader.buf.read1()
+    return HttpResponse(str(bpayload))
 
-    return HttpResponse(str(data))
+    # return HttpResponse(str(data))
     # return HttpResponse(str(request_reader.buf.__dict__))

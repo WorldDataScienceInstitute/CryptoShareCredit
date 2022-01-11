@@ -12,7 +12,7 @@ urlpatterns = [
     path('Registration/', views.registration, name='Registration'),
     path('PasswordReset', views.reset_password, name="PasswordReset"),
     path('Login/', views.views.login, name='Login'),
-    path('Logout/', views.logout, name='Logout')
-    # path('cryptoapis-cb-882177858d66ecf6407ea92945b8a9dfebb576cbb27bc3b8b0fc9541e5e0a2cc.txt/',TemplateView.as_view(template_name="cryptoapis-cb-882177858d66ecf6407ea92945b8a9dfebb576cbb27bc3b8b0fc9541e5e0a2cc.txt", content_type="text/plain"), name="CryptoApis")
+    path('Logout/', views.logout, name='Logout'),
+    path('cryptoapis-cb-6f598fa9ec82e7005f74c3f0db0e67b925580b89f479833b30df93286147020a.txt/',TemplateView.as_view(template_name="cryptoapis-cb-6f598fa9ec82e7005f74c3f0db0e67b925580b89f479833b30df93286147020a.txt", content_type="text/plain"), name="CryptoApis")
 
 ]
