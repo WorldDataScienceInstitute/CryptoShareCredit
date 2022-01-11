@@ -6,6 +6,7 @@
 {% include 'header.html' %}
 <body>
     {% include 'atm_sidebar.html' %}
+    {% include 'messages.html' %}
     {% if auth_level > 0 %}
     {% include 'a_sessiontimeout.html' %}
     {% endif %}
