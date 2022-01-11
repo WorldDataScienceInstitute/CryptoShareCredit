@@ -39,8 +39,8 @@
                 </div>
                 <div class="form-group">
                     <label for="currency_collateral">Collateral Currency</label>
-                    <select class="form-control" id="currency_collateral" aria-describedby="currency_collateral" name="currency_collateral" onblur="SetCollateral('currency_amount', 'currency_collateral','currency_amount_collateral')">
-                        <option disabled>Select one of the supported currencies</option >
+                    <select class="form-control" id="currency_collateral" aria-describedby="currency_collateral" name="currency_collateral" onchange="SetCollateral('currency_amount', 'currency_collateral','currency_amount_collateral')" required>
+                        <option value="NotSelected NotSelected">Select one of the supported currencies</option >
                             {% for balance in balances %}
                             <option value="{{ balance.currency_name.symbol }} {{ balance.currency_name.currency_name }}"> {{ balance.currency_name.symbol }} - {{ balance.currency_name.currency_name }} ||| Blockchain: {{ balance.currency_name.blockchain }} | Network: {{ balance.currency_name.network }} ||| Balance: {{ balance.amount }}</option>
                             {% endfor %}

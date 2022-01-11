@@ -326,6 +326,14 @@ def create_borrowing_offer(request):
         amount_collateral = request.POST.get('currency_amount_collateral')
         interest_rate = request.POST.get('interest_rate')
 
+        if currency_collateral == "NotSelected":
+            messages.info(request, "Please select a collateral currency.")
+            return redirect('atm_functions:CreateBorrowingOffer')
+        
+        if amount_collateral == "":
+            messages.info(request, "Collateral amount invalid, please try again")
+            return redirect('atm_functions:CreateBorrowingOffer')
+
         currency_object = Cryptocurrency.objects.get(currency_name=currency)
         currency__collateral_object = Cryptocurrency.objects.get(currency_name=currency_collateral)
 
@@ -663,7 +671,10 @@ def confirmed_transactions(request):
         if response_data["network"] == "ropsten":
             currency_symbol_object = Cryptocurrency.objects.get(currency_name="ethereum_ropsten")
         else:
-            currency_symbol_object = Cryptocurrency.objects.get(symbol=response_data["unit"])
+            try:
+                currency_symbol_object = Cryptocurrency.objects.get(symbol=response_data["unit"])
+            except:
+                return HttpResponse("Webhook received!")
         sender_currency_balance = Balance.objects.get(email=sender_object.email, currency_name=currency_symbol_object)
         
         sender_currency_balance.amount += Decimal(amount)
