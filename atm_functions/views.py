@@ -694,7 +694,7 @@ def test_receiver(request):
 
     # print(str(dir(request_reader)))
     
-    bpayload = request_reader.buf.read1()
+    bpayload = request_reader.read()
     return HttpResponse(str(bpayload))
 
     # return HttpResponse(str(data))
