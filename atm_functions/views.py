@@ -639,7 +639,8 @@ def confirmed_transactions(request):
     elif request.method == 'POST':
         request_reader =request.META.get('wsgi.input')
 
-        bpayload = request_reader.stream.read1()
+        # bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING
+        bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION
         payload = bpayload.decode("utf-8")
 
         start = payload.index("{")
@@ -695,7 +696,14 @@ def test_receiver(request):
     # print(str(dir(request_reader)))
     
     bpayload = request_reader.read()
-    return HttpResponse(str(bpayload))
+    payload = bpayload.decode("utf-8")
+
+    start = payload.index("{")
+    end = payload.rindex("}") + 1
+
+    response = json.loads(payload[start:end])
+    
+    return HttpResponse(str(response))
 
     # return HttpResponse(str(data))
     # return HttpResponse(str(request_reader.buf.__dict__))
