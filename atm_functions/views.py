@@ -677,3 +677,9 @@ def confirmed_transactions(request):
         return HttpResponse("Webhook received!")
 
     return HttpResponse(status=200)
+
+@csrf_exempt
+def test_receiver(request):
+    request_reader =request.META.get('wsgi.input')
+
+    return HttpResponse(str(request_reader.__dict__))
