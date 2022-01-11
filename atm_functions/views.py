@@ -259,11 +259,11 @@ def lend_offer(request):
             balance_usdc = Balance.objects.get(email=request.user, currency_name=transaction.currency_name)
         except:
             messages.info(request, "You do not have a balance in USDC, please make a deposit before accepting a offer.")
-            return redirect('atm_functions:LendMoney')
+            return redirect('atm_functions:LendCrypto')
         # print(balance_usdc)
         if balance_usdc.amount < transaction.amount:
-            messages.info(request, f"Insufficient balance. You can only borrow up to {balance_usdc.amount} {transaction.currency_name}.")
-            return redirect('atm_functions:LendMoney')
+            messages.info(request, f"Insufficient balance. You can only borrow up to {float(balance_usdc.amount)} {float(transaction.currency_name)}.")
+            return redirect('atm_functions:LendCrypto')
         
         balance_usdc.amount -= transaction.amount
         balance_usdc.save()
@@ -343,7 +343,7 @@ def create_borrowing_offer(request):
 
         collateral_balance = Balance.objects.get(email=request.user, currency_name=currency__collateral_object)
         if collateral_balance.amount < float(amount_collateral):
-            messages.info(request, f"Insufficient collateral balance. You can only borrow up to {collateral_balance.amount} {currency_collateral}.")
+            messages.info(request, f"Insufficient collateral balance. You can only borrow up to {float(collateral_balance.amount)} {currency_collateral}.")
             return redirect('atm_functions:CreateBorrowingOffer')
 
         collateral_balance.amount -= Decimal(float(amount_collateral))
