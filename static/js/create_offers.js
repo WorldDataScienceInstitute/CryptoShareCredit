@@ -6,12 +6,15 @@ function SetMaxAmount(getField, setField){
 
 function SetCollateral(getAmountField, getCollateralCurrency, setCollateralField){
     var currency = document.getElementById(getCollateralCurrency).value.split(' ')[1];
-    var currencyExchangeRate = document.getElementById(currency+"_exchangeRate").innerHTML;
-    var loan_amount = document.getElementById(getAmountField).value;
+    if(currency != "NotSelected"){
+        var currencyExchangeRate = document.getElementById(currency+"_exchangeRate").innerHTML;
+        var loan_amount = document.getElementById(getAmountField).value;
+    
+        var collateral = (loan_amount / parseFloat(currencyExchangeRate))*1.2;
+    
+        document.getElementById(setCollateralField).value = collateral.toFixed(4);
+    }
 
-    var collateral = (loan_amount / parseFloat(currencyExchangeRate))*1.2;
-
-    document.getElementById(setCollateralField).value = collateral.toFixed(4);
     
 }
 
