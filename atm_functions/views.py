@@ -317,13 +317,9 @@ def create_borrowing_offer(request):
                 }
             context["exchange_rates"].append(rate)
 
-
-        
-
         return render(request, 'create_borrowing_offer.html', context)
 
-
-    if request.method == 'POST':
+    elif request.method == 'POST':
         currency = request.POST.get('currency').split(" ")[1]
         amount = int(request.POST.get('currency_amount'))
         currency_collateral = request.POST.get('currency_collateral').split(" ")[1]
@@ -357,16 +353,12 @@ def create_borrowing_offer(request):
 
         transaction_b = TransactionB(transaction_id=transaction_id, emitter=request.user, currency_name = currency_object, currency_name_collateral = currency__collateral_object, transaction_type=transaction_type, state="OPEN", amount=amount, amount_collateral=amount_collateral, interest_rate=interest_rate)
         transaction_b.save()
-
-        #Missing to check if the user has enough money to make the transaction - Ready
-        #Missing to substract the amount from the user's balance - Ready
         
         #Missing to create a formal redirect page
 
         messages.success(request, "Your borrowing offer has been created")
         # print("Transaction B created")
-
-    
+        return redirect('ath_functions:LendCrypto')
 
     return render(request, 'create_borrowing_offer.html', context)
 
@@ -620,9 +612,9 @@ def register_address(request):
         address = form_response["address"].lower()
 
         currency_details = form_response["currency"].split(" ")
-        currency_name = form_response["currency"][0]
-        currency_blockchain = form_response["currency"][1]
-        currency_network = form_response["currency"][1]
+        currency_name = currency_details["currency"][0]
+        currency_blockchain = currency_details["currency"][1]
+        currency_network = currency_details["currency"][2]
 
         cryptoapis_client = CryptoApis()
         is_valid_address = cryptoapis_client.is_valid_address(currency_blockchain, currency_network, address)
