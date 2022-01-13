@@ -612,9 +612,9 @@ def register_address(request):
         address = form_response["address"].lower()
 
         currency_details = form_response["currency"].split(" ")
-        currency_name = currency_details["currency"][0]
-        currency_blockchain = currency_details["currency"][1]
-        currency_network = currency_details["currency"][2]
+        currency_name = currency_details[0]
+        currency_blockchain = currency_details[1]
+        currency_network = currency_details[2]
 
         cryptoapis_client = CryptoApis()
         is_valid_address = cryptoapis_client.is_valid_address(currency_blockchain, currency_network, address)
