@@ -609,7 +609,8 @@ def register_address(request):
         email_object = request.user
         # email_object = Account.objects.get(user= email)
 
-        address = form_response["address"].lower()
+        address = form_response["address"]
+        # address = form_response["address"].lower()
 
         if address.isspace():
             messages.info(request, "Invalid address. Please try again.")
@@ -620,7 +621,11 @@ def register_address(request):
         currency_blockchain = currency_details[1]
         currency_network = currency_details[2]
 
+        if currency_blockchain == "ethereum":
+            address = address.lower()
+
         cryptoapis_client = CryptoApis()
+        # print(f"Blockchain {currency_blockchain} , Network {currency_network} , Address {address}")
         is_valid_address = cryptoapis_client.is_valid_address(currency_blockchain, currency_network, address)
         if not is_valid_address:
             messages.info(request, "Invalid address. Please try again.")
@@ -674,7 +679,11 @@ def confirmed_transactions(request):
 
         cryptoapis_client = CryptoApis()
         transaction_details = cryptoapis_client.get_transaction_details_by_transactionid(response_data["blockchain"], response_data["network"], transaction_id)
-        sender_address = transaction_details["senders"][0]["address"].lower()
+        sender_address = transaction_details["senders"][0]["address"]
+
+        if response_data["blockchain"] == "ethereum":
+            sender_address = sender_address.lower()
+
         # fee = transaction_details["fee"]["amount"]
         # print(sender_address)
 
@@ -686,6 +695,7 @@ def confirmed_transactions(request):
                 currency_symbol_object = Cryptocurrency.objects.get(symbol=response_data["unit"])
             except:
                 return HttpResponse("Webhook received!")
+        
         sender_currency_balance = Balance.objects.get(email=sender_object.email, currency_name=currency_symbol_object)
         
         sender_currency_balance.amount += Decimal(amount)
