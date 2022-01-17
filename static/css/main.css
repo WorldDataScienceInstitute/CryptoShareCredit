@@ -19,6 +19,10 @@ img {
     --bg: var(--primary-c);
 }
 
+.row {
+    margin-left: 5px !important;
+    margin-right: 5px !important;
+}
 
 /* Basic Config
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
@@ -54,6 +58,11 @@ footer {
     margin-top: auto;
 }
 
+.row-adj {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
 /* Card
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .card {
@@ -77,10 +86,21 @@ footer {
     max-height: 250px;
   }
 
+.lang-container {
+    display: flex;
+    flex-direction: row;
+    margin-top: 2px;
+}
+
+label {
+    margin-left: 1px;
+    margin-right: 1px;
+}
+
 .container1 {
     display: block;
     position: relative;
-    margin: 50px auto;
+    margin: 10px auto;
     height: auto;
 
     /* width: 100%; */
@@ -93,12 +113,23 @@ h2 {
     text-align: center;
 }
 
+.text-lang-header {
+    font-size:100;
+    text-align:center;
+}
+
+.reset-pin {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 5px;
+}
+
 h2.title {
     /* margin-left: auto;
     margin-right: auto;
     width: 50%; */
     text-align: center;
-    max-width: 400px;
+    /* max-width: 400px; */
 }
 
 h6 {

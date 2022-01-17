@@ -24,8 +24,9 @@
                 </li>
             </ol>
         </nav>
-            {% if request.session.wallet_conn %}
+        {% if request.session.wallet_conn %}
         <table class="table">
+            <caption style="caption-side: top; text-align: center;">Coinbase Balances</caption>
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -43,9 +44,29 @@
                 {% endfor %}
             </tbody>
         </table>
-            {% endif %}
+        {% endif %}
+        <table class="table">
+            <caption style="caption-side: top; text-align: center;">Native Balances</caption>
+
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Currency</th>
+                <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for currency in cryptoapis_balances %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }} </th>
+                        <td>{{ currency.currency_name.currency_name }} </td>
+                        <td>{{ currency.amount }} </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         {% else %}
-        <h5 class="ml-5">You are not currently signed in. To sign in or make an account, <a href="{% url 'authentication:Signing' %}">click or tap here.</a></h5>
+        <h5 class="ml-5">You are not currently signed in. To sign in or make an account, <a href="{% url 'authentication:Home' %}">click or tap here.</a></h5>
         {% endif %}
     </div>
     

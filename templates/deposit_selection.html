@@ -12,14 +12,15 @@
     <div class="content-container">
         <h2 class="ml-4" style="text-align:center;">Deposit Money</h2>
         <br>
-        <h3 class="ml-4" style="text-align:center;">Make a selection:</h3><br>
-        <h5 class="ml-4"><button type="button" class="btn btn-primary">Debit Card</button></h5>
+        <h3 class="ml-4" style="text-align:center;">Make a selection:</h3>
         <br>
-        <h5 class="ml-4"><a href="{% url 'atm_functions:DepositMoney' %}"><button type="button" class="btn btn-primary">Digital Wallet</button></a></h5>
+        <h5 class="ml-4"><a href="{% url 'atm_functions:DepositCrypto' %}"><button type="button" class="btn btn-primary">Crypto Wallet</button></a></h5>
         <br>
-        <h5 class="ml-4"><button type="button" class="btn btn-primary">Cryptocurrency Wallet</button></h5>
+        <h5 class="ml-4"><button type="button" class="btn btn-primary" disabled>Debit Card (Coming Soon)</button></h5>
         <br>
-        <h5 class="ml-4"><button type="button" class="btn btn-primary">ATM</button></h5>
+        <!-- <h5 class="ml-4"><a href=""><button type="button" class="btn btn-primary" disabled>Digital Wallet</button></a></h5> -->
+        <!-- <br> -->
+        <h5 class="ml-4"><button type="button" class="btn btn-primary" disabled>ATM (Coming Soon)</button></h5>
         <br>
     </div>
     

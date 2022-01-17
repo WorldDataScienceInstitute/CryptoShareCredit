@@ -13,9 +13,7 @@
         </div>
         <div class="site-mobile-menu-body"></div>
     </div>
-    
     {% include 'banner.html' %}
-    
     <div class="container my-4">
         <h2 class="text-primary" style="color: cornflowerblue!important;">Login Here</h2>
         {% include 'messages.html' %}
@@ -33,7 +31,8 @@
                 <div class="btn-group">
                     <input class="text-center form-control-lg mb-2" id="code" name="pin" type="password" required pattern="[0-9]{4,6}">
                 </div>
-                <span><input type="checkbox" onclick="togglePINVis()" > Show PIN</span>
+                <span><input type="checkbox" onclick="togglePINVis()"> Show PIN</span>
+                <div class="reset-pin"><a href="{% url 'authentication:PasswordReset' %}">Reset PIN</a></div>
                 <div class="btn-group">
                     <button type="button" class="btn btn-outline-secondary py-3"
                     onclick="document.getElementById('code').value=document.getElementById('code').value + '1';">1</button>
@@ -69,7 +68,7 @@
             <br>
             <br>
             <button type="submit" class="btn btn-primary">Submit</button><br>
-            <a href="{% url 'authentication:Signing' %}"><button type="button" class="btn btn-primary">Back</button>
+            <a href="{% url 'authentication:Home' %}"><button type="button" class="btn btn-primary">Back</button>
             </a>
         </form>
     </div>

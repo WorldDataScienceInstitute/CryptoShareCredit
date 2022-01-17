@@ -1,0 +1,89 @@
+{% load static %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+
+<body>
+    {% include 'atm_sidebar.html' %}
+    <div class="content-container">
+        {% include 'messages.html' %}
+        {% if request.session.wallet_conn %}
+        <h2 class="ml-4">Hi {{ user_name }}, you are connected with your Coinbase Wallet</h2>
+        {% else %}
+        <h2 class="ml-4">Hi you are not connected with a Coinbase Wallet</h2>
+        {% endif %}
+        <div style="text-align:center" class="ml-4 mt-4" style="width:30%;min-width:400px;">
+            <form action="/atm/SendMoneyConfirmation/" method="post">
+                {% csrf_token %}
+                <input type="hidden" class="form-control" id="recipientUser" aria-describedby="recipientUser" name="recipientUser" value="{{ recipientUser }}">
+                <input type="hidden" class="form-control" id="sendingAccount" aria-describedby="sendingAccount" name="sendingAccount" value="{{ sendingAccount }}">
+                <input type="hidden" class="form-control" id="sendingAmount" aria-describedby="sendingAmount" name="sendingAmount" value="{{ sendingAmount }}">
+                <div class="form-group">
+                    <label for="authCode">2FA Code from your app</label>
+                    <input type="text" class="form-control" id="authCode" aria-describedby="authCode" name="authCode"
+                        placeholder="Enter your 2FA Code from your Auth App">
+                </div>  
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <!-- 
+
+            <input type="number" name="withdraw" class="form-control" min="1"
+                aria-label="Dollar amount (with dot and two decimal places)"> -->
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+
+
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+
+    <!-- <div class="hero" style="></div> -->
+
+
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

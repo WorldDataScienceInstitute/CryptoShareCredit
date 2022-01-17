@@ -1,0 +1,133 @@
+{% load static %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+
+<body>
+    {% include 'atm_sidebar.html' %}
+    <div class="content-container">
+        {% include 'messages.html' %}
+        {% if request.session.wallet_conn %}
+        <h2 class="ml-4">Hi {{ user_name }}, you are connected with your Coinbase Wallet</h2>
+        {% else %}
+        <h2 class="ml-4">Hi you are not connected with a Coinbase Wallet</h2>
+        {% endif %}
+        <div style="text-align:center" class="ml-4 mt-4" style="width:30%;min-width:400px;">
+
+            {% if request.session.wallet_conn %}
+            <form action="/atm/SendMoneyConfirmation/" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="recipientUser">Recipient Address or Coinbase email</label>
+                    <input type="text" class="form-control" id="recipientUser" aria-describedby="recipientUser" name="recipientUser"
+                        placeholder="Address or Coinbase email">
+                    <small id="recipientHelp" class="form-text text-muted">We'll never share information with anyone else</small>
+                </div>
+                <div class="form-group">
+                    <label for="sendingAccount">Sending Account</label>
+                    <select class="form-control" id="sendingAccount" aria-describedby="sendingAccount" name="sendingAccount">
+                        <option disabled>Select Account</option >
+                        {% for account, data in accounts.items %}
+                        <option value="{{ data.id }} {{ account }}">{{ account }} : {{ data.balance }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="sendingAmount">Amount to send</label>
+                    <input type="text" class="form-control" id="sendingAmount" aria-describedby="sendingAmount" name="sendingAmount"
+                        placeholder="Amount you want to send">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            {% else %}
+            <h1> CryptoApis integration in progress</h1>
+            <!-- <form action="/atm/SendMoney/" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="recipientUser">Recipient Address or Coinbase email</label>
+                    <input type="text" class="form-control" id="recipientUser" aria-describedby="recipientUser" name="recipientUser"
+                        placeholder="Address or Coinbase email">
+                    <small id="recipientHelp" class="form-text text-muted">We'll never share information with anyone else</small>
+                </div>
+                <div class="form-group">
+                    <label for="sendingAccount">Sending Account</label>
+                    <select class="form-control" id="sendingAccount" aria-describedby="sendingAccount" name="sendingAccount">
+                        <option disabled>Select Account</option >
+                        {% for account, data in accounts.items %}
+                        <option value="{{ data.id }} {{ account }}">{{ account }} : {{ data.balance }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="sendingAmount">Amount to send</label>
+                    <input type="text" class="form-control" id="sendingAmount" aria-describedby="sendingAmount" name="sendingAmount"
+                        placeholder="Amount you want to send">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form> -->
+            {% endif %}
+            
+
+
+<!-- 
+
+            <input type="number" name="withdraw" class="form-control" min="1"
+                aria-label="Dollar amount (with dot and two decimal places)"> -->
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+
+
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+
+    <!-- <div class="hero" style="></div> -->
+
+
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

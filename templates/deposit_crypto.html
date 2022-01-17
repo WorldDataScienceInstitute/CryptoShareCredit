@@ -1,0 +1,120 @@
+{% load static %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+<body>
+    {% include 'atm_sidebar.html' %}
+    <div class="content-container">
+        <h2 class="ml-4 text-primary">Digital Asset</h2>
+        <br>
+        <h4 style="text-align: center">Please make a deposit with an already registered address to one the following addresses corresponding to the asset you want to enter </h1>
+        {% include 'messages.html' %}
+        {% if authConfirmation %}
+        {% include 'a_sessiontimeout.html' %}
+        <!-- <h5 class="ml-5">Information for account ending in {{ debit_last_four }}</h5> -->
+            {% if request.session.wallet_conn %}
+            <h1> Coinbase Wallet usage is currently in progress, integration is not completely available for the moment</h1>
+            {% endif %}
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Symbol</th>
+                    <th scope="col">Currency</th>
+                    <th scope="col">Blockchain</th>
+                    <th scope="col">Network</th>
+                    <th scope="col">Address</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for address in addresses %}
+                        <tr>
+                            <td>{{ address.symbol }} </td>
+                            <td>{{ address.currency_name }} </td>
+                            <td>{{ address.blockchain }} </td>
+                            <td>{{ address.network }} </td>
+                            <td>{{ address.wallet_address }} </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
+                <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px;">Please have in consideration that we do not support wrapped coins anchored from another blockchain, transfering these type assets will result in permanently lost of funds.</small>
+                <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">Transfering funds to an address that does not correspond the indicated asset will also result in permanent lost of funds.</small>
+            </div>
+
+        {% else %}
+        <h5 class="ml-5">You are not currently signed in. To sign in or make an account, <a href="{% url 'authentication:Home' %}">click or tap here.</a></h5>
+        {% endif %}
+    </div>
+    
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+    
+    
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+        
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+    
+    <!-- <div class="row">
+        <div class="col-5 d-flex justify-content-center text-center">
+            <div class="card container1">
+                <h2 class="text-primary">HAVE FUN USING CRYPTOSHARE!!!</h2>
+                <br>
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Create Account</button>
+                <button type="submit" class="btn btn-secondary btn-lg btn-block">Login to Account</button>
+            </div>
+        </div>
+        <div class="col-xl-7 d-flex justify-content-center text-center">
+            <div class="card container1">
+                <h2 class="text-primary">CREATED BY :</h2>
+                
+                <h5>Anade Davis - Data Science Manager </h5>
+                <h5>Shailee R. Desai - (Project Lead) Data Analyst </h5>
+                <h5>Alexander Rodriguez - (Project Lead) Data Analyst </h5>
+                <h5>William Munson - Data Scientist</h5>
+                <h5>Harleen Bagga - Data Scientist</h5>
+            </div>
+        </div>
+    </div> -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

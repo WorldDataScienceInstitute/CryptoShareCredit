@@ -7,12 +7,13 @@
 <body>
     {% include 'atm_sidebar.html' %}
     <div class="content-container">
+        {% include 'messages.html' %}
         <h2 class="ml-4">Hi {{ name }}!</h2>
         <h2 class="ml-4">Connect your Coinbase Wallet</h2>
 
         <h5 style="text-align:center" class="ml-4 mt-4">Click to connect Coinbase wallet:</h5>
         <div style="text-align:center" class="ml-4 mt-4"  style="width:30%;min-width:400px;">
-            <a href="https://www.coinbase.com/oauth/authorize?response_type=code&client_id=35fb284ac9af15803924d53bb3cbc1890f147c526439f60cbc76f156004701e3&redirect_uri=https%3A//cryptoshare-atm.herokuapp.com/atm/ApproveWallet/&scope=wallet:accounts:read">
+            <a href="https://www.coinbase.com/oauth/authorize?response_type=code&client_id=35fb284ac9af15803924d53bb3cbc1890f147c526439f60cbc76f156004701e3&redirect_uri=https%3A//www.cryptoshareapp.com/atm/ApproveWallet/&scope=wallet:accounts:read,wallet:user:email,wallet:transactions:send&meta[send_limit_amount]=1">
                 <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
                 id="button-withdraw">Connect wallet</button>
             </a>
