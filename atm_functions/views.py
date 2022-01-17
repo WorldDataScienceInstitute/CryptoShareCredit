@@ -616,7 +616,7 @@ def register_address(request):
             messages.info(request, "Invalid address. Please try again.")
             return redirect('atm_functions:RegisterAddress')
 
-        currency_details = form_response["currency"].split(" ")
+        currency_details = form_response["currency"].split("|")
         currency_name = currency_details[0]
         currency_blockchain = currency_details[1]
         currency_network = currency_details[2]
