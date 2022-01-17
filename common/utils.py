@@ -1,10 +1,27 @@
 import requests
 import json
 import os
+<<<<<<< Updated upstream
+=======
+from datetime import datetime as dt
+import time
+>>>>>>> Stashed changes
 from dotenv import load_dotenv
 
 load_dotenv()
 
+<<<<<<< Updated upstream
+=======
+
+def get_user_count():
+    return Account.objects.count(), dt.now().astimezone().strftime("%D %r %Z")
+
+
+def generate_pin():
+    return ''.join(random.choice(string.digits) for i in range(6))
+
+
+>>>>>>> Stashed changes
 country_dict = {
     'US': "United States",
     'BR': "Brazil",
