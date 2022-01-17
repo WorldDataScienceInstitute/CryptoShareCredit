@@ -2,6 +2,7 @@ import requests
 import json
 import os
 from datetime import datetime as dt
+import time
 from dotenv import load_dotenv
 from atm_functions.models import Account
 import random
@@ -11,7 +12,8 @@ load_dotenv()
 
 
 def get_user_count():
-    return Account.objects.count(), dt.now().strftime("%b %d, %H:%M UTC")
+    return Account.objects.count(), dt.now().astimezone().strftime("%D %r %Z")
+
 
 
 def generate_pin():
