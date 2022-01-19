@@ -24,7 +24,6 @@
         <script> $( window ).load(function() { $('#cs_pay').get(0).play();}); </script>
     </div>
     <div class="container my-4">
-        <h4 style="text-align:center ;">Already have an Account? <a href="{% url 'authentication:Login' %}">Login here!</a></h4> 
         <div class="row">
             <div class="card container1" style="max-width: 500px;">
                 {% include 'messages.html' %}
@@ -67,7 +66,7 @@
                     </div>
                     
                     <div class="form-row">
-                        <!-- Referral Code Feature not added yet!--> 
+                        <!-- Referral Code Feature not added yet!-->
                         <div class="form-group col-12">
                             <label for="conf_phone">Enter Referral code:</label>
                             <input type="text" class="form-control" name="ref_code" id="ref_code"
