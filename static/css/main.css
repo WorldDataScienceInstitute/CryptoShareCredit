@@ -385,4 +385,27 @@ body label {
     padding-right: 20px;
 }
 
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  box-shadow: 0px 8px 8px 0px rgba(0,0,0,0.1);
+  background-color: #FFFFFF;
+  min-width: 100px;
+  z-index: 1;
+  margin-right:15px;
+}
+.dropdown-content a {
+  color: black;
+  padding: 15px 5px;
+  display: block;
+}
+.dropdown-content a:hover {background-color: #FFFFFF;}
+.dropdown:hover .dropdown-content {display: block;}
+
+
 /** Scroll Animation*/
