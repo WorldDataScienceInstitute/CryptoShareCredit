@@ -16,9 +16,7 @@ load_dotenv()
 #localtimezone=tzlocal()
 
 def get_user_count():
-    return Account.objects.count(), dt.now().astimezone(pytz.timezone('US/Eastern')).strftime("%D %r %Z")
-    #return Account.objects.count(), dt.now().astimezone('localtimezone').strftime("%D %r %Z") 
-
+    return Account.objects.count(), dt.now().astimezone().strftime("%D %r %Z")
 
 
 
