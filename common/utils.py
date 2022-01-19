@@ -3,8 +3,6 @@ import json
 import os
 from datetime import datetime as dt
 import time
-import pytz as pytz
-from dateutil.tz import tzlocal
 from dotenv import load_dotenv
 from atm_functions.models import Account
 import random
@@ -12,8 +10,6 @@ import string
 
 load_dotenv()
 
-
-#localtimezone=tzlocal()
 
 def get_user_count():
     return Account.objects.count(), dt.now().astimezone(pytz.timezone('US/Eastern')).strftime("%D %r %Z")
