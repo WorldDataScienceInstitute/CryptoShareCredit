@@ -71,8 +71,8 @@
                 {% endif %}
                 <p class="signed_in">Make a selection:</p>
                 {% if name is None %}
-                <a href="{% url 'authentication:Login' %}"><button type="button"
-                    class="btn btn-primary btn-lg btn-block">Borrow/Lend Crypto</button>
+                <a href="{% url 'authentication:Email' %}"><button type="button"
+                    class="btn btn-primary btn-lg btn-block">Create Account</button>
                     <!--<p style="font-size:12px;">Connect your Cryptocurrency wallet and use Crypto you already own as collateral to borrow or lend to other people.</p> -->
                 </a>
                 <br>
@@ -103,12 +103,8 @@
                 </a>
                 <br>
                 {% if name is None %}
-                <!--https://cryptoshare.shop/-->
-                <a href=""><button type="button"
-                    class="btn btn-secondary btn-lg btn-block">
-                    Cryptoshare Marketplace
-                    <!--<p style="font-size:12px;">Coming Soon!</p>-->
-                </button>
+                <a href="{% url 'authentication:Login' %}"><button type="button"
+                    class="btn btn-secondary btn-lg btn-block">Login To Existing Account</button>
                 </a>
                 <br>
                 {% endif %}
