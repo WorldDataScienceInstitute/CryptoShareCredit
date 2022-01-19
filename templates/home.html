@@ -71,13 +71,10 @@
                 {% endif %}
                 <p class="signed_in">Make a selection:</p>
                 {% if name is None %}
-                <div class="dropdown btn btn-lg btn-block">
                 <a href="{% url 'authentication:Login' %}"><button type="button"
                     class="btn btn-primary btn-lg btn-block">Borrow/Lend Crypto</button>
                     <!--<p style="font-size:12px;">Connect your Cryptocurrency wallet and use Crypto you already own as collateral to borrow or lend to other people.</p> -->
-                    <div class="dropdown-content">Connect your Cryptocurrency wallet and use Crypto you already own as collateral to borrow or Lend to other people.</div>
                 </a>
-            </div>
                 <br>
                 {% elif auth_level == 1 %}
                 <!-- <a href="{% url 'authentication:Registration' %}"><button type="button"
@@ -98,35 +95,26 @@
                 </a>
                 <br>
                 {% endif %}
-                <div class="dropdown btn btn-lg btn-block">
                 <a href="https://wefunder.com/cryptoshare" target="_blank">
                     <button type="button" class="btn btn-invest btn-secondary btn-lg btn-block" style="background-color:green;">
                         Buy Future Stock
                         <!--<p style="font-size:12px;">You have a once and a lifetime opportunity to Invest in Future Equity in Cryptoshare that one day can be listed on Stock Exchange.</p> --> 
                     </button>
-                    <div class="dropdown-content">You have a once and a lifetime opportunity to Invest in Future Equity in Cryptoshare that one day can be listed on Stock Exchange.</div>
                 </a>
-            </div>
                 <br>
                 {% if name is None %}
-                <div class="dropdown btn btn-lg btn-block">
-                <!--https://cryptoshare.shop/-->
-                <a href=""><button type="button"
-                    class="btn btn-secondary btn-lg btn-block" disabled>
-                    Cryptoshare Marketplace
-                    <!--<p style="font-size:12px;">Coming Soon!</p>-->
-                </button>
-                <div class="dropdown-content" onclick="return false">This is a Marketplace for Individuals to buy services with Crypto & allow Businesses to list their services with Cryptocurrency as a Payment Option.</div>
+                    <!--https://cryptoshare.shop/-->
+                    <a href=""><button type="button"
+                        class="btn btn-secondary btn-lg btn-block" disabled>
+                        Cryptoshare Marketplace
+                        <!--<p style="font-size:12px;">Coming Soon!</p>-->
+                    </button>
                 </a>
-            </div>
                 <br>
                 {% endif %}
-                <div class="dropdown btn btn-lg btn-block">
                 <a href="{% url 'authentication:GiveBack' %}"><button type="button"
                     class="btn btn-primary btn-lg btn-block">Give Crypto</button>
-                    <div class="dropdown-content">We at Cryptoshare have started an initiative to Fund Innovative Projects from People of Color from around the world using Cryptocurrency donated from our Users.</div>
                 </a>
-            </div>
                 {% if name is not None %}
                 <br>
                 <form action="{% url 'authentication:Logout' %}" method="POST">
@@ -190,3 +178,4 @@
     {% include 'footer.html' %}
 </body>
 </html>
+
