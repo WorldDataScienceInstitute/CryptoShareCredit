@@ -807,9 +807,12 @@ def confirmed_coin_transactions(request):
         amount = response_data["amount"]
         transaction_id = response_data["transactionId"]
 
-        cryptoapis_client = CryptoApis()
-        transaction_details = cryptoapis_client.get_transaction_details_by_transactionid(response_data["blockchain"], response_data["network"], transaction_id)
-        sender_address = transaction_details["senders"][0]["address"]
+        if response_data["blockchain"] == "ethereum":
+            cryptoapis_client = CryptoApis()
+            transaction_details = cryptoapis_client.get_transaction_details_by_transactionid(response_data["blockchain"], response_data["network"], transaction_id)
+            sender_address = transaction_details["senders"][0]["address"]
+        else:
+            sender_address = response_data["address"]
 
         if response_data["blockchain"] == "ethereum":
             sender_address = sender_address.lower()
