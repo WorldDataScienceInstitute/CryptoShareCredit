@@ -778,8 +778,8 @@ def confirmed_coin_transactions(request):
 
         # print(request.headers)
 
-        bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING
-        # bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION
+        # bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING ENVIRRONMENT
+        bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION ENVIRONMENT
 
         payload = bpayload.decode("utf-8")
 
