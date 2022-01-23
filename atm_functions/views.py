@@ -15,6 +15,9 @@ from google_currency import convert
 from coinbase.wallet.client import OAuthClient
 from coinbase.wallet.error import TwoFactorRequiredError
 
+import hmac
+import hashlib
+
 import os
 import requests
 import json
@@ -139,14 +142,63 @@ def deposit_crypto(request):
         return redirect('authentication:Home')
     auth_confirmation = True
 
-    currencies = Balance.objects.filter(email=request.user).values("currency_name")
-    #Get all wallet addresses from Cryptocurrency table that match currency_name field in currencies variable
-    addresses = Cryptocurrency.objects.filter(currency_name__in=currencies)
-
     context = {
         "authConfirmation": auth_confirmation,
-        "addresses": addresses
+        "address_confirmations": [
+                                {
+                                    "currency_name": "Litecoin",
+                                    "blockchain": "litecoin",
+                                    "symbol": "LTC",
+                                    "has_address": False
+                                },
+                                {
+                                    "currency_name": "Bitcoin Cash",
+                                    "blockchain": "bitcoin-cash",
+                                    "symbol": "BCH",
+                                    "has_address": False
+                                },
+                                {
+                                    "currency_name": "Dash",
+                                    "blockchain": "dash",
+                                    "symbol": "DASH",
+                                    "has_address": False
+                                },
+                                {
+                                    "currency_name": "Zcash",
+                                    "blockchain": "zcash",
+                                    "symbol": "ZEC",
+                                    "has_address": False
+                                }
+                                ]
     }
+
+    currencies = Address.objects.filter(email=request.user).values("currency_name")
+    currencies_addresses = Address.objects.filter(email=request.user)
+
+    currencies_dict = {}
+    for currency in currencies_addresses:
+        currencies_dict[currency.currency_name.currency_name] = currency.address
+    #Get all wallet addresses from Cryptocurrency table that match currency_name field in currencies variable
+    addresses = Cryptocurrency.objects.filter(currency_name__in=currencies)
+    context["addresses"] = addresses
+
+    for address in addresses:
+        # print(address.__dict__)
+        if address.currency_name == "Litecoin":
+            address.wallet_address = currencies_dict["Litecoin"]
+            context["address_confirmations"][0]["has_address"] = True
+
+        elif address.currency_name == "Bitcoin Cash":
+            address.wallet_address = currencies_dict["Bitcoin Cash"]
+            context["address_confirmations"][1]["has_address"] = True
+
+        elif address.currency_name == "Dash":
+            address.wallet_address = currencies_dict["Dash"]
+            context["address_confirmations"][2]["has_address"] = True
+        
+        elif address.currency_name == "Zcash":
+            address.wallet_address = currencies_dict["Zcash"]
+            context["address_confirmations"][3]["has_address"] = True
 
     return render(request, 'deposit_crypto.html', context)
 
@@ -653,24 +705,102 @@ def register_address(request):
     #USDC, USDT, DAI, LITECOIN, BITCOIN, BITCOIN CASH, ETHEREUM, CARDANO
     return render(request, 'register_address.html', context)
 
+def generate_address(request):
+    blockchain = request.GET.get('blockchain','')
+    network = request.GET.get('network','')
+    currency = request.GET.get('currency','')
+
+    currency_object = Cryptocurrency.objects.get(currency_name=currency)
+    email_object = request.user
+
+    if not blockchain or not network or not currency:
+        messages.info(request, "Invalid option, please try again.")
+        return redirect('atm_functions:DepositCrypto')
+    
+    #Check if there is already an address for that currency name for that email
+    address_exists = Address.objects.filter(email=request.user, currency_name=currency_object)
+    if address_exists:
+        messages.info(request, "Address already exists.")
+        return redirect('atm_functions:DepositCrypto')
+
+    #Check if there is already a balance with that currency name for that email
+    balance_exists = Balance.objects.filter(email=email_object, currency_name=currency_object)
+    if not balance_exists:
+        newBalance = Balance(email=email_object, currency_name=currency_object, amount = 0)
+        newBalance.save()
+    
+    available_addresses = Address.objects.filter(currency_name=currency_object, email=None)
+    if len(available_addresses) != 0:
+        address = available_addresses[0]
+        address.email = request.user
+        address.save()
+        # print(address)
+        messages.info(request, "Address generated successfully.")
+        return redirect('atm_functions:DepositCrypto')
+
+
+    cryptoapis_client = CryptoApis()
+
+    # Get current number of addresses for that currency
+    number_of_addresses = Address.objects.filter(currency_name=currency).count()
+
+    try:
+        deposit_address = cryptoapis_client.generate_deposit_address(blockchain, network, number_of_addresses)
+    except:
+        messages.info(request, "Error generating address. Please try again.")
+        return redirect('atm_functions:DepositCrypto')
+
+    newAddress = Address(address=deposit_address, email=email_object, currency_name=currency_object)
+    newAddress.save()
+
+    try:
+        cryptoapis_client.generate_coin_subscription(blockchain, network, deposit_address)
+    except:
+        newAddress.email = None
+        newAddress.save()
+        messages.info(request, "Error generating address, please contact support")
+        return redirect('atm_functions:DepositCrypto')
+
+    
+    messages.info(request, "Address generated successfully.")
+
+    return redirect('atm_functions:DepositCrypto')
+
     # return HttpResponse(status=200)
 
 @csrf_exempt
 # @require_POST
-def confirmed_transactions(request):
+def confirmed_coin_transactions(request):
     if request.method == 'GET':
         return redirect('atm_functions:CheckBalance')
     elif request.method == 'POST':
         request_reader =request.META.get('wsgi.input')
 
-        # bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING
-        bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION
+        # print(request.headers)
+
+        # bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING ENVIRRONMENT
+        bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION ENVIRONMENT
+
         payload = bpayload.decode("utf-8")
 
         start = payload.index("{")
         end = payload.rindex("}") + 1
 
         response = json.loads(payload[start:end])
+
+        #TESTING ----------------------------------------
+
+
+        # API_SECRET = "CryptoApisCS"
+
+        # h = hmac.new(base64.b64decode(API_SECRET.encode("utf-8")), msg=str(response).encode("utf-8"), digestmod=hashlib.sha256)
+        # h = hmac.new(API_SECRET.encode("utf-8"), msg=str(response).encode("utf-8"), digestmod=hashlib.sha256)
+        # h = hmac.new(key="CryptoTest".encode(), msg=str(response).encode(), digestmod=hashlib.sha256)
+        # print(h.hexdigest())
+        # print(request.headers['X-Signature'])
+        # print(response)
+
+        #TESTING ----------------------------------------
         
         response_data = response["data"]["item"]
 
