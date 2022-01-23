@@ -9,10 +9,12 @@ class CryptoApis:
         self.querystring = {"limit":20,"offset":0}
         self.HEADERS = {
         'Content-Type': "application/json",
-        'X-API-Key': "72b793e11a85dd231d46fc3a3f73d274a834b475"
-        # 'X-API-Key': os.environ['CRYPTOAPIS_API_KEY']
+        # 'X-API-Key': "72b793e11a85dd231d46fc3a3f73d274a834b475"
+        'X-API-Key': os.environ['CRYPTOAPIS_API_KEY']
         }
-        # len(content["data"]["items"]
+        self.WALLET_ID = os.environ['CRYPTOAPIS_WALLET_ID']
+        self.CALLBACK_SECRET_KEY = os.environ['CRYPTOAPIS_CALLBACK_SECRET_KEY']
+        
     def get_confirmed_transactions(self, blockchain, network):
 
         if blockchain == "ethereum":
@@ -52,6 +54,38 @@ class CryptoApis:
         request = requests.post(url, headers=self.HEADERS, json=data).json()
         
         return request["data"]["item"]["isValid"]
+    
+    def generate_deposit_address(self, blockchain, network, counter):
+        url = self.BASE +  f"/wallet-as-a-service/wallets/{self.WALLET_ID}/{blockchain}/{network}/addresses"
+        data = {
+                "context": "",
+                "data": {
+                        "item": {
+                                "label": f"{blockchain}|{network}|{counter}"
+                                }
+                }
+            }
+        request = requests.post(url, headers=self.HEADERS, json=data).json()
+
+        return request["data"]["item"]["address"]
+
+    def generate_coin_subscription(self, blockchain, network, address):
+        url = self.BASE +  f"/blockchain-events/{blockchain}/{network}/subscriptions/address-coins-transactions-confirmed"
+        data = {
+                "context": "",
+                "data": {
+                    "item": {
+                        "address": address,
+                        "allowDuplicates": False,
+                        "callbackSecretKey": self.CALLBACK_SECRET_KEY,
+                        "callbackURL": "https://www.cryptoshareapp.com/atm/ConfirmedCoinTransactions/"
+                    }
+                }
+            }
+        request = requests.post(url, headers=self.HEADERS, json=data).json()
+
+        return request["data"]["item"]["referenceId"]
+                            
         
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.base import Model
-from datetime import datetime as dt
+from datetime import datetime, timedelta
 
 # Create your models here.
 
@@ -27,8 +27,9 @@ class Cryptocurrency(models.Model):
 
 class Address(models.Model):
     address = models.CharField(max_length=100, primary_key=True)
-    email = models.ForeignKey(User, on_delete=models.CASCADE)
+    email = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     currency_name = models.ForeignKey(Cryptocurrency, on_delete=models.CASCADE)
+    expiration_datetime = models.DateTimeField(default=datetime.now()+timedelta(days=7), null= True)
 
 class Balance(models.Model):
     currency_name = models.ForeignKey(Cryptocurrency, on_delete=models.DO_NOTHING)

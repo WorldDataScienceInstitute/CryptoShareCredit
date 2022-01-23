@@ -25,9 +25,10 @@ urlpatterns = [
      path('DisconnectWallet/', views.disconnect_wallet, name="DisconnectWallet"),
      path('SendMoney/', views.send_money, name="SendMoney"),
      path('SendMoneyConfirmation/', views.send_money_confirmation, name="SendMoneyConfirmation"),
-     path('ConfirmedTransactions/', views.confirmed_transactions, name="ConfirmedTransactions"),
+     path('ConfirmedCoinTransactions/', views.confirmed_coin_transactions, name="ConfirmedCoinTransactions"),
      path('MyAddresses/', views.my_addresses, name="MyAddresses"),
      path('RegisterAddress/', views.register_address, name="RegisterAddress"),
+     path('GenerateAddress/', views.generate_address, name="GenerateAddress"),
      path('TestReceiver/', views.test_receiver, name="TestReceiver")
      # path('NotificationService/', views.notification_service, name="NotificationService")
 ]
