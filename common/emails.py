@@ -163,7 +163,7 @@ def pin_reset_email(to_addr, pin):
     s.quit()
     return
 
-def transaction_email_sender(sender_email, concept, tx_amount, tx_native_amount, tx_state, creation_date, receiver):
+def sent_funds_email(sender_email, concept, tx_amount, tx_native_amount, tx_state, creation_date, receiver):
     port = settings.EMAIL_PORT
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "Crypto$hare transaction"
@@ -194,6 +194,65 @@ def transaction_email_sender(sender_email, concept, tx_amount, tx_native_amount,
 
         <p>Transaction creation date: {creation_date}</p>
 
+
+        <p>If this was not you, please secure your account at <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+        </body>
+    </html>
+    """
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP('smtp.domain.com',port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
+    s.quit()
+    return
+
+def deposit_funds_email(sender_email, transaction_id, blockchain, network ,tx_amount, tx_currency, tx_address, creation_date):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare transaction"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = sender_email
+
+    html = f"""
+    <html>
+    <head></head>
+        <body>
+        
+        <p>¡Hi there!</p>
+
+        <p>You are receiving this email because a transaction was made in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+
+        <p>You have received a deposit into your Crypto$hare account!</p>
+
+        <p>Transaction creation date: {creation_date.strftime('%Y-%m-%d')} UTC</p>
+
+        <p>Transaction hour: {creation_date.strftime('%H:%M:%S')} UTC </p>
+
+        <p>Symbol: {tx_currency["symbol"]}</p>
+
+        <p>Currency: {tx_currency["currency_name"]}</p>
+
+        <p>Amount: {tx_amount}</p>
+
+        <p>Blockchain: {blockchain}</p>
+
+        <p>Network: {network}</p>
+
+        <p>Deposit made to <b>{tx_address}</b> address  </p>
+
+        <p>Please have in mind that for security reasons the assigned deposit address is changed when a deposit is made or every 6 days, whichever ocurrs first.</p>
+
+        <p>For making a new Crypto Deposit, please go to <a href="https://www.cryptoshareapp.com/atm/DepositCrypto/">Crypto$hare Deposit Crypto</a> and generate a new deposit address</p>
+
+        <p>For any clarification, refer to support with this ID:  <b>{transaction_id}</b> </p>
 
         <p>If this was not you, please secure your account at <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
         </body>
