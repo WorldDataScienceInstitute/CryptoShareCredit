@@ -1,4 +1,4 @@
-from time import timezone
+# from time import timezone
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
@@ -9,7 +9,7 @@ from .models import User
 from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, TransactionA, TransactionB
 from common.utils import currency_list
-from common.emails import transaction_email_sender
+from common.emails import sent_funds_email, deposit_funds_email
 from common.cryptoapis import CryptoApis
 from google_currency import convert
 from coinbase.wallet.client import OAuthClient
@@ -21,7 +21,6 @@ import hashlib
 import os
 import requests
 import json
-
 
 def check_balance(request):
 
@@ -589,7 +588,7 @@ def send_money_confirmation(request):
             receiver_email = tx["to"]["email"]
             creation_date  = tx["created_at"]
 
-            transaction_email_sender(sender_email, concept, tx_amount, tx_native_amount, tx_state, creation_date, receiver_email)
+            sent_funds_email(sender_email, concept, tx_amount, tx_native_amount, tx_state, creation_date, receiver_email)
             
             return redirect('atm_functions:CheckBalance')
         except Exception as e:
@@ -787,20 +786,6 @@ def confirmed_coin_transactions(request):
         end = payload.rindex("}") + 1
 
         response = json.loads(payload[start:end])
-
-        #TESTING ----------------------------------------
-
-
-        # API_SECRET = "CryptoApisCS"
-
-        # h = hmac.new(base64.b64decode(API_SECRET.encode("utf-8")), msg=str(response).encode("utf-8"), digestmod=hashlib.sha256)
-        # h = hmac.new(API_SECRET.encode("utf-8"), msg=str(response).encode("utf-8"), digestmod=hashlib.sha256)
-        # h = hmac.new(key="CryptoTest".encode(), msg=str(response).encode(), digestmod=hashlib.sha256)
-        # print(h.hexdigest())
-        # print(request.headers['X-Signature'])
-        # print(response)
-
-        #TESTING ----------------------------------------
         
         response_data = response["data"]["item"]
 
@@ -833,12 +818,26 @@ def confirmed_coin_transactions(request):
         
         sender_currency_balance.amount += Decimal(amount)
         sender_currency_balance.save()
+        try:
+            transactionA = TransactionA(transaction_id=transaction_id, email=sender_object.email, address=sender_object, currency_name=currency_symbol_object, transaction_type="DEPOSIT", state="APPROVED",amount=amount)
+            transactionA.save()
+        except:
+            sender_currency_balance.amount -= Decimal(amount)
+            sender_currency_balance.save()
+            return HttpResponse("Webhook received!")
 
-        transactionA = TransactionA(transaction_id=transaction_id, email=sender_object.email, address=sender_object, currency_name=currency_symbol_object, transaction_type="DEPOSIT", state="APPROVED",amount=amount)
-        transactionA.save()
+        tx_currency = {
+            "currency_name": currency_symbol_object.currency_name,
+            "symbol": currency_symbol_object.symbol,
+        }
 
+        transaction_intern_id = str(transactionA.id_a) + "|" + transaction_id 
+        creation_date = timezone.now()
+        deposit_funds_email(str(sender_object.email), transaction_intern_id, response_data["blockchain"], response_data["network"] ,amount, tx_currency, sender_address, creation_date)
+
+        sender_object.email = None
+        sender_object.save()
         # print(response)
-        
         # print(payload.decode("utf-8"))
         return HttpResponse("Webhook received!")
 
