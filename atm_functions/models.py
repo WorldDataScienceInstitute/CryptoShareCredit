@@ -47,6 +47,7 @@ class TransactionA(models.Model):
     transaction_type = models.CharField(max_length=15)
     state = models.CharField(max_length=15)
     amount = models.DecimalField(max_digits=15, decimal_places=8)
+    creation_datetime = models.DateTimeField(auto_now_add=True)
 
 class TransactionB(models.Model):
     id_b = models.AutoField(primary_key=True)

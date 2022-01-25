@@ -1,10 +1,12 @@
 # from time import timezone
+from multiprocessing import context
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 from django.utils import timezone
+from django.db.models import Q
 from .models import User
 from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, TransactionA, TransactionB
@@ -325,6 +327,11 @@ def lend_offer(request):
 
         transaction.save()
 
+        emmiter = transaction.emmiter
+        emmiter_balance = Balance.objects.get(email=emmiter, currency_name=transaction.currency_name)
+        emmiter_balance.amount += transaction.amount
+        emmiter_balance.save()
+
         messages.info(request, f"The offer with ID: {transaction.id_b} has been started.")
         return redirect('atm_functions:LendMoney')
 
@@ -388,6 +395,12 @@ def create_borrowing_offer(request):
         currency_object = Cryptocurrency.objects.get(currency_name=currency)
         currency__collateral_object = Cryptocurrency.objects.get(currency_name=currency_collateral)
 
+        try:
+            currency_balance = Balance.objects.get(email=request.user, currency_name=currency_object)
+        except:
+            new_currency_balance = Balance(email=request.user, currency_name=currency_object, amount = 0)
+            new_currency_balance.save()
+
         collateral_balance = Balance.objects.get(email=request.user, currency_name=currency__collateral_object)
         if collateral_balance.amount < float(amount_collateral):
             messages.info(request, f"Insufficient collateral balance. You can only borrow up to {float(collateral_balance.amount)} {currency_collateral}.")
@@ -409,7 +422,7 @@ def create_borrowing_offer(request):
 
         messages.success(request, "Your borrowing offer has been created")
         # print("Transaction B created")
-        return redirect('ath_functions:LendCrypto')
+        return redirect('atm_functions:LendCrypto')
 
     return render(request, 'create_borrowing_offer.html', context)
 
@@ -637,6 +650,41 @@ def my_addresses(request):
 
     pass
 
+def my_transactions(request):
+    if not request.user.is_authenticated:
+        return redirect('authentication:Home')
+    auth_confirmation = True
+    
+    
+    transactions = TransactionA.objects.filter(email=request.user)
+
+    context = {
+            "authConfirmation": auth_confirmation,
+            "transactions": transactions
+            }
+
+    return render(request, 'my_transactions.html', context)
+    pass
+
+def my_loans(request):
+    if not request.user.is_authenticated:
+        return redirect('authentication:Home')
+    auth_confirmation = True
+
+    # loans = TransactionB.objects.filter(Q(emmiter = request.user) | Q(receiver = request.user))
+    opened_offers = TransactionB.objects.filter(emitter = request.user, state = "OPEN")
+    accepted_offers = TransactionB.objects.filter(receptor = request.user, state = "IN PROGRESS") 
+
+
+    context = {
+            "authConfirmation": auth_confirmation,
+            "opened_offers": opened_offers,
+            "accepted_offers": accepted_offers
+            }
+
+    return render(request, 'my_loans.html', context)
+
+
 
 def register_address(request):
     if not request.user.is_authenticated:
@@ -691,8 +739,8 @@ def register_address(request):
         balance_exists = Balance.objects.filter(email=email_object, currency_name=currency_object)
         if not balance_exists:
             # print("Balance does not exist")
-            newBalance = Balance(email=email_object, currency_name=currency_object, amount = 0)
-            newBalance.save()
+            new_balance = Balance(email=email_object, currency_name=currency_object, amount = 0)
+            new_balance.save()
 
 
         messages.info(request, "Address registered successfully.")
@@ -725,8 +773,8 @@ def generate_address(request):
     #Check if there is already a balance with that currency name for that email
     balance_exists = Balance.objects.filter(email=email_object, currency_name=currency_object)
     if not balance_exists:
-        newBalance = Balance(email=email_object, currency_name=currency_object, amount = 0)
-        newBalance.save()
+        new_balance = Balance(email=email_object, currency_name=currency_object, amount = 0)
+        new_balance.save()
     
     available_addresses = Address.objects.filter(currency_name=currency_object, email=None)
     if len(available_addresses) != 0:
