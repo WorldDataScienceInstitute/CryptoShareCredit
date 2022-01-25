@@ -252,7 +252,7 @@ def deposit_funds_email(sender_email, transaction_id, blockchain, network ,tx_am
 
         <p>For making a new Crypto Deposit, please go to <a href="https://www.cryptoshareapp.com/atm/DepositCrypto/">Crypto$hare Deposit Crypto</a> and generate a new deposit address</p>
 
-        <p>For any clarification, refer to support with this ID:  <b>{transaction_id}</b> </p>
+        <p>Customer Support Transaction ID:  <b style="color: red">{transaction_id}</b> </p>
 
         <p>If this was not you, please secure your account at <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
         </body>
