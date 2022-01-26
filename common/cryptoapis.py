@@ -34,6 +34,12 @@ class CryptoApis:
 
         return request["data"]["item"]
 
+    def get_token_transaction_details_by_transactionid(self, blockchain, network, transactionHash):
+        url = self.BASE +  f" /blockchain-data/{blockchain}/{network}/transactions/{transactionHash}/tokens-transfers"
+        request = requests.get(url, headers=self.HEADERS).json()
+
+        return request["data"]["items"]
+
     def get_exchange_rate_by_symbols(self,fromSymbol, toSymbol):
         url = self.BASE +  f"/market-data/exchange-rates/by-symbols/{fromSymbol}/{toSymbol}?context=&calculationTimestamp={int(time.time())}"
         request = requests.get(url, headers=self.HEADERS).json()

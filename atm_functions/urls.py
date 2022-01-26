@@ -26,6 +26,7 @@ urlpatterns = [
      path('SendMoney/', views.send_money, name="SendMoney"),
      path('SendMoneyConfirmation/', views.send_money_confirmation, name="SendMoneyConfirmation"),
      path('ConfirmedCoinTransactions/', views.confirmed_coin_transactions, name="ConfirmedCoinTransactions"),
+     path('ConfirmedTokenTransactions/', views.confirmed_token_transactions, name="ConfirmedTokenTransactions"),
      path('MyAddresses/', views.my_addresses, name="MyAddresses"),
      path('MyLoans/', views.my_loans, name="MyLoans"),
      path('MyTransactions/', views.my_transactions, name="MyTransactions"),
