@@ -342,18 +342,21 @@ def create_borrowing_offer(request):
         return redirect('authentication:Home')
     auth_confirmation = True
 
-    balances = Balance.objects.filter(email=request.user)
-    currencies = Cryptocurrency.objects.all()
+
 
     # print(balances)
     context = {
-        "authConfirmation": auth_confirmation,
-        "currencies": currencies,
-        "balances": balances,
-        "exchange_rates": []
+        "authConfirmation": auth_confirmation
     }
 
     if request.method == 'GET':
+        balances = Balance.objects.filter(email=request.user)
+        currencies = Cryptocurrency.objects.all()
+
+        context["currencies"] = currencies
+        context["balances"] = balances
+        context["exchange_rates"] = []
+
         for balance in balances:
             if balance.currency_name.currency_name == "TEST_COIN":
                 rate = {
@@ -378,9 +381,9 @@ def create_borrowing_offer(request):
         return render(request, 'create_borrowing_offer.html', context)
 
     elif request.method == 'POST':
-        currency = request.POST.get('currency').split(" ")[1]
+        currency = request.POST.get('currency').split(" ")[0]
         amount = int(request.POST.get('currency_amount'))
-        currency_collateral = request.POST.get('currency_collateral').split(" ")[1]
+        currency_collateral = request.POST.get('currency_collateral').split(" ")[0]
         amount_collateral = request.POST.get('currency_amount_collateral')
         interest_rate = request.POST.get('interest_rate')
 
@@ -392,8 +395,8 @@ def create_borrowing_offer(request):
             messages.info(request, "Collateral amount invalid, please try again")
             return redirect('atm_functions:CreateBorrowingOffer')
 
-        currency_object = Cryptocurrency.objects.get(currency_name=currency)
-        currency__collateral_object = Cryptocurrency.objects.get(currency_name=currency_collateral)
+        currency_object = Cryptocurrency.objects.get(symbol=currency)
+        currency__collateral_object = Cryptocurrency.objects.get(symbol=currency_collateral)
 
         try:
             currency_balance = Balance.objects.get(email=request.user, currency_name=currency_object)
@@ -402,6 +405,7 @@ def create_borrowing_offer(request):
             new_currency_balance.save()
 
         collateral_balance = Balance.objects.get(email=request.user, currency_name=currency__collateral_object)
+        print(collateral_balance.__dict__, amount_collateral)
         if collateral_balance.amount < float(amount_collateral):
             messages.info(request, f"Insufficient collateral balance. You can only borrow up to {float(collateral_balance.amount)} {currency_collateral}.")
             return redirect('atm_functions:CreateBorrowingOffer')
@@ -883,13 +887,82 @@ def confirmed_coin_transactions(request):
         creation_date = timezone.now()
         deposit_funds_email(str(sender_object.email), transaction_intern_id, response_data["blockchain"], response_data["network"] ,amount, tx_currency, sender_address, creation_date)
 
-        sender_object.email = None
-        sender_object.save()
+        if response_data["blockchain"] != "ethereum":
+            sender_object.email = None
+            sender_object.save()
         # print(response)
         # print(payload.decode("utf-8"))
         return HttpResponse("Webhook received!")
 
     return HttpResponse(status=200)
+
+@csrf_exempt
+def confirmed_token_transactions(request):
+    if request.method == 'GET':
+        return redirect('atm_functions:CheckBalance')
+    elif request.method == 'POST':
+
+        ETHEREUM_DEPOSIT_ADDRESS = "0x70568e1a620468a49136aee7febd357bb9469b2c"
+        request_reader =request.META.get('wsgi.input')
+
+        # print(request.headers)
+
+        bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING ENVIRRONMENT
+        # bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION ENVIRONMENT
+
+        payload = bpayload.decode("utf-8")
+
+        start = payload.index("{")
+        end = payload.rindex("}") + 1
+
+        response = json.loads(payload[start:end])
+        response_data = response["data"]["item"]
+
+        transaction_id = response_data["transactionId"]
+        amount = response_data["token"]["amount"]
+        token_symbol = response_data["token"]["symbol"]
+
+        cryptoapis_client = CryptoApis()
+        transaction_details = cryptoapis_client.get_transaction_details_by_transactionid(response_data["blockchain"], response_data["network"], transaction_id)
+        sender_address = transaction_details["senders"][0]["address"]
+
+        sender_object = Address.objects.get(address=sender_address)
+        currency_symbol_object = Cryptocurrency.objects.get(symbol=token_symbol)
+
+        try:
+            sender_currency_balance = Balance.objects.get(email=sender_object.email, currency_name=currency_symbol_object)
+        except:
+            sender_currency_balance = Balance(currency_name=currency_symbol_object, email=sender_object.email, amount=0)
+        
+        sender_currency_balance.amount += Decimal(amount)
+        sender_currency_balance.save()
+        try:
+            transactionA = TransactionA(transaction_id=transaction_id, email=sender_object.email, address=sender_object, currency_name=currency_symbol_object, transaction_type="DEPOSIT", state="APPROVED",amount=amount)
+            transactionA.save()
+        except:
+            sender_currency_balance.amount -= Decimal(amount)
+            sender_currency_balance.save()
+            return HttpResponse("Webhook received!")
+
+        tx_currency = {
+            "currency_name": currency_symbol_object.currency_name,
+            "symbol": currency_symbol_object.symbol,
+        }
+
+        transaction_intern_id = str(transactionA.id_a) + "|" + transaction_id 
+        creation_date = timezone.now()
+        deposit_funds_email(str(sender_object.email), transaction_intern_id, response_data["blockchain"], response_data["network"] ,amount, tx_currency, ETHEREUM_DEPOSIT_ADDRESS, creation_date)
+
+        # print(response)
+        # print(payload.decode("utf-8"))
+        return HttpResponse("Webhook received!")
+
+
+
+
+
+    return HttpResponse(status=200)
+
 
 @csrf_exempt
 def test_receiver(request):

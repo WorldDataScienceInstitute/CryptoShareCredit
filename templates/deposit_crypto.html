@@ -9,7 +9,7 @@
     <div class="content-container">
         <h2 class="ml-4 text-primary">Digital Asset</h2>
         <br>
-        <h4 style="text-align: center">Please make a deposit with an already registered address to one the following addresses corresponding to the asset you want to enter </h1>
+        <h4 style="text-align: center">Please, for Ethereum Blockchain, make a deposit with an already registered address to one the following addresses corresponding to the asset you want to enter </h1>
         {% include 'messages.html' %}
         {% if authConfirmation %}
         {% include 'a_sessiontimeout.html' %}
@@ -25,6 +25,7 @@
                     <th scope="col">Blockchain</th>
                     <th scope="col">Network</th>
                     <th scope="col">Address</th>
+                    <!-- <th> Actions</th> -->
                 </tr>
                 </thead>
                 <tbody>
@@ -35,10 +36,15 @@
                             <td>{{ address.blockchain }} </td>
                             <td>{{ address.network }} </td>
                             <td>{{ address.wallet_address }} </td>
+                            {% if address.currency_name == 'Ethereum' %}
+                            <!-- <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ERC-20">ERC-20 Supported Tokens</button></td> -->
+                            {% endif %}
+
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ERC-20" style="margin-bottom: 20px;">ERC-20 Supported Tokens</button>
             
             <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
                 <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px;">Please have in consideration that we do not support wrapped coins anchored from another blockchain, transfering these type assets will result in permanently lost of funds.</small>
@@ -140,4 +146,30 @@
     <script src="{% static 'js/jquery.sticky.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
 </body>
-</html>
+
+<!-- Modal -->
+<div id="ERC-20" class="modal" style="z-index: 2000;">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Ethereum ERC-20 Supported Tokens</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p style="color: black;font-weight: 400;">For ERC-20 Token Transfers, please use the Ethereum deposit address</p>
+            <br>
+            <p style="color: black;font-weight: 400;">For the moment, we only support this ERC-20 Tokens</p>
+            <ul>
+                <li>USDC - USD Coin</li>
+                <li>USDT - Tether</li>
+                <li>WBTC - Wrapped Bitcoin</li>
+            </ul>
+            <br>
+            <b><p style="color: black;font-weight: 400;">Any different ERC-20 Token transfer will result in permanent loss.</p></b>
+
+        </div>
+    </div>
+    
+</div>
