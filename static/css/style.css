@@ -114,7 +114,7 @@ body.offcanvas-menu:before {
   padding-bottom: 10px;
 }
 
-.form-row #password_match {
+.form-row #pin_match {
   text-align: center;
   margin-left: auto;
   margin-right: auto;
@@ -135,6 +135,12 @@ body.offcanvas-menu:before {
   margin-right: auto;
   padding-bottom: 10px;
   font-weight: 400;
+}
+
+#toggle-pin {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 p {
