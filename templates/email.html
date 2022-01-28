@@ -86,81 +86,113 @@
         </div>
     </div>
     {% include 'info_card.html' %}
+    
+    <!-- STARTING GENIUS REFERRALS TRACKING CODE -->
     <script type="text/javascript">
-        // toggle PIN visibility
-        function togglePINVis() {
-            var button = document.getElementById("pin");
-            var button2 = document.getElementById("conf_pin");
-            if (button.type == 'password') {
-                button.type = 'text';
-                button2.type = 'text';
-            } else {
-                button.type = 'password';
-                button2.type = 'password';
-            }
-        }
-        // set PIN matching text
-        $('#pin, #conf_pin').on('keyup', function () {
-            if (($('#pin').val().length == 0) || ($('#conf_pin').val().length==0)) {
-                $('#pin_match').html('');
-            }
-            else if ($('#pin').val() == $('#conf_pin').val())
-            {
-                if (($('#pin').val().length == 6) & ($('#conf_pin').val().length==6)) {
-                    $('#pin_match').html('PINs match!').css('color', 'green');
-                    $('#submit').prop('disabled', false);
-                }
-                else {
-                    $('#pin_match').html('PIN must be 6 digits.').css('color', 'red');
-                    $('#submit').prop('disabled', true);
-                }
-            }
-            else {
-                $('#pin_match').html('PINs do not match.').css('color', 'red');
-                $('#submit').prop('disabled', true);
-            }
-        });
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                autoDisplay: false
-            }, 'google_translate_element'); //remove the layout
-        }
-    </script>
-    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
-    </script>
-    <script type="text/javascript">
-        function triggerHtmlEvent(element, eventName) {
-            var event;
-            if (document.createEvent) {
-                event = document.createEvent('HTMLEvents');
-                event.initEvent(eventName, true, true);
-                element.dispatchEvent(event);
-            } else {
-                event = document.createEventObject();
-                event.eventType = eventName;
-                element.fireEvent('on' + event.eventType, event);
-            }
-        }
-        
-        $('.translation-links a').click(function (e) {
-            e.preventDefault();
-            var lang = $(this).data('lang');
-            $('#google_translate_element select option').each(function () {
-                if ($(this).text().indexOf(lang) > -1) {
-                    $(this).parent().val($(this).val());
-                    var container = document.getElementById('google_translate_element');
-                    var select = container.getElementsByTagName('select')[0];
-                    triggerHtmlEvent(select, 'change');
-                }
-            });
-        });
-    </script>
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/jquery.sticky.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
-    {% include 'footer.html' %}
-</body>
-</html>
+        !function (){
+            const submit = function (e){
+                const grFirstName=document.getElementsByName("fname")[0].value,
+                grLastName=document.getElementsByName("lname")[0].value,
+                grEmail=document.getElementsByName("email")[0].value,
+                grMetadata='['+']';
+                if (grEmail != '') {
+                    e.preventDefault();
+                    const grSetting={
+                        "grTemplateSlug": "advocate-portal-280",
+                        "grCustomerFirstname": grFirstName,
+                        "grCustomerLastname": grLastName,
+                        "grCustomerEmail": grEmail,
+                        "grMetadata": grMetadata,
+                        "grCustomerCurrencyCode": "USD", /** your customers currency code **/
+                        "grCanRefer": "false",
+                        "grReference" : "1643387502" /** could be the order id, timestamp, etc. **/
+                    }
+                    const button = this;
+                    GRToolbox.processCustomerAndBonus(grSetting).then(function(){
+                        button.onclick=function(){};button.click();});}};
+                        const grSettingCookie={
+                            "grCookieLifeTime": "180",
+                        },
+                        e=window,t=document;e.addEventListener("load",function(){const e=t.createElement("script");e.type="text/javascript",e.async=!0,e.src="https://e9f87d8c82343264e6ba-2977c39e5e9390b1a89ab5ed2a171102.ssl.cf1.rackcdn.com/toolbox/geniusreferrals-toolbox_3.3.1.min.js",e.onload=function(){GRToolbox.catchReferrer(grSettingCookie);t.getElementById("submit").onclick = submit;};const n=t.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)},!1)}();
+                    </script>
+                    <!-- ENDING GENIUS REFERRALS TRACKING CODE -->
+                    
+                    <script type="text/javascript">
+                        // toggle PIN visibility
+                        function togglePINVis() {
+                            var button = document.getElementById("pin");
+                            var button2 = document.getElementById("conf_pin");
+                            if (button.type == 'password') {
+                                button.type = 'text';
+                                button2.type = 'text';
+                            } else {
+                                button.type = 'password';
+                                button2.type = 'password';
+                            }
+                        }
+                        // set PIN matching text
+                        $('#pin, #conf_pin').on('keyup', function () {
+                            if (($('#pin').val().length == 0) || ($('#conf_pin').val().length==0)) {
+                                $('#pin_match').html('');
+                            }
+                            else if ($('#pin').val() == $('#conf_pin').val())
+                            {
+                                if (($('#pin').val().length == 6) & ($('#conf_pin').val().length==6)) {
+                                    $('#pin_match').html('PINs match!').css('color', 'green');
+                                    $('#submit').prop('disabled', false);
+                                }
+                                else {
+                                    $('#pin_match').html('PIN must be 6 digits.').css('color', 'red');
+                                    $('#submit').prop('disabled', true);
+                                }
+                            }
+                            else {
+                                $('#pin_match').html('PINs do not match.').css('color', 'red');
+                                $('#submit').prop('disabled', true);
+                            }
+                        });
+                        function googleTranslateElementInit() {
+                            new google.translate.TranslateElement({
+                                pageLanguage: 'en',
+                                autoDisplay: false
+                            }, 'google_translate_element'); //remove the layout
+                        }
+                    </script>
+                    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+                    </script>
+                    <script type="text/javascript">
+                        function triggerHtmlEvent(element, eventName) {
+                            var event;
+                            if (document.createEvent) {
+                                event = document.createEvent('HTMLEvents');
+                                event.initEvent(eventName, true, true);
+                                element.dispatchEvent(event);
+                            } else {
+                                event = document.createEventObject();
+                                event.eventType = eventName;
+                                element.fireEvent('on' + event.eventType, event);
+                            }
+                        }
+                        
+                        $('.translation-links a').click(function (e) {
+                            e.preventDefault();
+                            var lang = $(this).data('lang');
+                            $('#google_translate_element select option').each(function () {
+                                if ($(this).text().indexOf(lang) > -1) {
+                                    $(this).parent().val($(this).val());
+                                    var container = document.getElementById('google_translate_element');
+                                    var select = container.getElementsByTagName('select')[0];
+                                    triggerHtmlEvent(select, 'change');
+                                }
+                            });
+                        });
+                    </script>
+                    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+                    <script src="{% static 'js/popper.min.js' %}"></script>
+                    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+                    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+                    <script src="{% static 'js/main.js' %}"></script>
+                    {% include 'footer.html' %}
+                </body>
+                </html>
+                
