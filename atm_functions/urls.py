@@ -32,6 +32,6 @@ urlpatterns = [
      path('MyTransactions/', views.my_transactions, name="MyTransactions"),
      path('RegisterAddress/', views.register_address, name="RegisterAddress"),
      path('GenerateAddress/', views.generate_address, name="GenerateAddress"),
-     path('TestReceiver/', views.test_receiver, name="TestReceiver")
+     # path('TestReceiver/', views.test_receiver, name="TestReceiver")
      # path('NotificationService/', views.notification_service, name="NotificationService")
 ]
