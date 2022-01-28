@@ -52,17 +52,18 @@
                             required maxlength="30">
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="pin">Create 6 Digit Number PIN Code:</label>
+                            <label for="pin">Create 6 Digit PIN Code:</label>
                             <input type="password"  onpaste="return false;" onkeypress="return ((event.charCode <= 57 && event.charCode >= 48) || (event.charCode ==0 && event.charCode !=8))" class="form-control" name="pin" id="pin"
                             required pattern="[0-9]{6}" maxlength="6" minlength="6">
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="conf_pin">Confirm 6 Digit Number PIN Code:</label>
+                            <label for="conf_pin">Confirm 6 Digit PIN Code:</label>
                             <input type="password"  onpaste="return false;" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" class="form-control" name="conf_pin" id="conf_pin"
                             required pattern="[0-9]{6}" maxlength="6" minlength="6">
-                            <div class="form-row" style="margin-top: 4px;">
-                                <div id='phone_match'></div>
-                            </div>
+                        </div>
+                        <div id="toggle-pin"><input type="checkbox" onclick="togglePINVis()"> Show PIN</div>
+                        <div class="form-row col-12">
+                            <div id='pin_match'></div>
                         </div>
                     </div>
                     
@@ -85,94 +86,81 @@
         </div>
     </div>
     {% include 'info_card.html' %}
-    <!--</div>-->
-    <!-- <div class="col-md-6"> -->
-        {# {% include 'animations/animations-2.html' %} #}
-        <!-- </div> -->
-        <!--</div>-->
-        <script type="text/javascript">
-            // set PIN matching text
-            $('#pin, #conf_pin').on('keyup', function () {
-                if (($('#pin').val().length == 0) || ($('#conf_pin').val().length==0)) {
-                    $('#pin_match').html('');
-                }
-                else if ($('#pin').val() == $('#conf_pin').val())
-                {
-                    if (($('#pin').val().length == 6) & ($('#conf_pin').val().length==6)) {
-                        $('#phone_match').html('PINs match!').css('color', 'green');
-                        $('#submit').prop('disabled', false);
-                    }
-                    else {
-                        $('#phone_match').html('PIN must be 6 digits.').css('color', 'red');
-                        $('#submit').prop('disabled', true);
-                    }
+    <script type="text/javascript">
+        // toggle PIN visibility
+        function togglePINVis() {
+            var button = document.getElementById("pin");
+            var button2 = document.getElementById("conf_pin");
+            if (button.type == 'password') {
+                button.type = 'text';
+                button2.type = 'text';
+            } else {
+                button.type = 'password';
+                button2.type = 'password';
+            }
+        }
+        // set PIN matching text
+        $('#pin, #conf_pin').on('keyup', function () {
+            if (($('#pin').val().length == 0) || ($('#conf_pin').val().length==0)) {
+                $('#pin_match').html('');
+            }
+            else if ($('#pin').val() == $('#conf_pin').val())
+            {
+                if (($('#pin').val().length == 6) & ($('#conf_pin').val().length==6)) {
+                    $('#pin_match').html('PINs match!').css('color', 'green');
+                    $('#submit').prop('disabled', false);
                 }
                 else {
-                    $('#phone_match').html('PINs do not match.').css('color', 'red');
+                    $('#pin_match').html('PIN must be 6 digits.').css('color', 'red');
                     $('#submit').prop('disabled', true);
                 }
+            }
+            else {
+                $('#pin_match').html('PINs do not match.').css('color', 'red');
+                $('#submit').prop('disabled', true);
+            }
+        });
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+        
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
             });
-            /// set phone number matching text
-            // $('#phone, #conf_phone').on('keyup', function () {
-                //     if (($('#phone').val().length == 0) || ($('#conf_phone').val().length==0)) {
-                    //         $('#phone_match').html('');
-                    //     }
-                    //     else if ($('#phone').val() == $('#conf_phone').val())
-                    //     {
-                        //         $('#phone_match').html('Phone numbers match').css('color', 'green');
-                        //         $('#submit').prop('disabled', false);
-                        //     }
-                        //     else {
-                            //         $('#phone_match').html('Phone numbers do not match').css('color', 'red');
-                            //         $('#submit').prop('disabled', true);
-                            //     }
-                            // });
-                            function googleTranslateElementInit() {
-                                new google.translate.TranslateElement({
-                                    pageLanguage: 'en',
-                                    autoDisplay: false
-                                }, 'google_translate_element'); //remove the layout
-                            }
-                        </script>
-                        <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
-                        </script>
-                        
-                        
-                        
-                        
-                        <script type="text/javascript">
-                            function triggerHtmlEvent(element, eventName) {
-                                var event;
-                                if (document.createEvent) {
-                                    event = document.createEvent('HTMLEvents');
-                                    event.initEvent(eventName, true, true);
-                                    element.dispatchEvent(event);
-                                } else {
-                                    event = document.createEventObject();
-                                    event.eventType = eventName;
-                                    element.fireEvent('on' + event.eventType, event);
-                                }
-                            }
-                            
-                            $('.translation-links a').click(function (e) {
-                                e.preventDefault();
-                                var lang = $(this).data('lang');
-                                $('#google_translate_element select option').each(function () {
-                                    if ($(this).text().indexOf(lang) > -1) {
-                                        $(this).parent().val($(this).val());
-                                        var container = document.getElementById('google_translate_element');
-                                        var select = container.getElementsByTagName('select')[0];
-                                        triggerHtmlEvent(select, 'change');
-                                    }
-                                });
-                            });
-                        </script>
-                        <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-                        <script src="{% static 'js/popper.min.js' %}"></script>
-                        <script src="{% static 'js/bootstrap.min.js' %}"></script>
-                        <script src="{% static 'js/jquery.sticky.js' %}"></script>
-                        <script src="{% static 'js/main.js' %}"></script>
-                        {% include 'footer.html' %}
-                    </body>
-                    </html>
-                    
+        });
+    </script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% include 'footer.html' %}
+</body>
+</html>
