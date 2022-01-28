@@ -964,35 +964,35 @@ def confirmed_token_transactions(request):
     return HttpResponse(status=200)
 
 
-@csrf_exempt
-def test_receiver(request):
-    if request.method == 'GET':
-        return redirect('authentication:Home')
+# @csrf_exempt
+# def test_receiver(request):
+#     if request.method == 'GET':
+#         return redirect('authentication:Home')
 
 
-    request_reader =request.META.get('wsgi.input')
+#     request_reader =request.META.get('wsgi.input')
 
-    # data = {
-    #     "request": str(dir(request_reader)),
-    #     "request_dict": str(request_reader.__dict__),
-    #     "buf_dir": str(dir(request_reader.buf)),
-    #     "buf_dict": str(request_reader.buf.__dict__),
-    #     "reader_dir": str(dir(request_reader.reader)),
-    #     "reader_dict": str(request_reader.reader.__dict__)
-    # }
+#     # data = {
+#     #     "request": str(dir(request_reader)),
+#     #     "request_dict": str(request_reader.__dict__),
+#     #     "buf_dir": str(dir(request_reader.buf)),
+#     #     "buf_dict": str(request_reader.buf.__dict__),
+#     #     "reader_dir": str(dir(request_reader.reader)),
+#     #     "reader_dict": str(request_reader.reader.__dict__)
+#     # }
 
 
-    # print(str(dir(request_reader)))
+#     # print(str(dir(request_reader)))
     
-    bpayload = request_reader.read()
-    payload = bpayload.decode("utf-8")
+#     bpayload = request_reader.read()
+#     payload = bpayload.decode("utf-8")
 
-    start = payload.index("{")
-    end = payload.rindex("}") + 1
+#     start = payload.index("{")
+#     end = payload.rindex("}") + 1
 
-    response = json.loads(payload[start:end])
+#     response = json.loads(payload[start:end])
 
-    return HttpResponse(str(response))
+#     return HttpResponse(str(response))
 
-    # return HttpResponse(str(data))
-    # return HttpResponse(str(request_reader.buf.__dict__))
+#     # return HttpResponse(str(data))
+#     # return HttpResponse(str(request_reader.buf.__dict__))
