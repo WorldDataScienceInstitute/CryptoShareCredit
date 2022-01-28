@@ -19,6 +19,23 @@ img {
     --bg: var(--primary-c);
 }
 
+@media (max-width: 600px){
+    .sidebar-container {
+        max-width: 100px;
+        min-width: none;
+        font-size: 10px;
+    }
+    .sidebar-container h2 {
+        font-size: 14px;
+    }
+    .sidebar-container h3 {
+        font-size: 12px;
+    }
+    .content-container {
+        padding-left: 25% !important;
+    }
+}
+
 .row {
     margin-left: 5px !important;
     margin-right: 5px !important;
