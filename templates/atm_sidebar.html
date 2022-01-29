@@ -6,7 +6,7 @@
 <div class="sidebar-container">
     <div class="sidebar-logo">
             <a href="{% url 'authentication:Home' %}"><img src="{% static '/images/logo.png' %}"></a>
-            <h2><b>CRYPTO$HARE</b></h2>
+            <h2 id="title"><b>CRYPTO$HARE</b></h2>
             {% if request.session.wallet_conn %}
             <h3 style="text-align: center;"> Wallet connected </h3>
             {% else %}
@@ -14,7 +14,7 @@
             {% endif %}
     </div>
     <br>
-    <ul class="sidebar-navigation">
+    <ul class="sidebar-navigation" id="features">
         <!-- <li> -->
             <!-- <a href="{% url 'authentication:Signing' %}"> -->
             {% if auth_level == 3 %}
@@ -24,7 +24,7 @@
             {% endif %}
             <!-- </a> -->
         <!-- </li> -->
-        <li style="border-style: none none solid none;border-color: white">
+        <li style="border-style: none none solid none;border-color: white" id="desc">
             {% if request.session.wallet_conn %}
             <a href="{% url 'atm_functions:DisconnectWallet' %}">
                 <i class="fas fa-address-card" aria-hidden="true"></i>&nbsp;&nbsp;DISCONNECT WALLET
@@ -49,11 +49,11 @@
             </a>
         </li>
 
-        <li>
+        <!-- <li>
             <a href="{% url 'atm_functions:MyAddresses' %}">
                 <i class="fa fa-id-card" aria-hidden="true"></i>MY ADDRESSES
             </a>
-        </li>
+        </li> -->
 
         <li>
             <a href="{% url 'atm_functions:MyLoans' %}">
@@ -61,15 +61,15 @@
             </a>
         </li>
 
-        <li>
+        <!-- <li>
             <a href="{% url 'atm_functions:WithdrawMoney' %}">
                 <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp; WITHDRAW <span style="color:green;">$</span>
             </a>
-        </li>
+        </li> -->
 
-        <li>
+        <li style="border-style: none none solid none;border-color: white">
             <a href="{% url 'atm_functions:DepositSelection' %}">
-                <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp; DEPOSIT <span style="color:green;">$</span>
+                <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp; CRYPTO$HARE WALLET <span style="color:green;">$</span>
             </a>
         </li>
 
