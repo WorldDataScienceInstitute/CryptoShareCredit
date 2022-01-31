@@ -342,18 +342,16 @@ def create_borrowing_offer(request):
         return redirect('authentication:Home')
     auth_confirmation = True
 
-
-
-    # print(balances)
     context = {
         "authConfirmation": auth_confirmation
     }
 
     if request.method == 'GET':
-        balances = Balance.objects.filter(email=request.user)
-        currencies = Cryptocurrency.objects.all()
 
-        context["currencies"] = currencies
+        currencies = Cryptocurrency.objects.filter(Q(symbol='USDC') | Q(symbol='USDT') | Q(symbol='WBTC'))
+
+        balances = Balance.objects.filter(email=request.user, currency_name__in=currencies)
+        # context["currencies"] = currencies
         context["balances"] = balances
         context["exchange_rates"] = []
 
@@ -405,7 +403,7 @@ def create_borrowing_offer(request):
             new_currency_balance.save()
 
         collateral_balance = Balance.objects.get(email=request.user, currency_name=currency__collateral_object)
-        print(collateral_balance.__dict__, amount_collateral)
+        # print(collateral_balance.__dict__, amount_collateral)
         if collateral_balance.amount < float(amount_collateral):
             messages.info(request, f"Insufficient collateral balance. You can only borrow up to {float(collateral_balance.amount)} {currency_collateral}.")
             return redirect('atm_functions:CreateBorrowingOffer')
