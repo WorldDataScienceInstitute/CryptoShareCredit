@@ -8,6 +8,12 @@
     {% include 'atm_sidebar.html' %}
     <div class="content-container">
         <h2 class="ml-4 text-primary">Deposit</h2>
+        <div style="text-align:center" class="ml-4 mt-4"  style="width:30%;min-width:400px;">
+            <a href="/atm/RegisterAddress">
+                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
+                id="button-withdraw">Register ETH address</button>
+            </a>
+        </div>
         <br>
         <!-- <h4 style="text-align: center">Please, for Ethereum Blockchain, make a deposit with an already registered address to one the following addresses corresponding to the asset you want to enter </h1> -->
         {% include 'messages.html' %}
@@ -15,7 +21,7 @@
         {% include 'a_sessiontimeout.html' %}
         <!-- <h5 class="ml-5">Information for account ending in {{ debit_last_four }}</h5> -->
             {% if request.session.wallet_conn %}
-            <h1> Coinbase Wallet usage is currently in progress, integration is not completely available for the moment</h1>
+            <h1> Coinbase Wallet usage is currently in progress, not available for the moment</h1>
             {% endif %}
             <table class="table">
                 <thead>
