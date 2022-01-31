@@ -3,8 +3,7 @@ function SetMaxAmount(getField, setField){
     var rate = document.getElementById(currency+"_exchangeRate").innerHTML;
     var maxAmount = 1*1000/rate
     var minAmount = 1*150/rate
-    // var maxAmount = document.getElementById(getField).value.split(' ')[0];
-    
+
     document.getElementById(setField).value = "";
 
     document.getElementById(setField).max = parseFloat(maxAmount).toFixed(4);
