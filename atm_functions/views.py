@@ -376,6 +376,39 @@ def create_borrowing_offer(request):
                 }
             context["exchange_rates"].append(rate)
 
+        exchange_rate_ltc = cryptoapis_client.get_exchange_rate_by_symbols("LTC", "USD")["rate"]
+        rate_ltc = {
+            "currency_name": "Litecoin",
+            "symbol": "LTC",
+            "exchange_rate": round(float(exchange_rate_ltc), 2)
+        }
+
+        exchange_rate_bch = cryptoapis_client.get_exchange_rate_by_symbols("BCH", "USD")["rate"]
+        rate_bch = {
+            "currency_name": "Bitcoin Cash",
+            "symbol": "BCH",
+            "exchange_rate": round(float(exchange_rate_bch), 2)
+        }
+
+        exchange_rate_dash = cryptoapis_client.get_exchange_rate_by_symbols("DASH", "USD")["rate"]
+        rate_dash = {
+            "currency_name": "Dash",
+            "symbol": "DASH",
+            "exchange_rate": round(float(exchange_rate_dash), 2)
+        }
+
+        exchange_rate_zec = cryptoapis_client.get_exchange_rate_by_symbols("ZEC", "USD")["rate"]
+        rate_zec = {
+            "currency_name": "Zcash",
+            "symbol": "ZEC",
+            "exchange_rate": round(float(exchange_rate_zec), 2)
+        }
+
+        context["exchange_rates"].append(rate_ltc)
+        context["exchange_rates"].append(rate_bch)
+        context["exchange_rates"].append(rate_dash)
+        context["exchange_rates"].append(rate_zec)        
+
         return render(request, 'create_borrowing_offer.html', context)
 
     elif request.method == 'POST':
