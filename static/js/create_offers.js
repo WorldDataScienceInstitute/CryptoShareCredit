@@ -1,11 +1,12 @@
 function SetMaxAmount(getField, setField){
-    var maxAmount = document.getElementById(getField).value.split(' ')[1];
+    var maxAmount = document.getElementById(getField).value.split('_')[1];
     document.getElementById(setField).max = parseFloat(maxAmount);
     document.getElementById(setField).removeAttribute("readonly");
 }
 
 function SetCollateral(getAmountField, getCollateralCurrency, setCollateralField){
-    var currency = document.getElementById(getCollateralCurrency).value.split(' ')[1];
+    var currency = document.getElementById(getCollateralCurrency).value.split(' ')[0];
+    alert(currency);
     if(currency != "NotSelected"){
         var currencyExchangeRate = document.getElementById(currency+"_exchangeRate").innerHTML;
         var loan_amount = document.getElementById(getAmountField).value;
