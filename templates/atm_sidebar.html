@@ -4,7 +4,7 @@
 {% include 'a_sessiontimeout.html' %}
 {% endif %}
 <div class="sidebar-container">
-    <div class="sidebar-logo">
+    <div class="sidebar-logo"">
             <a href="{% url 'authentication:Home' %}"><img src="{% static '/images/logo.png' %}"></a>
             <h2 id="title"><b>CRYPTO$HARE</b></h2>
             {% if request.session.wallet_conn %}
@@ -24,7 +24,8 @@
             {% endif %}
             <!-- </a> -->
         <!-- </li> -->
-        <li style="border-style: none none solid none;border-color: white" id="desc">
+
+        <!-- <li style="border-style: none none solid none;border-color: white" id="desc">
             {% if request.session.wallet_conn %}
             <a href="{% url 'atm_functions:DisconnectWallet' %}">
                 <i class="fas fa-address-card" aria-hidden="true"></i>&nbsp;&nbsp;DISCONNECT WALLET
@@ -35,6 +36,41 @@
             </a>
             {% endif %}
 
+        </li> -->
+
+        <!-- <li>
+            <a href="{% url 'atm_functions:MyAddresses' %}">
+                <i class="fa fa-id-card" aria-hidden="true"></i>MY ADDRESSES
+            </a>
+        </li> -->
+
+        <!-- <li>
+            <a href="{% url 'atm_functions:WithdrawMoney' %}">
+                <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp; WITHDRAW <span style="color:green;">$</span>
+            </a>
+        </li> -->
+
+        <li style="border-style: solid none none none; border-color: white">
+            <a href="{% url 'atm_functions:SendMoney' %}">
+                <i class="fa fa-paper-plane" aria-hidden="true"></i>SEND<span style="color:green;">$</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'atm_functions:BorrowMoney' %}">
+                <i class="fa fa-users" aria-hidden="true"></i>BORROW<span style="color:green;">$</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'atm_functions:LendMoney' %}">
+                <i class="fa fa-users" aria-hidden="true"></i>LEND<span style="color:green;">$</span>
+            </a>
+        </li>
+        <li style="border-style: none none solid none;border-color: white">
+            <a href="{% url 'atm_functions:EarnMoney' %}">
+                <i class="fa fa-users" aria-hidden="true"></i>EARN<span style="color:green;">$</span> (MARCH 2022)
+            </a>
         </li>
 
         <li>
@@ -49,57 +85,22 @@
             </a>
         </li>
 
-        <!-- <li>
-            <a href="{% url 'atm_functions:MyAddresses' %}">
-                <i class="fa fa-id-card" aria-hidden="true"></i>MY ADDRESSES
-            </a>
-        </li> -->
-
         <li>
             <a href="{% url 'atm_functions:MyLoans' %}">
                 <i class="fa fa-id-card" aria-hidden="true"></i>MY LOANS
             </a>
         </li>
 
-        <!-- <li>
-            <a href="{% url 'atm_functions:WithdrawMoney' %}">
-                <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp; WITHDRAW <span style="color:green;">$</span>
-            </a>
-        </li> -->
-
         <li style="border-style: none none solid none;border-color: white">
             <a href="{% url 'atm_functions:DepositSelection' %}">
-                <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp; CRYPTO$HARE WALLET <span style="color:green;">$</span>
-            </a>
-        </li>
-
-        <li>
-            <a href="{% url 'atm_functions:SendMoney' %}">
-                <i class="fa fa-paper-plane" aria-hidden="true"></i>SEND <span style="color:green;">$</span>
-            </a>
-        </li>
-
-        <li>
-            <a href="{% url 'atm_functions:BorrowMoney' %}">
-                <i class="fa fa-users" aria-hidden="true"></i>BORROW <span style="color:green;">$</span>
-            </a>
-        </li>
-
-        <li>
-            <a href="{% url 'atm_functions:LendMoney' %}">
-                <i class="fa fa-users" aria-hidden="true"></i>LEND <span style="color:green;">$</span>
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'atm_functions:EarnMoney' %}">
-                <i class="fa fa-users" aria-hidden="true"></i>EARN <span style="color:green;">$</span>
+                <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp; CRYPTO$HARE WALLET<span style="color:green;">$</span>
             </a>
         </li>
 
         <li>
             <!--<a href="{% url 'atm_functions:Shop' %}" onclick="return false">--> 
             <a href="#" onclick="return false">
-                <i class="fas fa-shopping-cart" aria-hidden="true"></i>&nbsp;&nbsp;SHOP(Coming soon!)
+                <i class="fas fa-shopping-cart" aria-hidden="true"></i>&nbsp;&nbsp;SHOP (MARCH 2022)
             </a>
         </li>
 
