@@ -355,6 +355,8 @@ def create_borrowing_offer(request):
         context["balances"] = balances
         context["exchange_rates"] = []
 
+        cryptoapis_client = CryptoApis()
+
         for balance in balances:
             if balance.currency_name.currency_name == "TEST_COIN":
                 rate = {
@@ -367,7 +369,6 @@ def create_borrowing_offer(request):
             elif balance.currency_name.currency_name == "ethereum_ropsten":
                 balance.currency_name.symbol = "ETH"
 
-            cryptoapis_client = CryptoApis()
             exchange_rate = cryptoapis_client.get_exchange_rate_by_symbols(balance.currency_name.symbol, "USD")["rate"]
             rate = {
                 "currency_name": balance.currency_name.currency_name,
