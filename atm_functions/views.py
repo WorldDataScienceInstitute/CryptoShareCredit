@@ -315,7 +315,7 @@ def lend_offer(request):
             return redirect('atm_functions:LendCrypto')
         # print(balance_usdc)
         if balance_usdc.amount < transaction.amount:
-            messages.info(request, f"Insufficient balance. You can only borrow up to {float(balance_usdc.amount)} {float(transaction.currency_name)}.")
+            messages.info(request, f"Insufficient balance. You can only borrow up to {float(balance_usdc.amount)} {transaction.currency_name.currency_name}.")
             return redirect('atm_functions:LendCrypto')
         
         balance_usdc.amount -= transaction.amount
@@ -414,7 +414,7 @@ def create_borrowing_offer(request):
 
     elif request.method == 'POST':
         currency = request.POST.get('currency').split(" ")[0]
-        amount = int(request.POST.get('currency_amount'))
+        amount = float(request.POST.get('currency_amount'))
         currency_collateral = request.POST.get('currency_collateral').split(" ")[0]
         amount_collateral = request.POST.get('currency_amount_collateral')
         interest_rate = request.POST.get('interest_rate')
