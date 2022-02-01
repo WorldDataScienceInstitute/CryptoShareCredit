@@ -9,6 +9,7 @@
     <div class="content-container">
         <h2 class="ml-4 text-primary">Create Loan</h2>
         <br>
+        <u><a href="{% url 'atm_functions:CryptoShareWallet' %}"><p id="borrowHelp" class="form-text" style="color: rgb(9, 185, 216); text-align: center; padding: 5px; border-style: dotted none dotted none; border-width: 1px; ">*Borrower must Register a Crypto$hare ETH address and transfer USDC, USDT, or WRAPPED BITCOIN to use as Collateral</p></a></u>
         {% include 'messages.html' %}
         {% if authConfirmation %}
         {% include 'a_sessiontimeout.html' %}
@@ -19,7 +20,7 @@
             <form action="/atm/CreateBorrowingOffer/" method="post">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="address">Payment Currency</label>
+                    <label for="address">Payment Currency   <em>(This is the Crypto Currency you will receive money in)</em></label>
                     <select class="form-control" id="currency" aria-describedby="currency" name="currency" onmouseup="SetMaxAmount('currency','currency_amount')">
                         <option disabled>Select one of your current balances for borrowing</option >
                         <option value="LTC Litecoin || Blockchain: litecoin || Network: mainnet">LTC Litecoin || Blockchain: litecoin</option>
@@ -45,7 +46,7 @@
                         placeholder="Enter the amount you want to borrow" max="1000" min="150" onchange="SetCollateral('currency_amount', 'currency', 'currency_collateral','currency_amount_collateral')" step=".0001" required readonly>
                 </div>
                 <div class="form-group">
-                    <label for="currency_collateral">Collateral</label>
+                    <label for="currency_collateral">Collateral     <em>(Choose USDC, USDT, or WRAPPED BITCOIN as Collateral for Loan)</em></label>
                     <select class="form-control" id="currency_collateral" aria-describedby="currency_collateral" name="currency_collateral" onchange="SetCollateral('currency_amount', 'currency', 'currency_collateral','currency_amount_collateral')" required>
                         <option value="NotSelected NotSelected">Select one of the supported currencies</option >
                             {% for balance in balances %}
@@ -57,12 +58,12 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="currency_amount">Collateral Amount</label>
+                    <label for="currency_amount">Collateral Amount      <em>(Must have 120% of Collateral Currency in Coinbase Wallet or CryptoShare Address to Submit)</em></label>
                     <input type="number" class="form-control" id="currency_amount_collateral" aria-describedby="currency_amount_collateral" name="currency_amount_collateral"
                         placeholder="This would be displayed once you enter your borrowing amount" step=".0001" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="interest_rate">Interest Rate</label>
+                    <label for="interest_rate">Interest Rate    <em>(This is the amount of Total Interest you pay by Due Date or your Collateral goes to Lender)</em></label>
                     <select class="form-control" id="interest_rate" aria-describedby="interest_rate" name="interest_rate">
                         <option disabled>Select one of the offered interests</option >
                         <option value="5"> 01 - 15 DAYS || 5% INTEREST</option>

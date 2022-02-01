@@ -327,10 +327,10 @@ def lend_offer(request):
 
         transaction.save()
 
-        emmiter = transaction.emmiter
-        emmiter_balance = Balance.objects.get(email=emmiter, currency_name=transaction.currency_name)
-        emmiter_balance.amount += transaction.amount
-        emmiter_balance.save()
+        emitter = transaction.emitter
+        emitter_balance = Balance.objects.get(email=emitter, currency_name=transaction.currency_name)
+        emitter_balance.amount += transaction.amount
+        emitter_balance.save()
 
         messages.info(request, f"The offer with ID: {transaction.id_b} has been started.")
         return redirect('atm_functions:LendMoney')
@@ -720,7 +720,7 @@ def my_loans(request):
 
     # loans = TransactionB.objects.filter(Q(emmiter = request.user) | Q(receiver = request.user))
     opened_offers = TransactionB.objects.filter(emitter = request.user, state = "OPEN")
-    accepted_offers = TransactionB.objects.filter(receptor = request.user, state = "IN PROGRESS") 
+    accepted_offers = TransactionB.objects.filter(Q(receptor=request.user) | Q(emitter=request.user), state = "IN PROGRESS") 
 
 
     context = {
