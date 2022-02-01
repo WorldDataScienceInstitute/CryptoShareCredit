@@ -19,7 +19,6 @@ from coinbase.wallet.error import TwoFactorRequiredError
 
 import hmac
 import hashlib
-from itertools import chain
 
 import os
 import requests
