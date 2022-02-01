@@ -19,6 +19,7 @@ from coinbase.wallet.error import TwoFactorRequiredError
 
 import hmac
 import hashlib
+from itertools import chain
 
 import os
 import requests
@@ -350,7 +351,15 @@ def create_borrowing_offer(request):
 
         currencies = Cryptocurrency.objects.filter(Q(symbol='USDC') | Q(symbol='USDT') | Q(symbol='WBTC'))
 
-        balances = Balance.objects.filter(email=request.user, currency_name__in=currencies)
+        balances = list(Balance.objects.filter(email=request.user, currency_name__in=currencies))
+
+        if len(balances) != 3:
+            missing_currencies = {'USDC', 'USDT', 'WBTC'} - {balance.currency_name.symbol for balance in balances}
+
+            for currency in missing_currencies:
+                balance = Balance(email=request.user, currency_name=Cryptocurrency.objects.get(symbol=currency), amount=0)
+                balances.append(balance)
+                
         # context["currencies"] = currencies
         context["balances"] = balances
         context["exchange_rates"] = []
@@ -428,7 +437,7 @@ def create_borrowing_offer(request):
             return redirect('atm_functions:CreateBorrowingOffer')
 
         currency_object = Cryptocurrency.objects.get(symbol=currency)
-        currency__collateral_object = Cryptocurrency.objects.get(symbol=currency_collateral)
+        currency_collateral_object = Cryptocurrency.objects.get(symbol=currency_collateral)
 
         try:
             currency_balance = Balance.objects.get(email=request.user, currency_name=currency_object)
@@ -436,7 +445,10 @@ def create_borrowing_offer(request):
             new_currency_balance = Balance(email=request.user, currency_name=currency_object, amount = 0)
             new_currency_balance.save()
 
-        collateral_balance = Balance.objects.get(email=request.user, currency_name=currency__collateral_object)
+        try:
+            collateral_balance = Balance.objects.get(email=request.user, currency_name=currency_collateral_object)
+        except:
+            collateral_balance = Balance(email=request.user, currency_name=currency_collateral_object, amount = 0)
         # print(collateral_balance.__dict__, amount_collateral)
         if collateral_balance.amount < float(amount_collateral):
             messages.info(request, f"Insufficient collateral balance. You can only borrow up to {float(collateral_balance.amount)} {currency_collateral}.")
@@ -451,7 +463,7 @@ def create_borrowing_offer(request):
 
         # print(transaction_id)
 
-        transaction_b = TransactionB(transaction_id=transaction_id, emitter=request.user, currency_name = currency_object, currency_name_collateral = currency__collateral_object, transaction_type=transaction_type, state="OPEN", amount=amount, amount_collateral=amount_collateral, interest_rate=interest_rate)
+        transaction_b = TransactionB(transaction_id=transaction_id, emitter=request.user, currency_name = currency_object, currency_name_collateral = currency_collateral_object, transaction_type=transaction_type, state="OPEN", amount=amount, amount_collateral=amount_collateral, interest_rate=interest_rate)
         transaction_b.save()
         
         #Missing to create a formal redirect page
