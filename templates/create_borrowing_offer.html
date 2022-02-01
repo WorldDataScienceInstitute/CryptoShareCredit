@@ -20,7 +20,7 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="address">Payment Currency</label>
-                    <select class="form-control" id="currency" aria-describedby="currency" name="currency" onchange="SetMaxAmount('currency','currency_amount')">
+                    <select class="form-control" id="currency" aria-describedby="currency" name="currency" onmouseup="SetMaxAmount('currency','currency_amount')">
                         <option disabled>Select one of your current balances for borrowing</option >
                         <option value="LTC Litecoin || Blockchain: litecoin || Network: mainnet">LTC Litecoin || Blockchain: litecoin</option>
                         <option value="BCH Bitcoin Cash || Blockchain: bitcoin-cash || Network: mainnet">BCH Bitcoin Cash || Blockchain: bitcoin-cash</option>
@@ -49,7 +49,7 @@
                     <select class="form-control" id="currency_collateral" aria-describedby="currency_collateral" name="currency_collateral" onchange="SetCollateral('currency_amount', 'currency', 'currency_collateral','currency_amount_collateral')" required>
                         <option value="NotSelected NotSelected">Select one of the supported currencies</option >
                             {% for balance in balances %}
-                            <option value="{{ balance.currency_name.symbol }} {{ balance.currency_name.currency_name }}"> {{ balance.currency_name.symbol }} - {{ balance.currency_name.currency_name }} ||| Blockchain: {{ balance.currency_name.blockchain }} | Network: {{ balance.currency_name.network }} ||| Balance: {{ balance.amount }}</option>
+                            <option value="{{ balance.currency_name.symbol }} {{ balance.currency_name.currency_name }}"> {{ balance.currency_name.symbol }} - {{ balance.currency_name.currency_name }} ||| Blockchain: {{ balance.currency_name.blockchain }} | Network: {{ balance.currency_name.network }} ||| Balance: {{ balance.amount|floatformat:"4" }}</option>
                             {% endfor %}
                         <!-- {% for currency in currencies %}
                         <option value="{{ currency.currency_name }}"> Blockchain: {{ currency.blockchain }} || Network: {{ currency.network }} || {{ currency.symbol }} - {{ currency.currency_name }}</option>
@@ -84,7 +84,7 @@
             </form>
             {% endif %}
             <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
-                <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*All Funds will be Sent and Received in USDC</small>
+                <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Must have 120% of Collateral Currency in Coinbase Wallet or CryptoShare Address to Submit</small>
             </div>
         {% else %}
         <h5 class="ml-5">You are not currently signed in. To sign in or make an account, <a href="{% url 'authentication:Home' %}">click or tap here.</a></h5>
