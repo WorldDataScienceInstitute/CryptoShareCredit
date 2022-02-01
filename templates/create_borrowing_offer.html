@@ -20,8 +20,9 @@
             <form action="/atm/CreateBorrowingOffer/" method="post">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="address">Payment Currency   <em>(This is the Crypto Currency you will receive money in)</em></label>
-                    <select class="form-control" id="currency" aria-describedby="currency" name="currency" onmouseup="SetMaxAmount('currency','currency_amount')">
+                    <label for="address"><b>Payment Currency</b>   <em>(This is the Crypto Currency you will receive money in)</em></label>
+                    <select class="form-control" id="currency" aria-describedby="currency" name="currency" onmouseup="ActivateAmountField('currency_amount')">
+                    <!-- <select class="form-control" id="currency" aria-describedby="currency" name="currency" onmouseup="SetMaxAmount('currency','currency_amount')"> -->
                         <option disabled>Select one of your current balances for borrowing</option >
                         <option value="LTC Litecoin || Blockchain: litecoin || Network: mainnet">LTC Litecoin || Blockchain: litecoin</option>
                         <option value="BCH Bitcoin Cash || Blockchain: bitcoin-cash || Network: mainnet">BCH Bitcoin Cash || Blockchain: bitcoin-cash</option>
@@ -39,14 +40,14 @@
                 </div>
                 <div class="form-group">
                     <!-- <label for="recipientUser">Recipient Address or Coinbase email</label> -->
-                    <label for="currency_amount">Amount</label>
+                    <label for="currency_amount"><b>Amount</b>  <em>(IN USD)</em></label>
                     <!-- <input type="number" class="form-control" id="currency_amount" aria-describedby="currency_amount" name="currency_amount"
                         placeholder="Enter the amount you want to lend" max="" min="0.0001" readonly> -->
                     <input type="number" class="form-control" id="currency_amount" aria-describedby="currency_amount" name="currency_amount"
-                        placeholder="Enter the amount you want to borrow" max="1000" min="150" onchange="SetCollateral('currency_amount', 'currency', 'currency_collateral','currency_amount_collateral')" step=".0001" required readonly>
+                        placeholder="Enter the amount you want to borrow || Min: 150 Max: 1000" max="1000" min="150" onchange="SetCollateral('currency_amount', 'currency', 'currency_collateral','currency_amount_collateral')" step=".0001" required readonly>
                 </div>
                 <div class="form-group">
-                    <label for="currency_collateral">Collateral     <em>(Choose USDC, USDT, or WRAPPED BITCOIN as Collateral for Loan)</em></label>
+                    <label for="currency_collateral"><b>Collateral</b>     <em>(Choose USDC, USDT, or WRAPPED BITCOIN as Collateral for Loan)</em></label>
                     <select class="form-control" id="currency_collateral" aria-describedby="currency_collateral" name="currency_collateral" onchange="SetCollateral('currency_amount', 'currency', 'currency_collateral','currency_amount_collateral')" required>
                         <option value="NotSelected NotSelected">Select one of the supported currencies</option >
                             {% for balance in balances %}
@@ -58,12 +59,12 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="currency_amount">Collateral Amount      <em>(Must have 120% of Collateral Currency in Coinbase Wallet or CryptoShare Address to Submit)</em></label>
+                    <label for="currency_amount"><b>Collateral Amount</b>      <em>(Must have 120% of Collateral Currency in Coinbase Wallet or CryptoShare Address to Submit)</em></label>
                     <input type="number" class="form-control" id="currency_amount_collateral" aria-describedby="currency_amount_collateral" name="currency_amount_collateral"
                         placeholder="This would be displayed once you enter your borrowing amount" step=".0001" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="interest_rate">Interest Rate    <em>(This is the amount of Total Interest you pay by Due Date or your Collateral goes to Lender)</em></label>
+                    <label for="interest_rate"><b>Interest Rate</b>    <em>(This is the amount of Total Interest you pay by Due Date or your Collateral goes to Lender)</em></label>
                     <select class="form-control" id="interest_rate" aria-describedby="interest_rate" name="interest_rate">
                         <option disabled>Select one of the offered interests</option >
                         <option value="5"> 01 - 15 DAYS || 5% INTEREST</option>
@@ -123,7 +124,7 @@
         </table>
     </div>
     
-    <script type="text/javascript" src="{% static 'js/create_offers_2.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/create_offers.js' %}"></script>
 
     <script type="text/javascript">
         function googleTranslateElementInit() {

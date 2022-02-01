@@ -12,12 +12,17 @@ function SetMaxAmount(getField, setField){
     document.getElementById(setField).removeAttribute("readonly");
 }
 
+function ActivateAmountField(setField){
+    document.getElementById(setField).removeAttribute("readonly");
+}
+
 function SetCollateral(getAmountField, getPaymentCurrency, getCollateralCurrency, setCollateralField){
     var currency = document.getElementById(getPaymentCurrency).value.split(' ')[0];
     var currencyCollateral = document.getElementById(getCollateralCurrency).value.split(' ')[0];
 
     if(currency != "NotSelected"){
-        var currencyRate = document.getElementById(currency+"_exchangeRate").innerHTML;
+        var currencyRate = document.getElementById("USDC_exchangeRate").innerHTML;
+        // var currencyRate = document.getElementById(currency+"_exchangeRate").innerHTML;
         var currencyCollateralRate = document.getElementById(currencyCollateral+"_exchangeRate").innerHTML;
 
         var loan_amount = document.getElementById(getAmountField).value;
