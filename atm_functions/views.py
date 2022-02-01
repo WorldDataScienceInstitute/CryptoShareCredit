@@ -138,7 +138,7 @@ def deposit_money(request):
     else:
         return render(request, 'deposit_money.html', context)
 
-def deposit_crypto(request):
+def cryptoshare_wallet(request):
     if not request.user.is_authenticated:
         return redirect('authentication:Home')
     auth_confirmation = True
@@ -201,7 +201,7 @@ def deposit_crypto(request):
             address.wallet_address = currencies_dict["Zcash"]
             context["address_confirmations"][3]["has_address"] = True
 
-    return render(request, 'deposit_crypto.html', context)
+    return render(request, 'cryptoshare_wallet.html', context)
 
 def bank(request):
     if request.user.is_authenticated:
@@ -798,13 +798,13 @@ def generate_address(request):
 
     if not blockchain or not network or not currency:
         messages.info(request, "Invalid option, please try again.")
-        return redirect('atm_functions:DepositCrypto')
+        return redirect('atm_functions:CryptoShareWallet')
     
     #Check if there is already an address for that currency name for that email
     address_exists = Address.objects.filter(email=request.user, currency_name=currency_object)
     if address_exists:
         messages.info(request, "Address already exists.")
-        return redirect('atm_functions:DepositCrypto')
+        return redirect('atm_functions:CryptoShareWallet')
 
     #Check if there is already a balance with that currency name for that email
     balance_exists = Balance.objects.filter(email=email_object, currency_name=currency_object)
@@ -819,7 +819,7 @@ def generate_address(request):
         address.save()
         # print(address)
         messages.info(request, "Address generated successfully.")
-        return redirect('atm_functions:DepositCrypto')
+        return redirect('atm_functions:CryptoShareWallet')
 
 
     cryptoapis_client = CryptoApis()
@@ -831,7 +831,7 @@ def generate_address(request):
         deposit_address = cryptoapis_client.generate_deposit_address(blockchain, network, number_of_addresses)
     except:
         messages.info(request, "Error generating address. Please try again.")
-        return redirect('atm_functions:DepositCrypto')
+        return redirect('atm_functions:CryptoShareWallet')
 
     newAddress = Address(address=deposit_address, email=email_object, currency_name=currency_object)
     newAddress.save()
@@ -842,12 +842,12 @@ def generate_address(request):
         newAddress.email = None
         newAddress.save()
         messages.info(request, "Error generating address, please contact support")
-        return redirect('atm_functions:DepositCrypto')
+        return redirect('atm_functions:CryptoShareWallet')
 
     
     messages.info(request, "Address generated successfully.")
 
-    return redirect('atm_functions:DepositCrypto')
+    return redirect('atm_functions:CryptoShareWallet')
 
     # return HttpResponse(status=200)
 
