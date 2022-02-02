@@ -13,6 +13,7 @@ urlpatterns = [
      path('TyDeposit/', views.ty_deposit, name='TyDeposit'),
      path('BorrowMoney/', views.borrow_money, name='BorrowMoney'),
      path('BorrowCrypto/', views.borrow_crypto, name='BorrowCrypto'),
+     path('BorrowCryptoDashboard/', views.borrow_crypto_dashboard, name='BorrowCryptoDashboard'),
      path('CreateBorrowingOffer/', views.create_borrowing_offer, name='CreateBorrowingOffer'),
      path('LendMoney/', views.lend_money, name='LendMoney'),
      path('LendCrypto/', views.lend_crypto, name='LendCrypto'),

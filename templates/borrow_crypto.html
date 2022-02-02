@@ -5,7 +5,9 @@
 <html lang="en">
 {% include 'header.html' %}
 <body>
+    {% if iframe is None %}
     {% include 'atm_sidebar.html' %}
+    {% endif %}
 
     {% if authConfirmation %}
     {% include 'messages.html' %}
@@ -15,7 +17,11 @@
         <div style="text-align:center" class="ml-4 mt-4"  style="width:30%;min-width:400px;">
             <!-- <u><a href="{% url 'atm_functions:CryptoShareWallet' %}"><p id="borrowHelp" class="form-text" style="color: rgb(9, 185, 216); text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Borrower must Register a Crypto$hare ETH address and transfer USDC, USDT, or WRAPPED BITCOIN to use as Collateral</p></a></u> -->
             <br>
+            {% if iframe is None %}
             <a href="/atm/CreateBorrowingOffer/">
+            {% else %}
+            <a href="/atm/CreateBorrowingOffer/?iframe=1">
+            {% endif %}
                 <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
                 id="button-withdraw">CREATE LOAN</button>
             </a>

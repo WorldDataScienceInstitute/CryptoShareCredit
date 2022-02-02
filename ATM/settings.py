@@ -159,6 +159,7 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'help@cryptoshareapp.com'
 EMAIL_PORT = 587
 NO_REPLY_PASSWORD = os.environ['NO_REPLY_PASSWORD']
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

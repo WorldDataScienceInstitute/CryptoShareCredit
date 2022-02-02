@@ -172,6 +172,10 @@ def cryptoshare_wallet(request):
                                 }
                                 ]
     }
+    
+    iframe = request.GET.get('iframe','')
+    if iframe:
+        context["iframe"] = True
 
     currencies = Address.objects.filter(email=request.user).values("currency_name")
     currencies_addresses = Address.objects.filter(email=request.user)
@@ -255,7 +259,23 @@ def borrow_crypto(request):
         "lend_offers": lend_offers
     }
 
+    iframe = request.GET.get('iframe','')
+    if iframe:
+        context["iframe"] = True
+
     return render(request, 'borrow_crypto.html', context)
+
+def borrow_crypto_dashboard(request):
+    if not request.user.is_authenticated:
+        return redirect('authentication:Home')
+    auth_confirmation = True
+
+
+    context = {
+        "authConfirmation": auth_confirmation
+    }
+
+    return render(request, 'borrow_crypto_dashboard.html', context)
 
 def lend_money(request):
     if request.user.is_authenticated:
@@ -345,6 +365,10 @@ def create_borrowing_offer(request):
     context = {
         "authConfirmation": auth_confirmation
     }
+
+    iframe = request.GET.get('iframe','')
+    if iframe:
+        context["iframe"] = True
 
     if request.method == 'GET':
 
@@ -737,7 +761,6 @@ def register_address(request):
     if not request.user.is_authenticated:
         return redirect('authentication:Home')
 
-    # print(request.user)
 
     currencies = Cryptocurrency.objects.all()
     auth_confirmation = True
@@ -745,6 +768,11 @@ def register_address(request):
     context = {'authConfirmation': auth_confirmation, 
                 'currencies': currencies
                 }
+
+    iframe = request.GET.get('iframe','')
+    if iframe:
+        context["iframe"] = True
+
 
     if request.method == 'GET':
         return render(request, 'register_address.html', context)

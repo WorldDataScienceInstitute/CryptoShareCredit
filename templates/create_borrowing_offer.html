@@ -5,11 +5,15 @@
 <html lang="en">
 {% include 'header.html' %}
 <body>
+    {% if iframe is None %}
     {% include 'atm_sidebar.html' %}
+    {% endif %}
     <div class="content-container">
         <h2 class="ml-4 text-primary">Create Loan</h2>
         <br>
+        {% if iframe is None %}
         <u><a href="{% url 'atm_functions:CryptoShareWallet' %}"><p id="borrowHelp" class="form-text" style="color: rgb(9, 185, 216); text-align: center; padding: 5px; border-style: dotted none dotted none; border-width: 1px; ">*Borrower must Register a Crypto$hare ETH address and transfer USDC, USDT, or WRAPPED BITCOIN to use as Collateral</p></a></u>
+        {% endif %}
         {% include 'messages.html' %}
         {% if authConfirmation %}
         {% include 'a_sessiontimeout.html' %}
