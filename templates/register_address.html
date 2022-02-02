@@ -15,9 +15,6 @@
         {% if authConfirmation %}
         {% include 'a_sessiontimeout.html' %}
         <!-- <h5 class="ml-5">Information for account ending in {{ debit_last_four }}</h5> -->
-            {% if request.session.wallet_conn %}
-            <h1> Coinbase Wallet usage is currently in progress</h1>
-            {% else %}
             <form action="/atm/RegisterAddress/" method="post">
                 {% csrf_token %}
                 <div class="form-group">
@@ -45,7 +42,6 @@
                 <small id="addressRegisterHelp" class="form-text text-muted">We'll never share information with anyone else</small>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
-            {% endif %}
         {% else %}
         <h5 class="ml-5">You are not currently signed in. To sign in or make an account, <a href="{% url 'authentication:Home' %}">click or tap here.</a></h5>
         {% endif %}

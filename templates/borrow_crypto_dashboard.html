@@ -16,38 +16,75 @@
             <div class="row" style="margin-top: 50px;">
                 <div class="col-md-4">
                     <div class="card" style="background-color: rgba(216, 216, 216, 0.918);">
-                        <img src="https://dash-bootstrap-components.opensource.faculty.ai/static/images/placeholder286x180.png" class="card-img-top" alt="...">
+                        <img src="https://dash-bootstrap-components.opensource.faculty.ai/static/images/placeholder286x180.png"
+                            class="card-img-top" alt="...">
                         <div class="card-body" style="min-height: 200px; max-height: 500px;">
-                            <u><h5 class="card-title" style="text-align: center;"><b>Step 1</b></h5></u>
-                            <p class="card-text" style="text-align: center; color: black;">Register your ETH address. <em>(The one you are going to send funds from)</em>.</p>
-                            <a href="#screen_iframe" onclick="changeIframeSRC(1)" class="btn btn-primary" style="color: white;">Go to register address</a>
+                            <u>
+                                <h5 class="card-title" style="text-align: center;"><b>Step 1 (Optional)</b></h5>
+                            </u>
+                            <p class="card-text" style="text-align: center; color: black;">Connect to your Coinbase Wallet <br>
+                                <em>(The one you are going to send funds from)</em>.</p>
+                            <!-- <a href="#screen_iframe" onclick="changeIframeSRC(1)" class="btn btn-primary"
+                                style="color: white;">Go to register address</a> -->
+                            {% if request.session.wallet_conn %}
+                            <h2 style="text-align: center; color: rgb(15, 136, 15)"> Ready</h2>
+                            {% else %}
+                            <a href="https://www.coinbase.com/oauth/authorize?response_type=code&client_id=35fb284ac9af15803924d53bb3cbc1890f147c526439f60cbc76f156004701e3&redirect_uri=https%3A//www.cryptoshareapp.com/atm/ApproveWallet/&scope=wallet:accounts:read,wallet:user:email,wallet:transactions:send&meta[send_limit_amount]=1"
+                                class="btn btn-primary" style="color: white;">
+                                Connect wallet
+                            </a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card" style="background-color: rgba(216, 216, 216, 0.918);">
-                        <img src="https://dash-bootstrap-components.opensource.faculty.ai/static/images/placeholder286x180.png" class="card-img-top" alt="...">
+                        <img src="https://dash-bootstrap-components.opensource.faculty.ai/static/images/placeholder286x180.png"
+                            class="card-img-top" alt="...">
                         <div class="card-body" style="min-height: 200px; max-height: 500px;">
-                            <u><h5 class="card-title" style="text-align: center; color: black;"><b>Step 2</b></h5></u>
-                            <p class="card-text" style="text-align: center; color: black;">Deposit your collateral into the shown ETH address with your already registered address.</p>
-                            <a href="#screen_iframe" onclick="changeIframeSRC(2)" class="btn btn-primary" style="color: white;">Go to CryptoShare Wallet</a>
+                            <u>
+                                <h5 class="card-title" style="text-align: center; color: black;"><b>Step 2</b></h5>
+                            </u>
+                            <p class="card-text" style="text-align: center; color: black;">Register your public ETH address.</p>
+                            <br>
+                            <a href="#screen_iframe" onclick="changeIframeSRC(1)" class="btn btn-primary"
+                                style="color: white;">Go to Register Address</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card" style="background-color: rgba(216, 216, 216, 0.918);">
-                        <img src="https://dash-bootstrap-components.opensource.faculty.ai/static/images/placeholder286x180.png" class="card-img-top" alt="...">
+                        <img src="https://dash-bootstrap-components.opensource.faculty.ai/static/images/placeholder286x180.png"
+                            class="card-img-top" alt="...">
                         <div class="card-body" style="min-height: 200px; max-height: 500px;">
-                            <u><h5 class="card-title" style="text-align: center; color: black;"><b>Step 3</b></h5></u>
-                            <p class="card-text" style="text-align: center; color: black;">Select an instant loan option or create your own loan offer!</p>
-                            <a href="#screen_iframe" onclick="changeIframeSRC(3)" class="btn btn-primary" style="color: white;">Go Crypto Loans</a>
+                            <u>
+                                <h5 class="card-title" style="text-align: center; color: black;"><b>Step 3</b></h5>
+                            </u>
+                            <p class="card-text" style="text-align: center; color: black;">Select an instant loan option
+                                or create your own loan offer!</p>
+                            <a href="#screen_iframe" onclick="changeIframeSRC(2)" class="btn btn-primary"
+                                style="color: white;">Go Crypto Loans</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 50px;">
+                <div class="col-lg">
+                    <div class="card" style="background-color: rgba(216, 216, 216, 0.918);">
+                        <div class="card-body" style="min-height: 200px; max-height: 500px;">
+                            <u>
+                                <h5 class="card-title" style="text-align: center;"><b>Step 4 (Optional)</b></h5>
+                            </u>
+                            <p class="card-text" style="text-align: center; color: black;">If you didn't have enought collateral deposited, you can deposit your collateral later for opening your loan offer.</p>
+                            <a href="#screen_iframe" onclick="changeIframeSRC(3)" class="btn btn-primary"
+                                style="color: white;">Go Crypto Loans</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <iframe id="screen_iframe" height=80% width="100%" src=""></iframe>
+
+        <iframe id="screen_iframe" height=70% width="100%" src=""></iframe>
 
 
     </div>
@@ -66,14 +103,14 @@
     </script>
 
     <script type="text/javascript">
-        function changeIframeSRC(option){
+        function changeIframeSRC(option) {
             newSrc = ""
-            if(option == 1){
+            if (option == 1) {
                 newSrc = "{% url 'atm_functions:RegisterAddress' %}?iframe=1"
-            }else if(option == 2){
+            } else if (option == 2) {
                 newSrc = "{% url 'atm_functions:CryptoShareWallet' %}?iframe=1"
-            }else if(option == 3){
-                newSrc = "{% url 'atm_functions:BorrowCrypto' %}?iframe=1"
+            } else if (option == 3) {
+                newSrc = "{% url 'atm_functions:MyLoans' %}?iframe=1"
             }
             document.getElementById('screen_iframe').src = newSrc;
 
