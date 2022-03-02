@@ -105,21 +105,19 @@
                 </a>
                 <hr>
                 <!--"https://pages.viral-loops.com/cryptoshare-getmoney"-->
-                <p style="font-size:14px;color:rgb(0, 0, 0);text-align:center;"><i class="far fa-money-bill-alt"></i> <b> Get Money </b>for every User that creates an account and uses your Referral Link<br> with this Crypto$hare Incentive Program.</p>
+                <!-- <p style="font-size:14px;color:rgb(0, 0, 0);text-align:center;"><i class="far fa-money-bill-alt"></i> <b> Get Money </b>for every User that creates an account and uses your Referral Link<br> with this Crypto$hare Incentive Program.</p>
                 <a href="" target="_blank">
                     <button type="button" class="btn btn-secondary btn-lg btn-block" disabled>
                         Get Money
-                        <!--class="btn btn-invest btn-secondary btn-lg btn-block"-->
-                        <!--<p style="font-size:12px;">You have a once and a lifetime opportunity to Invest in Future Equity in Cryptoshare that one day can be listed on Stock Exchange.</p> -->
                     </button>
                 </a>
-                <hr>
+                <hr> -->
                 {% if name is None %}
 
                     <!--https://cryptoshare.shop/-->
-                    <p style="font-size:14px;color:rgb(0, 0, 0);text-align:center;"><i class="fas fa-shopping-cart" aria-hidden="true"></i> Marketplace for Users to buy Services with cryptocurrency and Allow<b> Businesses<br> to List their Services with Cryptocurrency as a Payment Option</b>.</p>
-                    <a href=""><button type="button"
-                        class="btn btn-secondary btn-lg btn-block" disabled>
+                <p style="font-size:14px;color:rgb(0, 0, 0);text-align:center;"><i class="fas fa-shopping-cart" aria-hidden="true"></i> Marketplace for Users to buy Services with cryptocurrency and Allow<b> Businesses<br> to List their Services with Cryptocurrency as a Payment Option</b>.</p>
+                <a href="https://cryptoshare.auction/" target="_blank">
+                    <button type="button" class="btn btn-secondary btn-lg btn-block" style="background-color:green;">
                         Crypto$hare Marketplace
                         <!--<p style="font-size:12px;">Coming Soon!</p>-->
                     </button>
@@ -127,8 +125,10 @@
                 <hr>
                 {% endif %}
                 <p style="font-size:14px;color:rgb(0, 0, 0);text-align:center;"><i class="fa fa-users" aria-hidden="true"></i> Initiative to <b>Fund Innovative Projects from People of Color Around<br> the World using Cryptocurrency</b> Donated from  Users.</p>
-                <a href="{% url 'authentication:GiveBack' %}"><button type="button"
-                    class="btn btn-primary btn-lg btn-block">Give Crypto</button>
+                <a href="{% url 'authentication:GiveBack' %}">
+                    <button type="button" class="btn btn-primary btn-lg btn-block" style="background-color:green;">
+                        Give Crypto
+                    </button>
                 </a>
                 {% if name is not None %}
                 <br>
