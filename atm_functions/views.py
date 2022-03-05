@@ -890,6 +890,19 @@ def generate_address(request):
 
     # return HttpResponse(status=200)
 
+def card_info(request):
+    if not request.user.is_authenticated:
+        return redirect('authentication:Home')
+
+    auth_confirmation = True
+
+    context = {'authConfirmation': auth_confirmation}
+
+    # if request.method == 'GET':
+    #     return render(request, 'card_info.html', context)
+
+    return render(request, 'cardproducts.html', context)
+
 @csrf_exempt
 # @require_POST
 def confirmed_coin_transactions(request):
