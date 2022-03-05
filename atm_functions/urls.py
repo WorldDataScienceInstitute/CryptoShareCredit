@@ -33,7 +33,8 @@ urlpatterns = [
      path('MyTransactions/', views.my_transactions, name="MyTransactions"),
      path('RegisterAddress/', views.register_address, name="RegisterAddress"),
      path('GenerateAddress/', views.generate_address, name="GenerateAddress"),
-     path('CardInfo/', views.card_info, name="CardInfo"),
+     path('CardDashboard/', views.card_dashboard, name="CardDashboard"),
+     path('CardCreateUser/', views.aptopayments_create_user, name="CardCreateUser"),
      # path('TestReceiver/', views.test_receiver, name="TestReceiver")
      # path('NotificationService/', views.notification_service, name="NotificationService")
 ]

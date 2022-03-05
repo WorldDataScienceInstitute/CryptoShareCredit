@@ -13,6 +13,7 @@ from atm_functions.models import Account, Address, Balance, Cryptocurrency, Tran
 from common.utils import currency_list
 from common.emails import sent_funds_email, deposit_funds_email
 from common.cryptoapis import CryptoApis
+from common.aptopayments import AptoPayments
 from google_currency import convert
 from coinbase.wallet.client import OAuthClient
 from coinbase.wallet.error import TwoFactorRequiredError
@@ -890,19 +891,126 @@ def generate_address(request):
 
     # return HttpResponse(status=200)
 
-def card_info(request):
+def card_dashboard(request):
     if not request.user.is_authenticated:
         return redirect('authentication:Home')
 
     auth_confirmation = True
+    context = {"authConfirmation": auth_confirmation,
+                "start_auth": False,
+                "finish_auth": False,
+                "has_card": False,
+                "aptopayments_auth_info": {
+                                            "verification_id": "None"
+                }
+            }
+    
+    if "aptopayments_verification_id" in request.session:
+        context["aptopayments_auth_info"]["verification_id"] = request.session["aptopayments_verification_id"]
+    else:
+        if request.POST.get("start_auth",""):
+            country_code = request.POST["country_code"]
+            phone_number = request.POST["phone_number"]
 
-    context = {'authConfirmation': auth_confirmation}
+            aptopayments_client = AptoPayments()
 
-    # if request.method == 'GET':
-    #     return render(request, 'card_info.html', context)
+            verification = aptopayments_client.start_phone_verification_process(country_code, phone_number)
+            try:
+                if verification["status"] != "pending":
+                    messages.info(request, "Error starting verification process. Please try again.")
+                    return redirect('atm_functions:CardDashboard')
+            except:
+                messages.info(request, "Error starting verification process. Please try again.")
+                return redirect('atm_functions:CardDashboard')
 
-    return render(request, 'cardproducts.html', context)
+            context["start_auth"] = True
+            context["aptopayments_auth_info"]["verification_id"] = verification["verification_id"]        
 
+
+        elif request.POST.get("finish_auth",""):
+            code = request.POST["code"]
+            verification_id = request.POST["verification_id"]
+
+            aptopayments_client = AptoPayments()
+
+            complete_verification = aptopayments_client.complete_verification_process(code, verification_id)
+
+            try:
+                if complete_verification["status"] != "passed":
+                    messages.info(request, "Error finishing verification process. Please try again.")
+                    return redirect('atm_functions:CardDashboard')
+            except:
+                messages.error(request, "Error finishing verification process. Please try again.")
+                return redirect('atm_functions:CardDashboard')
+
+            print(complete_verification)
+
+            login_data = aptopayments_client.login_user(verification_id)
+            print(login_data)
+
+            request.session["aptopayments_verification_id"] = verification_id
+            context["aptopayments_auth_info"]["verification_id"] = verification_id
+
+
+    return render(request, 'card_dashboard.html', context)
+
+def aptopayments_create_user(request):
+    if not request.user.is_authenticated:
+        return redirect('authentication:Home')
+
+    context = {"authConfirmation": True}
+
+    iframe = request.GET.get('iframe','')
+    if iframe:
+        context["iframe"] = True
+        
+        verification_id = request.GET.get('verification_id','')
+        context["verification_id"] = verification_id
+
+    if request.method == "GET":
+
+        return render(request, 'aptopayments_create_user.html', context)
+    
+    if request.method == "POST":
+        verification_id = request.POST.get('verification_id','')
+
+        first_name = request.POST.get('first_name','')
+        last_name = request.POST.get('last_name','')
+        email = request.POST.get('email','')
+        country_code = request.POST.get('country_code','')
+        phone_number = request.POST.get('phone_number','')
+        birthday = request.POST.get('birthday','')
+        street_address = request.POST.get('street_one','')
+        street_address_2 = request.POST.get('street_two','')
+        city = request.POST.get('city','')
+        state = request.POST.get('state','')
+        postal_code = request.POST.get('postal_code','')
+        country = request.POST.get('country','')
+
+        aptopayments_client = AptoPayments()
+
+        print(verification_id, first_name, last_name, email, country_code, phone_number, birthday, street_address, street_address_2, city, state, postal_code, country)
+
+        try:
+            request_test = aptopayments_client.create_user(email, verification_id, country_code, phone_number, birthday, first_name, last_name, street_address, street_address_2, city, state, postal_code, country)
+        except:
+            print("ERROOOOOOOR")
+        
+        print(request_test)
+
+        html = """
+            <!DOCTYPE html>
+            <head>
+            <title>Form submitted</title>
+            <script type='text/javascript'>window.parent.location.href += "?test=Testing";</script>
+            <script type='text/javascript'>window.parent.location.reload();</script>
+            </head>
+            <body></body></html>
+            """
+        return HttpResponse(html)
+
+
+    return render(request, 'aptopayments_create_user.html', context)
 @csrf_exempt
 # @require_POST
 def confirmed_coin_transactions(request):
