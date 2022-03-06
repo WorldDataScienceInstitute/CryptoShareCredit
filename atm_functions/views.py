@@ -170,6 +170,12 @@ def cryptoshare_wallet(request):
                                     "blockchain": "zcash",
                                     "symbol": "ZEC",
                                     "has_address": False
+                                },
+                                {
+                                    "currency_name": "XRP",
+                                    "blockchain": "xrp",
+                                    "symbol": "XRP",
+                                    "has_address": False
                                 }
                                 ]
     }
@@ -205,6 +211,10 @@ def cryptoshare_wallet(request):
         elif address.currency_name == "Zcash":
             address.wallet_address = currencies_dict["Zcash"]
             context["address_confirmations"][3]["has_address"] = True
+        
+        elif address.currency_name == "XRP":
+            address.wallet_address = currencies_dict["XRP"]
+            context["address_confirmations"][4]["has_address"] = True
 
     return render(request, 'cryptoshare_wallet.html', context)
 
@@ -873,7 +883,10 @@ def generate_address(request):
         messages.info(request, "Error generating address. Please try again.")
         return redirect('atm_functions:CryptoShareWallet')
 
-    newAddress = Address(address=deposit_address, email=email_object, currency_name=currency_object)
+    if blockchain != "xrp":
+        newAddress = Address(address=deposit_address, email=email_object, currency_name=currency_object)
+    else:
+        newAddress = Address(address=deposit_address, email=email_object, currency_name=currency_object, expiration_datetime = None)
     newAddress.save()
 
     try:
@@ -1079,7 +1092,7 @@ def confirmed_coin_transactions(request):
         creation_date = timezone.now()
         deposit_funds_email(str(sender_object.email), transaction_intern_id, response_data["blockchain"], response_data["network"] ,amount, tx_currency, sender_address, creation_date)
 
-        if response_data["blockchain"] != "ethereum":
+        if response_data["blockchain"] != "ethereum" and response_data["blockchain"] != "xrp":
             sender_object.email = None
             sender_object.save()
         # print(response)
