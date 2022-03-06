@@ -49,9 +49,10 @@
                 <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp; WITHDRAW <span style="color:green;">$</span>
             </a>
         </li> -->
+
         <li style="border-style: solid none none none; border-color: white">
-            <a href="">
-                <i class="fa fa-paper-plane" aria-hidden="true"></i>DEBIT CARD (MARCH 2022)
+            <a href="{% url 'atm_functions:CryptoShareWallet' %}">
+                <i class="fa-solid fa-wallet" aria-hidden="true"></i>&nbsp; CRYPTO$HARE WALLET<span style="color:green;">$</span>
             </a>
         </li>
 
@@ -68,15 +69,10 @@
             </a>
         </li>
 
-        <li>
+        <li style="border-style: none none solid none;border-color: white">
             <a href="">
             <!-- <a href="{% url 'atm_functions:LendMoney' %}"> -->
                 <i class="fa fa-users" aria-hidden="true"></i>LEND<span style="color:green;">$</span> (MARCH 2022)
-            </a>
-        </li>
-        <li style="border-style: none none solid none;border-color: white">
-            <a href="{% url 'atm_functions:EarnMoney' %}">
-                <i class="fa fa-users" aria-hidden="true"></i>EARN<span style="color:green;">$</span> (MARCH 2022)
             </a>
         </li>
 
@@ -92,15 +88,9 @@
             </a>
         </li>
 
-        <li>
+        <li style="border-style: none none solid none;border-color: white">
             <a href="{% url 'atm_functions:MyLoans' %}">
                 <i class="fa fa-id-card" aria-hidden="true"></i>MY LOANS
-            </a>
-        </li>
-
-        <li style="border-style: none none solid none;border-color: white">
-            <a href="{% url 'atm_functions:CryptoShareWallet' %}">
-                <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp; CRYPTO$HARE WALLET<span style="color:green;">$</span>
             </a>
         </li>
 
@@ -108,6 +98,12 @@
             <!--<a href="{% url 'atm_functions:Shop' %}" onclick="return false">--> 
             <a href="#">
                 <i class="fas fa-shopping-cart" aria-hidden="true"></i>&nbsp;&nbsp;SHOP (MARCH 2022)
+            </a>
+        </li>
+
+        <li>
+            <a href="">
+                <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp;&nbsp;DEBIT CARD (MARCH 2022)
             </a>
         </li>
 
