@@ -737,17 +737,24 @@ def my_transactions(request):
         return redirect('authentication:Home')
     auth_confirmation = True
     
-    
+    #Transactions
     transactions = TransactionA.objects.filter(email=request.user)
+
+    #Loans
+    opened_offers = TransactionB.objects.filter(emitter = request.user, state = "OPEN")
+    accepted_offers = TransactionB.objects.filter(Q(receptor=request.user) | Q(emitter=request.user), state = "IN PROGRESS") 
 
     context = {
             "authConfirmation": auth_confirmation,
-            "transactions": transactions
+            "transactions": transactions,
+            "opened_offers": opened_offers,
+            "accepted_offers": accepted_offers
             }
 
     return render(request, 'my_transactions.html', context)
-    pass
 
+# <--------------------------------  CURRENTLY NOT ACTIVE --------------------------------------------->
+# <--------------------------------  CURRENTLY NOT ACTIVE --------------------------------------------->
 def my_loans(request):
     if not request.user.is_authenticated:
         return redirect('authentication:Home')
@@ -765,8 +772,8 @@ def my_loans(request):
             }
 
     return render(request, 'my_loans.html', context)
-
-
+# <--------------------------------  CURRENTLY NOT ACTIVE --------------------------------------------->
+# <--------------------------------  CURRENTLY NOT ACTIVE --------------------------------------------->
 
 def register_address(request):
     if not request.user.is_authenticated:
@@ -1046,55 +1053,56 @@ def confirmed_coin_transactions(request):
         
         response_data = response["data"]["item"]
 
-        amount = response_data["amount"]
-        transaction_id = response_data["transactionId"]
+        if response_data["direction"] == "incoming":
+            amount = response_data["amount"]
+            transaction_id = response_data["transactionId"]
 
-        if response_data["blockchain"] == "ethereum":
-            cryptoapis_client = CryptoApis()
-            transaction_details = cryptoapis_client.get_transaction_details_by_transactionid(response_data["blockchain"], response_data["network"], transaction_id)
-            sender_address = transaction_details["senders"][0]["address"]
-        else:
-            sender_address = response_data["address"]
+            if response_data["blockchain"] == "ethereum":
+                cryptoapis_client = CryptoApis()
+                transaction_details = cryptoapis_client.get_transaction_details_by_transactionid(response_data["blockchain"], response_data["network"], transaction_id)
+                sender_address = transaction_details["senders"][0]["address"]
+            else:
+                sender_address = response_data["address"]
 
-        if response_data["blockchain"] == "ethereum":
-            sender_address = sender_address.lower()
+            if response_data["blockchain"] == "ethereum":
+                sender_address = sender_address.lower()
 
-        # fee = transaction_details["fee"]["amount"]
-        # print(sender_address)
+            # fee = transaction_details["fee"]["amount"]
+            # print(sender_address)
 
-        sender_object = Address.objects.get(address=sender_address)
-        if response_data["network"] == "ropsten":
-            currency_symbol_object = Cryptocurrency.objects.get(currency_name="ethereum_ropsten")
-        else:
-            try:
-                currency_symbol_object = Cryptocurrency.objects.get(symbol=response_data["unit"])
-            except:
-                return HttpResponse("Webhook received!")
-        
-        sender_currency_balance = Balance.objects.get(email=sender_object.email, currency_name=currency_symbol_object)
-        
-        sender_currency_balance.amount += Decimal(amount)
-        sender_currency_balance.save()
-        try:
-            transactionA = TransactionA(transaction_id=transaction_id, email=sender_object.email, address=sender_object, currency_name=currency_symbol_object, transaction_type="DEPOSIT", state="APPROVED",amount=amount)
-            transactionA.save()
-        except:
-            sender_currency_balance.amount -= Decimal(amount)
+            sender_object = Address.objects.get(address=sender_address)
+            if response_data["network"] == "ropsten":
+                currency_symbol_object = Cryptocurrency.objects.get(currency_name="ethereum_ropsten")
+            else:
+                try:
+                    currency_symbol_object = Cryptocurrency.objects.get(symbol=response_data["unit"])
+                except:
+                    return HttpResponse("Webhook received!")
+            
+            sender_currency_balance = Balance.objects.get(email=sender_object.email, currency_name=currency_symbol_object)
+            
+            sender_currency_balance.amount += Decimal(amount)
             sender_currency_balance.save()
-            return HttpResponse("Webhook received!")
+            try:
+                transactionA = TransactionA(transaction_id=transaction_id, email=sender_object.email, address=sender_object, currency_name=currency_symbol_object, transaction_type="DEPOSIT", state="APPROVED",amount=amount)
+                transactionA.save()
+            except:
+                sender_currency_balance.amount -= Decimal(amount)
+                sender_currency_balance.save()
+                return HttpResponse("Webhook received!")
 
-        tx_currency = {
-            "currency_name": currency_symbol_object.currency_name,
-            "symbol": currency_symbol_object.symbol,
-        }
+            tx_currency = {
+                "currency_name": currency_symbol_object.currency_name,
+                "symbol": currency_symbol_object.symbol,
+            }
 
-        transaction_intern_id = str(transactionA.id_a) + "|" + transaction_id 
-        creation_date = timezone.now()
-        deposit_funds_email(str(sender_object.email), transaction_intern_id, response_data["blockchain"], response_data["network"] ,amount, tx_currency, sender_address, creation_date)
+            transaction_intern_id = str(transactionA.id_a) + "|" + transaction_id 
+            creation_date = timezone.now()
+            deposit_funds_email(str(sender_object.email), transaction_intern_id, response_data["blockchain"], response_data["network"] ,amount, tx_currency, sender_address, creation_date)
 
-        if response_data["blockchain"] != "ethereum" and response_data["blockchain"] != "xrp":
-            sender_object.email = None
-            sender_object.save()
+            if response_data["blockchain"] != "ethereum" and response_data["blockchain"] != "xrp":
+                sender_object.email = None
+                sender_object.save()
         # print(response)
         # print(payload.decode("utf-8"))
         return HttpResponse("Webhook received!")

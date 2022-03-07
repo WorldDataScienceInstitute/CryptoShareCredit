@@ -7,13 +7,94 @@
 <body>
     {% include 'atm_sidebar.html' %}
     <div class="content-container">
-        <h2 class="ml-4 text-primary">Your Transactions</h2>
+        <h2 class="ml-4 text-primary">Your Loans</h2>
         <br>
         {% include 'messages.html' %}
         {% if authConfirmation %}
         {% include 'a_sessiontimeout.html' %}
         <!-- <h5 class="ml-5">Information for account ending in {{ debit_last_four }}</h5> -->
+        <h2 class="ml-4 text-primary">OPEN LOAN OFFERS</h2>
+        <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: center;">ID</th>
+                <th scope="col" style="text-align: center;">Type</th>
+                <th scope="col" style="text-align: center;">Symbol</th>
+                <th scope="col" style="text-align: center;">Currency</th>
+                <th scope="col" style="text-align: center;">Amount</th>
+                <th scope="col" style="text-align: center;">-</th>
+                <th scope="col" style="text-align: center;">Collateral Symbol</th>
+                <th scope="col" style="text-align: center;">Collateral Currency</th>
+                <th scope="col" style="text-align: center;">Collateral Amount</th>
+                <th scope="col" style="text-align: center;">Interest Rate</th>
+                <th scope="col" style="text-align: center;">State</th>
+                <th scope="col" style="text-align: center;">Creation Date</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for offer in opened_offers %}
+                    <tr>
+                        <th scope="row">{{ offer.id_b }} </th>
+                        <td style="text-align: center;">{{ offer.transaction_type }} </td>
+                        <td style="text-align: center;">{{ offer.currency_name.symbol }} </td>
+                        <td style="text-align: center;">{{ offer.currency_name.currency_name }} </td>
+                        <td style="text-align: center;">{{ offer.amount }} </td>
+                        <td> </td>
+                        <td style="text-align: center;">{{ offer.currency_name_collateral.symbol }} </td>
+                        <td style="text-align: center;">{{ offer.currency_name_collateral.currency_name }} </td>
+                        <td style="text-align: center;">{{ offer.amount_collateral }} </td>
+                        <td style="text-align: center;">{{ offer.interest_rate }}% </td>
+                        <td style="text-align: center;">{{ offer.state }} </td>
+                        <td style="text-align: center;">{{ offer.creation_datetime }} </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
+        <h2 class="ml-4 text-primary">ACCEPTED LOAN OFFERS</h2>
+        <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: center;">ID</th>
+                <th scope="col" style="text-align: center;">Type</th>
+                <th scope="col" style="text-align: center;">Symbol</th>
+                <th scope="col" style="text-align: center;">Currency</th>
+                <th scope="col" style="text-align: center;">Amount</th>
+                <th scope="col" style="text-align: center;">-</th>
+                <th scope="col" style="text-align: center;">Collateral Symbol</th>
+                <th scope="col" style="text-align: center;">Collateral Currency</th>
+                <th scope="col" style="text-align: center;">Collateral Amount</th>
+                <th scope="col" style="text-align: center;">Interest Rate</th>
+                <th scope="col" style="text-align: center;">State</th>
+                <th scope="col" style="text-align: center;">Creation Date</th>
+                <th scope="col" style="text-align: center;">Start Date</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for offer in accepted_offers %}
+                    <tr>
+                        <th scope="row">{{ offer.id_b }} </th>
+                        <td style="text-align: center;">{{ offer.transaction_type }} </td>
+                        <td style="text-align: center;">{{ offer.currency_name.symbol }} </td>
+                        <td style="text-align: center;">{{ offer.currency_name.currency_name }} </td>
+                        <td style="text-align: center;">{{ offer.amount }} </td>
+                        <td> </td>
+                        <td style="text-align: center;">{{ offer.currency_name_collateral.symbol }} </td>
+                        <td style="text-align: center;">{{ offer.currency_name_collateral.currency_name }} </td>
+                        <td style="text-align: center;">{{ offer.amount_collateral }} </td>
+                        <td style="text-align: center;">{{ offer.interest_rate }}% </td>
+                        <td style="text-align: center;">{{ offer.state }} </td>
+                        <td style="text-align: center;">{{ offer.creation_datetime }} </td>
+                        <td style="text-align: center;">{{ offer.start_datetime }} </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="content-container">
+        <h2 class="ml-4 text-primary">Your Transactions</h2>
+        <br>
         <table class="table">
             <thead>
               <tr>
