@@ -56,7 +56,7 @@ def email(request):
         'last_check': last_check
         }
     if request.method == 'POST':
-        if User.objects.filter(email=request.POST.get('email')).exists():
+        if User.objects.filter(email=request.POST.get('email').lower()).exists():
             messages.info(request, "An account with this email already exists.")
             return render(request, 'email.html', context)
         else:
