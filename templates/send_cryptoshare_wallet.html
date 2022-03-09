@@ -9,74 +9,31 @@
     {% include 'atm_sidebar.html' %}
     <div class="content-container">
         {% include 'messages.html' %}
-        {% if request.session.wallet_conn %}
-        <h2 class="ml-4">Hi {{ user_name }}, you are connected with your Coinbase Wallet</h2>
-        {% else %}
-        <h2 class="ml-4">Hi you are not connected with a Coinbase Wallet</h2>
-        {% endif %}
         <div style="text-align:center" class="ml-4 mt-4" style="width:30%;min-width:400px;">
-
-            {% if request.session.wallet_conn %}
-            <form action="/atm/SendMoneyConfirmation/" method="post">
+            <form action="/atm/SendMoneyConfirmation/?wallet=cryptoshare" method="post">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label for="recipientUser">Recipient Address or Coinbase email</label>
-                    <input type="text" class="form-control" id="recipientUser" aria-describedby="recipientUser" name="recipientUser"
-                        placeholder="Address or Coinbase email">
-                    <small id="recipientHelp" class="form-text text-muted">We'll never share information with anyone else</small>
-                </div>
                 <div class="form-group">
                     <label for="sendingAccount">Sending Account</label>
                     <select class="form-control" id="sendingAccount" aria-describedby="sendingAccount" name="sendingAccount">
                         <option disabled>Select Account</option >
-                        {% for account, data in accounts.items %}
-                        <option value="{{ data.id }} {{ account }}">{{ account }} : {{ data.balance }}</option>
+                        {% for balance in balances %}
+                        <option value="{{ balance.currency_name.currency_name }}|{{ balance.currency_name.blockchain }}">{{ balance.currency_name.symbol }} : {{ balance.currency_name.currency_name }} || Balance : {{ balance.amount }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="sendingAmount">Amount to send</label>
-                    <input type="text" class="form-control" id="sendingAmount" aria-describedby="sendingAmount" name="sendingAmount"
-                        placeholder="Amount you want to send">
+                    <input type="number" class="form-control" id="sendingAmount" aria-describedby="sendingAmount" name="sendingAmount"
+                        step=".0001" placeholder="Amount you want to send">
+                </div>
+                <div class="form-group">
+                    <label for="recipientUser">Recipient Address</label>
+                    <input type="text" class="form-control" id="recipientUser" aria-describedby="recipientUser" name="recipientUser"
+                        placeholder="Please enter the recipient address">
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
-            {% else %}
-            <h1> CryptoApis integration in progress</h1>
-            <!-- <form action="/atm/SendMoney/" method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="recipientUser">Recipient Address or Coinbase email</label>
-                    <input type="text" class="form-control" id="recipientUser" aria-describedby="recipientUser" name="recipientUser"
-                        placeholder="Address or Coinbase email">
-                    <small id="recipientHelp" class="form-text text-muted">We'll never share information with anyone else</small>
-                </div>
-                <div class="form-group">
-                    <label for="sendingAccount">Sending Account</label>
-                    <select class="form-control" id="sendingAccount" aria-describedby="sendingAccount" name="sendingAccount">
-                        <option disabled>Select Account</option >
-                        {% for account, data in accounts.items %}
-                        <option value="{{ data.id }} {{ account }}">{{ account }} : {{ data.balance }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="sendingAmount">Amount to send</label>
-                    <input type="text" class="form-control" id="sendingAmount" aria-describedby="sendingAmount" name="sendingAmount"
-                        placeholder="Amount you want to send">
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form> -->
-            {% endif %}
-            
-
-
-<!-- 
-
-            <input type="number" name="withdraw" class="form-control" min="1"
-                aria-label="Dollar amount (with dot and two decimal places)"> -->
         </div>
-
     </div>
 
     <script type="text/javascript">

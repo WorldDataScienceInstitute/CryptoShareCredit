@@ -25,9 +25,9 @@ urlpatterns = [
      path('ApproveWallet/', views.approve_wallet, name="ApproveWallet"),
      path('DisconnectWallet/', views.disconnect_wallet, name="DisconnectWallet"),
      path('SendMoney/', views.send_money, name="SendMoney"),
+     path('SendCoinbaseWallet/', views.send_coinbase_wallet, name="SendCoinbaseWallet"),
+     path('SendCryptoShareWallet/', views.send_cryptoshare_wallet, name="SendCryptoShareWallet"),
      path('SendMoneyConfirmation/', views.send_money_confirmation, name="SendMoneyConfirmation"),
-     path('ConfirmedCoinTransactions/', views.confirmed_coin_transactions, name="ConfirmedCoinTransactions"),
-     path('ConfirmedTokenTransactions/', views.confirmed_token_transactions, name="ConfirmedTokenTransactions"),
      path('MyAddresses/', views.my_addresses, name="MyAddresses"),
      # path('MyLoans/', views.my_loans, name="MyLoans"),
      path('MyTransactions/', views.my_transactions, name="MyTransactions"),
@@ -35,6 +35,10 @@ urlpatterns = [
      path('GenerateAddress/', views.generate_address, name="GenerateAddress"),
      path('CardDashboard/', views.card_dashboard, name="CardDashboard"),
      path('CardCreateUser/', views.aptopayments_create_user, name="CardCreateUser"),
+     #WEBHOOKS
+     path('ConfirmationsCryptoTransactions/', views.confirmations_crypto_transactions, name="ConfirmationsCryptoTransactions"),
+     path('ConfirmedCoinTransactions/', views.confirmed_coin_transactions, name="ConfirmedCoinTransactions"),
+     path('ConfirmedTokenTransactions/', views.confirmed_token_transactions, name="ConfirmedTokenTransactions"),
      # path('TestReceiver/', views.test_receiver, name="TestReceiver")
      # path('NotificationService/', views.notification_service, name="NotificationService")
 ]

@@ -99,21 +99,25 @@ class CryptoApis:
                 "data": {
                     "item": {
                         "callbackSecretKey": self.CALLBACK_SECRET_KEY,
-                        "callbackURL": "https://www.cryptoshareapp.com/atm/ConfirmedCoinTransactions/",
+                        "callbackUrl": "https://www.cryptoshareapp.com/atm/ConfirmationsCryptoTransactions/",
                         "feePriority": "standard",
                         "note": "",
                         "prepareStrategy": "optimize-size",
                         "recipients": [
                             {
                                 "address": address,
-                                "amount": amount,
+                                "amount": amount
                             }
                         ]
                     }
                 }
             }
+
         request = requests.post(url, headers=self.HEADERS, json=data).json()
 
+        return request["data"]["item"]
+
+    # def generate_coins_transaction_from_address(self, )
         
                             
         
@@ -127,6 +131,8 @@ if __name__ == "__main__":
     # crypto = CryptoApis()
     # data = crypto.get_transaction_details_by_transactionid("ethereum", "ropsten", "0x312af4de375e8851bb40e7cd3358286663e7809f279c3e2c2fb55d506cf41e95")
 
+    # r = cryptoapis_client.generate_coins_transaction_from_wallet("litecoin", "mainnet","MNJmGBTC9CwtHUTgxkx3TKU8Nmw9qBq6Qd","0.002")
+    # print(r)
     # print(data)
 
     pass
