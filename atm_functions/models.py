@@ -43,7 +43,7 @@ class TransactionA(models.Model):
     id_a = models.AutoField(primary_key=True)
     transaction_id = models.CharField(max_length=255, unique=True)
     email = models.ForeignKey(User, on_delete=models.CASCADE)
-    address = models.ForeignKey(Address, on_delete=models.DO_NOTHING)
+    address = models.ForeignKey(Address, on_delete=models.DO_NOTHING, null=True)
     currency_name = models.ForeignKey(Cryptocurrency, on_delete=models.DO_NOTHING)
     transaction_type = models.CharField(max_length=15)
     state = models.CharField(max_length=15)

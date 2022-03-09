@@ -607,8 +607,29 @@ def disconnect_wallet(request):
 
     return redirect('atm_functions:ConnectWallet')
 
-
 def send_money(request):
+    if not request.user.is_authenticated:
+        return redirect('authentication:Home')
+
+    context = {}
+    
+    return render(request, 'send_selection.html', context)
+
+def send_cryptoshare_wallet(request):
+    if not request.user.is_authenticated:
+        return redirect('authentication:Home')
+    
+    context = {}
+
+    balances = Balance.objects.filter(email=request.user)
+    context['balances'] = balances
+
+
+
+    
+    return render(request,'send_cryptoshare_wallet.html', context)
+
+def send_coinbase_wallet(request):
 
     if not request.session['wallet_conn']:
         # Temporary redirect to connect wallet while CryptoApis implementation is in progress.
@@ -640,83 +661,144 @@ def send_money(request):
 
 
 def send_money_confirmation(request):
-
-    # request.POST.get('code','')
     form_response = request.POST
 
     if not form_response:
         return redirect('atm_functions:SendMoney')
 
-    coinbase_client = OAuthClient(request.session['access_token'], request.session['refresh_token'])
+    wallet_confirmation = request.GET.get('wallet','')
 
-    recipient_account = form_response["recipientUser"]
-    account_info = form_response["sendingAccount"].split(" ")
-    account_id = account_info[0]
-    account_currency = account_info[1]
-    amount = form_response["sendingAmount"]
+    if wallet_confirmation == "coinbase":
 
-    authCode = request.POST.get("authCode")
-    # print(form_response)
-    # print(authCode)
-    if authCode:
-        # print("Authcode detected")
-        authcode = form_response['authCode']
-        try:
-            tx = coinbase_client.send_money(
-                account_id,
-                to = recipient_account,
-                amount = amount,
-                currency = account_currency,
-                two_factor_token = authcode
-            )
+        coinbase_client = OAuthClient(request.session['access_token'], request.session['refresh_token'])
 
-            # print(tx)
-            messages.info(request, "Money sent successfully.")
+        recipient_account = form_response["recipientUser"]
+        account_info = form_response["sendingAccount"].split(" ")
+        account_id = account_info[0]
+        account_currency = account_info[1]
+        amount = str(form_response["sendingAmount"])
 
-            user_data = coinbase_client.get_current_user()
+        authCode = request.POST.get("authCode")
+        # print(form_response)
+        # print(authCode)
+        if authCode:
+            # print("Authcode detected")
+            authcode = form_response['authCode']
+            try:
+                tx = coinbase_client.send_money(
+                    account_id,
+                    to = recipient_account,
+                    amount = amount,
+                    currency = account_currency,
+                    two_factor_token = authcode
+                )
 
-            sender_email = user_data.email
-            concept = tx["details"]["header"]
-            tx_amount = tx["amount"]
-            tx_native_amount = tx["native_amount"]
-            tx_state = tx["details"]["health"]
-            receiver_email = tx["to"]["email"]
-            creation_date  = tx["created_at"]
+                # print(tx)
+                messages.info(request, "Money sent successfully.")
 
-            sent_funds_email(sender_email, concept, tx_amount, tx_native_amount, tx_state, creation_date, receiver_email)
-            
-            return redirect('atm_functions:CheckBalance')
-        except Exception as e:
-            # print(e)
-            messages.error(request, "Invalid authorization code. Please try again.")
-            return redirect('atm_functions:SendMoney')
+                user_data = coinbase_client.get_current_user()
 
+                sender_email = user_data.email
+                concept = tx["details"]["header"]
+                tx_amount = tx["amount"]
+                tx_native_amount = tx["native_amount"]
+                tx_state = tx["details"]["health"]
+                receiver_email = tx["to"]["email"]
+                creation_date  = tx["created_at"]
+
+                sent_funds_email(sender_email, concept, tx_amount, tx_native_amount, tx_state, creation_date, receiver_email)
+                
+                return redirect('atm_functions:CheckBalance')
+            except Exception as e:
+                # print(e)
+                messages.error(request, "Invalid authorization code. Please try again.")
+                return redirect('atm_functions:SendMoney')
+
+        else:
+            # fa_code = form_response["authCode"]
+            try:
+                tx = coinbase_client.send_money(
+                    account_id,
+                    to=recipient_account,
+                    amount=amount,
+                    currency=account_currency
+                )
+                # print(tx)
+                messages.info(request, "Money sent successfully.")
+                return redirect('atm_functions:CheckBalance')
+
+            except TwoFactorRequiredError:
+                context = {
+                    "recipientUser": recipient_account,
+                    "sendingAccount": form_response["sendingAccount"],
+                    "sendingAmount": amount
+                }
+                messages.info(request, "Two factor authentication required.")
+                return render(request, '2fa_token.html', context)
+                # return redirect('atm_functions:SendMoney')
+            except Exception as e:
+                # print(e)
+                messages.info(request, "Error sending money. Please try again.")
+                return redirect('atm_functions:SendMoney')
+
+    elif wallet_confirmation == "cryptoshare":
+        wallet_currencies = {
+                            "Litecoin": True,
+                            "Dash": True,
+                            "Zcash": True,
+                            "Bitcoin Cash": True
+        }
+
+        address_currencies = {
+                            "XRP": True,
+                            "Ethereum": True
+        }
+
+        sending_account = form_response["sendingAccount"].split("|")
+        sending_currency = sending_account[0]
+        sending_blockchain = sending_account[1]
+
+        amount = form_response["sendingAmount"]
+        recipient_address = form_response["recipientUser"]
+
+        currency_object = Cryptocurrency.objects.get(currency_name=sending_currency)
+        balance_object = Balance.objects.get(email=request.user, currency_name=currency_object)
+
+        if balance_object.amount < float(amount):
+            messages.error(request, "Insufficient funds.")
+            return redirect('atm_functions:SendCryptoShareWallet')
+
+        cryptoapis_client = CryptoApis()
+
+        is_valid_address = cryptoapis_client.is_valid_address(sending_blockchain, "mainnet", recipient_address)
+        if not is_valid_address:
+            messages.info(request, "Invalid address. Please try again.")
+            return redirect('atm_functions:SendCryptoShareWallet')
+
+        if sending_currency in wallet_currencies:
+            transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet(sending_blockchain, "mainnet", recipient_address, amount)
+            print(request)
+        elif sending_currency in address_currencies:
+            transaction_response = cryptoapis_client.generate_coins_transaction_from_address(sending_blockchain, "mainnet", recipient_address, amount)
+            print(request)
+
+        total_transaction_amount = transaction_response["totalTransactionAmount"]
+        transaction_id = transaction_response["transactionRequestId"]
+
+        balance_object.amount -= Decimal(total_transaction_amount)
+        balance_object.save()
+
+        transaction_a = TransactionA(transaction_id=transaction_id, email=request.user, currency_name=currency_object, transaction_type="WITHDRAWAL", state="PENDING",amount=amount)
+        transaction_a.save()
+        # print(sending_blockchain, sending_currency, amount, recipient_address)
+
+        messages.success(request, "Your withdrawal request has been created")
+
+        return redirect('atm_functions:CheckBalance')
     else:
-        # fa_code = form_response["authCode"]
-        try:
-            tx = coinbase_client.send_money(
-                account_id,
-                to=recipient_account,
-                amount=amount,
-                currency=account_currency
-            )
-            # print(tx)
-            messages.info(request, "Money sent successfully.")
-            return redirect('atm_functions:CheckBalance')
+        return redirect('atm_functions:SendMoney')
 
-        except TwoFactorRequiredError:
-            context = {
-                "recipientUser": recipient_account,
-                "sendingAccount": form_response["sendingAccount"],
-                "sendingAmount": amount
-            }
-            messages.info(request, "Two factor authentication required.")
-            return render(request, '2fa_token.html', context)
-            # return redirect('atm_functions:SendMoney')
-        except Exception as e:
-            # print(e)
-            messages.info(request, "Error sending money. Please try again.")
-            return redirect('atm_functions:SendMoney')
+
 
 def my_addresses(request):
     if not request.user.is_authenticated:
@@ -1031,14 +1113,49 @@ def aptopayments_create_user(request):
 
 
     return render(request, 'aptopayments_create_user.html', context)
+
+@csrf_exempt
+def confirmations_crypto_transactions(request):
+    if request.method == 'GET':
+        return redirect('atm_functions:CheckBalance')
+    
+    elif request.method == 'POST':
+        request_reader = request.META.get('wsgi.input')
+        # print(request.headers)
+
+        # bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING ENVIRRONMENT
+        bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION ENVIRONMENT
+
+        payload = bpayload.decode("utf-8")
+
+        start = payload.index("{")
+        end = payload.rindex("}") + 1
+
+        response = json.loads(payload[start:end])
+        data = response["data"]
+
+        event = data["event"]
+
+        if event == "TRANSACTION_REQUEST_APPROVAL":
+            pass
+        elif event == "TRANSACTION_REQUEST_BROADCASTED":
+            pass
+        elif event == "TRANSACTION_REQUEST_MINED":
+            pass
+        elif event == "TRANSACTION_REQUEST_REJECTION":
+            pass
+        elif event == "TRANSACTION_REQUEST_FAIL":
+            pass
+
+    pass
+
 @csrf_exempt
 # @require_POST
 def confirmed_coin_transactions(request):
     if request.method == 'GET':
         return redirect('atm_functions:CheckBalance')
     elif request.method == 'POST':
-        request_reader =request.META.get('wsgi.input')
-
+        request_reader = request.META.get('wsgi.input')
         # print(request.headers)
 
         # bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING ENVIRRONMENT
