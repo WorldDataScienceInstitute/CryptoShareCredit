@@ -621,7 +621,7 @@ def send_cryptoshare_wallet(request):
     
     context = {}
 
-    messages.info(request, "XRP and Ethereum are currently not supported for sending funds.")
+    messages.info(request, "XRP, Ethereum, and ERC-20 tokens are currently not supported for sending funds.")
 
     balances = Balance.objects.filter(email=request.user)
     context['balances'] = balances
@@ -750,7 +750,9 @@ def send_money_confirmation(request):
 
         address_currencies = {
                             "XRP": True,
-                            "Ethereum": True
+                            "Ethereum": True,
+                            "USD Coin": True,
+                            "Thether": True
         }
 
         sending_account = form_response["sendingAccount"].split("|")
