@@ -382,43 +382,43 @@ def create_borrowing_offer(request):
         context["iframe"] = True
 
     if request.method == 'GET':
-
-        currencies = Cryptocurrency.objects.filter(Q(symbol='USDC') | Q(symbol='USDT') | Q(symbol='WBTC'))
-
-        balances = list(Balance.objects.filter(email=request.user, currency_name__in=currencies))
-
-        if len(balances) != 3:
-            missing_currencies = {'USDC', 'USDT', 'WBTC'} - {balance.currency_name.symbol for balance in balances}
-
-            for currency in missing_currencies:
-                balance = Balance(email=request.user, currency_name=Cryptocurrency.objects.get(symbol=currency), amount=0)
-                balances.append(balance)
-                
-        # context["currencies"] = currencies
-        context["balances"] = balances
         context["exchange_rates"] = []
+
+        # currencies = Cryptocurrency.objects.filter(Q(symbol='USDC') | Q(symbol='USDT') | Q(symbol='WBTC'))
+
+        # balances = list(Balance.objects.filter(email=request.user, currency_name__in=currencies))
+
+        # if len(balances) != 3:
+        #     missing_currencies = {'USDC', 'USDT', 'WBTC'} - {balance.currency_name.symbol for balance in balances}
+
+        #     for currency in missing_currencies:
+        #         balance = Balance(email=request.user, currency_name=Cryptocurrency.objects.get(symbol=currency), amount=0)
+        #         balances.append(balance)
+                
+        # # context["currencies"] = currencies
+        # context["balances"] = balances
 
         cryptoapis_client = CryptoApis()
 
-        for balance in balances:
-            if balance.currency_name.currency_name == "TEST_COIN":
-                rate = {
-                    "currency_name": balance.currency_name.currency_name,
-                    "symbol": balance.currency_name.symbol,
-                    "exchange_rate": 1
-                }
-                context["exchange_rates"].append(rate)
-                continue
-            elif balance.currency_name.currency_name == "ethereum_ropsten":
-                balance.currency_name.symbol = "ETH"
+        # for balance in balances:
+        #     if balance.currency_name.currency_name == "TEST_COIN":
+        #         rate = {
+        #             "currency_name": balance.currency_name.currency_name,
+        #             "symbol": balance.currency_name.symbol,
+        #             "exchange_rate": 1
+        #         }
+        #         context["exchange_rates"].append(rate)
+        #         continue
+        #     elif balance.currency_name.currency_name == "ethereum_ropsten":
+        #         balance.currency_name.symbol = "ETH"
 
-            exchange_rate = cryptoapis_client.get_exchange_rate_by_symbols(balance.currency_name.symbol, "USD")["rate"]
-            rate = {
-                "currency_name": balance.currency_name.currency_name,
-                "symbol": balance.currency_name.symbol,
-                "exchange_rate": round(float(exchange_rate), 2)
-                }
-            context["exchange_rates"].append(rate)
+        #     exchange_rate = cryptoapis_client.get_exchange_rate_by_symbols(balance.currency_name.symbol, "USD")["rate"]
+        #     rate = {
+        #         "currency_name": balance.currency_name.currency_name,
+        #         "symbol": balance.currency_name.symbol,
+        #         "exchange_rate": round(float(exchange_rate), 2)
+        #         }
+        #     context["exchange_rates"].append(rate)
 
         exchange_rate_ltc = cryptoapis_client.get_exchange_rate_by_symbols("LTC", "USD")["rate"]
         rate_ltc = {
@@ -448,10 +448,18 @@ def create_borrowing_offer(request):
             "exchange_rate": round(float(exchange_rate_zec), 2)
         }
 
+        exchange_rate_xrp = cryptoapis_client.get_exchange_rate_by_symbols("XRP", "USD")["rate"]
+        rate_xrp = {
+            "currency_name": "XRP",
+            "symbol": "XRP",
+            "exchange_rate": round(float(exchange_rate_xrp), 2)
+        }
+
         context["exchange_rates"].append(rate_ltc)
         context["exchange_rates"].append(rate_bch)
         context["exchange_rates"].append(rate_dash)
         context["exchange_rates"].append(rate_zec)        
+        context["exchange_rates"].append(rate_xrp)        
 
         return render(request, 'create_borrowing_offer.html', context)
 
@@ -508,6 +516,16 @@ def create_borrowing_offer(request):
 
     return render(request, 'create_borrowing_offer.html', context)
 
+def remove_borrowing_offer(request):
+    if request.method == 'POST':
+        offer_id = request.POST.get('offerID')
+        print(offer_id)	
+        # transaction_id = request.POST.get('transaction_id')
+        # transaction_b = TransactionB.objects.get(transaction_id=transaction_id)
+        # transaction_b.delete()
+        # messages.success(request, "Your borrowing offer has been removed")
+        return HttpResponse(status=200)
+    return redirect('atm_functions:MyTransactions')
 
 def earn_money(request):
     if request.user.is_authenticated:

@@ -21,7 +21,7 @@ function SetCollateral(getAmountField, getPaymentCurrency, getCollateralCurrency
     var currencyCollateral = document.getElementById(getCollateralCurrency).value.split(' ')[0];
 
     if(currency != "NotSelected"){
-        var currencyRate = document.getElementById("USDC_exchangeRate").innerHTML;
+        var currencyRate = 1;
         // var currencyRate = document.getElementById(currency+"_exchangeRate").innerHTML;
         var currencyCollateralRate = document.getElementById(currencyCollateral+"_exchangeRate").innerHTML;
 
