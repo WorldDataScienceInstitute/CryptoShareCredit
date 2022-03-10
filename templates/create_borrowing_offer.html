@@ -31,8 +31,8 @@
                         <option value="LTC Litecoin || Blockchain: litecoin || Network: mainnet">LTC Litecoin || Blockchain: litecoin</option>
                         <option value="BCH Bitcoin Cash || Blockchain: bitcoin-cash || Network: mainnet">BCH Bitcoin Cash || Blockchain: bitcoin-cash</option>
                         <option value="DASH Dash || Blockchain: dash || Network: mainnet">DASH Dash || Blockchain: dash</option>
-                        <option value="ZEC Zcash || Blockchain: zcash || Network: mainnet">ZEC || Blockchain: zcash</option>
-                        <option value="XRP XRP || Blockchain: xrp || Network: mainnet">XRP || Blockchain: xrp</option>
+                        <option value="ZEC Zcash || Blockchain: zcash || Network: mainnet">ZEC Zcash|| Blockchain: zcash</option>
+                        <option value="XRP XRP || Blockchain: xrp || Network: mainnet">XRP XRP|| Blockchain: xrp</option>
                     </select>
                     <!-- <input type="text" class="form-control" id="currency" aria-describedby="currency" name="currency"
                     placeholder="Enter the amount you want to lend" value ="USDC USD Coin || Blockchain: ethereum || Network: mainnet || " readonly> -->
@@ -55,16 +55,21 @@
                     <label for="currency_collateral"><b>Collateral</b>     <em>(Choose USDC, USDT, or WRAPPED BITCOIN as Collateral for Loan)</em></label>
                     <select class="form-control" id="currency_collateral" aria-describedby="currency_collateral" name="currency_collateral" onchange="SetCollateral('currency_amount', 'currency', 'currency_collateral','currency_amount_collateral')" required>
                         <option value="NotSelected NotSelected">Select one of the supported currencies</option >
-                            {% for balance in balances %}
-                            <option value="{{ balance.currency_name.symbol }} {{ balance.currency_name.currency_name }}"> {{ balance.currency_name.symbol }} - {{ balance.currency_name.currency_name }} ||| Blockchain: {{ balance.currency_name.blockchain }} | Network: {{ balance.currency_name.network }} ||| Balance: {{ balance.amount|floatformat:"4" }}</option>
-                            {% endfor %}
+                        <option value="LTC Litecoin">LTC Litecoin || Blockchain: litecoin</option>
+                        <option value="BCH Bitcoin Cash">BCH Bitcoin Cash || Blockchain: bitcoin-cash</option>
+                        <option value="DASH Dash">DASH Dash || Blockchain: dash</option>
+                        <option value="ZEC Zcash">ZEC Zcash|| Blockchain: zcash</option>
+                        <option value="XRP XRP">XRP XRP|| Blockchain: xrp</option>   
+                        <!-- {% for balance in balances %}
+                        <option value="{{ balance.currency_name.symbol }} {{ balance.currency_name.currency_name }}"> {{ balance.currency_name.symbol }} - {{ balance.currency_name.currency_name }} ||| Blockchain: {{ balance.currency_name.blockchain }} | Network: {{ balance.currency_name.network }} ||| Balance: {{ balance.amount|floatformat:"4" }}</option>
+                        {% endfor %} -->
                         <!-- {% for currency in currencies %}
                         <option value="{{ currency.currency_name }}"> Blockchain: {{ currency.blockchain }} || Network: {{ currency.network }} || {{ currency.symbol }} - {{ currency.currency_name }}</option>
                         {% endfor %} -->
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="currency_amount"><b>Collateral Amount</b>      <em>(Must have 120% of Collateral Currency in Coinbase Wallet or CryptoShare Address to Submit)</em></label>
+                    <label for="currency_amount"><b>Collateral Amount</b>      <em>(Must have 120% of Collateral Currency in CryptoShare Address to Submit)</em></label>
                     <input type="number" class="form-control" id="currency_amount_collateral" aria-describedby="currency_amount_collateral" name="currency_amount_collateral"
                         placeholder="This would be displayed once you enter your borrowing amount" step=".0001" readonly>
                 </div>
@@ -129,7 +134,7 @@
         </table>
     </div>
     
-    <script type="text/javascript" src="{% static 'js/create_offers_3.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/create_offers_4.js' %}"></script>
 
     <script type="text/javascript">
         function googleTranslateElementInit() {
