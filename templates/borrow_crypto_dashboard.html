@@ -110,7 +110,7 @@
             } else if (option == 2) {
                 newSrc = "{% url 'atm_functions:CryptoShareWallet' %}?iframe=1"
             } else if (option == 3) {
-                newSrc = "{% url 'atm_functions:MyLoans' %}?iframe=1"
+                newSrc = "{% url 'atm_functions:MyTransactions' %}?iframe=1"
             }
             document.getElementById('screen_iframe').src = newSrc;
 
