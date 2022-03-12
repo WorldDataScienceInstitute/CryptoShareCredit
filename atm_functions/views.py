@@ -533,7 +533,8 @@ def remove_borrowing_offer(request):
 
         balance_object = Balance.objects.get(email=emitter_object, currency_name=currency_collateral_object)
         balance_object.amount += offer.amount_collateral
-
+        balance_object.save()
+        
         offer.state = "CANCELED"
         offer.save()
         # print(offer.__dict__)
