@@ -29,11 +29,12 @@
                 <th scope="col" style="text-align: center;">Interest Rate</th>
                 <th scope="col" style="text-align: center;">State</th>
                 <th scope="col" style="text-align: center;">Creation Date</th>
+                <th scope="col" style="text-align: center;">Actions</th>
             </tr>
             </thead>
             <tbody>
                 {% for offer in opened_offers %}
-                    <tr>
+                    <tr id="transaction_b_{{ offer.id_b }}">
                         <th scope="row">{{ offer.id_b }} </th>
                         <td style="text-align: center;">{{ offer.transaction_type }} </td>
                         <td style="text-align: center;">{{ offer.currency_name.symbol }} </td>
@@ -46,6 +47,9 @@
                         <td style="text-align: center;">{{ offer.interest_rate }}% </td>
                         <td style="text-align: center;">{{ offer.state }} </td>
                         <td style="text-align: center;">{{ offer.creation_datetime }} </td>
+                        <td style="text-align: center;">
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#RemoveModal" onclick="RemoveOfferModal('{{ offer.id_b }}', '{{ offer.transaction_type }}', '{{ offer.amount }}')">Remove</button>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -166,6 +170,54 @@
         });
     </script>
     
+    <script type="text/javascript">
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != "") {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function RemoveOfferModal(offerID, offerType, offerAmount){
+            document.getElementById("cancel_id").innerHTML = "ID : "+ offerID;
+            document.getElementById("cancel_type").innerHTML = "Type : "+ offerType;
+            document.getElementById("cancel_amount").innerHTML = "Amount : "+ offerAmount;
+            document.getElementById("delete_offer").id = offerID;
+        }
+
+        function RemoveBorrowingOffer(offerID){
+            var url = "{% url 'atm_functions:RemoveBorrowingOffer' %}";
+            var data = {
+                offerID: offerID,
+                csrfmiddlewaretoken: getCookie('csrftoken')
+            };
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                success: function(response){
+                    document.getElementById(offerID).id = "delete_offer";
+                    $("#transaction_b_"+offerID).remove();
+                    $("#RemoveModal").modal('hide');
+                    $("#RemoveModal").modal('hide');
+                },
+                error: function(response){
+                    document.getElementById(offerID).id = "delete_offer";
+                    alert("Something went wrong, please try again later");
+                    $("#RemoveModal").modal('hide');
+                }
+            });
+        }
+    </script>
     <!-- <div class="row">
         <div class="col-5 d-flex justify-content-center text-center">
             <div class="card container1">
@@ -194,3 +246,29 @@
     <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>
+
+<!-- Modal -->
+<div id="RemoveModal" class="modal" style="z-index: 2000;">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>CANCEL CONFIRMATION</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p style="color: black;font-weight: 400; text-align: center;">Are you sure you want to cancel the following offer?</p>
+            <ul style="list-style: none; margin: 0; padding: 0;">
+                <li id="cancel_id" style="text-align: center;"></li>
+                <li id="cancel_type" style="text-align: center;"></li>
+                <li id="cancel_amount" style="text-align: center;"></li>
+            </ul>
+            <br>
+            <div class="d-flex justify-content-center">
+                <button style="text-align: center;" class="btn btn-danger" data-toggle="modal" onclick="RemoveBorrowingOffer(this.id)" id="delete_offer">Delete Offer</button> 
+            </div>
+        </div>
+    </div>
+    
+</div>
