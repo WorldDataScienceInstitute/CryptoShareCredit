@@ -519,11 +519,26 @@ def create_borrowing_offer(request):
 def remove_borrowing_offer(request):
     if request.method == 'POST':
         offer_id = request.POST.get('offerID')
-        print(offer_id)	
-        # transaction_id = request.POST.get('transaction_id')
-        # transaction_b = TransactionB.objects.get(transaction_id=transaction_id)
-        # transaction_b.delete()
+
+        offer = TransactionB.objects.get(id_b=offer_id)
+
+        if offer.state != "OPEN":
+            # messages.error(request, "Something went wrong, please try again later")
+            return HttpResponse(status=405)
+        
+        emitter_id = offer.emitter_id
+        emitter_object = User.objects.get(pk=emitter_id)
+
+        currency_collateral_object = offer.currency_name_collateral
+
+        balance_object = Balance.objects.get(email=emitter_object, currency_name=currency_collateral_object)
+        balance_object.amount += offer.amount_collateral
+
+        offer.state = "CANCELED"
+        offer.save()
+        # print(offer.__dict__)
         # messages.success(request, "Your borrowing offer has been removed")
+
         return HttpResponse(status=200)
     return redirect('atm_functions:MyTransactions')
 

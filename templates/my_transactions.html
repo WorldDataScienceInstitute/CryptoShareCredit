@@ -34,7 +34,7 @@
             </thead>
             <tbody>
                 {% for offer in opened_offers %}
-                    <tr id="{{ offer.id_b }}">
+                    <tr id="transaction_b_{{ offer.id_b }}">
                         <th scope="row">{{ offer.id_b }} </th>
                         <td style="text-align: center;">{{ offer.transaction_type }} </td>
                         <td style="text-align: center;">{{ offer.currency_name.symbol }} </td>
@@ -206,6 +206,8 @@
                 data: data,
                 success: function(response){
                     document.getElementById(offerID).id = "delete_offer";
+                    $("#transaction_b_"+offerID).remove();
+                    $("#RemoveModal").modal('hide');
                     $("#RemoveModal").modal('hide');
                 },
                 error: function(response){
