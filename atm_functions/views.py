@@ -816,11 +816,11 @@ def send_money_confirmation(request):
             messages.info(request, "Invalid address. Please try again.")
             return redirect('atm_functions:SendCryptoShareWallet')
 
-        # if sending_currency in wallet_currencies:
-        transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet(sending_blockchain, "mainnet", recipient_address, amount)
+        if sending_currency in wallet_currencies:
+            transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet(sending_blockchain, "mainnet", recipient_address, amount)
             # print(request)
-        # elif sending_currency in address_currencies:
-        #     transaction_response = cryptoapis_client.generate_coins_transaction_from_address(sending_blockchain, "mainnet",sending_address_object.address ,recipient_address, amount)
+        elif sending_currency in address_currencies:
+            transaction_response = cryptoapis_client.generate_coins_transaction_from_address(sending_blockchain, "mainnet",sending_address_object.address ,recipient_address, amount)
         # print(request)
 
         total_transaction_amount = transaction_response["totalTransactionAmount"]
