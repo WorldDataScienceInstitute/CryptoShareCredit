@@ -834,7 +834,7 @@ def send_money_confirmation(request):
         transaction_a.save()
         # print(sending_blockchain, sending_currency, amount, recipient_address)
 
-        sent_funds_cryptoshare_wallet_email(str(transaction_a.email), "SENT FUNDS REQUEST", transaction_a.currency_name.currency_name ,transaction_a.amount, "APPROVED", transaction_a.creation_datetime, receiver=recipient_address)
+        sent_funds_cryptoshare_wallet_email(str(transaction_a.email), "SENT FUNDS REQUEST", transaction_a.currency_name.currency_name ,transaction_a.amount, "PENDING", transaction_a.creation_datetime, receiver=recipient_address)
 
         messages.success(request, "Your withdrawal request has been created")
 
