@@ -1279,9 +1279,9 @@ def confirmed_coin_transactions(request):
             creation_date = timezone.now()
             deposit_funds_email(str(sender_object.email), transaction_intern_id, response_data["blockchain"], response_data["network"] ,amount, tx_currency, sender_address, creation_date)
 
-            if response_data["blockchain"] != "ethereum" and response_data["blockchain"] != "xrp":
-                sender_object.email = None
-                sender_object.save()
+            # if response_data["blockchain"] != "ethereum" and response_data["blockchain"] != "xrp":
+            #     sender_object.email = None
+            #     sender_object.save()
         # print(response)
         # print(payload.decode("utf-8"))
         return HttpResponse("Webhook received!")
