@@ -47,6 +47,7 @@ class TransactionA(models.Model):
     currency_name = models.ForeignKey(Cryptocurrency, on_delete=models.DO_NOTHING)
     transaction_type = models.CharField(max_length=15)
     state = models.CharField(max_length=15)
+    internal_state = models.CharField(max_length=35, null=True)
     amount = models.DecimalField(max_digits=15, decimal_places=8)
     creation_datetime = models.DateTimeField(auto_now_add=True)
 

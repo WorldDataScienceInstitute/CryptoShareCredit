@@ -99,7 +99,7 @@ class CryptoApis:
                 "data": {
                     "item": {
                         "callbackSecretKey": self.CALLBACK_SECRET_KEY,
-                        "callbackUrl": "https://www.cryptoshareapp.com/atm/ConfirmationsCryptoTransactions/",
+                        "callbackUrl": "https://www.cryptoshareapp.com/atm/ConfirmationsCoinTransactions/",
                         "feePriority": "standard",
                         "note": "",
                         "prepareStrategy": "optimize-size",
@@ -125,7 +125,7 @@ class CryptoApis:
                     "item": {
                         "amount": amount,
                         "callbackSecretKey": "yourSecretString",
-                        "callbackUrl": "https://www.cryptoshareapp.com/atm/ConfirmationsCryptoTransactions/",
+                        "callbackUrl": "https://www.cryptoshareapp.com/atm/ConfirmationsCoinTransactions/",
                         "feePriority": "standard",
                         "note": "",
                         "recipientAddress": address

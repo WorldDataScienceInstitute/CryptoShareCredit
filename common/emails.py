@@ -213,6 +213,58 @@ def sent_funds_email(sender_email, concept, tx_amount, tx_native_amount, tx_stat
     s.quit()
     return
 
+def sent_funds_cryptoshare_wallet_email(sender_email, concept, currency, amount, tx_state, creation_date, receiver = None):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare transaction"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = sender_email
+    
+    html = f"""
+    <html>
+    <head></head>
+        <body>
+        
+        <p>¡Hi there!</p>
+
+        <p>You are receiving this email because a transaction was made in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+
+        <p>The transaction details are as follows:</p>
+
+        <p>Transaction concept: {concept}</p>
+        """
+    if receiver is not None:
+        html += f"""
+        <p>Sent to: {receiver}</p>
+        """
+    html += f"""
+
+        <p>Transaction amount {currency} : {amount} </p>
+
+        <p>Transaction state: {tx_state}</p>
+
+        <p>Transaction creation date: {creation_date}</p>
+
+
+        <p>If this was not you, please secure your account at <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+        </body>
+    </html>
+    """
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP('smtp.domain.com',port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
+    s.quit()
+    return
+
 def deposit_funds_email(sender_email, transaction_id, blockchain, network ,tx_amount, tx_currency, tx_address, creation_date):
     port = settings.EMAIL_PORT
     msg = MIMEMultipart('alternative')
