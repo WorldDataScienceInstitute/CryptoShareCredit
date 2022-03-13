@@ -11,7 +11,7 @@ from .models import User
 from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, TransactionA, TransactionB
 from common.utils import currency_list
-from common.emails import sent_funds_email, deposit_funds_email
+from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email
 from common.cryptoapis import CryptoApis
 from common.aptopayments import AptoPayments
 from google_currency import convert
@@ -822,15 +822,18 @@ def send_money_confirmation(request):
             transaction_response = cryptoapis_client.generate_coins_transaction_from_address(sending_blockchain, "mainnet", recipient_address, amount)
             print(request)
 
-        total_transaction_amount = transaction_response["totalTransactionAmount"]
+        # total_transaction_amount = transaction_response["totalTransactionAmount"]
+        total_transaction_amount = transaction_response["recipients"][0]["amount"]
         transaction_id = transaction_response["transactionRequestId"]
 
         balance_object.amount -= Decimal(total_transaction_amount)
         balance_object.save()
 
-        transaction_a = TransactionA(transaction_id=transaction_id, email=request.user, currency_name=currency_object, transaction_type="WITHDRAWAL", state="PENDING",amount=amount)
+        transaction_a = TransactionA(transaction_id=transaction_id, email=request.user, currency_name=currency_object, transaction_type="WITHDRAWAL", state="PENDING",amount=amount, internal_state="WAITING_FOR_APPROVAL")
         transaction_a.save()
         # print(sending_blockchain, sending_currency, amount, recipient_address)
+
+        sent_funds_cryptoshare_wallet_email(str(transaction_a.email), "SENT FUNDS REQUEST", transaction_a.currency_name.currency_name ,transaction_a.amount, "APPROVED", transaction_a.creation_datetime, receiver=recipient_address)
 
         messages.success(request, "Your withdrawal request has been created")
 
@@ -1155,7 +1158,7 @@ def aptopayments_create_user(request):
     return render(request, 'aptopayments_create_user.html', context)
 
 @csrf_exempt
-def confirmations_crypto_transactions(request):
+def confirmations_coin_transactions(request):
     if request.method == 'GET':
         return redirect('atm_functions:CheckBalance')
     
@@ -1172,22 +1175,44 @@ def confirmations_crypto_transactions(request):
         end = payload.rindex("}") + 1
 
         response = json.loads(payload[start:end])
-        data = response["data"]
 
+        reference_id = response["reference_id"]
+        data = response["data"]
         event = data["event"]
+
+        transaction = TransactionA.objects.get(transaction_id=reference_id)
+        transaction.internal_state = event
+
+        receiver_user = User.objects.get(username=transaction.email)
+        currency_object = transaction.currency_name
+
 
         if event == "TRANSACTION_REQUEST_APPROVAL":
             pass
         elif event == "TRANSACTION_REQUEST_BROADCASTED":
             pass
         elif event == "TRANSACTION_REQUEST_MINED":
-            pass
-        elif event == "TRANSACTION_REQUEST_REJECTION":
-            pass
-        elif event == "TRANSACTION_REQUEST_FAIL":
-            pass
+            transaction.state = "APPROVED"
+            sent_funds_cryptoshare_wallet_email(str(transaction.email), "COMPLETED SENT FUNDS", transaction.currency_name.currency_name ,transaction.amount, "APPROVED", transaction.creation_datetime)
 
-    pass
+        elif event == "TRANSACTION_REQUEST_REJECTION":
+            transaction.state = "REJECTED"
+
+        elif event == "TRANSACTION_REQUEST_FAIL":
+            transaction.state = "FAILED"
+
+        if event == "TRANSACTION_REQUEST_REJECTION" or event == "TRANSACTION_REQUEST_FAIL":
+            balance_object = Balance.objects.get(email=receiver_user, currency_name=currency_object)
+            balance_object.amount += transaction.amount
+            balance_object.save()
+
+            sent_funds_cryptoshare_wallet_email(str(transaction.email), f"{transaction.state} SENT FUNDS", transaction.currency_name.currency_name ,transaction.amount, "APPROVED", transaction.creation_datetime)
+
+
+
+
+        
+    return HttpResponse(status=200)
 
 @csrf_exempt
 # @require_POST
