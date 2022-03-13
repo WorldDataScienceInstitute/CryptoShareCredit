@@ -340,17 +340,19 @@ def lend_offer(request):
         transaction = TransactionB.objects.get(pk=transaction_primary_id)
 
         try:
-            balance_usdc = Balance.objects.get(email=request.user, currency_name=transaction.currency_name)
+            balance_object = Balance.objects.get(email=request.user, currency_name=transaction.currency_name)
         except:
-            messages.info(request, "You do not have a balance in USDC, please make a deposit before accepting a offer.")
+            messages.info(request, "You do not have a balance, please make a deposit before accepting a offer.")
             return redirect('atm_functions:LendCrypto')
-        # print(balance_usdc)
-        if balance_usdc.amount < transaction.amount:
-            messages.info(request, f"Insufficient balance. You can only borrow up to {float(balance_usdc.amount)} {transaction.currency_name.currency_name}.")
+        # print(balance_object)
+        if balance_object.amount < transaction.amount:
+            messages.info(request, f"Insufficient balance. You can only borrow up to {float(balance_object.amount)} {transaction.currency_name.currency_name}.")
             return redirect('atm_functions:LendCrypto')
         
-        balance_usdc.amount -= transaction.amount
-        balance_usdc.save()
+        comission = 1 - 0.01
+
+        balance_object.amount -= transaction.amount
+        balance_object.save()
 
         transaction.state = "IN PROGRESS"
         transaction.start_datetime = timezone.now()
@@ -360,7 +362,7 @@ def lend_offer(request):
 
         emitter = transaction.emitter
         emitter_balance = Balance.objects.get(email=emitter, currency_name=transaction.currency_name)
-        emitter_balance.amount += transaction.amount
+        emitter_balance.amount += transaction.amount * comission
         emitter_balance.save()
 
         messages.info(request, f"The offer with ID: {transaction.id_b} has been started.")
