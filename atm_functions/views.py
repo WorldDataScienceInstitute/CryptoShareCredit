@@ -1209,6 +1209,8 @@ def confirmations_coin_transactions(request):
 
             sent_funds_cryptoshare_wallet_email(str(transaction.email), f"{transaction.state} SENT FUNDS", transaction.currency_name.currency_name ,transaction.amount, "APPROVED", transaction.creation_datetime)
         
+        transaction.save()
+        
     return HttpResponse(status=200)
 
 @csrf_exempt
