@@ -117,8 +117,8 @@ class CryptoApis:
 
         return request["data"]["item"]
 
-    def generate_coins_transaction_from_address(self, blockchain, network, address, amount):
-        url = self.BASE + f"/wallet-as-a-service/wallets/{self.WALLET_ID}/{blockchain}/{network}/addresses/{address}/transaction-requests"
+    def generate_coins_transaction_from_address(self, blockchain, network, sending_address, recipient_address, amount):
+        url = self.BASE + f"/wallet-as-a-service/wallets/{self.WALLET_ID}/{blockchain}/{network}/addresses/{sending_address}/transaction-requests"
         data = {
                 "context": "",
                 "data": {
@@ -128,7 +128,7 @@ class CryptoApis:
                         "callbackUrl": "https://www.cryptoshareapp.com/atm/ConfirmationsCoinTransactions/",
                         "feePriority": "standard",
                         "note": "",
-                        "recipientAddress": address
+                        "recipientAddress": recipient_address
                     }
                 }
             }

@@ -300,7 +300,7 @@ def deposit_funds_email(sender_email, transaction_id, blockchain, network ,tx_am
 
         <p>Deposit made to <b>{tx_address}</b> address  </p>
 
-        <p>Please have in mind that for security reasons the assigned deposit address is changed when a deposit is made or every 6 days, whichever ocurrs first.</p>
+        <p>Please have in mind that for security reasons the assigned deposit address is changed if a deposit is not made 6 days after the creation date.</p>
 
         <p>For making a new Crypto Deposit, please go to <a href="https://www.cryptoshareapp.com/atm/DepositCrypto/">Crypto$hare Deposit Crypto</a> and generate a new deposit address</p>
 
