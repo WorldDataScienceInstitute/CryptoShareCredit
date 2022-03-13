@@ -817,14 +817,14 @@ def send_money_confirmation(request):
             return redirect('atm_functions:SendCryptoShareWallet')
 
         # if sending_currency in wallet_currencies:
-        #     transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet(sending_blockchain, "mainnet", recipient_address, amount)
-        #     print(request)
+        transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet(sending_blockchain, "mainnet", recipient_address, amount)
+            # print(request)
         # elif sending_currency in address_currencies:
-        transaction_response = cryptoapis_client.generate_coins_transaction_from_address(sending_blockchain, "mainnet",sending_address_object.address ,recipient_address, amount)
+        #     transaction_response = cryptoapis_client.generate_coins_transaction_from_address(sending_blockchain, "mainnet",sending_address_object.address ,recipient_address, amount)
         # print(request)
 
-        # total_transaction_amount = transaction_response["totalTransactionAmount"]
-        total_transaction_amount = transaction_response["recipients"][0]["amount"]
+        total_transaction_amount = transaction_response["totalTransactionAmount"]
+        # total_transaction_amount = transaction_response["recipients"][0]["amount"]
         transaction_id = transaction_response["transactionRequestId"]
 
         balance_object.amount -= Decimal(total_transaction_amount)
@@ -1177,7 +1177,7 @@ def confirmations_coin_transactions(request):
 
         response = json.loads(payload[start:end])
 
-        reference_id = response["reference_Id"]
+        reference_id = response["referenceId"]
         data = response["data"]
         event = data["event"]
 
