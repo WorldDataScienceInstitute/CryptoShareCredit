@@ -793,9 +793,9 @@ def send_money_confirmation(request):
         sending_currency = sending_account[0]
         sending_blockchain = sending_account[1]
 
-        if sending_currency in address_currencies:
-            # messages.info(request, "XRP and Ethereum are currently not supported for sending funds.")
-            return redirect('atm_functions:SendCryptoShareWallet')
+        # if sending_currency in address_currencies:
+        #     # messages.info(request, "XRP and Ethereum are currently not supported for sending funds.")
+        #     return redirect('atm_functions:SendCryptoShareWallet')
 
 
         amount = form_response["sendingAmount"]
@@ -803,6 +803,7 @@ def send_money_confirmation(request):
 
         currency_object = Cryptocurrency.objects.get(currency_name=sending_currency)
         balance_object = Balance.objects.get(email=request.user, currency_name=currency_object)
+        sending_address_object = Address.objects.get(currency_name=currency_object, email=request.user)
 
         if balance_object.amount < float(amount):
             messages.error(request, "Insufficient funds.")
@@ -815,12 +816,12 @@ def send_money_confirmation(request):
             messages.info(request, "Invalid address. Please try again.")
             return redirect('atm_functions:SendCryptoShareWallet')
 
-        if sending_currency in wallet_currencies:
-            transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet(sending_blockchain, "mainnet", recipient_address, amount)
-            print(request)
-        elif sending_currency in address_currencies:
-            transaction_response = cryptoapis_client.generate_coins_transaction_from_address(sending_blockchain, "mainnet", recipient_address, amount)
-            print(request)
+        # if sending_currency in wallet_currencies:
+        #     transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet(sending_blockchain, "mainnet", recipient_address, amount)
+        #     print(request)
+        # elif sending_currency in address_currencies:
+        transaction_response = cryptoapis_client.generate_coins_transaction_from_address(sending_blockchain, "mainnet",sending_address_object.address ,recipient_address, amount)
+        # print(request)
 
         # total_transaction_amount = transaction_response["totalTransactionAmount"]
         total_transaction_amount = transaction_response["recipients"][0]["amount"]
@@ -829,7 +830,7 @@ def send_money_confirmation(request):
         balance_object.amount -= Decimal(total_transaction_amount)
         balance_object.save()
 
-        transaction_a = TransactionA(transaction_id=transaction_id, email=request.user, currency_name=currency_object, transaction_type="WITHDRAWAL", state="PENDING",amount=amount, internal_state="WAITING_FOR_APPROVAL")
+        transaction_a = TransactionA(transaction_id=transaction_id, email=request.user, address=sending_address_object, currency_name=currency_object, transaction_type="WITHDRAWAL", state="PENDING", amount=amount, internal_state="WAITING_FOR_APPROVAL")
         transaction_a.save()
         # print(sending_blockchain, sending_currency, amount, recipient_address)
 
@@ -1160,14 +1161,14 @@ def aptopayments_create_user(request):
 @csrf_exempt
 def confirmations_coin_transactions(request):
     if request.method == 'GET':
-        return redirect('atm_functions:CheckBalance')
+        return redirect('authentication:Home')
     
     elif request.method == 'POST':
         request_reader = request.META.get('wsgi.input')
         # print(request.headers)
 
-        # bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING ENVIRRONMENT
-        bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION ENVIRONMENT
+        bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING ENVIRRONMENT
+        # bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION ENVIRONMENT
 
         payload = bpayload.decode("utf-8")
 
@@ -1176,7 +1177,7 @@ def confirmations_coin_transactions(request):
 
         response = json.loads(payload[start:end])
 
-        reference_id = response["reference_id"]
+        reference_id = response["reference_Id"]
         data = response["data"]
         event = data["event"]
 
@@ -1207,10 +1208,6 @@ def confirmations_coin_transactions(request):
             balance_object.save()
 
             sent_funds_cryptoshare_wallet_email(str(transaction.email), f"{transaction.state} SENT FUNDS", transaction.currency_name.currency_name ,transaction.amount, "APPROVED", transaction.creation_datetime)
-
-
-
-
         
     return HttpResponse(status=200)
 
