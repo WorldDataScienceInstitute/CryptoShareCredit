@@ -7,6 +7,7 @@ import pytz as pytz
 from dateutil.tz import tzlocal
 from dotenv import load_dotenv
 from atm_functions.models import Account
+from atm_functions.models import User
 import random
 import string
 
@@ -14,7 +15,7 @@ load_dotenv()
 
 
 def get_user_count():
-    return Account.objects.count(), dt.now().astimezone(pytz.timezone('US/Eastern')).strftime("%D")
+    return User.objects.count(), dt.now().astimezone(pytz.timezone('US/Eastern')).strftime("%D")
     #return Account.objects.count(), dt.now().astimezone('localtimezone').strftime("%D %r %Z")  
 
 
