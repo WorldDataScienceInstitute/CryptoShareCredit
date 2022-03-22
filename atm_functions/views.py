@@ -475,6 +475,10 @@ def create_borrowing_offer(request):
         if currency_collateral == "NotSelected":
             messages.info(request, "Please select a collateral currency.")
             return redirect('atm_functions:CreateBorrowingOffer')
+
+        if currency_collateral == "XRP" or currency == "XRP":
+            messages.info(request,"XRP is currently deactivated, please try again later")
+            return redirect('atm_functions:CreateBorrowingOffer')
         
         if amount_collateral == "":
             messages.info(request, "Collateral amount invalid, please try again")
@@ -525,7 +529,7 @@ def remove_borrowing_offer(request):
         offer = TransactionB.objects.get(id_b=offer_id)
 
         if offer.state != "OPEN":
-            # messages.error(request, "Something went wrong, please try again later")
+            # messages.info(request, "Something went wrong, please try again later")
             return HttpResponse(status=405)
         
         emitter_id = offer.emitter_id
@@ -668,8 +672,7 @@ def send_coinbase_wallet(request):
 
     if not request.session['wallet_conn']:
         # Temporary redirect to connect wallet while CryptoApis implementation is in progress.
-        messages.info(
-            request, "You must connect your Coinbase account to send money.")
+        messages.info(request, "You must connect your Coinbase account to send money.")
         return redirect('atm_functions:ConnectWallet')
 
     accounts = {}
@@ -746,7 +749,7 @@ def send_money_confirmation(request):
                 return redirect('atm_functions:CheckBalance')
             except Exception as e:
                 # print(e)
-                messages.error(request, "Invalid authorization code. Please try again.")
+                messages.info(request, "Invalid authorization code. Please try again.")
                 return redirect('atm_functions:SendMoney')
 
         else:
@@ -807,8 +810,8 @@ def send_money_confirmation(request):
         balance_object = Balance.objects.get(email=request.user, currency_name=currency_object)
         sending_address_object = Address.objects.get(currency_name=currency_object, email=request.user)
 
-        if balance_object.amount < float(amount):
-            messages.error(request, "Insufficient funds.")
+        if float(balance_object.amount) < float(amount):
+            messages.info(request, "Insufficient funds.")
             return redirect('atm_functions:SendCryptoShareWallet')
 
         cryptoapis_client = CryptoApis()
@@ -824,7 +827,6 @@ def send_money_confirmation(request):
         elif sending_currency in address_currencies:
             transaction_response = cryptoapis_client.generate_coins_transaction_from_address(sending_blockchain, "mainnet",sending_address_object.address ,recipient_address, amount)
         # print(request)
-
         total_transaction_amount = transaction_response["totalTransactionAmount"]
         # total_transaction_amount = transaction_response["recipients"][0]["amount"]
         transaction_id = transaction_response["transactionRequestId"]
@@ -1088,7 +1090,7 @@ def card_dashboard(request):
                     messages.info(request, "Error finishing verification process. Please try again.")
                     return redirect('atm_functions:CardDashboard')
             except:
-                messages.error(request, "Error finishing verification process. Please try again.")
+                messages.info(request, "Error finishing verification process. Please try again.")
                 return redirect('atm_functions:CardDashboard')
 
             print(complete_verification)
