@@ -475,17 +475,13 @@ def create_borrowing_offer(request):
         if currency_collateral == "NotSelected":
             messages.info(request, "Please select a collateral currency.")
             return redirect('atm_functions:CreateBorrowingOffer')
-
-        if currency_collateral == "XRP" or currency == "XRP":
-            messages.info(request,"XRP is currently deactivated, please try again later")
-            return redirect('atm_functions:CreateBorrowingOffer')
         
         if amount_collateral == "":
             messages.info(request, "Collateral amount invalid, please try again")
             return redirect('atm_functions:CreateBorrowingOffer')
 
         currency_object = Cryptocurrency.objects.get(symbol=currency)
-        currency_collateral_object = Cryptocurrency.objects.get(symbol=currency_collateral)
+        currency_collateral_object = Cryptocurrency.objects.get(symbol=currency_collateral)     
 
         try:
             currency_balance = Balance.objects.get(email=request.user, currency_name=currency_object)
@@ -501,6 +497,37 @@ def create_borrowing_offer(request):
         if collateral_balance.amount < float(amount_collateral):
             messages.info(request, f"Insufficient collateral balance. You can only borrow up to {float(collateral_balance.amount)} {currency_collateral}.")
             return redirect('atm_functions:CreateBorrowingOffer')
+
+        # <--------------------------  PAYMENT CURRENCY GENERATION -------------------------------------------->
+        currency_addresses = Address.objects.filter(email=request.user, currency_name=currency_object).count()
+
+        if currency_addresses == 0:
+            available_addresses = Address.objects.filter(currency_name=currency_object, email=None)
+            if len(available_addresses) != 0:
+                address = available_addresses[0]
+                address.email = request.user
+                address.save()
+                # print(address)
+                messages.info(request, "Address generated successfully.")
+                return redirect('atm_functions:CryptoShareWallet')
+
+            cryptoapis_client = CryptoApis()
+
+            # Get current number of addresses for that currency
+            number_of_addresses = Address.objects.filter(currency_name=currency).count()
+
+            try:
+                deposit_address = cryptoapis_client.generate_deposit_address(currency_object.blockchain, currency_object.network, number_of_addresses)
+            except:
+                messages.info(request, "Error generating address. Please try again.")
+                return redirect('atm_functions:CreateBorrowingOffer')
+
+            if currency_object.blockchain == "xrp":
+                newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_object, expiration_datetime = None)
+            else:
+                newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_object)
+            newAddress.save()
+        # <--------------------------  PAYMENT CURRENCY GENERATION -------------------------------------------->
 
         collateral_balance.amount -= Decimal(float(amount_collateral))
         collateral_balance.save()
@@ -661,7 +688,7 @@ def send_cryptoshare_wallet(request):
     
     context = {}
 
-    messages.info(request, "XRP, Ethereum, and ERC-20 tokens are currently not supported for sending funds.")
+    # messages.info(request, "XRP, Ethereum, and ERC-20 tokens are currently not supported for sending funds.")
 
     balances = Balance.objects.filter(email=request.user)
     context['balances'] = balances
