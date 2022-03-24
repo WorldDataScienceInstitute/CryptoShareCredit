@@ -1,6 +1,4 @@
 from __future__ import absolute_import, unicode_literals
-from .models import User
-from atm_functions.models import Account, Address, Balance, Cryptocurrency, TransactionA, TransactionB
 
 import os
 
@@ -24,7 +22,9 @@ app.autodiscover_tasks()
 
 @app.task(bind=True)
 def debug_task(self):
-    # u = User.objects.get(pk=88)
 
-    c_test = Cryptocurrency(currency_name="C_Test", contract="0x0", wallet_address="0x0", blockchain="0x0", network="0x0", symbol="0x0")
-    c_test.save()
+    url = "https://5e48-185-153-177-98.ngrok.io/atm/TestReceiver/"
+    data = {}
+
+    request2 = requests.post(url, json=data)
+    return('Request: {0!r}'.format(self.request))
