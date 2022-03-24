@@ -3,8 +3,6 @@ from __future__ import absolute_import, unicode_literals
 import os
 
 from celery import Celery
-from django.contrib.auth.models import User
-from atm_functions.models import Cryptocurrency
 import requests
 
 # set the default Django settings module for the 'celery' program.
@@ -24,6 +22,9 @@ app.autodiscover_tasks()
 
 @app.task(bind=True)
 def debug_task(self):
-    print('Request: {0!r}'.format(self.request))
-    c_test = Cryptocurrency(currency_name="C_Test", contract="0x0", wallet_address="0x0", blockchain="0x0", network="0x0", symbol="0x0")
-    c_test.save()
+
+    url = "https://5e48-185-153-177-98.ngrok.io/atm/TestReceiver/"
+    data = {}
+
+    request2 = requests.post(url, json=data)
+    return('Request: {0!r}'.format(self.request))
