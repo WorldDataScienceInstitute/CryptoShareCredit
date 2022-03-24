@@ -40,6 +40,6 @@ urlpatterns = [
      path('ConfirmationsCoinTransactions/', views.confirmations_coin_transactions, name="ConfirmationsCryptoTransactions"),
      path('ConfirmedCoinTransactions/', views.confirmed_coin_transactions, name="ConfirmedCoinTransactions"),
      path('ConfirmedTokenTransactions/', views.confirmed_token_transactions, name="ConfirmedTokenTransactions"),
-     # path('TestReceiver/', views.test_receiver, name="TestReceiver")
+     path('TestReceiver/', views.test_receiver, name="TestReceiver")
      # path('NotificationService/', views.notification_service, name="NotificationService")
 ]
