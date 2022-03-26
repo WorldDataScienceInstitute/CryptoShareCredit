@@ -4,6 +4,7 @@ from django.conf import settings
 import os
 
 from celery import Celery
+from celery.schedules import crontab
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ATM.settings')
@@ -22,6 +23,12 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 
 
+@app.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    # Calls test('hello') every 10 seconds.
+    sender.add_periodic_task(5.0, test.s('hello'), name='add every 10')
+
+
 @app.task
 def test(arg):
     print(arg)
@@ -30,7 +37,3 @@ def test(arg):
 def add(x, y):
     z = x + y
     print(z)
-
-@app.task(bind=True)
-def debug_task(self):
-    print('Request: {0!r}'.format(self.request))
