@@ -19,7 +19,6 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -138,6 +137,8 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
+STATICFILES_STORAGE = ('whitenoise.storage.CompressedManifestStaticFilesStorage')
+
 # Session settings
 # https://docs.djangoproject.com/en/3.2/ref/settings/#sessions
 # https://github.com/labd/django-session-timeout
@@ -160,6 +161,10 @@ DEFAULT_FROM_EMAIL = 'help@cryptoshareapp.com'
 EMAIL_PORT = 587
 NO_REPLY_PASSWORD = os.environ['NO_REPLY_PASSWORD']
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+
+#CELERY config
+CELERY_BROKER_URL = 'redis://:p334a76fb64842055b48d0a15b2c5642e87b8ba2a89e8ad4717d2d078520af750@ec2-52-73-18-209.compute-1.amazonaws.com:22859'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
