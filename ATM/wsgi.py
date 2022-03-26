@@ -13,9 +13,6 @@ from django.core.wsgi import get_wsgi_application
 
 # This will make sure the app is always imported when
 # Django starts so that shared_task will use this app.
-from atm_functions.celery import app as celery_app
-
-__all__ = ('celery_app',)
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ATM.settings')

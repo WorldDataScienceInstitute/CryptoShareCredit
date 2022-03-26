@@ -18,6 +18,8 @@ from google_currency import convert
 from coinbase.wallet.client import OAuthClient
 from coinbase.wallet.error import TwoFactorRequiredError
 
+from .tasks import debug_task, test
+
 import hmac
 import hashlib
 
@@ -1391,5 +1393,8 @@ def confirmed_token_transactions(request):
 
 @csrf_exempt
 def test_receiver(request):
+
+    debug_task.delay()
+    test.delay()
     print("OK")
     return HttpResponse(status=200)
