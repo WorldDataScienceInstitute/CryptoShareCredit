@@ -1394,7 +1394,5 @@ def confirmed_token_transactions(request):
 @csrf_exempt
 def test_receiver(request):
 
-    debug_task.delay()
-    test.delay()
     print("OK")
     return HttpResponse(status=200)
