@@ -1,4 +1,4 @@
-from celery import Celery
+from celery import Celery, shared_task
 import os
 from atm_functions.models import Cryptocurrency
 
@@ -12,8 +12,8 @@ app.conf.update(BROKER_URL=os.environ['REDIS_URL'],
 #   should have a `CELERY_` prefix.
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
-@app.on_after_configure.connect
-def setup_periodic_tasks(sender, **kwargs):
+@shared_task
+def daily_test_task(sender, **kwargs):
     # Calls test('hello') every 10 seconds.
     sender.add_periodic_task(30.0, task_test.s('THIS IS A TEST EVERY 30 SECS'), name='add every 30')
 
