@@ -38,7 +38,6 @@ app.autodiscover_tasks()
 #     import requests
 
 #     QUERYSTRING = {
-#                 "checksum": "482f9e2ed75e9df2fbd2753d17a0285460abea29840302ab10619efeff66fcba",
 #                 "key": "DailyCryptoshareRoutine"
 #                 }
     

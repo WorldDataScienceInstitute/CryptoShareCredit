@@ -11,14 +11,13 @@ from .models import User
 from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, TransactionA, TransactionB
 from common.utils import currency_list
-from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email
+from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email
 from common.cryptoapis import CryptoApis
 from common.aptopayments import AptoPayments
 from google_currency import convert
 from coinbase.wallet.client import OAuthClient
 from coinbase.wallet.error import TwoFactorRequiredError
-
-from .tasks import debug_task, test
+from datetime import timedelta
 
 import hmac
 import hashlib
@@ -359,6 +358,17 @@ def lend_offer(request):
         transaction.state = "IN PROGRESS"
         transaction.start_datetime = timezone.now()
         transaction.receptor = request.user
+
+        interest_rate = transaction.interest_rate
+
+        if interest_rate == 5:
+            transaction.end_datetime = timezone.now() + timedelta(days=15)
+        elif interest_rate == 10:
+            transaction.end_datetime = timezone.now() + timedelta(days=30)
+        elif interest_rate == 15:
+            transaction.end_datetime = timezone.now() + timedelta(days=60)
+        elif interest_rate == 20:
+            transaction.end_datetime = timezone.now() + timedelta(days=90)
 
         transaction.save()
 
@@ -1192,6 +1202,49 @@ def aptopayments_create_user(request):
     return render(request, 'aptopayments_create_user.html', context)
 
 @csrf_exempt
+def daily_routine(request):
+    if request.method == "GET":
+        checksum = "482f9e2ed75e9df2fbd2753d17a0285460abea29840302ab10619efeff66fcba"
+        key = request.GET.get('key','')
+
+        if key == "":
+            return HttpResponse(status=400)
+        elif checksum != hashlib.sha256(key.encode('utf-8')).hexdigest():
+            return HttpResponse(status=400)
+
+        # <------------ DEACTIVATE UNUSED ADDRESSES ------------>
+        test_user = User.objects.get(pk=88)
+
+        to_delete_addresses = Address.objects.filter(expiration_datetime__date__lte=timezone.now().date(), email=test_user)[0:1]
+        for address in to_delete_addresses:
+            email = str(address.email)
+
+            address.email = None
+
+            #SEND NOTIFICATION EMAIL
+
+            try:
+                revoked_address_email(email, address.address, address.currency_name.currency_name, address.currency_name.blockchain)
+            except:
+                continue
+            
+            address.save()
+        # <------------ DEACTIVATE UNUSED ADDRESSES ------------>      
+
+        # <------------ FINISH EXPIRED TRANSACTIONS ------------>
+        to_delete_transactionsb = TransactionB.objects.filter(end_datetime__date__lte=timezone.now().date())
+
+
+
+        # <------------ FINISH EXPIRED TRANSACTIONS ------------>  
+
+
+        pass
+    elif request.method == "POST":
+        return HttpResponse(status=500)
+    pass
+
+@csrf_exempt
 def confirmations_coin_transactions(request):
     if request.method == 'GET':
         return redirect('authentication:Home')
@@ -1314,9 +1367,9 @@ def confirmed_coin_transactions(request):
             creation_date = timezone.now()
             deposit_funds_email(str(sender_object.email), transaction_intern_id, response_data["blockchain"], response_data["network"] ,amount, tx_currency, sender_address, creation_date)
 
-            # if response_data["blockchain"] != "ethereum" and response_data["blockchain"] != "xrp":
-            #     sender_object.email = None
-            #     sender_object.save()
+            if response_data["blockchain"] != "ethereum" and response_data["blockchain"] != "xrp":
+                sender_object.email = None
+                sender_object.save()
         # print(response)
         # print(payload.decode("utf-8"))
         return HttpResponse("Webhook received!")

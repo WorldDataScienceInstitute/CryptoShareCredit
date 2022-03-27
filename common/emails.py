@@ -323,3 +323,99 @@ def deposit_funds_email(sender_email, transaction_id, blockchain, network ,tx_am
     s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
     s.quit()
     return
+
+def revoked_address_email(sender_email, address, currency, blockchain):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare revoked address"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = sender_email
+    
+    html = f"""
+    <html>
+    <head></head>
+        <body>
+        
+        <p>¡Hi there!</p>
+
+        <p>You are receiving this email because your crypto address was revoked in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+
+        <p>The address details are as follows:</p>
+
+        <p>Address : {address} </p>
+
+        <p>Currency : {currency}</p>
+
+        <p>Blockchain : {blockchain}</p>
+
+        <b><p>Remember that every generated address that haven't received funds after the next 6 days from its generation in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>
+        is revoked for security reasons.</p></b>
+
+        <p>For generating another address, please visit <a href="https://www.cryptoshareapp.com/atm/CryptoShareWallet/">Crypto$hare Wallet</a>.</p>
+
+        <p>If you think this is an error, please contact support</p>
+        </body>
+    </html>
+    """
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP('smtp.domain.com',port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
+    s.quit()
+    return
+
+def expired_transactionb_email(sender_email, address, currency, blockchain):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare expired loan"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = sender_email
+    
+    html = f"""
+    <html>
+    <head></head>
+        <body>
+        
+        <p>¡Hi there!</p>
+
+        <p>You are receiving this email because your issued loan has expired in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+
+        <p>The address details are as follows:</p>
+
+        <p>Address : {address} </p>
+
+        <p>Currency : {currency}</p>
+
+        <p>Blockchain : {blockchain}</p>
+
+        <b><p>Remember that every generated address that haven't received funds after the next 6 days from its generation in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>
+        is revoked for security reasons.</p></b>
+
+        <p>For generating another address, please visit <a href="https://www.cryptoshareapp.com/atm/CryptoShareWallet/">Crypto$hare Wallet</a>.</p>
+
+        <p>If you think this is an error, please contact support</p>
+        </body>
+    </html>
+    """
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP('smtp.domain.com',port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
+    s.quit()
+    return
