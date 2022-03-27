@@ -16,7 +16,7 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 @app.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
     # Calls test('hello') every 30 seconds.
-    sender.add_periodic_task(30.0, test.s('THIS IS A TEST EVERY 30 SECS'), name='add every 30')
+    sender.add_periodic_task(30.0, test_task.s('THIS IS A TEST EVERY 30 SECS'), name='add every 30')
     # sender.add_periodic_task(
     #     crontab(minute=0, hour=0),
     #     test.s('Happy Day!'),
@@ -27,7 +27,7 @@ def setup_periodic_tasks(sender, **kwargs):
 
 
 @app.task
-def test(arg):
+def test_task(arg):
     print(arg)
 
 @app.task
