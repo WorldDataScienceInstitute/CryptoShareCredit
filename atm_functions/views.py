@@ -11,14 +11,13 @@ from .models import User
 from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, TransactionA, TransactionB
 from common.utils import currency_list
-from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email
+from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email
 from common.cryptoapis import CryptoApis
 from common.aptopayments import AptoPayments
 from google_currency import convert
 from coinbase.wallet.client import OAuthClient
 from coinbase.wallet.error import TwoFactorRequiredError
-
-from .tasks import debug_task, test
+from datetime import timedelta
 
 import hmac
 import hashlib
@@ -359,6 +358,17 @@ def lend_offer(request):
         transaction.state = "IN PROGRESS"
         transaction.start_datetime = timezone.now()
         transaction.receptor = request.user
+
+        interest_rate = transaction.interest_rate
+
+        if interest_rate == 5:
+            transaction.end_datetime = timezone.now() + timedelta(days=15)
+        elif interest_rate == 10:
+            transaction.end_datetime = timezone.now() + timedelta(days=30)
+        elif interest_rate == 15:
+            transaction.end_datetime = timezone.now() + timedelta(days=60)
+        elif interest_rate == 20:
+            transaction.end_datetime = timezone.now() + timedelta(days=90)
 
         transaction.save()
 
@@ -1032,6 +1042,7 @@ def generate_address(request):
     if len(available_addresses) != 0:
         address = available_addresses[0]
         address.email = request.user
+        address.expiration_datetime = timezone.now()+timedelta(days=6)
         address.save()
         # print(address)
         messages.info(request, "Address generated successfully.")
@@ -1192,6 +1203,140 @@ def aptopayments_create_user(request):
     return render(request, 'aptopayments_create_user.html', context)
 
 @csrf_exempt
+def daily_routine(request):
+    if request.method == "GET":
+        checksum = "482f9e2ed75e9df2fbd2753d17a0285460abea29840302ab10619efeff66fcba"
+        key = request.GET.get('key','')
+
+        if key == "":
+            return HttpResponse(status=400)
+        elif checksum != hashlib.sha256(key.encode('utf-8')).hexdigest():
+            return HttpResponse(status=400)
+
+        # <------------ DEACTIVATE UNUSED ADDRESSES ------------>
+        # test_user = User.objects.get(pk=88)
+
+        # to_delete_addresses = Address.objects.filter(expiration_datetime__date__lte=timezone.now().date(), email=test_user)[0:1]
+        to_delete_addresses = Address.objects.filter(expiration_datetime__date__lte=timezone.now().date())
+        for address in to_delete_addresses:
+            email = str(address.email)
+
+            address.email = None
+
+            #SEND NOTIFICATION EMAIL
+
+            try:
+                revoked_address_email(email, address.address, address.currency_name.currency_name, address.currency_name.blockchain)
+            except:
+                continue
+            
+            address.expiration_datetime = None
+            address.save()
+        # <------------ DEACTIVATE UNUSED ADDRESSES ------------>      
+
+        # <------------ FINISH EXPIRED TRANSACTIONS ------------>
+        to_delete_transactionsb = TransactionB.objects.filter(Q(end_datetime__date__lte=timezone.now().date()) & Q(state="IN PROGRESS"))
+        for transaction in to_delete_transactionsb:
+            transaction.state = "EXPIRED"
+
+            interest_rate = transaction.interest_rate
+
+            if interest_rate == 5:
+                days_to_pay = 15
+            elif interest_rate == 10:
+                days_to_pay = 30
+            elif interest_rate == 15:
+                days_to_pay = 60
+            elif interest_rate == 20:
+                days_to_pay = 90
+
+            if transaction.transaction_type == "BORROW":
+                borrower_user = transaction.emitter
+                lender_user = transaction.receptor
+
+            elif transaction.transaction_type == "LEND":
+                borrower_user = transaction.receptor
+                lender_user = transaction.emitter
+
+            expired_transactionb_email(
+                                    str(borrower_user), 
+                                    "BORROWER", 
+                                    transaction.id_b, 
+                                    transaction.currency_name.currency_name, 
+                                    transaction.currency_name_colllateral.currency_name, 
+                                    transaction.amount, 
+                                    transaction.amount_collateral, 
+                                    transaction.interest_rate, 
+                                    days_to_pay, 
+                                    transaction.start_datetime.date(), 
+                                    transaction.end_datetime.date()
+                                    )
+
+            expired_transactionb_email(
+                                    str(lender_user), 
+                                    "LENDER", 
+                                    transaction.id_b, 
+                                    transaction.currency_name.currency_name, 
+                                    transaction.currency_name_colllateral.currency_name, 
+                                    transaction.amount, 
+                                    transaction.amount_collateral, 
+                                    transaction.interest_rate, 
+                                    days_to_pay, 
+                                    transaction.start_datetime.date(), 
+                                    transaction.end_datetime.date()
+                                    )
+
+            # < ----------------------------------- ACCREDITATION OF COLLATERAL  ----------------------------------- >
+
+            currency_collateral_object = transaction.currency_collateral
+            currency_collateral_amount = transaction.amount_collateral
+
+            try:
+                collateral_balance = Balance.objects.get(email=lender_user, currency_name=currency_collateral_object)
+            except:
+                collateral_balance = Balance(email=lender_user, currency_name=currency_collateral_object, amount = 0)
+
+            if transaction.currency_name_collateral == "XRP":
+                cryptoapis_client = CryptoApis()
+
+                sender_address = Address.objects.get(email=borrower_user, currency_name=currency_collateral_object)
+                address_exists = Address.objects.filter(email=lender_user, currency_name=currency_collateral_object)
+
+                if not address_exists:
+                    number_of_addresses = Address.objects.filter(currency_name=currency_collateral_object).count()
+                    # < ----------------------------------- HERE MISSING ERROR EXCEPTION HANDLING ----------------------------------- >
+                    # < ----------------------------------- HERE MISSING ERROR EXCEPTION HANDLING ----------------------------------- >
+                    deposit_address = cryptoapis_client.generate_deposit_address(currency_collateral_object.blockchain, currency_collateral_object.network, number_of_addresses)
+
+                    newAddress = Address(address=deposit_address, email=lender_user, currency_name=currency_collateral_object, expiration_datetime = None)
+                    newAddress.save()
+
+                    cryptoapis_client.generate_coin_subscription(currency_collateral_object.blockchain, currency_collateral_object.network, deposit_address)
+                    # < ----------------------------------- HERE MISSING ERROR EXCEPTION HANDLING ----------------------------------- >
+                    # < ----------------------------------- HERE MISSING ERROR EXCEPTION HANDLING ----------------------------------- >
+                else:
+                    deposit_address = address_exists[0].address
+
+                transaction_response = cryptoapis_client.generate_coins_transaction_from_address(
+                                                                                                currency_collateral_object.blockchain, 
+                                                                                                "mainnet",
+                                                                                                sender_address.address, 
+                                                                                                deposit_address, 
+                                                                                                currency_collateral_amount)
+            else:
+                collateral_balance.amount += currency_collateral_amount
+            
+            collateral_balance.save()
+            transaction.save()
+            # < ----------------------------------- ACCREDITATION OF COLLATERAL  ----------------------------------- >
+
+        # <------------ FINISH EXPIRED TRANSACTIONS ------------>  
+        return HttpResponse(status=200)
+    elif request.method == "POST":
+        return HttpResponse(status=500)
+    pass
+
+@csrf_exempt
 def confirmations_coin_transactions(request):
     if request.method == 'GET':
         return redirect('authentication:Home')
@@ -1317,6 +1462,9 @@ def confirmed_coin_transactions(request):
             # if response_data["blockchain"] != "ethereum" and response_data["blockchain"] != "xrp":
             #     sender_object.email = None
             #     sender_object.save()
+
+            sender_object.expiration_datetime = None
+            sender_object.save()
         # print(response)
         # print(payload.decode("utf-8"))
         return HttpResponse("Webhook received!")

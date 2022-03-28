@@ -1,3 +1,4 @@
+import email
 import smtplib,ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -307,6 +308,126 @@ def deposit_funds_email(sender_email, transaction_id, blockchain, network ,tx_am
         <p>Customer Support Transaction ID:  <b style="color: red">{transaction_id}</b> </p>
 
         <p>If this was not you, please secure your account at <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+        </body>
+    </html>
+    """
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP('smtp.domain.com',port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
+    s.quit()
+    return
+
+def revoked_address_email(sender_email, address, currency, blockchain):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare revoked address"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = sender_email
+    
+    html = f"""
+    <html>
+    <head></head>
+        <body>
+        
+        <p>¡Hi there!</p>
+
+        <p>You are receiving this email because your crypto address was revoked in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+
+        <p>The address details are as follows:</p>
+
+        <p>Address : {address} </p>
+
+        <p>Currency : {currency}</p>
+
+        <p>Blockchain : {blockchain}</p>
+
+        <b><p>Remember that every generated address that haven't received funds passing the next 6 days from its generation in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>
+        is revoked for security reasons.</p></b>
+
+        <p>For generating another address, please visit <a href="https://www.cryptoshareapp.com/atm/CryptoShareWallet/">Crypto$hare Wallet</a>.</p>
+
+        <p>If you think this is an error, please contact support</p>
+        </body>
+    </html>
+    """
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP('smtp.domain.com',port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
+    s.quit()
+    return
+
+def expired_transactionb_email(sender_email, email_type, id_b, payment_currency, collateral_currency, payment_amount, collateral_amount, interest_rate, days_to_pay, start_datetime, end_datetime):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare expired loan"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = sender_email
+    
+    html = f"""
+    <html>
+    <head></head>
+        <body>
+        
+        <p>¡Hi there!</p>
+
+        <p>You are receiving this email because your issued loan has expired in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+
+        <p>The address details are as follows:</p>
+
+        <p>LoanID : {id_b} </p>
+
+        <p> ----------------------------------------- </p>
+
+        <p>Payment Currency : {payment_currency}</p>
+
+        <p>Payment Amount : {payment_amount}</p>
+
+        <p> ----------------------------------------- </p>
+
+        <p>Collateral Currency : {collateral_currency}</p>
+
+        <p>Collateral Amount : {collateral_amount}</p>
+
+        <p> ----------------------------------------- </p>
+
+        <p>Interest Rate : {interest_rate}</p>
+
+        <p>Days To Pay : {days_to_pay}</p>
+
+        <p>Days To Pay : {start_datetime}</p>
+
+        <p>Days To Pay : {end_datetime}</p>
+        """
+
+    if email_type == "BORROWER":
+        html += f"""
+        <p> The collateral amount has been substracted permanently from your account. </p>
+        """
+    elif email_type == "LENDER":
+        html += f"""
+        <p> The collateral amount has been deposited into your account. </p>
+        """
+
+    html += """    
+        <p>If you think this is an error, please contact support</p>
         </body>
     </html>
     """

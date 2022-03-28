@@ -20,34 +20,25 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
 
-# @app.on_after_finalize.connect
-# def setup_periodic_tasks(sender, **kwargs):
-#     # Calls test('hello') every 30 seconds.
-#     sender.add_periodic_task(crontab(minute="*/1"), test.s('DailyRoutine'), name='DailyRoutine')
-#     # sender.add_periodic_task(
-#     #     crontab(minute=0, hour=0),
-#     #     test.s('Happy Day!'),
-#     # )
-# #
+@app.on_after_finalize.connect
+def setup_periodic_tasks(sender, **kwargs):
+    # Calls daily routine every day at midnight
+    sender.add_periodic_task(crontab(minute=0, hour=0), test.s('DailyRoutine'), name='DailyRoutine')
 
 
+#Checks for expired addresses and loans
+@app.task
+def test(msg):
+    import requests
 
-
-# @app.task
-# def test(msg):
-#     import requests
-
-#     QUERYSTRING = {
-#                 "checksum": "482f9e2ed75e9df2fbd2753d17a0285460abea29840302ab10619efeff66fcba",
-#                 "key": "DailyCryptoshareRoutine"
-#                 }
+    QUERYSTRING = {
+                "key": "DailyCryptoshareRoutine"
+                }
     
-#     URL = "https://www.cryptoshareapp.com/atm/TestReceiver/"
-#     response = requests.get(url=URL, params=QUERYSTRING)
+    URL = "https://www.cryptoshareapp.com/atm/DailyRoutine/"
+    response = requests.get(url=URL, params=QUERYSTRING)
 
-#     print(f"Executed: {msg}")
-#     print(response)
-
+    print(f"Executed: {msg}")
 
 @app.task
 def add(x, y):
