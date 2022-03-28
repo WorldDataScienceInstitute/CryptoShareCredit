@@ -35,7 +35,7 @@ def test(msg):
                 "key": "DailyCryptoshareRoutine"
                 }
     
-    URL = "https://www.cryptoshareapp.com/atm/TestReceiver/"
+    URL = "https://www.cryptoshareapp.com/atm/DailyRoutine/"
     response = requests.get(url=URL, params=QUERYSTRING)
 
     print(f"Executed: {msg}")
