@@ -350,7 +350,7 @@ def revoked_address_email(sender_email, address, currency, blockchain):
 
         <p>Blockchain : {blockchain}</p>
 
-        <b><p>Remember that every generated address that haven't received funds after the next 6 days from its generation in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>
+        <b><p>Remember that every generated address that haven't received funds passing the next 6 days from its generation in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>
         is revoked for security reasons.</p></b>
 
         <p>For generating another address, please visit <a href="https://www.cryptoshareapp.com/atm/CryptoShareWallet/">Crypto$hare Wallet</a>.</p>
