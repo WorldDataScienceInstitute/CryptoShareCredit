@@ -1042,6 +1042,7 @@ def generate_address(request):
     if len(available_addresses) != 0:
         address = available_addresses[0]
         address.email = request.user
+        address.expiration_datetime = timezone.now()+timedelta(days=6)
         address.save()
         # print(address)
         messages.info(request, "Address generated successfully.")
@@ -1213,9 +1214,10 @@ def daily_routine(request):
             return HttpResponse(status=400)
 
         # <------------ DEACTIVATE UNUSED ADDRESSES ------------>
-        test_user = User.objects.get(pk=88)
+        # test_user = User.objects.get(pk=88)
 
-        to_delete_addresses = Address.objects.filter(expiration_datetime__date__lte=timezone.now().date(), email=test_user)[0:1]
+        # to_delete_addresses = Address.objects.filter(expiration_datetime__date__lte=timezone.now().date(), email=test_user)[0:1]
+        to_delete_addresses = Address.objects.filter(expiration_datetime__date__lte=timezone.now().date())
         for address in to_delete_addresses:
             email = str(address.email)
 
@@ -1228,6 +1230,7 @@ def daily_routine(request):
             except:
                 continue
             
+            address.expiration_datetime = None
             address.save()
         # <------------ DEACTIVATE UNUSED ADDRESSES ------------>      
 
@@ -1459,7 +1462,7 @@ def confirmed_coin_transactions(request):
             # if response_data["blockchain"] != "ethereum" and response_data["blockchain"] != "xrp":
             #     sender_object.email = None
             #     sender_object.save()
-            
+
             sender_object.expiration_datetime = None
             sender_object.save()
         # print(response)
