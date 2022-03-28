@@ -1,3 +1,4 @@
+import email
 import smtplib,ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -372,7 +373,7 @@ def revoked_address_email(sender_email, address, currency, blockchain):
     s.quit()
     return
 
-def expired_transactionb_email(sender_email, address, currency, blockchain):
+def expired_transactionb_email(sender_email, email_type, id_b, payment_currency, collateral_currency, payment_amount, collateral_amount, interest_rate, days_to_pay, start_datetime, end_datetime):
     port = settings.EMAIL_PORT
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "Crypto$hare expired loan"
@@ -391,17 +392,41 @@ def expired_transactionb_email(sender_email, address, currency, blockchain):
 
         <p>The address details are as follows:</p>
 
-        <p>Address : {address} </p>
+        <p>LoanID : {id_b} </p>
 
-        <p>Currency : {currency}</p>
+        <p> ----------------------------------------- </p>
 
-        <p>Blockchain : {blockchain}</p>
+        <p>Payment Currency : {payment_currency}</p>
 
-        <b><p>Remember that every generated address that haven't received funds after the next 6 days from its generation in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>
-        is revoked for security reasons.</p></b>
+        <p>Payment Amount : {payment_amount}</p>
 
-        <p>For generating another address, please visit <a href="https://www.cryptoshareapp.com/atm/CryptoShareWallet/">Crypto$hare Wallet</a>.</p>
+        <p> ----------------------------------------- </p>
 
+        <p>Collateral Currency : {collateral_currency}</p>
+
+        <p>Collateral Amount : {collateral_amount}</p>
+
+        <p> ----------------------------------------- </p>
+
+        <p>Interest Rate : {interest_rate}</p>
+
+        <p>Days To Pay : {days_to_pay}</p>
+
+        <p>Days To Pay : {start_datetime}</p>
+
+        <p>Days To Pay : {end_datetime}</p>
+        """
+
+    if email_type == "BORROWER":
+        html += f"""
+        <p> The collateral amount has been substracted permanently from your account. </p>
+        """
+    elif email_type == "LENDER":
+        html += f"""
+        <p> The collateral amount has been deposited into your account. </p>
+        """
+
+    html += """    
         <p>If you think this is an error, please contact support</p>
         </body>
     </html>
