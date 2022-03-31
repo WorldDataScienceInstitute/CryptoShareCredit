@@ -11,6 +11,7 @@ urlpatterns = [
      path('SelectBank/', views.bank, name='SelectBank'),
      path('TyWithdraw/', views.ty_withdraw, name='TyWithdraw'),
      path('TyDeposit/', views.ty_deposit, name='TyDeposit'),
+     path('BuyCrypto/', views.buy_crypto, name='BuyCrypto'),
      path('BorrowMoney/', views.borrow_money, name='BorrowMoney'),
      path('BorrowCrypto/', views.borrow_crypto, name='BorrowCrypto'),
      path('BorrowCryptoDashboard/', views.borrow_crypto_dashboard, name='BorrowCryptoDashboard'),
