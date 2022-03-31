@@ -249,6 +249,16 @@ def ty_deposit(request):
     return render(request, 'ty_deposit.html', context)
 
 
+def buy_crypto(request):
+
+    auth_confirmation = True
+
+    context = {
+        "authConfirmation": auth_confirmation,
+    }
+
+    return render(request, 'buy_crypto.html', context)
+
 def borrow_money(request):
     if request.user.is_authenticated:
         u = User.objects.get(pk=request.user.pk)
