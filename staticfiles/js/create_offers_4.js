@@ -16,7 +16,12 @@ function ActivateAmountField(setField){
     document.getElementById(setField).removeAttribute("readonly");
 }
 
-function SetCollateral(getAmountField, getPaymentCurrency, getCollateralCurrency, setCollateralField){
+function SetCollateral(getAmountField, getPaymentCurrency, getCollateralCurrency, setCollateralField, secondFunction){
+    if(secondFunction)
+    {
+        SetCurrencyCrypto(getAmountField, getPaymentCurrency);
+    }
+
     var currency = document.getElementById(getPaymentCurrency).value.split(' ')[0];
     var currencyCollateral = document.getElementById(getCollateralCurrency).value.split(' ')[0];
 
@@ -33,10 +38,25 @@ function SetCollateral(getAmountField, getPaymentCurrency, getCollateralCurrency
     
         document.getElementById(setCollateralField).value = parseFloat(collateral).toFixed(4);
     }
-
-    
 }
 
+function SetCurrencyCrypto(getAmountField, getPaymentCurrency){
+    var currency = document.getElementById(getPaymentCurrency).value.split(' ')[0];
+
+    if(currency != "NotSelected"){
+        var currencyRate = 1;
+        // var currencyRate = document.getElementById(currency+"_exchangeRate").innerHTML;
+        var currencyRateCrypto = document.getElementById(currency+"_exchangeRate").innerHTML;
+
+        var loan_amount = document.getElementById(getAmountField).value;
+
+        var currencyLoanExchange = loan_amount * currencyRate;
+
+        var currency_crypto_amount = currencyLoanExchange / currencyRateCrypto;
+    
+        document.getElementById("currency_crypto_amount").value = parseFloat(currency_crypto_amount).toFixed(4);
+    }
+}
 
 function test_js(){
 

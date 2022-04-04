@@ -8,6 +8,7 @@ from dateutil.tz import tzlocal
 from dotenv import load_dotenv
 from atm_functions.models import Account
 from atm_functions.models import User
+from .cryptoapis import CryptoApis
 import random
 import string
 
@@ -23,7 +24,56 @@ def get_user_count():
 def generate_pin():
     return ''.join(random.choice(string.digits) for i in range(6))
 
+def get_currencies_exchange_rate():
+    cryptoapis_client = CryptoApis()
 
+    exchange_rate_ltc = cryptoapis_client.get_exchange_rate_by_symbols("LTC", "USD")["rate"]
+    rate_ltc = {
+        "currency_name": "Litecoin",
+        "symbol": "LTC",
+        "exchange_rate": round(float(exchange_rate_ltc), 2)
+    }
+
+    exchange_rate_bch = cryptoapis_client.get_exchange_rate_by_symbols("BCH", "USD")["rate"]
+    rate_bch = {
+        "currency_name": "Bitcoin Cash",
+        "symbol": "BCH",
+        "exchange_rate": round(float(exchange_rate_bch), 2)
+    }
+
+    exchange_rate_dash = cryptoapis_client.get_exchange_rate_by_symbols("DASH", "USD")["rate"]
+    rate_dash = {
+        "currency_name": "Dash",
+        "symbol": "DASH",
+        "exchange_rate": round(float(exchange_rate_dash), 2)
+    }
+
+    exchange_rate_zec = cryptoapis_client.get_exchange_rate_by_symbols("ZEC", "USD")["rate"]
+    rate_zec = {
+        "currency_name": "Zcash",
+        "symbol": "ZEC",
+        "exchange_rate": round(float(exchange_rate_zec), 2)
+    }
+
+    exchange_rate_xrp = cryptoapis_client.get_exchange_rate_by_symbols("XRP", "USD")["rate"]
+    rate_xrp = {
+        "currency_name": "XRP",
+        "symbol": "XRP",
+        "exchange_rate": round(float(exchange_rate_xrp), 2)
+    }
+
+    exchange_rates = []
+    exchange_rates.append(rate_ltc)
+    exchange_rates.append(rate_bch)
+    exchange_rates.append(rate_dash)
+    exchange_rates.append(rate_zec)
+    exchange_rates.append(rate_xrp)
+
+    return exchange_rates
+
+
+
+"""
 country_dict = {
     'US': "United States",
     'BR': "Brazil",
@@ -93,9 +143,10 @@ state_dict = {
     "United States Minor Outlying Islands": "UM",
     "U.S. Virgin Islands": "VI",
 }
+"""
+# currency_list = ['USD', 'COL', 'BRL']
 
-currency_list = ['USD', 'COL', 'BRL']
-
+"""
 country_codes = [{
 "name": "Afghanistan",
 "dial_code": "+93",
@@ -1306,3 +1357,4 @@ country_codes = [{
 "dial_code": "+263",
 "code": "ZW"
 }]
+"""

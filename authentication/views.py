@@ -7,7 +7,7 @@ from atm_functions.models import Account
 from django.contrib import messages
 from django.conf import settings
 from django.utils.safestring import mark_safe
-from common.utils import  get_user_count, state_dict, country_codes, generate_pin
+from common.utils import  get_user_count, generate_pin
 from common.emails import Account_Creation_Email, code_creation_email, pin_reset_email
 from traceback import print_exc
 from coinbase.wallet.client import OAuthClient
@@ -33,10 +33,6 @@ def home(request):
 
 
 def signing(request):
-    # if request.method == "POST":
-    #     context = {'country_codes': country_codes}
-    #     return render(request, 'email.html', context)
-    # else:
     if request.user.is_authenticated:
         u = User.objects.get(pk=request.user.pk)
         name = u.first_name
@@ -51,7 +47,6 @@ def signing(request):
 def email(request):
     """Page for the user to enter their email and phone number to begin registration"""
     context = {
-        'country_codes': country_codes,
         'user_count': user_count,
         'last_check': last_check
         }
@@ -143,8 +138,7 @@ def verify(request):
 def registration(request):
     """Page for the user to fully authenticate their account with personal info"""
     context = {
-        'states': state_dict,
-        'country_codes': country_codes
+        # 'states': state_dict
         }
     if request.user.is_authenticated:
         u = User.objects.get(pk=request.user.pk)

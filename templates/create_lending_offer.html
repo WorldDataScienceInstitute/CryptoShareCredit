@@ -11,22 +11,17 @@
     <div class="content-container">
         <h2 class="ml-4 text-primary">Create Loan</h2>
         <br>
-        <!-- {% if iframe is None %}
-        <u><a href="{% url 'atm_functions:CryptoShareWallet' %}"><p id="borrowHelp" class="form-text" style="color: rgb(9, 185, 216); text-align: center; padding: 5px; border-style: dotted none dotted none; border-width: 1px; ">*Borrower must Register a Crypto$hare ETH address and transfer USDC, USDT, or WRAPPED BITCOIN to use as Collateral</p></a></u>
-        {% endif %} -->
         {% include 'messages.html' %}
         {% if authConfirmation %}
         {% include 'a_sessiontimeout.html' %}
-        <!-- <h5 class="ml-5">Information for account ending in {{ debit_last_four }}</h5> -->
             {% if request.session.wallet_conn %}
             <h1> Coinbase Wallet integration currently in progress</h1>
             {% else %}
-            <form action="/atm/CreateBorrowingOffer/" method="post">
+            <form action="/atm/CreateLendingOffer/" method="post">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="address"><b>Payment Currency</b>   <em>(This is the Crypto Currency you will receive money in)</em></label>
+                    <label for="address"><b>Payment Currency</b>   <em>(This is the Crypto Currency you will give)</em></label>
                     <select class="form-control" id="currency" aria-describedby="currency" name="currency" onmouseup="ActivateAmountField('currency_amount')">
-                    <!-- <select class="form-control" id="currency" aria-describedby="currency" name="currency" onmouseup="SetMaxAmount('currency','currency_amount')"> -->
                         <option disabled>Select one of your current balances for borrowing</option >
                         <option value="LTC Litecoin || Blockchain: litecoin || Network: mainnet">LTC Litecoin || Blockchain: litecoin</option>
                         <option value="BCH Bitcoin Cash || Blockchain: bitcoin-cash || Network: mainnet">BCH Bitcoin Cash || Blockchain: bitcoin-cash</option>
@@ -34,47 +29,35 @@
                         <option value="ZEC Zcash || Blockchain: zcash || Network: mainnet">ZEC Zcash|| Blockchain: zcash</option>
                         <option value="XRP XRP || Blockchain: xrp || Network: mainnet">XRP XRP|| Blockchain: xrp</option>
                     </select>
-                    <!-- <input type="text" class="form-control" id="currency" aria-describedby="currency" name="currency"
-                    placeholder="Enter the amount you want to lend" value ="USDC USD Coin || Blockchain: ethereum || Network: mainnet || " readonly> -->
-                    <!-- <select class="form-control" id="currency" aria-describedby="currency" name="currency" onblur="SetMaxAmount('currency','currency_amount')">
-                        <option disabled>Select one of your current balances for borrowing</option >
-                        {% for balance in balances %}
-                        <option value="{{ balance.currency_name.currency_name }} {{ balance.amount }}"> {{ balance.currency_name.currency_name }} || {{ balance.amount }}</option>
-                        {% endfor %}
-                    </select> -->
                 </div>
                 <div class="form-group">
-                    <!-- <label for="recipientUser">Recipient Address or Coinbase email</label> -->
                     <label for="currency_amount"><b>Amount</b>  <em>(IN USD)</em></label>
-                    <!-- <input type="number" class="form-control" id="currency_amount" aria-describedby="currency_amount" name="currency_amount"
-                        placeholder="Enter the amount you want to lend" max="" min="0.0001" readonly> -->
                     <input type="number" class="form-control" id="currency_amount" aria-describedby="currency_amount" name="currency_amount"
-                        placeholder="Enter the amount you want to borrow || Min: 150 Max: 1000" max="1000" min="150" onchange="SetCollateral('currency_amount', 'currency', 'currency_collateral','currency_amount_collateral')" step=".0001" required readonly>
+                        placeholder="Enter the amount you want to lend || Min: 150 Max: 1000" max="1000" min="150" onchange="SetCollateral('currency_amount', 'currency', 'currency_collateral','currency_amount_collateral', true);" step=".0001" required readonly>
                 </div>
                 <div class="form-group">
-                    <label for="currency_collateral"><b>Collateral</b>     <em>(Choose USDC, USDT, or WRAPPED BITCOIN as Collateral for Loan)</em></label>
-                    <select class="form-control" id="currency_collateral" aria-describedby="currency_collateral" name="currency_collateral" onchange="SetCollateral('currency_amount', 'currency', 'currency_collateral','currency_amount_collateral')" required>
+                    <label for="currency_amount"><b>Amount</b>  <em>(IN CRYPTO)</em></label>
+                    <input type="number" class="form-control" id="currency_crypto_amount" aria-describedby="currency_crypto_amount" name="currency_crypto_amount"
+                        placeholder="This would be displayed once you enter your lending amount" step=".0001" required readonly>
+                </div>
+                <div class="form-group">
+                    <label for="currency_collateral"><b>Collateral</b>     <em>(Choose any of our available crypto as Collateral for Loan)</em></label>
+                    <select class="form-control" id="currency_collateral" aria-describedby="currency_collateral" name="currency_collateral" onchange="SetCollateral('currency_amount', 'currency', 'currency_collateral','currency_amount_collateral', false)" required>
                         <option value="NotSelected NotSelected">Select one of the supported currencies</option >
                         <option value="LTC Litecoin">LTC Litecoin || Blockchain: litecoin</option>
                         <option value="BCH Bitcoin Cash">BCH Bitcoin Cash || Blockchain: bitcoin-cash</option>
                         <option value="DASH Dash">DASH Dash || Blockchain: dash</option>
                         <option value="ZEC Zcash">ZEC Zcash|| Blockchain: zcash</option>
                         <option value="XRP XRP">XRP XRP|| Blockchain: xrp</option>   
-                        <!-- {% for balance in balances %}
-                        <option value="{{ balance.currency_name.symbol }} {{ balance.currency_name.currency_name }}"> {{ balance.currency_name.symbol }} - {{ balance.currency_name.currency_name }} ||| Blockchain: {{ balance.currency_name.blockchain }} | Network: {{ balance.currency_name.network }} ||| Balance: {{ balance.amount|floatformat:"4" }}</option>
-                        {% endfor %} -->
-                        <!-- {% for currency in currencies %}
-                        <option value="{{ currency.currency_name }}"> Blockchain: {{ currency.blockchain }} || Network: {{ currency.network }} || {{ currency.symbol }} - {{ currency.currency_name }}</option>
-                        {% endfor %} -->
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="currency_amount"><b>Collateral Amount</b>      <em>(Must have 120% of Collateral Currency in CryptoShare Address to Submit)</em></label>
+                    <label for="currency_amount"><b>Collateral Amount</b>      <em>(You will receive this collateral amount being the 120% of the lending amount)</em></label>
                     <input type="number" class="form-control" id="currency_amount_collateral" aria-describedby="currency_amount_collateral" name="currency_amount_collateral"
-                        placeholder="This would be displayed once you enter your borrowing amount" step=".0001" readonly>
+                        placeholder="This would be displayed once you enter your lending amount" step=".0001" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="interest_rate"><b>Interest Rate</b>    <em>(This is the amount of Total Interest you pay by Due Date or your Collateral goes to Lender)</em></label>
+                    <label for="interest_rate"><b>Interest Rate</b>    <em>(This is the amount of Total Interest you will receive if payment is not done by Due Date)</em></label>
                     <select class="form-control" id="interest_rate" aria-describedby="interest_rate" name="interest_rate">
                         <option disabled>Select one of the offered interests</option >
                         <option value="5"> 01 - 15 DAYS || 5% INTEREST</option>
