@@ -734,7 +734,7 @@ def pay_offer(request):
 
         offer = TransactionB.objects.get(id_b=offer_id)
         
-        if offer.state != "OPEN":
+        if offer.state != "IN PROGRESS":
             # messages.info(request, "Something went wrong, please try again later")
             return HttpResponse(status=405)
         
@@ -776,6 +776,10 @@ def pay_offer(request):
             lender_balance_object.amount += offer.amount
 
         borrower_balance_collateral_object.amount += offer.amount_collateral   
+
+        borrower_balance_object.save()
+        lender_balance_object.save()
+        borrower_balance_collateral_object.save()
 
         offer.state = "CLOSED"
         offer.save()

@@ -34,7 +34,6 @@ urlpatterns = [
      path('SendCryptoShareWallet/', views.send_cryptoshare_wallet, name="SendCryptoShareWallet"),
      path('SendMoneyConfirmation/', views.send_money_confirmation, name="SendMoneyConfirmation"),
      path('MyAddresses/', views.my_addresses, name="MyAddresses"),
-     # path('MyLoans/', views.my_loans, name="MyLoans"),
      path('MyTransactions/', views.my_transactions, name="MyTransactions"),
      path('RegisterAddress/', views.register_address, name="RegisterAddress"),
      path('GenerateAddress/', views.generate_address, name="GenerateAddress"),
