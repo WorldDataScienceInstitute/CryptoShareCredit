@@ -58,7 +58,7 @@
         <h2 class="ml-4 text-primary">ACCEPTED LOAN OFFERS</h2>
         <table class="table table-bordered">
             <thead>
-              <tr>
+              <tr id="transaction_b_{{ offer.id_b }}">
                 <th scope="col" style="text-align: center;">ID</th>
                 <th scope="col" style="text-align: center;">Type</th>
                 <th scope="col" style="text-align: center;">Symbol</th>
@@ -72,6 +72,7 @@
                 <th scope="col" style="text-align: center;">State</th>
                 <th scope="col" style="text-align: center;">Creation Date</th>
                 <th scope="col" style="text-align: center;">Start Date</th>
+                <th scope="col" style="text-align: center;">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -90,6 +91,13 @@
                         <td style="text-align: center;">{{ offer.state }} </td>
                         <td style="text-align: center;">{{ offer.creation_datetime }} </td>
                         <td style="text-align: center;">{{ offer.start_datetime }} </td>
+                        {% if offer.transaction_type == "BORROW" %}
+                        <td style="text-align: center;">
+                            <button class="btn btn-success" data-toggle="modal" data-target="#PayModal" onclick="PayLoanModal('{{ offer.id_b }}', '{{ offer.transaction_type }}', '{{ offer.amount }}')">Pay Loan</button>
+                        </td>
+                        {% else %}
+                        <td style="text-align: center;">None </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
@@ -194,8 +202,15 @@
             document.getElementById("delete_offer").id = offerID;
         }
 
-        function RemoveBorrowingOffer(offerID){
-            var url = "{% url 'atm_functions:RemoveBorrowingOffer' %}";
+        function PayLoanModal(offerID, offerType, offerAmount){
+            document.getElementById("pay_id").innerHTML = "ID : "+ offerID;
+            document.getElementById("pay_type").innerHTML = "Type : "+ offerType;
+            document.getElementById("pay_amount").innerHTML = "Amount : "+ offerAmount;
+            document.getElementById("pay_loan").id = offerID;
+        }
+
+        function RemoveOffer(offerID){
+            var url = "{% url 'atm_functions:RemoveOffer' %}";
             var data = {
                 offerID: offerID,
                 csrfmiddlewaretoken: getCookie('csrftoken')
@@ -214,6 +229,30 @@
                     document.getElementById(offerID).id = "delete_offer";
                     alert("Something went wrong, please try again later");
                     $("#RemoveModal").modal('hide');
+                }
+            });
+        }
+
+        function PayOffer(offerID){
+            var url = "{% url 'atm_functions:PayOffer' %}";
+            var data = {
+                offerID: offerID,
+                csrfmiddlewaretoken: getCookie('csrftoken')
+            };
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                success: function(response){
+                    document.getElementById(offerID).id = "pay_loam";
+                    $("#transaction_b_"+offerID).remove();
+                    $("#PayModal").modal('hide');
+                    $("#PayModal").modal('hide');
+                },
+                error: function(response){
+                    document.getElementById(offerID).id = "pay_loan";
+                    alert("Something went wrong, please try again later");
+                    $("#PayModal").modal('hide');
                 }
             });
         }
@@ -266,7 +305,32 @@
             </ul>
             <br>
             <div class="d-flex justify-content-center">
-                <button style="text-align: center;" class="btn btn-danger" data-toggle="modal" onclick="RemoveBorrowingOffer(this.id)" id="delete_offer">Delete Offer</button> 
+                <button style="text-align: center;" class="btn btn-danger" data-toggle="modal" onclick="RemoveOffer(this.id)" id="delete_offer">Delete Offer</button> 
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<div id="PayModal" class="modal" style="z-index: 2000;">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>PAYMENT CONFIRMATION</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p style="color: black;font-weight: 400; text-align: center;">Are you sure you want to pay the following offer?</p>
+            <ul style="list-style: none; margin: 0; padding: 0;">
+                <li id="pay_id" style="text-align: center;"></li>
+                <li id="pay_type" style="text-align: center;"></li>
+                <li id="pay_amount" style="text-align: center;"></li>
+            </ul>
+            <br>
+            <div class="d-flex justify-content-center">
+                <button style="text-align: center;" class="btn btn-success" data-toggle="modal" onclick="PayOffer(this.id)" id="pay_loan">Pay Loan</button> 
             </div>
         </div>
     </div>

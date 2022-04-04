@@ -11,11 +11,16 @@
     {% include 'messages.html' %}
     {% include 'a_sessiontimeout.html' %}
     <div class="content-container">
-        <h2 class="ml-4">Lend Crypto</h2>
+        <h2 class="ml-4">Lend Crypto Marketplace</h2>
         <div style="text-align:center" class="ml-4 mt-4"  style="width:30%;min-width:400px;">
-            <a href="">
+            <br>
+            {% if iframe is None %}
+            <a href="/atm/CreateLendingOffer/">
+            {% else %}
+            <a href="/atm/CreateLendingOffer/?iframe=1">
+            {% endif %}
                 <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
-                id="button-withdraw" disabled>Add new offer (Coming Soon)</button>
+                id="button-withdraw">CREATE LOAN</button>
             </a>
         </div>
 
