@@ -25,7 +25,7 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="address"><b>Payment Currency</b>   <em>(This is the Crypto Currency you will receive money in)</em></label>
-                    <select class="form-control" id="currency" aria-describedby="currency" name="currency" onmouseup="ActivateAmountField('currency_amount')">
+                    <select class="form-control" id="currency" aria-describedby="currency" name="currency" onmouseup="ActivateAmountField('currency_amount'); SetCurrencyCrypto('currency_amount', 'currency');">
                     <!-- <select class="form-control" id="currency" aria-describedby="currency" name="currency" onmouseup="SetMaxAmount('currency','currency_amount')"> -->
                         <option disabled>Select one of your current balances for borrowing</option >
                         <option value="LTC Litecoin || Blockchain: litecoin || Network: mainnet">LTC Litecoin || Blockchain: litecoin</option>
@@ -49,11 +49,16 @@
                     <!-- <input type="number" class="form-control" id="currency_amount" aria-describedby="currency_amount" name="currency_amount"
                         placeholder="Enter the amount you want to lend" max="" min="0.0001" readonly> -->
                     <input type="number" class="form-control" id="currency_amount" aria-describedby="currency_amount" name="currency_amount"
-                        placeholder="Enter the amount you want to borrow || Min: 150 Max: 1000" max="1000" min="150" onchange="SetCollateral('currency_amount', 'currency', 'currency_collateral','currency_amount_collateral')" step=".0001" required readonly>
+                        placeholder="Enter the amount you want to borrow || Min: 150 Max: 1000" max="1000" min="150" onchange="SetCollateral('currency_amount', 'currency', 'currency_collateral','currency_amount_collateral', true)" step=".0001" required readonly>
+                </div>
+                <div class="form-group">
+                    <label for="currency_amount"><b>Amount</b>  <em>(IN CRYPTO)</em></label>
+                    <input type="number" class="form-control" id="currency_crypto_amount" aria-describedby="currency_crypto_amount" name="currency_crypto_amount"
+                        placeholder="This would be displayed once you enter your lending amount" step=".0001" required readonly>
                 </div>
                 <div class="form-group">
                     <label for="currency_collateral"><b>Collateral</b>     <em>(Choose any of our available crypto as Collateral for Loan)</em></label>
-                    <select class="form-control" id="currency_collateral" aria-describedby="currency_collateral" name="currency_collateral" onchange="SetCollateral('currency_amount', 'currency', 'currency_collateral','currency_amount_collateral')" required>
+                    <select class="form-control" id="currency_collateral" aria-describedby="currency_collateral" name="currency_collateral" onchange="SetCollateral('currency_amount', 'currency', 'currency_collateral','currency_amount_collateral', false)" required>
                         <option value="NotSelected NotSelected">Select one of the supported currencies</option >
                         <option value="LTC Litecoin">LTC Litecoin || Blockchain: litecoin</option>
                         <option value="BCH Bitcoin Cash">BCH Bitcoin Cash || Blockchain: bitcoin-cash</option>

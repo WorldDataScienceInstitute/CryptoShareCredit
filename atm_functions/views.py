@@ -518,7 +518,8 @@ def create_borrowing_offer(request):
 
     elif request.method == "POST":
         currency = request.POST.get('currency').split(" ")[0]
-        amount = float(request.POST.get('currency_amount'))
+        amount = float(request.POST.get('currency_crypto_amount'))
+        amount_usd = float(request.POST.get('currency_amount'))
         currency_collateral = request.POST.get('currency_collateral').split(" ")[0]
         amount_collateral = request.POST.get('currency_amount_collateral')
         interest_rate = request.POST.get('interest_rate')

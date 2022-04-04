@@ -21,7 +21,7 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="address"><b>Payment Currency</b>   <em>(This is the Crypto Currency you will give)</em></label>
-                    <select class="form-control" id="currency" aria-describedby="currency" name="currency" onmouseup="ActivateAmountField('currency_amount')">
+                    <select class="form-control" id="currency" aria-describedby="currency" name="currency" onmouseup="ActivateAmountField('currency_amount'); ; SetCurrencyCrypto('currency_amount', 'currency');">
                         <option disabled>Select one of your current balances for borrowing</option >
                         <option value="LTC Litecoin || Blockchain: litecoin || Network: mainnet">LTC Litecoin || Blockchain: litecoin</option>
                         <option value="BCH Bitcoin Cash || Blockchain: bitcoin-cash || Network: mainnet">BCH Bitcoin Cash || Blockchain: bitcoin-cash</option>
