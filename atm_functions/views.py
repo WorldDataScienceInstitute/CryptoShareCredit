@@ -178,6 +178,18 @@ def cryptoshare_wallet(request):
                                     "blockchain": "xrp",
                                     "symbol": "XRP",
                                     "has_address": False
+                                },
+                                {
+                                    "currency_name": "Bitcoin",
+                                    "blockchain": "bitcoin",
+                                    "symbol": "BTC",
+                                    "has_address": False
+                                },
+                                {
+                                    "currency_name": "Dogecoin",
+                                    "blockchain": "dogecoin",
+                                    "symbol": "DOGE",
+                                    "has_address": False
                                 }
                                 ]
     }
@@ -216,6 +228,15 @@ def cryptoshare_wallet(request):
         elif address.currency_name == "XRP":
             address.wallet_address = currencies_dict["XRP"]
             context["address_confirmations"][4]["has_address"] = True
+
+        elif address.currency_name == "Bitcoin":
+            address.wallet_address = currencies_dict["Bitcoin"]
+            context["address_confirmations"][5]["has_address"] = True
+
+        elif address.currency_name == "Dogecoin":
+            address.wallet_address = currencies_dict["Dogecoin"]
+            context["address_confirmations"][6]["has_address"] = True
+        
 
     return render(request, 'cryptoshare_wallet.html', context)
 
@@ -1026,7 +1047,9 @@ def send_money_confirmation(request):
                             "Litecoin": True,
                             "Dash": True,
                             "Zcash": True,
-                            "Bitcoin Cash": True
+                            "Bitcoin Cash": True,
+                            "Bitcoin": True,
+                            "Dogecoin": True
         }
 
         address_currencies = {
@@ -1066,7 +1089,8 @@ def send_money_confirmation(request):
         if sending_currency in wallet_currencies:
             transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet(sending_blockchain, "mainnet", recipient_address, amount)
             # print(request)
-        elif sending_currency in address_currencies:
+        else:
+        # elif sending_currency in address_currencies:
             transaction_response = cryptoapis_client.generate_coins_transaction_from_address(sending_blockchain, "mainnet",sending_address_object.address ,recipient_address, amount)
         # print(request)
         total_transaction_amount = transaction_response["totalTransactionAmount"]
