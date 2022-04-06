@@ -1048,7 +1048,8 @@ def send_money_confirmation(request):
                             "Dash": True,
                             "Zcash": True,
                             "Bitcoin Cash": True,
-                            "Bitcoin": True
+                            "Bitcoin": True,
+                            "Dogecoin": True
         }
 
         address_currencies = {
