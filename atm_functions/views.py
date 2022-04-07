@@ -361,6 +361,15 @@ def borrow_offer(request):
             return redirect('atm_functions:BorrowMoney')
         
         transaction = TransactionB.objects.get(pk=transaction_primary_id)
+        if transaction.interest_rate == 5:
+            transaction.days_to_pay = 15
+        elif transaction.interest_rate == 10:
+            transaction.days_to_pay = 30
+        elif transaction.interest_rate == 15:
+            transaction.days_to_pay = 60
+        elif transaction.interest_rate == 20:
+            transaction.days_to_pay = 90
+
         context['offer'] = transaction
 
         return render(request, 'borrow_offer.html', context)
@@ -461,6 +470,15 @@ def lend_offer(request):
             return redirect('atm_functions:LendMoney')
         
         transaction = TransactionB.objects.get(pk=transaction_primary_id)
+        if transaction.interest_rate == 5:
+            transaction.days_to_pay = 15
+        elif transaction.interest_rate == 10:
+            transaction.days_to_pay = 30
+        elif transaction.interest_rate == 15:
+            transaction.days_to_pay = 60
+        elif transaction.interest_rate == 20:
+            transaction.days_to_pay = 90
+
         context['offer'] = transaction
 
         return render(request, 'lend_offer.html', context)
@@ -1145,6 +1163,15 @@ def my_transactions(request):
             offer.transaction_type = "BORROW"
         elif offer.transaction_type == "BORROW" and offer.receptor == request.user:
             offer.transaction_type = "LEND"
+        
+        if offer.end_datetime is None:
+            offer.end_datetime = timezone.now()+timedelta(days=1)
+        offer.days_to_pay = (offer.end_datetime - timezone.now()).days
+
+    for offer in opened_offers:
+        if offer.end_datetime is None:
+            offer.end_datetime = timezone.now()+timedelta(days=1)
+        offer.days_to_pay = (offer.end_datetime - timezone.now()).days
 
     context = {
             "authConfirmation": auth_confirmation,
