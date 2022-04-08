@@ -412,9 +412,9 @@ def expired_transactionb_email(sender_email, email_type, id_b, payment_currency,
 
         <p>Days To Pay : {days_to_pay}</p>
 
-        <p>Days To Pay : {start_datetime}</p>
+        <p>Start Date : {start_datetime}</p>
 
-        <p>Days To Pay : {end_datetime}</p>
+        <p>End Date : {end_datetime}</p>
         """
 
     if email_type == "BORROWER":
@@ -442,5 +442,71 @@ def expired_transactionb_email(sender_email, email_type, id_b, payment_currency,
     s.ehlo()
     s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
     s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
+    s.quit()
+    return
+
+def inprogress_transactionb_email(user_email, id_b, transaction_id, currency_name, currency_name_collateral, transaction_type, amount, amount_collateral, interest_rate, days_to_pay, start_datetime, end_datetime):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare in progress loan"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = user_email
+    
+    html = f"""
+    <html>
+    <head></head>
+        <body>
+        
+        <p>¡Hi there!</p>
+
+        <p>You are receiving this email because a loan has started in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+
+        <p>The loan details are as follows:</p>
+
+        <p>LoanID : {id_b} </p>
+
+        <p>LoanID : {transaction_id} </p>
+
+        <p> ----------------------------------------- </p>
+
+        <p>Loan Type : {transaction_type}</p>
+
+        <p>Interest Rate : {interest_rate}</p>
+
+        <p>Days To Pay : {days_to_pay}</p>
+
+        <p>Start Date : {start_datetime}</p>
+
+        <p>End Date : {end_datetime}</p>
+        
+        <p> ----------------------------------------- </p>
+
+        <p>Payment Currency : {currency_name}</p>
+
+        <p>Payment Amount : {amount}</p>
+
+        <p>Collateral Currency : {currency_name_collateral}</p>
+
+        <p>Collateral Amount : {amount_collateral}</p>
+
+        """
+
+    html += """    
+        <p>If you think this is an error, please contact support</p>
+        </body>
+    </html>
+    """
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP('smtp.domain.com',port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, user_email, msg.as_string())
     s.quit()
     return
