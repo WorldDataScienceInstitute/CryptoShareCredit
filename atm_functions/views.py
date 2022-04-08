@@ -12,8 +12,9 @@ from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, TransactionA, TransactionB
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate
-from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email
+from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email
 from common.cryptoapis import CryptoApis
+from common.cryptoapis_utils import CryptoApisUtils
 from common.aptopayments import AptoPayments
 from google_currency import convert
 from coinbase.wallet.client import OAuthClient
@@ -392,31 +393,39 @@ def borrow_offer(request):
 
         currency_object = transaction.currency_name
         # <--------------------------  PAYMENT CURRENCY GENERATION -------------------------------------------->
-        currency_addresses = Address.objects.filter(email=request.user, currency_name=currency_object).count()
+        cryptoapis_utils = CryptoApisUtils()
 
-        if currency_addresses == 0:
-            available_addresses = Address.objects.filter(currency_name=currency_object, email=None)
-            if len(available_addresses) != 0:
-                address = available_addresses[0]
-                address.email = request.user
-                address.save()
-            else:
-                cryptoapis_client = CryptoApis()
+        address, error = cryptoapis_utils.generate_address(request.user, currency_object)
+        if error is not None:
+            messages.info(request, error)
+            return redirect('atm_functions:BorrowCrypto')
 
-                # Get current number of addresses for that currency
-                number_of_addresses = Address.objects.filter(currency_name=currency_object).count()
 
-                try:
-                    deposit_address = cryptoapis_client.generate_deposit_address(currency_object.blockchain, currency_object.network, number_of_addresses)
-                except:
-                    messages.info(request, "Error generating address. Please try again.")
-                    return redirect('atm_functions:BorrowCrypto')
+        # currency_addresses = Address.objects.filter(email=request.user, currency_name=currency_object).count()
 
-                if currency_object.blockchain == "xrp":
-                    newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_object, expiration_datetime = None)
-                else:
-                    newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_object)
-                newAddress.save()
+        # if currency_addresses == 0:
+        #     available_addresses = Address.objects.filter(currency_name=currency_object, email=None)
+        #     if len(available_addresses) != 0:
+        #         address = available_addresses[0]
+        #         address.email = request.user
+        #         address.save()
+        #     else:
+        #         cryptoapis_client = CryptoApis()
+
+        #         # Get current number of addresses for that currency
+        #         number_of_addresses = Address.objects.filter(currency_name=currency_object).count()
+
+        #         try:
+        #             deposit_address = cryptoapis_client.generate_deposit_address(currency_object.blockchain, currency_object.network, number_of_addresses)
+        #         except:
+        #             messages.info(request, "Error generating address. Please try again.")
+        #             return redirect('atm_functions:BorrowCrypto')
+
+        #         if currency_object.blockchain == "xrp":
+        #             newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_object, expiration_datetime = None)
+        #         else:
+        #             newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_object)
+        #         newAddress.save()
         # <--------------------------  PAYMENT CURRENCY GENERATION -------------------------------------------->
 
         comission = 1 - 0.01
@@ -441,6 +450,7 @@ def borrow_offer(request):
 
         transaction.save()
         receptor = transaction.receptor
+        emitter = transaction.emitter
 
         try:
             receptor_balance = Balance.objects.get(email=receptor, currency_name=transaction.currency_name)
@@ -449,6 +459,41 @@ def borrow_offer(request):
 
         receptor_balance.amount += transaction.amount * Decimal(comission)
         receptor_balance.save()
+
+        inprogress_transactionb_email(
+                                    str(emitter), 
+                                    transaction.id_b, 
+                                    transaction.transaction_id, 
+                                    transaction.currency_name.currency_name, 
+                                    transaction.currency_name_collateral.currency_name, 
+                                    transaction.transaction_type, 
+                                    transaction.amount, 
+                                    transaction.amount_collateral, 
+                                    transaction.interest_rate,
+                                    (transaction.end_datetime - timezone.now()).days,
+                                    transaction.start_datetime,
+                                    transaction.end_datetime
+                                    )
+
+        if transaction.transaction_type == "LEND":
+            transaction.transaction_type = "BORROW"
+        elif transaction.transaction_type == "BORROW":
+            transaction.transaction_type = "LEND"
+
+        inprogress_transactionb_email(
+                                    str(receptor), 
+                                    transaction.id_b, 
+                                    transaction.transaction_id, 
+                                    transaction.currency_name.currency_name, 
+                                    transaction.currency_name_collateral.currency_name, 
+                                    transaction.transaction_type, 
+                                    transaction.amount, 
+                                    transaction.amount_collateral, 
+                                    transaction.interest_rate,
+                                    (transaction.end_datetime - timezone.now()).days,
+                                    transaction.start_datetime,
+                                    transaction.end_datetime
+                                    )
 
         messages.info(request, f"The offer with ID: {transaction.id_b} has been started.")
         return redirect('atm_functions:LendMoney')
@@ -522,10 +567,48 @@ def lend_offer(request):
         transaction.save()
 
         emitter = transaction.emitter
+        receptor = transaction.receptor
+
+
         emitter_balance = Balance.objects.get(email=emitter, currency_name=transaction.currency_name)
         emitter_balance.amount += transaction.amount * Decimal(comission)
         emitter_balance.save()
 
+        inprogress_transactionb_email(
+                                    str(emitter), 
+                                    transaction.id_b, 
+                                    transaction.transaction_id, 
+                                    transaction.currency_name.currency_name, 
+                                    transaction.currency_name_collateral.currency_name, 
+                                    transaction.transaction_type, 
+                                    transaction.amount, 
+                                    transaction.amount_collateral, 
+                                    transaction.interest_rate,
+                                    (transaction.end_datetime - timezone.now()).days,
+                                    transaction.start_datetime,
+                                    transaction.end_datetime
+                                    )
+
+        if transaction.transaction_type == "LEND":
+            transaction.transaction_type = "BORROW"
+        elif transaction.transaction_type == "BORROW":
+            transaction.transaction_type = "LEND"
+
+        inprogress_transactionb_email(
+                                    str(receptor), 
+                                    transaction.id_b, 
+                                    transaction.transaction_id, 
+                                    transaction.currency_name.currency_name, 
+                                    transaction.currency_name_collateral.currency_name, 
+                                    transaction.transaction_type, 
+                                    transaction.amount, 
+                                    transaction.amount_collateral, 
+                                    transaction.interest_rate,
+                                    (transaction.end_datetime - timezone.now()).days,
+                                    transaction.start_datetime,
+                                    transaction.end_datetime
+                                    )
+        
         messages.info(request, f"The offer with ID: {transaction.id_b} has been started.")
         return redirect('atm_functions:LendMoney')
 
@@ -590,31 +673,38 @@ def create_borrowing_offer(request):
             return redirect('atm_functions:CreateBorrowingOffer')
 
         # <--------------------------  PAYMENT CURRENCY GENERATION -------------------------------------------->
-        currency_addresses = Address.objects.filter(email=request.user, currency_name=currency_object).count()
+        cryptoapis_utils = CryptoApisUtils()
 
-        if currency_addresses == 0:
-            available_addresses = Address.objects.filter(currency_name=currency_object, email=None)
-            if len(available_addresses) != 0:
-                address = available_addresses[0]
-                address.email = request.user
-                address.save()
-            else:
-                cryptoapis_client = CryptoApis()
+        address, error = cryptoapis_utils.generate_address(request.user, currency_object)
+        if error is not None:
+            messages.info(request, error)
+            return redirect('atm_functions:CreateBorrowingOffer')
 
-                # Get current number of addresses for that currency
-                number_of_addresses = Address.objects.filter(currency_name=currency_object).count()
+        # currency_addresses = Address.objects.filter(email=request.user, currency_name=currency_object).count()
 
-                try:
-                    deposit_address = cryptoapis_client.generate_deposit_address(currency_object.blockchain, currency_object.network, number_of_addresses)
-                except:
-                    messages.info(request, "Error generating address. Please try again.")
-                    return redirect('atm_functions:CreateBorrowingOffer')
+        # if currency_addresses == 0:
+        #     available_addresses = Address.objects.filter(currency_name=currency_object, email=None)
+        #     if len(available_addresses) != 0:
+        #         address = available_addresses[0]
+        #         address.email = request.user
+        #         address.save()
+        #     else:
+        #         cryptoapis_client = CryptoApis()
 
-                if currency_object.blockchain == "xrp":
-                    newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_object, expiration_datetime = None)
-                else:
-                    newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_object)
-                newAddress.save()
+        #         # Get current number of addresses for that currency
+        #         number_of_addresses = Address.objects.filter(currency_name=currency_object).count()
+
+        #         try:
+        #             deposit_address = cryptoapis_client.generate_deposit_address(currency_object.blockchain, currency_object.network, number_of_addresses)
+        #         except:
+        #             messages.info(request, "Error generating address. Please try again.")
+        #             return redirect('atm_functions:CreateBorrowingOffer')
+
+        #         if currency_object.blockchain == "xrp":
+        #             newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_object, expiration_datetime = None)
+        #         else:
+        #             newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_object)
+        #         newAddress.save()
         # <--------------------------  PAYMENT CURRENCY GENERATION -------------------------------------------->
 
         collateral_balance.amount -= Decimal(float(amount_collateral))
@@ -688,31 +778,39 @@ def create_lending_offer(request):
             return redirect('atm_functions:CreateLendingOffer')
         
         # <--------------------------  COLLATERAL CURRENCY GENERATION -------------------------------------------->
-        currency_collateral_addresses = Address.objects.filter(email=request.user, currency_name=currency_collateral_object).count()
 
-        if currency_collateral_addresses == 0:
-            available_addresses = Address.objects.filter(currency_name=currency_collateral_object, email=None)
-            if len(available_addresses) != 0:
-                address = available_addresses[0]
-                address.email = request.user
-                address.save()
-            else:
-                cryptoapis_client = CryptoApis()
+        cryptoapis_utils = CryptoApisUtils()
 
-                # Get current number of addresses for that currency
-                number_of_addresses = Address.objects.filter(currency_name=currency_collateral).count()
+        address, error = cryptoapis_utils.generate_address(request.user, currency_collateral_object)
+        if error is not None:
+            messages.info(request, error)
+            return redirect('atm_functions:CreateLendingOffer')
+        
+        # currency_collateral_addresses = Address.objects.filter(email=request.user, currency_name=currency_collateral_object).count()
 
-                try:
-                    deposit_address = cryptoapis_client.generate_deposit_address(currency_object.blockchain, currency_collateral_object.network, number_of_addresses)
-                except:
-                    messages.info(request, "Error generating address. Please try again.")
-                    return redirect('atm_functions:CreateLendingOffer')
+        # if currency_collateral_addresses == 0:
+        #     available_addresses = Address.objects.filter(currency_name=currency_collateral_object, email=None)
+        #     if len(available_addresses) != 0:
+        #         address = available_addresses[0]
+        #         address.email = request.user
+        #         address.save()
+        #     else:
+        #         cryptoapis_client = CryptoApis()
 
-                if currency_object.blockchain == "xrp":
-                    newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_collateral_object, expiration_datetime = None)
-                else:
-                    newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_collateral_object)
-                newAddress.save()
+        #         # Get current number of addresses for that currency
+        #         number_of_addresses = Address.objects.filter(currency_name=currency_collateral).count()
+
+        #         try:
+        #             deposit_address = cryptoapis_client.generate_deposit_address(currency_object.blockchain, currency_collateral_object.network, number_of_addresses)
+        #         except:
+        #             messages.info(request, "Error generating address. Please try again.")
+        #             return redirect('atm_functions:CreateLendingOffer')
+
+        #         if currency_object.blockchain == "xrp":
+        #             newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_collateral_object, expiration_datetime = None)
+        #         else:
+        #             newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_collateral_object)
+        #         newAddress.save()
         # <--------------------------  COLLATERAL CURRENCY GENERATION -------------------------------------------->
 
         currency_balance.amount -= Decimal(float(amount))
@@ -1286,53 +1384,59 @@ def generate_address(request):
         messages.info(request, "Invalid option, please try again.")
         return redirect('atm_functions:CryptoShareWallet')
     
-    #Check if there is already an address for that currency name for that email
-    address_exists = Address.objects.filter(email=request.user, currency_name=currency_object)
-    if address_exists:
-        messages.info(request, "Address already exists.")
-        return redirect('atm_functions:CryptoShareWallet')
-
     #Check if there is already a balance with that currency name for that email
     balance_exists = Balance.objects.filter(email=email_object, currency_name=currency_object)
     if not balance_exists:
         new_balance = Balance(email=email_object, currency_name=currency_object, amount = 0)
         new_balance.save()
+
+    cryptoapis_utils = CryptoApisUtils()
+
+    address, error = cryptoapis_utils.generate_address(request.user, currency_object, register_function = True)
+    if error is not None:
+        messages.info(request, error)
+        return redirect('atm_functions:CryptoShareWallet')
+
+    # #Check if there is already an address for that currency name for that email
+    # address_exists = Address.objects.filter(email=request.user, currency_name=currency_object)
+    # if address_exists:
+    #     messages.info(request, "Address already exists.")
+    #     return redirect('atm_functions:CryptoShareWallet')
     
-    available_addresses = Address.objects.filter(currency_name=currency_object, email=None)
-    if len(available_addresses) != 0:
-        address = available_addresses[0]
-        address.email = request.user
-        address.expiration_datetime = timezone.now()+timedelta(days=6)
-        address.save()
-        # print(address)
-        messages.info(request, "Address generated successfully.")
-        return redirect('atm_functions:CryptoShareWallet')
+    # available_addresses = Address.objects.filter(currency_name=currency_object, email=None)
+    # if len(available_addresses) != 0:
+    #     address = available_addresses[0]
+    #     address.email = request.user
+    #     address.save()
+    #     # print(address)
+    #     messages.info(request, "Address generated successfully.")
+    #     return redirect('atm_functions:CryptoShareWallet')
 
 
-    cryptoapis_client = CryptoApis()
+    # cryptoapis_client = CryptoApis()
 
-    # Get current number of addresses for that currency
-    number_of_addresses = Address.objects.filter(currency_name=currency).count()
+    # # Get current number of addresses for that currency
+    # number_of_addresses = Address.objects.filter(currency_name=currency).count()
 
-    try:
-        deposit_address = cryptoapis_client.generate_deposit_address(blockchain, network, number_of_addresses)
-    except:
-        messages.info(request, "Error generating address. Please try again.")
-        return redirect('atm_functions:CryptoShareWallet')
+    # try:
+    #     deposit_address = cryptoapis_client.generate_deposit_address(blockchain, network, number_of_addresses)
+    # except:
+    #     messages.info(request, "Error generating address. Please try again.")
+    #     return redirect('atm_functions:CryptoShareWallet')
 
-    if blockchain != "xrp":
-        newAddress = Address(address=deposit_address, email=email_object, currency_name=currency_object)
-    else:
-        newAddress = Address(address=deposit_address, email=email_object, currency_name=currency_object, expiration_datetime = None)
-    newAddress.save()
+    # if blockchain != "xrp":
+    #     newAddress = Address(address=deposit_address, email=email_object, currency_name=currency_object)
+    # else:
+    #     newAddress = Address(address=deposit_address, email=email_object, currency_name=currency_object, expiration_datetime = None)
+    # newAddress.save()
 
-    try:
-        cryptoapis_client.generate_coin_subscription(blockchain, network, deposit_address)
-    except:
-        newAddress.email = None
-        newAddress.save()
-        messages.info(request, "Error generating address, please contact support")
-        return redirect('atm_functions:CryptoShareWallet')
+    # try:
+    #     cryptoapis_client.generate_coin_subscription(blockchain, network, deposit_address)
+    # except:
+    #     newAddress.email = None
+    #     newAddress.save()
+    #     messages.info(request, "Error generating address, please contact support")
+    #     return redirect('atm_functions:CryptoShareWallet')
 
     
     messages.info(request, "Address generated successfully.")
