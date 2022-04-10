@@ -63,7 +63,7 @@ def email(request):
                 email=email, username=email, password=pin,
                 first_name=first_name, last_name=last_name
                 )
-            Account.objects.create(user=user, Email=email)
+            Account.objects.create(user=user, email=email)
             code_creation_email(to_addr=email, pin=pin)
             messages.success(request, mark_safe(
                 f"""A confirmation email has been sent to you from {settings.DEFAULT_FROM_EMAIL}.<br>
