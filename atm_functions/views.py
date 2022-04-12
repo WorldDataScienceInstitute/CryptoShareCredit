@@ -12,7 +12,7 @@ from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, TransactionA, TransactionB
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate
-from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email
+from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email
 from common.cryptoapis import CryptoApis
 from common.cryptoapis_utils import CryptoApisUtils
 from common.aptopayments import AptoPayments
@@ -1906,5 +1906,7 @@ def confirmed_token_transactions(request):
 @csrf_exempt
 def test_receiver(request):
 
+    t = TransactionA.objects.get(id_a=6)
+    test_email("albertonavarreteramirez@gmail.com",t.transaction_id, t.currency_name.blockchain, t.currency_name.network ,t.amount, {"symbol":"TST","currency_name":"TEST"}, t.address.address, t.creation_datetime)
     print("OK")
     return HttpResponse(status=200)

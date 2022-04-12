@@ -1,8 +1,9 @@
-import email
+import os
 import smtplib,ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from django.conf import settings
+from .email_templates import send_funds_template
 
 
 def Card_Creation_Email(to_addr):
@@ -510,3 +511,29 @@ def inprogress_transactionb_email(user_email, id_b, transaction_id, currency_nam
     s.sendmail(settings.EMAIL_HOST_USER, user_email, msg.as_string())
     s.quit()
     return
+
+def test_email(user_email,transaction_id, blockchain, network ,tx_amount, tx_currency, tx_address, creation_date):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare in progress loan"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = user_email
+
+
+
+    html = send_funds_template(transaction_id, blockchain, network ,tx_amount, tx_currency, tx_address, creation_date)
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP('smtp.domain.com',port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, user_email, msg.as_string())
+    s.quit()
+    return
+    
