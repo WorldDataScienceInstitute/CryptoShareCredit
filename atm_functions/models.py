@@ -12,6 +12,8 @@ class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     # phone number used for verification
     email = models.CharField(max_length=40, null=True)
+    # country = models.CharField(max_length=57, null=True)
+    # birthday = models.DateField(null=True)
 
 class History(models.Model):
     EmailId = models.OneToOneField(to=User, on_delete=models.CASCADE, primary_key=True)
