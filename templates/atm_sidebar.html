@@ -6,7 +6,8 @@
 <div class="sidebar-container">
     <div class="sidebar-logo"">
             <a href="{% url 'atm_functions:Home' %}"><img src="{% static '/images/logo.png' %}"></a>
-            <h2 id="title"><b>WELCOME!</b></h2>
+            <h2 id="title"><b>CREDIT GRADE: FFF</b></h2>
+            <h6 style="text-align: center;"><a href="{% url 'atm_functions:CryptoShareWallet' %}">(Improve Credit Grade)</a></h3>
             <!-- <h2 id="title"><b>COINBASE</b></h2>
             {% if request.session.wallet_conn %}
             <h3 style="text-align: center;"> Wallet connected </h3>
@@ -65,8 +66,8 @@
         </li>
 
         <li>
-            <a href="{% url 'atm_functions:SendMoney' %}">
-                <i class="fa fa-paper-plane" aria-hidden="true"></i>SEND<span style="color:green;">$</span>
+            <a href="{% url 'atm_functions:TransferMoney' %}">
+                <i class="fa fa-paper-plane" aria-hidden="true"></i>TRANSFER<span style="color:green;">$</span>
             </a>
         </li>
 
@@ -80,7 +81,7 @@
         <li style="border-style: none none solid none;border-color: white">
             <!-- <a href=""> -->
             <a href="{% url 'atm_functions:LendCrypto' %}">
-                <i class="fa fa-users" aria-hidden="true"></i>LEND<span style="color:green;">$</span>
+                <i class="fa-solid fa-sack-dollar"></i>&nbsp; LEND<span style="color:green;">$</span>
             </a>
         </li>
 

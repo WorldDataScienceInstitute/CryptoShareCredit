@@ -1031,7 +1031,7 @@ def disconnect_wallet(request):
 
     return redirect('atm_functions:ConnectWallet')
 
-def send_money(request):
+def transfer_money(request):
     if not request.user.is_authenticated:
         return redirect('authentication:Home')
 
