@@ -28,6 +28,16 @@ import os
 import requests
 import json
 
+def home(request):
+    context = {}
+
+    return render(request, "buy_blockchain_credit_lines.html", context)
+
+def credit_grades(request):
+    context = {}
+
+    return render(request, 'credit_grades.html', context)
+
 def check_balance(request):
 
     accounts = {}
@@ -281,14 +291,14 @@ def buy_crypto(request):
 
     return render(request, 'buy_crypto.html', context)
 
-def borrow_money(request):
+def borrow(request):
     if request.user.is_authenticated:
         u = User.objects.get(pk=request.user.pk)
         name = u.first_name
     else:
         name = None
     context = {'name': name}
-    return render(request, 'borrow_selection.html', context)
+    return render(request, 'borrow.html', context)
 
 def borrow_crypto(request):
     if not request.user.is_authenticated:
@@ -322,14 +332,14 @@ def borrow_crypto_dashboard(request):
 
     return render(request, 'borrow_crypto_dashboard.html', context)
 
-def lend_money(request):
+def buy_credit(request):
     if request.user.is_authenticated:
         u = User.objects.get(pk=request.user.pk)
         name = u.first_name
     else:
         name = None
     context = {'name': name}
-    return render(request, 'lend_selection.html', context)
+    return render(request, 'buy_credit.html', context)
 
 def lend_crypto(request):
     if not request.user.is_authenticated:
@@ -956,7 +966,7 @@ def atm_settings(request):
         name = None
     if request.method == "POST":
         request.session['currency'] = request.POST.get('currency')
-        return redirect('atm_functions:CheckBalance')
+        return redirect('atm_functions:Home')
     context = {
         # 'currency_list': currency_list,
         'name': name
@@ -967,7 +977,7 @@ def atm_settings(request):
 def connect_wallet(request):
     if request.session['wallet_conn']:
         messages.info(request, "Your Coinbase account has already been connected.")
-        return redirect('atm_functions:CheckBalance')
+        return redirect('atm_functions:Home')
 
     if request.user.is_authenticated:
         u = User.objects.get(pk=request.user.pk)
@@ -1026,13 +1036,13 @@ def disconnect_wallet(request):
 
     return redirect('atm_functions:ConnectWallet')
 
-def send_money(request):
+def transfer_money(request):
     if not request.user.is_authenticated:
         return redirect('authentication:Home')
 
     context = {}
     
-    return render(request, 'send_selection.html', context)
+    return render(request, 'transfer_selection.html', context)
 
 def send_cryptoshare_wallet(request):
     if not request.user.is_authenticated:
@@ -1081,7 +1091,7 @@ def send_money_confirmation(request):
     form_response = request.POST
 
     if not form_response:
-        return redirect('atm_functions:SendMoney')
+        return redirect('atm_functions:TransferMoney')
 
     wallet_confirmation = request.GET.get('wallet','')
 
@@ -1125,11 +1135,11 @@ def send_money_confirmation(request):
 
                 sent_funds_email(sender_email, concept, tx_amount, tx_native_amount, tx_state, creation_date, receiver_email)
                 
-                return redirect('atm_functions:CheckBalance')
+                return redirect('atm_functions:CheckCredit')
             except Exception as e:
                 # print(e)
                 messages.info(request, "Invalid authorization code. Please try again.")
-                return redirect('atm_functions:SendMoney')
+                return redirect('atm_functions:TransferMoney')
 
         else:
             # fa_code = form_response["authCode"]
@@ -1142,7 +1152,7 @@ def send_money_confirmation(request):
                 )
                 # print(tx)
                 messages.info(request, "Money sent successfully.")
-                return redirect('atm_functions:CheckBalance')
+                return redirect('atm_functions:CheckCredit')
 
             except TwoFactorRequiredError:
                 context = {
@@ -1152,11 +1162,11 @@ def send_money_confirmation(request):
                 }
                 messages.info(request, "Two factor authentication required.")
                 return render(request, '2fa_token.html', context)
-                # return redirect('atm_functions:SendMoney')
+                # return redirect('atm_functions:TransferMoney')
             except Exception as e:
                 # print(e)
                 messages.info(request, "Error sending money. Please try again.")
-                return redirect('atm_functions:SendMoney')
+                return redirect('atm_functions:TransferMoney')
 
     elif wallet_confirmation == "cryptoshare":
         wallet_currencies = {
@@ -1224,9 +1234,9 @@ def send_money_confirmation(request):
 
         messages.success(request, "Your withdrawal request has been created")
 
-        return redirect('atm_functions:CheckBalance')
+        return redirect('atm_functions:CheckCredit')
     else:
-        return redirect('atm_functions:SendMoney')
+        return redirect('atm_functions:TransferMoney')
 
 
 
@@ -1759,7 +1769,7 @@ def confirmations_coin_transactions(request):
 # @require_POST
 def confirmed_coin_transactions(request):
     if request.method == "GET":
-        return redirect('atm_functions:CheckBalance')
+        return redirect('atm_functions:Home')
     elif request.method == "POST":
         request_reader = request.META.get('wsgi.input')
         # print(request.headers)
@@ -1838,7 +1848,7 @@ def confirmed_coin_transactions(request):
 @csrf_exempt
 def confirmed_token_transactions(request):
     if request.method == "GET":
-        return redirect('atm_functions:CheckBalance')
+        return redirect('atm_functions:Home')
     elif request.method == "POST":
 
         ETHEREUM_DEPOSIT_ADDRESS = "0x70568e1a620468a49136aee7febd357bb9469b2c"

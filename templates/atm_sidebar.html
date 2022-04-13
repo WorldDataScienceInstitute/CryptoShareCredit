@@ -5,8 +5,9 @@
 {% endif %}
 <div class="sidebar-container">
     <div class="sidebar-logo"">
-            <a href="{% url 'authentication:Home' %}"><img src="{% static '/images/logo.png' %}"></a>
-            <h2 id="title"><b>WELCOME!</b></h2>
+            <a href="{% url 'atm_functions:Home' %}"><img src="{% static '/images/logo.png' %}"></a>
+            <h2 id="title"><b>CREDIT GRADE: FFF</b></h2>
+            <h6 style="text-align: center;"><a href="{% url 'atm_functions:BuyCredit' %}">(Improve Credit Grade)</a></h6>
             <!-- <h2 id="title"><b>COINBASE</b></h2>
             {% if request.session.wallet_conn %}
             <h3 style="text-align: center;"> Wallet connected </h3>
@@ -40,6 +41,12 @@
         </li> -->
 
         <li style="border-style: solid none none none;border-color: white" id="desc">
+            <a href="{% url 'atm_functions:Home' %}">
+                <i class="fa-solid fa-house"></i></i>&nbsp;&nbsp;HOME
+            </a>
+        </li>
+
+        <li style="border-style: solid none none none;border-color: white" id="desc">
             <a href="{% url 'atm_functions:BuyCrypto' %}">
             <!-- <a href="https://buy.ramp.network/?hostLogoUrl=https%3A%2F%2Fwww.cryptoshareapp.com%2Fstatic%2Fimages%2FCSlogo.png&hostAppName=Crypto%24hare&finalUrl=https%3A%2F%2Fwww.cryptoshareapp.com%2Fatm%2FCryptoShareWallet%2F&containerNode=embedded-desktop&variant=hosted" target="_blank"> -->
                 <i class="fas fa-address-card" aria-hidden="true"></i>&nbsp;&nbsp;BUY CRYPTO
@@ -65,28 +72,33 @@
         </li>
 
         <li>
-            <a href="{% url 'atm_functions:SendMoney' %}">
-                <i class="fa fa-paper-plane" aria-hidden="true"></i>SEND<span style="color:green;">$</span>
+            <!-- <a href=""> -->
+            <a href="{% url 'atm_functions:BuyCredit' %}">
+                <i class="fa-solid fa-sack-dollar"></i>&nbsp; BUY CREDIT<span style="color:green;">$</span>
             </a>
-        </li>
+        </li>        
 
         <li>
-            <!-- <a href=""> -->
-            <a href="{% url 'atm_functions:BorrowMoney' %}">
-                <i class="fa fa-users" aria-hidden="true"></i>BORROW<span style="color:green;">$</span>
+            <a href="{% url 'atm_functions:CreditGrades' %}">
+                <i class="fa-solid fa-landmark-dome"></i>&nbsp;&nbsp;CREDIT GRADES
             </a>
         </li>
 
         <li style="border-style: none none solid none;border-color: white">
-            <!-- <a href=""> -->
-            <a href="{% url 'atm_functions:LendCrypto' %}">
-                <i class="fa fa-users" aria-hidden="true"></i>LEND<span style="color:green;">$</span>
+            <a href="{% url 'atm_functions:TransferMoney' %}">
+                <i class="fa fa-paper-plane" aria-hidden="true"></i>TRANSFER<span style="color:green;">$</span>
             </a>
         </li>
 
+        <!-- <li style="border-style: none none solid none;border-color: white">
+            <a href="{% url 'atm_functions:Borrow' %}">
+                <i class="fa fa-users" aria-hidden="true"></i>BORROW<span style="color:green;">$</span>
+            </a>
+        </li> -->
+
         <li>
-            <a href="{% url 'atm_functions:CheckBalance' %}">
-                <i class="fa fa-info-circle" aria-hidden="true"></i>CHECK BALANCE
+            <a href="{% url 'atm_functions:CheckCredit' %}">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>CHECK CREDIT
             </a>
         </li>
 
@@ -104,7 +116,7 @@
 
         <li>
             <a href="">
-                <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp;&nbsp;DEBIT CARD (APRIL 2022)
+                <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp;&nbsp;DEBIT CARD (JUNE 2022)
             </a>
         </li>
 

@@ -11,17 +11,20 @@
     {% include 'a_sessiontimeout.html' %}
     {% endif %}
     <div class="content-container">
-        <h2 class="ml-4" style="text-align:center;">Lend Money</h2>
+        <h2 class="ml-4" style="text-align:center;">Transfer Money</h2>
         <br>
-        <h3 class="ml-4" style="text-align:center;">Choose collateral:</h3>
+        <h3 class="ml-4" style="text-align:center;">Choose wallet:</h3>
         <br>
         <div class="btn-group container-fluid justify-content-center">
-            <h5 class="ml-4"><a href="{% url 'atm_functions:LendCrypto' %}"><button type="button" class="btn btn-primary btn-lg">DIGITAL</button></a></h5>
-
-            <h5 class="ml-4"><a href=""><button type="button" class="btn btn-primary btn-lg" disabled>PHYSICAL</button></a></h5>
+            <h5 class="ml-4"><a href="{% url 'atm_functions:SendCryptoShareWallet' %}"><button type="button" class="btn btn-primary btn-lg">CRYPTO$HARE WALLET</button></a></h5>
         </div>
         <br>
+        <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
+            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; "><b>*Must Create a CryptoShare Wallet First.. <a href="{% url 'atm_functions:CryptoShareWallet' %}">Click Here</a></b></small>
+        </div>
     </div>
+
+    
     
     <script type="text/javascript">
         function googleTranslateElementInit() {

@@ -10,9 +10,10 @@
     {% endif %}
 
     {% if authConfirmation %}
-    {% include 'messages.html' %}
     {% include 'a_sessiontimeout.html' %}
     <div class="content-container">
+        {% include 'messages.html' %}
+
         <h2 class="ml-4">Accept Loans from Lenders & Create Loans</h2>
         <div style="text-align:center" class="ml-4 mt-4"  style="width:30%;min-width:400px;">
             <!-- <u><a href="{% url 'atm_functions:CryptoShareWallet' %}"><p id="borrowHelp" class="form-text" style="color: rgb(9, 185, 216); text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Borrower must Register a Crypto$hare ETH address and transfer USDC, USDT, or WRAPPED BITCOIN to use as Collateral</p></a></u> -->

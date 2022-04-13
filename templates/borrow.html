@@ -6,25 +6,18 @@
 {% include 'header.html' %}
 <body>
     {% include 'atm_sidebar.html' %}
-    {% include 'messages.html' %}
     {% if auth_level > 0 %}
     {% include 'a_sessiontimeout.html' %}
     {% endif %}
     <div class="content-container">
-        <h2 class="ml-4" style="text-align:center;">Send Money</h2>
+        {% include 'messages.html' %}
+        <h2 class="ml-4" style="text-align:center;">CREDIT GRADE</h2>
         <br>
-        <h3 class="ml-4" style="text-align:center;">Choose wallet:</h3>
+        <h3 class="ml-4" style="text-align:center;">FFF - This is the Lowest Score (Signals you are a High Risk Borrower)</h3>
         <br>
-        <div class="btn-group container-fluid justify-content-center">
-            <h5 class="ml-4"><a href="{% url 'atm_functions:SendCryptoShareWallet' %}"><button type="button" class="btn btn-primary btn-lg">CRYPTO$HARE WALLET</button></a></h5>
-        </div>
+        <h6 style="text-align: center;"><a href="{% url 'atm_functions:CryptoShareWallet' %}">(Improve Credit Grade)</a></h6>
         <br>
-        <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
-            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; "><b>*Must Create a CryptoShare Wallet First.. <a href="{% url 'atm_functions:CryptoShareWallet' %}">Click Here</a></b></small>
-        </div>
     </div>
-
-    
     
     <script type="text/javascript">
         function googleTranslateElementInit() {
