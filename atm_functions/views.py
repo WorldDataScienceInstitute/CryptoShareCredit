@@ -28,6 +28,11 @@ import os
 import requests
 import json
 
+def home(request):
+    context = {}
+
+    return render(request, "buy_blockchain_credit_lines.html", context)
+
 def check_balance(request):
 
     accounts = {}

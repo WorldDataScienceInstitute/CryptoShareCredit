@@ -181,7 +181,7 @@ def login(request):
             request.session['access_token'] = None
             request.session['refresh_token'] = None
 
-            return redirect('atm_functions:CheckBalance')
+            return redirect('atm_functions:Home')
         else:
             messages.info(request, "Incorrect login information. Please try again.")
             return render(request, 'login.html')
