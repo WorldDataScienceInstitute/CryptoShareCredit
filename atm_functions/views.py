@@ -1259,33 +1259,16 @@ def my_transactions(request):
         return redirect('authentication:Home')
     auth_confirmation = True
     
-    #Transactions
-    transactions = TransactionA.objects.filter(email=request.user)
+    #Deposit Transactions
+    deposit_transactions = TransactionA.objects.filter(email=request.user, transaction_type = "DEPOSIT")
 
-    #Loans
-    opened_offers = TransactionB.objects.filter(emitter = request.user, state = "OPEN")
-    accepted_offers = TransactionB.objects.filter(Q(receptor=request.user) | Q(emitter=request.user), state = "IN PROGRESS")
-
-    for offer in accepted_offers:
-        if offer.transaction_type == "LEND" and offer.receptor == request.user:
-            offer.transaction_type = "BORROW"
-        elif offer.transaction_type == "BORROW" and offer.receptor == request.user:
-            offer.transaction_type = "LEND"
-        
-        if offer.end_datetime is None:
-            offer.end_datetime = timezone.now()+timedelta(days=1)
-        offer.days_to_pay = (offer.end_datetime - timezone.now()).days
-
-    for offer in opened_offers:
-        if offer.end_datetime is None:
-            offer.end_datetime = timezone.now()+timedelta(days=1)
-        offer.days_to_pay = (offer.end_datetime - timezone.now()).days
+    #Deposit Transactions
+    withdrawal_transactions = TransactionA.objects.filter(email=request.user, transaction_type = "WITHDRAWAL")
 
     context = {
             "authConfirmation": auth_confirmation,
-            "transactions": transactions,
-            "opened_offers": opened_offers,
-            "accepted_offers": accepted_offers
+            "deposit_transactions": deposit_transactions,
+            "withdrawal_transactions": withdrawal_transactions
             }
 
     return render(request, 'my_transactions.html', context)
