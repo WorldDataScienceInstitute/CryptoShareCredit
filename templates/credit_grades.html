@@ -1,0 +1,140 @@
+{% load static %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+<body>
+    {% if iframe is None %}
+    {% include 'atm_sidebar.html' %}
+    {% endif %}
+
+    {% include 'a_sessiontimeout.html' %}
+    <div class="content-container">
+        {% include 'messages.html' %}
+        <h2 class="ml-4">CREDIT GRADES</h2>
+        <br>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: center;">CREDIT GRADE</th>
+                <th scope="col" style="text-align: center;">BALANCE NEEDED</th>
+                <th scope="col" style="text-align: center;">RISK</th>
+              </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td style="text-align: center;">FFF</td>
+                    <td style="text-align: center;">$0 - $99</td>
+                    <td style="text-align: center;">No Credit</td>
+                </tr>
+                
+                <tr>
+                    <td style="text-align: center;">FF</td>
+                    <td style="text-align: center;">$100 - $599</td>
+                    <td style="text-align: center;">Highest Risk</td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: center;">F</td>
+                    <td style="text-align: center;">$600 - $999</td>
+                    <td style="text-align: center;">Very Highest Risk</td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: center;">E</td>
+                    <td style="text-align: center;">$1,000 - $9,999</td>
+                    <td style="text-align: center;">High Risk</td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: center;">D</td>
+                    <td style="text-align: center;">$10,000 - $59,999</td>
+                    <td style="text-align: center;">Medium Risk</td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: center;">C</td>
+                    <td style="text-align: center;">$60,000 - $99,999</td>
+                    <td style="text-align: center;">Medium Risk</td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: center;">B</td>
+                    <td style="text-align: center;">$100,000 - $599,999</td>
+                    <td style="text-align: center;">Low Risk</td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: center;">A</td>
+                    <td style="text-align: center;">$600,000 - $999,999</td>
+                    <td style="text-align: center;">Very Low Risk</td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: center;">AA</td>
+                    <td style="text-align: center;">$1,000,000 - $9,999,999</td>
+                    <td style="text-align: center;">Lowwest Risk</td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: center;">AAA</td>
+                    <td style="text-align: center;">$10,000,000 +</td>
+                    <td style="text-align: center;">Perfect Credit</td>
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+    
+    
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+        
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+    
+    
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>
