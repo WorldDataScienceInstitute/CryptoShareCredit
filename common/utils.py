@@ -6,7 +6,7 @@ import time
 import pytz as pytz
 from dateutil.tz import tzlocal
 from dotenv import load_dotenv
-from atm_functions.models import Account
+from atm_functions.models import Account, Balance
 from atm_functions.models import User
 from .cryptoapis import CryptoApis
 import random
@@ -18,8 +18,6 @@ load_dotenv()
 def get_user_count():
     return User.objects.count(), dt.now().astimezone(pytz.timezone('US/Eastern')).strftime("%D")
     #return Account.objects.count(), dt.now().astimezone('localtimezone').strftime("%D %r %Z")  
-
-
 
 def generate_pin():
     return ''.join(random.choice(string.digits) for i in range(6))
@@ -71,6 +69,77 @@ def get_currencies_exchange_rate():
 
     return exchange_rates
 
+def calculate_credit_grade(user):
+
+    balances = Balance.objects.filter(email = user)
+    user = Account.objects.get(user = user)
+
+    total_usd_balance = 0
+
+    for balance in balances:
+        currency = balance.currency_name
+
+        currency_usd_balance = balance.amount * currency.exchange_rate
+        total_usd_balance += currency_usd_balance
+
+    credit_grades = {
+                    "FFF": {
+                            "lower_limit": 0,
+                            "upper_limit": 99
+                            },
+                    "FF": {
+                            "lower_limit": 100,
+                            "upper_limit": 599
+                            },
+                    "F": {
+                            "lower_limit": 600,
+                            "upper_limit": 999
+                            },
+                    "E": {
+                            "lower_limit": 1000,
+                            "upper_limit": 9999
+                            },
+                    "D": {
+                            "lower_limit": 10000,
+                            "upper_limit": 59999
+                            },
+                    "C": {
+                            "lower_limit": 60000,
+                            "upper_limit": 99999
+                            },
+                    "B": {
+                            "lower_limit": 100000,
+                            "upper_limit": 599999
+                            },
+                    "A": {
+                            "lower_limit": 600000,
+                            "upper_limit": 999999
+                            },
+                    "AA": {
+                            "lower_limit": 1000000,
+                            "upper_limit": 9999999
+                            },
+                    "AAA": {
+                            "lower_limit": 10000000,
+                            "upper_limit": None
+                            }
+
+                }
+
+    print(total_usd_balance)
+
+    for credit_grade in credit_grades:
+        if credit_grades[credit_grade]["upper_limit"] is None:
+            user.credit_grade = credit_grade
+            user.save()
+            break
+
+        if total_usd_balance <= credit_grades[credit_grade]["upper_limit"]:
+            print(total_usd_balance)
+            print(credit_grade)
+            user.credit_grade = credit_grade
+            user.save()
+            break
 
 
 """

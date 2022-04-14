@@ -1,6 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 import os
-
+import requests
 
 from celery import Celery
 from celery.schedules import crontab
@@ -23,13 +23,13 @@ app.autodiscover_tasks()
 @app.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
     # Calls daily routine every day at midnight
-    sender.add_periodic_task(crontab(minute=0, hour=0), test.s('DailyRoutine'), name='DailyRoutine')
+    sender.add_periodic_task(crontab(minute=0, hour=0), DailyRoutine.s('DailyRoutine'), name='DailyRoutine')
+    sender.add_periodic_task(crontab(minute='*/1'), UpdateExchangeRates.s('UpdateExchangeRates'), name='UpdateExchangeRates')
 
 
 #Checks for expired addresses and loans
 @app.task
-def test(msg):
-    import requests
+def DailyRoutine(msg):
 
     QUERYSTRING = {
                 "key": "DailyCryptoshareRoutine"
@@ -38,7 +38,15 @@ def test(msg):
     URL = "https://www.cryptoshareapp.com/atm/DailyRoutine/"
     response = requests.get(url=URL, params=QUERYSTRING)
 
-    print(f"Executed: {msg}")
+    print(f"Executed: {msg} ")
+
+@app.task
+def UpdateExchangeRates(msg):
+    
+    URL = "https://www.cryptoshareapp.com/atm/UpdateExchangeRates/"
+    response = requests.get(url=URL)
+
+    print(f"Executed: {msg} ")
 
 @app.task
 def add(x, y):

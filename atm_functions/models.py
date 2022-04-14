@@ -12,6 +12,7 @@ class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     # phone number used for verification
     email = models.CharField(max_length=40, null=True)
+    credit_grade = models.CharField(max_length=4, default="FFF")
     # country = models.CharField(max_length=57, null=True)
     # birthday = models.DateField(null=True)
 
@@ -27,6 +28,7 @@ class Cryptocurrency(models.Model):
     blockchain = models.CharField(max_length=21)
     network = models.CharField(max_length=10)
     symbol = models.CharField(max_length=10)
+    exchange_rate = models.DecimalField(max_digits=15, decimal_places=6)
 
 class Address(models.Model):
     address = models.CharField(max_length=100, primary_key=True)
