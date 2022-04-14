@@ -126,8 +126,6 @@ def calculate_credit_grade(user):
 
                 }
 
-    print(total_usd_balance)
-
     for credit_grade in credit_grades:
         if credit_grades[credit_grade]["upper_limit"] is None:
             user.credit_grade = credit_grade
@@ -135,8 +133,6 @@ def calculate_credit_grade(user):
             break
 
         if total_usd_balance <= credit_grades[credit_grade]["upper_limit"]:
-            print(total_usd_balance)
-            print(credit_grade)
             user.credit_grade = credit_grade
             user.save()
             break
