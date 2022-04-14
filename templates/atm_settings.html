@@ -19,12 +19,6 @@
                 <li style="list-style: none;"><a href="#googtrans(en|es)"><input type="radio" name="language"><label for="es">&nbsp;Espanol</label></a></li>
                 <li style="list-style: none;"><a href="#googtrans(en|pt)"><input type="radio" name="language"><label for="pt">&nbsp;Portugues</label></a></li>
             </ul>
-            <h5 class="ml-4 mt-4">Select Display Currency:
-        <select name="currency" id="currency">
-            {% for currency in currency_list %}
-            <option value="{{ currency }}">{{ currency }}</option>
-            {% endfor %}
-        </select></h5>
         <button type="submit" class="btn-sm btn-primary">Submit</button>
     </form>
     </div>
