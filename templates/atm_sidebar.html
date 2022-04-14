@@ -6,7 +6,7 @@
 <div class="sidebar-container">
     <div class="sidebar-logo"">
             <a href="{% url 'atm_functions:Home' %}"><img src="{% static '/images/logo.png' %}"></a>
-            <h2 id="title"><b>CREDIT GRADE: FFF</b></h2>
+            <h2 id="credit_grade"><b>CREDIT GRADE: </b></h2>
             <h6 style="text-align: center;"><a href="{% url 'atm_functions:BuyCredit' %}">(Improve Credit Grade)</a></h6>
             <!-- <h2 id="title"><b>COINBASE</b></h2>
             {% if request.session.wallet_conn %}
@@ -17,15 +17,6 @@
     </div>
     <br>
     <ul class="sidebar-navigation" id="features">
-        <!-- <li> -->
-            <!-- <a href="{% url 'authentication:Signing' %}"> -->
-            {% if auth_level == 3 %}
-                <!-- <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp; CHECK DEBIT CARD INFO -->
-            {% else %}
-                <!-- <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp; GET DIGITAL DEBIT CARD -->
-            {% endif %}
-            <!-- </a> -->
-        <!-- </li> -->
 
         <!-- <li style="border-style: none none solid none;border-color: white" id="desc">
             {% if request.session.wallet_conn %}
@@ -52,18 +43,6 @@
                 <i class="fas fa-address-card" aria-hidden="true"></i>&nbsp;&nbsp;BUY CRYPTO
             </a>
         </li>
-
-        <!-- <li>
-            <a href="{% url 'atm_functions:MyAddresses' %}">
-                <i class="fa fa-id-card" aria-hidden="true"></i>MY ADDRESSES
-            </a>
-        </li> -->
-
-        <!-- <li>
-            <a href="{% url 'atm_functions:WithdrawMoney' %}">
-                <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp; WITHDRAW <span style="color:green;">$</span>
-            </a>
-        </li> -->
 
         <li style="border-style: solid none none none; border-color: white">
             <a href="{% url 'atm_functions:CryptoShareWallet' %}">
@@ -108,12 +87,6 @@
             </a>
         </li>
 
-        <!-- <li style="border-style: none none solid none;border-color: white">
-            <a href="">
-                <i class="fa fa-id-card" aria-hidden="true"></i>MY LOANS
-            </a>
-        </li> -->
-
         <li>
             <a href="">
                 <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp;&nbsp;DEBIT CARD (JUNE 2022)
@@ -133,3 +106,45 @@
         </form>
     </ul>
 </div>
+
+    
+<script type="text/javascript">
+    window.onload = function() {
+        GetCreditGrade();
+    }
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != "") {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    // document.getElementById("pay_amount").innerHTML = "Amount : "+ offerAmount;
+
+    function GetCreditGrade(){
+        var url = "{% url 'atm_functions:GetCreditGrade' %}";
+        var data = {
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        };
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: data,
+            success: function(response){
+                console.log(response["credit_grade"])
+                document.getElementById("credit_grade").innerHTML = "CREDIT GRADE: "+ response["credit_grade"];
+            },
+            error: function(response){
+                document.getElementById("credit_grade").innerHTML = "CREDIT GRADE: ERROR";
+            }
+        });
+    };
+</script>

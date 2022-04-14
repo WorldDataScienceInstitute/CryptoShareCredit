@@ -11,7 +11,7 @@ from .models import User
 from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, TransactionA, TransactionB
 # from common.utils import currency_list
-from common.utils import get_currencies_exchange_rate
+from common.utils import get_currencies_exchange_rate, calculate_credit_grade
 from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email
 from common.cryptoapis import CryptoApis
 from common.cryptoapis_utils import CryptoApisUtils
@@ -93,41 +93,6 @@ def check_balance(request):
             'accounts': accounts
         }
     return render(request, 'check_balance.html', context)
-
-
-def withdraw_money(request):
-    # set user selected currency
-    # if not set, default to USD
-    current_currency = request.session['currency'] if 'currency' in request.session else 'USD'
-
-    # check if user is logged in to set authorization level
-    if request.user.is_authenticated:
-        u = User.objects.get(pk=request.user.pk)
-    # test balance for.. testing
-    balance = 100
-    context = {
-        'current_currency': current_currency,
-        # 'currency_dict': currency_list,
-        'balance': balance
-    }
-    if request.method == "POST":
-        withdraw_amt = int(request.POST.get('withdraw'))
-        # get user balance
-        if balance == 0:
-            messages.info(request, "You have no money to withdraw.")
-        # get withdrawal amount once user submits
-
-            # check if user is trying to withdraw more than balance
-            if withdraw_amt > balance:
-                messages.info(request, f"Insufficient balance. You can only withdraw up to {balance} USD.")
-                return render(request, 'withdraw_money.html', context)
-
-            # user successfully withdraws money
-            else:
-                return redirect('atm_functions:TyWithdraw')
-
-    return render(request, 'withdraw_money.html', context)
-
 
 def deposit_selection(request):
 
@@ -247,38 +212,8 @@ def cryptoshare_wallet(request):
         elif address.currency_name == "Dogecoin":
             address.wallet_address = currencies_dict["Dogecoin"]
             context["address_confirmations"][6]["has_address"] = True
-        
 
     return render(request, 'cryptoshare_wallet.html', context)
-
-def bank(request):
-    if request.user.is_authenticated:
-        u = User.objects.get(pk=request.user.pk)
-        name = u.first_name
-    else:
-        name = None
-    context = {'name': name}
-    return render(request, 'bank.html', context)
-
-
-def ty_withdraw(request):
-    if request.user.is_authenticated:
-        u = User.objects.get(pk=request.user.pk)
-        name = u.first_name
-    else:
-        name = None
-    context = {'name': name}
-    return render(request, 'ty_withdraw.html', context)
-
-
-def ty_deposit(request):
-    if request.user.is_authenticated:
-        u = User.objects.get(pk=request.user.pk)
-        name = u.first_name
-    else:
-        name = None
-    context = {'name': name}
-    return render(request, 'ty_deposit.html', context)
 
 
 def buy_crypto(request):
@@ -1559,6 +1494,60 @@ def aptopayments_create_user(request):
 
     return render(request, 'aptopayments_create_user.html', context)
 
+def get_credit_grade(request):
+    user = Account.objects.get(user = request.user)
+
+    test = {
+        "credit_grade": user.credit_grade
+    }
+    return HttpResponse(json.dumps(test), content_type="application/json")
+
+@csrf_exempt
+def update_exchange_rates(request):
+    if request.method == "POST":
+        return HttpResponse(status=400)
+
+    currencies = Cryptocurrency.objects.all()
+
+    querystring_options ={
+                        "ETH": "ethereum",
+                        "LTC": "litecoin",
+                        "BCH": "bitcoin-cash",
+                        "DASH": "dash",
+                        "ZEC": "zcash",
+                        "USDC": "usd-coin",
+                        "USDT": "tether",
+                        "WBTC": "bitcoin",
+                        "BTC": "bitcoin",
+                        "XRP": "ripple",
+                        "DOGE": "dogecoin",
+                        }
+
+    # ids = []
+
+    # for option in querystring_options.values():
+    #     ids.append(option)
+
+    # url = f"https://api.coingecko.com/api/v3/simple/price?ids={','.join(ids)}&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+
+    ids = 'ethereum,litecoin,bitcoin-cash,dash,zcash,usd-coin,tether,bitcoin,bitcoin,ripple,dogecoin'
+    url = f"https://api.coingecko.com/api/v3/simple/price?ids={ids}&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+
+    response = requests.get(url).json()
+
+
+    for currency in currencies:
+        if currency.symbol == "TEST" or currency.currency_name == "ethereum_ropsten":
+            continue
+
+        coingecko_id = querystring_options[currency.symbol]
+
+        exchange_rate = response[coingecko_id]["usd"]
+        currency.exchange_rate = exchange_rate
+        currency.save()
+    
+    return HttpResponse(status=200)
+
 @csrf_exempt
 def daily_routine(request):
     if request.method == "GET":
@@ -1822,6 +1811,10 @@ def confirmed_coin_transactions(request):
 
             sender_object.expiration_datetime = None
             sender_object.save()
+
+            calculate_credit_grade(sender_object.email)
+            #HERE GOES
+
         # print(response)
         # print(payload.decode("utf-8"))
         return HttpResponse("Webhook received!")

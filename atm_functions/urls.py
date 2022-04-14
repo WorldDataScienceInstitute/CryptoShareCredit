@@ -6,13 +6,9 @@ urlpatterns = [
      path("", views.home, name="Home"),
      path("CheckCredit/", views.check_balance, name="CheckCredit"),
      path("CreditGrades/", views.credit_grades, name="CreditGrades"),
-     path("WithdrawMoney/", views.withdraw_money, name="WithdrawMoney"),
      path("DepositMoney/", views.deposit_money, name="DepositMoney"),
      path("DepositSelection/", views.deposit_selection, name="DepositSelection"),
      path("CryptoShareWallet/", views.cryptoshare_wallet, name="CryptoShareWallet"),
-     path("SelectBank/", views.bank, name="SelectBank"),
-     path("TyWithdraw/", views.ty_withdraw, name="TyWithdraw"),
-     path("TyDeposit/", views.ty_deposit, name="TyDeposit"),
      path("BuyCrypto/", views.buy_crypto, name="BuyCrypto"),
      path("Borrow/", views.borrow, name="Borrow"),
      path("BorrowCrypto/", views.borrow_crypto, name="BorrowCrypto"),
@@ -41,11 +37,13 @@ urlpatterns = [
      path("GenerateAddress/", views.generate_address, name="GenerateAddress"),
      path("CardDashboard/", views.card_dashboard, name="CardDashboard"),
      path("CardCreateUser/", views.aptopayments_create_user, name="CardCreateUser"),
+     path("GetCreditGrade/", views.get_credit_grade, name="GetCreditGrade"),
      #WEBHOOKS
      path("ConfirmationsCoinTransactions/", views.confirmations_coin_transactions, name="ConfirmationsCryptoTransactions"),
      path("ConfirmedCoinTransactions/", views.confirmed_coin_transactions, name="ConfirmedCoinTransactions"),
      path("ConfirmedTokenTransactions/", views.confirmed_token_transactions, name="ConfirmedTokenTransactions"),
      path("DailyRoutine/", views.daily_routine, name="DailyRoutine"),
+     path("UpdateExchangeRates/", views.update_exchange_rates, name="UpdateExchangeRates"),
      path("TestReceiver/", views.test_receiver, name="TestReceiver")
      # path("NotificationService/", views.notification_service, name="NotificationService")
 ]
