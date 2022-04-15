@@ -10,6 +10,7 @@ urlpatterns = [
      path("DepositSelection/", views.deposit_selection, name="DepositSelection"),
      path("CryptoShareWallet/", views.cryptoshare_wallet, name="CryptoShareWallet"),
      path("BuyCrypto/", views.buy_crypto, name="BuyCrypto"),
+     path("BuyCryptoWidget/", views.buy_crypto_widget, name="BuyCryptoWidget"),
      path("Borrow/", views.borrow, name="Borrow"),
      path("BorrowCrypto/", views.borrow_crypto, name="BorrowCrypto"),
      path("BorrowCryptoDashboard/", views.borrow_crypto_dashboard, name="BorrowCryptoDashboard"),
