@@ -1782,7 +1782,7 @@ def confirmed_token_transactions(request):
 
         blockchain = response_data["blockchain"]
         transaction_id = response_data["transactionId"]
-        
+
         token_info = response_data["token"]
         amount = token_info["amount"]
         token_symbol = token_info["symbol"]
@@ -1794,7 +1794,7 @@ def confirmed_token_transactions(request):
 
 
         sender_object = Address.objects.get(address=sender_address)
-        currency_symbol_object = Cryptocurrency.objects.get(symbol=token_symbol, blockchain=)
+        currency_symbol_object = Cryptocurrency.objects.get(symbol=token_symbol, blockchain=blockchain)
 
         try:
             sender_currency_balance = Balance.objects.get(email=sender_object.email, currency_name=currency_symbol_object)
