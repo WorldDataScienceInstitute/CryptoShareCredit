@@ -22,6 +22,11 @@ crossorigin
                             filters: {
                                     onlyCryptos: {{ available_cryptos|safe }}
                                 },
+                            wallets: {
+                                    "ETH": {
+                                            "address": "{{ addresses.ETH }}"
+                                        }
+                                    },
                             defaultAddrs: {
                                     "BTC": {
                                             "address": "{{ addresses.BTC }}"
@@ -43,6 +48,15 @@ crossorigin
                                         },
                                     "DOGE": {
                                             "address": "{{ addresses.DOGE }}"
+                                        },
+                                    "ETH": {
+                                            "address": "{{ addresses.ETH }}"
+                                        },
+                                    "USDC": {
+                                            "address": "{{ addresses.ETH }}"
+                                        },
+                                    "USDT": {
+                                            "address": "{{ addresses.ETH }}"
                                         }
                             },
                             color: "#00BFFF",

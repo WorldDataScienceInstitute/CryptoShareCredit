@@ -227,6 +227,8 @@ def buy_crypto(request):
 
 def buy_crypto_widget(request):
     addresses_objects = Address.objects.filter(email=request.user)
+    erc20_objects = Cryptocurrency.objects.filter(blockchain="ethereum")
+
     API_KEY = os.environ['ONRAMPER_PRODUCTION_KEY']
     available_cryptos = []
 
@@ -237,7 +239,11 @@ def buy_crypto_widget(request):
                 "DASH": "",
                 "XRP": "",
                 "ZEC": "",
-                "DOGE": ""
+                "DOGE": "",
+                "ETH": "",
+                "USDC": "",
+                "USDT": "",
+                "WBTC": "",
                 }
     
     for address in addresses_objects:
@@ -245,7 +251,11 @@ def buy_crypto_widget(request):
             available_cryptos.append(address.currency_name.symbol)
             addresses[address.currency_name.symbol] = address.address
 
-
+    if addresses["ETH"] != "":
+        for currency in erc20_objects:
+            if currency.symbol in addresses:
+                available_cryptos.append(currency.symbol)
+                addresses[currency.symbol] = addresses["ETH"]
 
     context = {
             "available_cryptos": available_cryptos,
