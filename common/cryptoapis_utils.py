@@ -8,12 +8,23 @@ class CryptoApisUtils:
         currency_addresses = Address.objects.filter(email=user, currency_name=currency_object).count()
         error = None
 
-        if currency_addresses == 0:
+        if currency_addresses != 0:
+            currency_addresses = Address.objects.get(email=user, currency_name=currency_object)
+            if register_function:
+                error = "You already have an address for this currency."
+            return currency_addresses, error
+        else:
             available_addresses = Address.objects.filter(
                                                         currency_name = currency_object, 
                                                         email = None
                                                         )
-            if available_addresses.count() == 0:
+            if available_addresses.count() != 0:
+                newAddress = available_addresses.first()
+                newAddress.email = user
+                newAddress.expiration_datetime = timezone.now()+timedelta(days=6)
+                newAddress.save()
+                
+            elif available_addresses.count() == 0:
                 cryptoapis_client = CryptoApis()
 
                 number_of_addresses = Address.objects.filter(currency_name = currency_object).count()
@@ -27,17 +38,23 @@ class CryptoApisUtils:
                     error = "Error generating address. Please try again later."
                     return None, error
                 
-                if currency_object.blockchain == "xrp":
-                    newAddress = Address(
-                                        address=deposit_address, 
-                                        email=user, 
-                                        currency_name=currency_object, 
-                                        expiration_datetime = None)
-                else:
-                    newAddress = Address(
-                                        address=deposit_address, 
-                                        email=user, 
-                                        currency_name=currency_object)
+                # if currency_object.blockchain == "xrp":
+                #     newAddress = Address(
+                #                         address=deposit_address, 
+                #                         email=user, 
+                #                         currency_name=currency_object, 
+                #                         expiration_datetime = None)
+                # else:
+                #     newAddress = Address(
+                #                         address=deposit_address, 
+                #                         email=user, 
+                #                         currency_name=currency_object)
+
+                newAddress = Address(
+                                    address=deposit_address, 
+                                    email=user, 
+                                    currency_name=currency_object)
+
                 newAddress.save()
 
                 try:
@@ -47,20 +64,19 @@ class CryptoApisUtils:
                     newAddress.save()
                     error = "Error generating address, please contact support"
                     return None, error
-
-            else:
-                newAddress = available_addresses.first()
-                newAddress.email = user
-                newAddress.expiration_datetime = timezone.now()+timedelta(days=6)
-                newAddress.save()
+                
+                #GENERATE TOKEN SUBSCRIPTION
+                if currency_object.blockchain == "ethereum" and currency_object.network == "mainnet":
+                    try:
+                        cryptoapis_client.generate_token_subscription(currency_object.blockchain, currency_object.network, deposit_address)
+                    except:
+                            newAddress.email = None
+                            newAddress.save()
+                            error = "Error generating address for ERC-20 Tokens, please contact support"
+                            return None, error
 
             return newAddress, error
-        else:
-            currency_addresses = Address.objects.get(email=user, currency_name=currency_object)
-            
-        if register_function:
-            error = "You already have an address for this currency."
-        return currency_addresses, error
+        
 
 
 def get_currencies_exchange_rate():
