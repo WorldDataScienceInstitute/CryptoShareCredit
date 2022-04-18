@@ -59,7 +59,6 @@ def check_balance(request):
     else:
         wallet_conn = False
 
-    current_currency = request.session['currency'] if 'currency' in request.session else 'USD'
     if request.user.is_authenticated:
         # get account details for user
         u = User.objects.get(pk=request.user.pk)
@@ -67,20 +66,10 @@ def check_balance(request):
         # get first name
         name = u.first_name
 
-        # convert balance to user's selected currency
-        balance = 0
-        if current_currency == 'USD':
-            balance_conv = balance
-        else:
-            balance_conv = 0 if balance == 0 else json.loads(convert('USD', current_currency, balance))['amount']
-
         #---------------------- CRYPTOAPIS ----------------------#
         cryptoapis_balances = Balance.objects.filter(email=request.user)
 
         context = {
-            'balance': balance,
-            'balance_conv': balance_conv,
-            'currency': current_currency,
             'name': name,
             'wallet_conn': wallet_conn,
             'accounts': accounts,
@@ -166,6 +155,12 @@ def cryptoshare_wallet(request):
                                     "blockchain": "dogecoin",
                                     "symbol": "DOGE",
                                     "has_address": False
+                                },
+                                {
+                                    "currency_name": "Ethereum",
+                                    "blockchain": "ethereum",
+                                    "symbol": "ETH",
+                                    "has_address": False
                                 }
                                 ]
     }
@@ -213,6 +208,10 @@ def cryptoshare_wallet(request):
             address.wallet_address = currencies_dict["Dogecoin"]
             context["address_confirmations"][6]["has_address"] = True
 
+        elif address.currency_name == "Ethereum":
+            address.wallet_address = currencies_dict["Ethereum"]
+            context["address_confirmations"][7]["has_address"] = True
+
     return render(request, 'cryptoshare_wallet.html', context)
 
 
@@ -225,6 +224,46 @@ def buy_crypto(request):
     }
 
     return render(request, 'buy_crypto.html', context)
+
+def buy_crypto_widget(request):
+    addresses_objects = Address.objects.filter(email=request.user)
+    erc20_objects = Cryptocurrency.objects.filter(blockchain="ethereum")
+
+    API_KEY = os.environ['ONRAMPER_PRODUCTION_KEY']
+    available_cryptos = []
+
+    addresses = {
+                "BTC": "",
+                "LTC": "",
+                "BCH": "",
+                "DASH": "",
+                "XRP": "",
+                "ZEC": "",
+                "DOGE": "",
+                "ETH": "",
+                "USDC": "",
+                "USDT": "",
+                "WBTC": "",
+                }
+    
+    for address in addresses_objects:
+        if address.currency_name.symbol in addresses:
+            available_cryptos.append(address.currency_name.symbol)
+            addresses[address.currency_name.symbol] = address.address
+
+    if addresses["ETH"] != "":
+        for currency in erc20_objects:
+            if currency.symbol in addresses:
+                available_cryptos.append(currency.symbol)
+                addresses[currency.symbol] = addresses["ETH"]
+
+    context = {
+            "available_cryptos": available_cryptos,
+            "addresses": addresses,
+            "API_KEY": API_KEY
+            }
+
+    return render(request, 'buy_crypto_widget.html', context)
 
 def borrow(request):
     if request.user.is_authenticated:
@@ -344,36 +383,9 @@ def borrow_offer(request):
         if error is not None:
             messages.info(request, error)
             return redirect('atm_functions:BorrowCrypto')
-
-
-        # currency_addresses = Address.objects.filter(email=request.user, currency_name=currency_object).count()
-
-        # if currency_addresses == 0:
-        #     available_addresses = Address.objects.filter(currency_name=currency_object, email=None)
-        #     if len(available_addresses) != 0:
-        #         address = available_addresses[0]
-        #         address.email = request.user
-        #         address.save()
-        #     else:
-        #         cryptoapis_client = CryptoApis()
-
-        #         # Get current number of addresses for that currency
-        #         number_of_addresses = Address.objects.filter(currency_name=currency_object).count()
-
-        #         try:
-        #             deposit_address = cryptoapis_client.generate_deposit_address(currency_object.blockchain, currency_object.network, number_of_addresses)
-        #         except:
-        #             messages.info(request, "Error generating address. Please try again.")
-        #             return redirect('atm_functions:BorrowCrypto')
-
-        #         if currency_object.blockchain == "xrp":
-        #             newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_object, expiration_datetime = None)
-        #         else:
-        #             newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_object)
-        #         newAddress.save()
         # <--------------------------  PAYMENT CURRENCY GENERATION -------------------------------------------->
 
-        comission = 1 - 0.01
+        commission = 1 - 0.01
 
         balance_object.amount -= transaction.amount_collateral
         balance_object.save()
@@ -402,7 +414,7 @@ def borrow_offer(request):
         except:
             receptor_balance = Balance(email=request.user, currency_name=currency_object, amount = 0)
 
-        receptor_balance.amount += transaction.amount * Decimal(comission)
+        receptor_balance.amount += transaction.amount * Decimal(commission)
         receptor_balance.save()
 
         inprogress_transactionb_email(
@@ -489,7 +501,7 @@ def lend_offer(request):
             messages.info(request, f"Insufficient balance. You can only lend up to {float(balance_object.amount)} {transaction.currency_name.currency_name}.")
             return redirect('atm_functions:LendCrypto')
         
-        comission = 1 - 0.01
+        commission = 1 - 0.01
 
         balance_object.amount -= transaction.amount
         balance_object.save()
@@ -516,7 +528,7 @@ def lend_offer(request):
 
 
         emitter_balance = Balance.objects.get(email=emitter, currency_name=transaction.currency_name)
-        emitter_balance.amount += transaction.amount * Decimal(comission)
+        emitter_balance.amount += transaction.amount * Decimal(commission)
         emitter_balance.save()
 
         inprogress_transactionb_email(
@@ -1208,28 +1220,6 @@ def my_transactions(request):
 
     return render(request, 'my_transactions.html', context)
 
-# <--------------------------------  CURRENTLY NOT ACTIVE --------------------------------------------->
-# <--------------------------------  CURRENTLY NOT ACTIVE --------------------------------------------->
-def my_loans(request):
-    if not request.user.is_authenticated:
-        return redirect('authentication:Home')
-    auth_confirmation = True
-
-    # loans = TransactionB.objects.filter(Q(emmiter = request.user) | Q(receiver = request.user))
-    opened_offers = TransactionB.objects.filter(emitter = request.user, state = "OPEN")
-    accepted_offers = TransactionB.objects.filter(Q(receptor=request.user) | Q(emitter=request.user), state = "IN PROGRESS") 
-
-
-    context = {
-            "authConfirmation": auth_confirmation,
-            "opened_offers": opened_offers,
-            "accepted_offers": accepted_offers
-            }
-
-    return render(request, 'my_loans.html', context)
-# <--------------------------------  CURRENTLY NOT ACTIVE --------------------------------------------->
-# <--------------------------------  CURRENTLY NOT ACTIVE --------------------------------------------->
-
 def register_address(request):
     if not request.user.is_authenticated:
         return redirect('authentication:Home')
@@ -1324,48 +1314,6 @@ def generate_address(request):
     if error is not None:
         messages.info(request, error)
         return redirect('atm_functions:CryptoShareWallet')
-
-    # #Check if there is already an address for that currency name for that email
-    # address_exists = Address.objects.filter(email=request.user, currency_name=currency_object)
-    # if address_exists:
-    #     messages.info(request, "Address already exists.")
-    #     return redirect('atm_functions:CryptoShareWallet')
-    
-    # available_addresses = Address.objects.filter(currency_name=currency_object, email=None)
-    # if len(available_addresses) != 0:
-    #     address = available_addresses[0]
-    #     address.email = request.user
-    #     address.save()
-    #     # print(address)
-    #     messages.info(request, "Address generated successfully.")
-    #     return redirect('atm_functions:CryptoShareWallet')
-
-
-    # cryptoapis_client = CryptoApis()
-
-    # # Get current number of addresses for that currency
-    # number_of_addresses = Address.objects.filter(currency_name=currency).count()
-
-    # try:
-    #     deposit_address = cryptoapis_client.generate_deposit_address(blockchain, network, number_of_addresses)
-    # except:
-    #     messages.info(request, "Error generating address. Please try again.")
-    #     return redirect('atm_functions:CryptoShareWallet')
-
-    # if blockchain != "xrp":
-    #     newAddress = Address(address=deposit_address, email=email_object, currency_name=currency_object)
-    # else:
-    #     newAddress = Address(address=deposit_address, email=email_object, currency_name=currency_object, expiration_datetime = None)
-    # newAddress.save()
-
-    # try:
-    #     cryptoapis_client.generate_coin_subscription(blockchain, network, deposit_address)
-    # except:
-    #     newAddress.email = None
-    #     newAddress.save()
-    #     messages.info(request, "Error generating address, please contact support")
-    #     return redirect('atm_functions:CryptoShareWallet')
-
     
     messages.info(request, "Address generated successfully.")
 
@@ -1744,7 +1692,6 @@ def confirmed_coin_transactions(request):
         return redirect('atm_functions:Home')
     elif request.method == "POST":
         request_reader = request.META.get('wsgi.input')
-        # print(request.headers)
 
         # bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING ENVIRRONMENT
         bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION ENVIRONMENT
@@ -1759,15 +1706,19 @@ def confirmed_coin_transactions(request):
         response_data = response["data"]["item"]
 
         if response_data["direction"] == "incoming":
+            commission = 1 - 0.01
+
             amount = response_data["amount"]
             transaction_id = response_data["transactionId"]
 
-            if response_data["blockchain"] == "ethereum":
-                cryptoapis_client = CryptoApis()
-                transaction_details = cryptoapis_client.get_transaction_details_by_transactionid(response_data["blockchain"], response_data["network"], transaction_id)
-                sender_address = transaction_details["senders"][0]["address"]
-            else:
-                sender_address = response_data["address"]
+            # if response_data["blockchain"] == "ethereum":
+            #     cryptoapis_client = CryptoApis()
+            #     transaction_details = cryptoapis_client.get_transaction_details_by_transactionid(response_data["blockchain"], response_data["network"], transaction_id)
+            #     sender_address = transaction_details["senders"][0]["address"]
+            # else:
+            #     sender_address = response_data["address"]
+            
+            sender_address = response_data["address"]
 
             if response_data["blockchain"] == "ethereum":
                 sender_address = sender_address.lower()
@@ -1786,13 +1737,13 @@ def confirmed_coin_transactions(request):
             
             sender_currency_balance = Balance.objects.get(email=sender_object.email, currency_name=currency_symbol_object)
             
-            sender_currency_balance.amount += Decimal(amount)
+            sender_currency_balance.amount += Decimal(amount) * Decimal(commission)
             sender_currency_balance.save()
             try:
                 transactionA = TransactionA(transaction_id=transaction_id, email=sender_object.email, address=sender_object, currency_name=currency_symbol_object, transaction_type="DEPOSIT", state="APPROVED",amount=amount)
                 transactionA.save()
             except:
-                sender_currency_balance.amount -= Decimal(amount)
+                sender_currency_balance.amount -= Decimal(amount) * Decimal(commission)
                 sender_currency_balance.save()
                 return HttpResponse("Webhook received!")
 
@@ -1805,15 +1756,10 @@ def confirmed_coin_transactions(request):
             creation_date = timezone.now()
             deposit_funds_email(str(sender_object.email), transaction_intern_id, response_data["blockchain"], response_data["network"] ,amount, tx_currency, sender_address, creation_date)
 
-            # if response_data["blockchain"] != "ethereum" and response_data["blockchain"] != "xrp":
-            #     sender_object.email = None
-            #     sender_object.save()
-
-            sender_object.expiration_datetime = None
-            sender_object.save()
+            # sender_object.expiration_datetime = None
+            # sender_object.save()
 
             calculate_credit_grade(sender_object.email)
-            #HERE GOES
 
         # print(response)
         # print(payload.decode("utf-8"))
@@ -1828,6 +1774,7 @@ def confirmed_token_transactions(request):
     elif request.method == "POST":
 
         ETHEREUM_DEPOSIT_ADDRESS = "0x70568e1a620468a49136aee7febd357bb9469b2c"
+        commission = 1 - 0.01
         request_reader =request.META.get('wsgi.input')
 
         # print(request.headers)
@@ -1843,29 +1790,34 @@ def confirmed_token_transactions(request):
         response = json.loads(payload[start:end])
         response_data = response["data"]["item"]
 
+        blockchain = response_data["blockchain"]
         transaction_id = response_data["transactionId"]
-        amount = response_data["token"]["amount"]
-        token_symbol = response_data["token"]["symbol"]
 
-        cryptoapis_client = CryptoApis()
-        transaction_details = cryptoapis_client.get_transaction_details_by_transactionid(response_data["blockchain"], response_data["network"], transaction_id)
-        sender_address = transaction_details["senders"][0]["address"]
+        token_info = response_data["token"]
+        amount = token_info["amount"]
+        token_symbol = token_info["symbol"]
+
+        # cryptoapis_client = CryptoApis()
+        # transaction_details = cryptoapis_client.get_transaction_details_by_transactionid(response_data["blockchain"], response_data["network"], transaction_id)
+        # sender_address = transaction_details["senders"][0]["address"]
+        sender_address = response_data["address"]
+
 
         sender_object = Address.objects.get(address=sender_address)
-        currency_symbol_object = Cryptocurrency.objects.get(symbol=token_symbol)
+        currency_symbol_object = Cryptocurrency.objects.get(symbol=token_symbol, blockchain=blockchain)
 
         try:
             sender_currency_balance = Balance.objects.get(email=sender_object.email, currency_name=currency_symbol_object)
         except:
             sender_currency_balance = Balance(currency_name=currency_symbol_object, email=sender_object.email, amount=0)
         
-        sender_currency_balance.amount += Decimal(amount)
+        sender_currency_balance.amount += Decimal(amount) * Decimal(commission)
         sender_currency_balance.save()
         try:
             transactionA = TransactionA(transaction_id=transaction_id, email=sender_object.email, address=sender_object, currency_name=currency_symbol_object, transaction_type="DEPOSIT", state="APPROVED",amount=amount)
             transactionA.save()
         except:
-            sender_currency_balance.amount -= Decimal(amount)
+            sender_currency_balance.amount -= Decimal(amount) * Decimal(commission)
             sender_currency_balance.save()
             return HttpResponse("Webhook received!")
 

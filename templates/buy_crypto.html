@@ -13,8 +13,8 @@
     <div class="content-container">
         <h2 class="ml-4">Buy Crypto</h2>
 
-        <iframe id="screen_iframe" frameBorder="0" height=590px; width="100%auto" src="" style="margin: 0 auto; display:block; overflow: hidden;" scrolling="no"></iframe>
-
+        <!-- <iframe id="screen_iframe" frameBorder="0" height=590px; width="100%auto" src="" style="margin: 0 auto; display:block; overflow: hidden;" scrolling="no"></iframe> -->
+        <iframe id="screen_iframe" frameBorder="0" height=800pxauto; width="100%auto" src="{% url 'atm_functions:BuyCryptoWidget' %}"></iframe>
 
     </div>
 
@@ -30,13 +30,6 @@
     </script>
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
     </script>
-
-<script type="text/javascript">
-    window.onload=function(){
-        document.getElementById('screen_iframe').src = "https://buy.ramp.network/?hostLogoUrl=https%3A%2F%2Fwww.cryptoshareapp.com%2Fstatic%2Fimages%2FCSlogo.png&hostAppName=Crypto%24hare&finalUrl=https%3A%2F%2Fwww.cryptoshareapp.com%2Fatm%2FCryptoShareWallet%2F";
-    }
-    </script>
-
 
     <script type="text/javascript">
         function triggerHtmlEvent(element, eventName) {

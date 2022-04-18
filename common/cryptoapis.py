@@ -7,9 +7,9 @@ class CryptoApis:
     def __init__(self):
         self.BASE = "https://rest.cryptoapis.io/v2"
         self.querystring = {"limit":20,"offset":0}
+        self.RECEIVE_CALLBACK_ON = 4
         self.HEADERS = {
         'Content-Type': "application/json",
-        # 'X-API-Key': "72b793e11a85dd231d46fc3a3f73d274a834b475"
         'X-API-Key': os.environ['CRYPTOAPIS_API_KEY']
         }
         self.WALLET_ID = os.environ['CRYPTOAPIS_WALLET_ID']
@@ -85,6 +85,24 @@ class CryptoApis:
                         "allowDuplicates": False,
                         "callbackSecretKey": self.CALLBACK_SECRET_KEY,
                         "callbackURL": "https://www.cryptoshareapp.com/atm/ConfirmedCoinTransactions/"
+                    }
+                }
+            }
+        request = requests.post(url, headers=self.HEADERS, json=data).json()
+
+        return request["data"]["item"]["referenceId"]
+    
+    def generate_token_subscription(self, blockchain, network, address):
+        url = self.BASE +  f"/blockchain-events/{blockchain}/{network}/subscriptions/address-tokens-transactions-confirmed"
+        data = {
+                "context": "",
+                "data": {
+                    "item": {
+                        "address": address,
+                        "allowDuplicates": False,
+                        "callbackSecretKey": self.CALLBACK_SECRET_KEY,
+                        "callbackUrl": "https://www.cryptoshareapp.com/atm/ConfirmedTokenTransactions/",
+                        "receiveCallbackOn": self.RECEIVE_CALLBACK_ON
                     }
                 }
             }

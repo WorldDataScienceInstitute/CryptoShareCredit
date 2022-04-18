@@ -39,8 +39,7 @@
 
         <li style="border-style: solid none none none;border-color: white" id="desc">
             <a href="{% url 'atm_functions:BuyCrypto' %}">
-            <!-- <a href="https://buy.ramp.network/?hostLogoUrl=https%3A%2F%2Fwww.cryptoshareapp.com%2Fstatic%2Fimages%2FCSlogo.png&hostAppName=Crypto%24hare&finalUrl=https%3A%2F%2Fwww.cryptoshareapp.com%2Fatm%2FCryptoShareWallet%2F&containerNode=embedded-desktop&variant=hosted" target="_blank"> -->
-                <i class="fa-brands fa-bitcoin" aria-hidden="true"></i>&nbsp;&nbsp;BUY CRYPTO
+                <i class="fas fa-address-card" aria-hidden="true"></i>&nbsp;&nbsp;BUY CRYPTO
             </a>
         </li>
 
@@ -139,7 +138,6 @@
             url: url,
             data: data,
             success: function(response){
-                console.log(response["credit_grade"])
                 document.getElementById("credit_grade").innerHTML = "CREDIT GRADE: "+ response["credit_grade"];
             },
             error: function(response){

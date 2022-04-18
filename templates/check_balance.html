@@ -7,23 +7,13 @@
 <body>
     {% include 'atm_sidebar.html' %}
     <div class="content-container">
-        <h2 class="ml-4 text-primary">Your Account Details & Balance</h2>
+        <h2 class="ml-4 text-primary">Credit Grade & Wealth</h2>
         <br>
         {% include 'messages.html' %}
         {% if name is not None %}
         {% include 'a_sessiontimeout.html' %}
         <h3 class="ml-5">Welcome back, {{ name }}!</h3>
         <!-- <h5 class="ml-5">Information for account ending in {{ debit_last_four }}</h5> -->
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb m-4">
-                <li class="breadcrumb-item active" aria-current="page" style="color:black">
-                    Your current balance is {{ balance }} USD.
-                    {% if currency != 'USD' %}
-                    (approx. {{ balance_conv }} {{ currency }})
-                    {% endif %}
-                </li>
-            </ol>
-        </nav>
         {% if request.session.wallet_conn %}
         <table class="table">
             <caption style="caption-side: top; text-align: center;">Coinbase Balances</caption>

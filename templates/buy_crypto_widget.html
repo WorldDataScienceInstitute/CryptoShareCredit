@@ -1,0 +1,66 @@
+<!-- Load React. -->
+<!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+<script
+src="https://unpkg.com/react@16/umd/react.development.js"
+crossorigin
+></script>
+<script
+src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+crossorigin
+></script>
+
+<!-- Load Onramper's widget. -->
+<script src="https://unpkg.com/@onramper/widget/dist/index.js" crossorigin></script>
+
+<div id="onramper-widget"></div>
+<script>
+    Onramper.initialize(
+                        "#onramper-widget", 
+                        {
+                            API_KEY:"{{ API_KEY }}", 
+                            defaultFiat:"USD",
+                            filters: {
+                                    onlyCryptos: {{ available_cryptos|safe }}
+                                },
+                            wallets: {
+                                    "ETH": {
+                                            "address": "{{ addresses.ETH }}"
+                                        }
+                                    },
+                            defaultAddrs: {
+                                    "BTC": {
+                                            "address": "{{ addresses.BTC }}"
+                                        },
+                                    "LTC": {
+                                            "address": "{{ addresses.LTC }}"
+                                        },
+                                    "BCH": {
+                                            "address": "{{ addresses.BCH }}"
+                                        },
+                                    "DASH": {
+                                            "address": "{{ addresses.DASH }}"
+                                        },
+                                    "XRP": {
+                                            "address": "{{ addresses.XRP }}"
+                                        },
+                                    "ZEC": {
+                                            "address": "{{ addresses.ZEC }}"
+                                        },
+                                    "DOGE": {
+                                            "address": "{{ addresses.DOGE }}"
+                                        },
+                                    "ETH": {
+                                            "address": "{{ addresses.ETH }}"
+                                        },
+                                    "USDC": {
+                                            "address": "{{ addresses.ETH }}"
+                                        },
+                                    "USDT": {
+                                            "address": "{{ addresses.ETH }}"
+                                        }
+                            },
+                            color: "#00BFFF",
+                            isAddressEditable: false
+                        }
+                        );
+</script>
