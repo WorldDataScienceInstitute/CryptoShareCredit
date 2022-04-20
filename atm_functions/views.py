@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.utils import timezone
 from django.db.models import Q
@@ -29,15 +30,21 @@ import requests
 import json
 
 def home(request):
+    if not request.user.is_authenticated:
+        return render(request, "buy_blockchain_credit_lines.html")
+
     context = {}
+    return redirect('atm_functions:CheckCredit')
 
-    return render(request, "buy_blockchain_credit_lines.html", context)
 
+# @login_required(login_url='authentication:Login')
+@login_required()
 def credit_grades(request):
     context = {}
 
     return render(request, 'credit_grades.html', context)
 
+@login_required()
 def check_balance(request):
 
     accounts = {}
@@ -83,36 +90,12 @@ def check_balance(request):
         }
     return render(request, 'check_balance.html', context)
 
-def deposit_selection(request):
-
-    if request.user.is_authenticated:
-        u = User.objects.get(pk=request.user.pk)
-        name = u.first_name
-    else:
-        name = None
-    context = {'name': name}
-    return render(request, 'deposit_selection.html', context)
-
-
-def deposit_money(request):
-    if request.user.is_authenticated:
-        u = User.objects.get(pk=request.user.pk)
-        name = u.first_name
-    else:
-        name = None
-    context = {'name': name}
-    if request.method == "POST":
-        return redirect('atm_functions:SelectBank', context)
-    else:
-        return render(request, 'deposit_money.html', context)
-
+@login_required()
 def cryptoshare_wallet(request):
     if not request.user.is_authenticated:
         return redirect('authentication:Home')
-    auth_confirmation = True
 
     context = {
-        "authConfirmation": auth_confirmation,
         "address_confirmations": [
                                 {
                                     "currency_name": "Litecoin",
@@ -214,13 +197,10 @@ def cryptoshare_wallet(request):
 
     return render(request, 'cryptoshare_wallet.html', context)
 
-
+@login_required()
 def buy_crypto(request):
 
-    auth_confirmation = True
-
     context = {
-        "authConfirmation": auth_confirmation,
     }
 
     return render(request, 'buy_crypto.html', context)
@@ -265,47 +245,7 @@ def buy_crypto_widget(request):
 
     return render(request, 'buy_crypto_widget.html', context)
 
-def borrow(request):
-    if request.user.is_authenticated:
-        u = User.objects.get(pk=request.user.pk)
-        name = u.first_name
-    else:
-        name = None
-    context = {'name': name}
-    return render(request, 'borrow.html', context)
-
-def borrow_crypto(request):
-    if not request.user.is_authenticated:
-        return redirect('authentication:Home')
-    auth_confirmation = True
-
-
-    # lend_offers = TransactionB.objects.filter(transaction_type="LEND", state="OPEN")
-    lend_offers = TransactionB.objects.exclude(emitter=request.user).filter(transaction_type="LEND", state="OPEN")
-
-    context = {
-        "authConfirmation": auth_confirmation,
-        "lend_offers": lend_offers
-    }
-
-    iframe = request.GET.get('iframe','')
-    if iframe:
-        context["iframe"] = True
-
-    return render(request, 'borrow_crypto.html', context)
-
-def borrow_crypto_dashboard(request):
-    if not request.user.is_authenticated:
-        return redirect('authentication:Home')
-    auth_confirmation = True
-
-
-    context = {
-        "authConfirmation": auth_confirmation
-    }
-
-    return render(request, 'borrow_crypto_dashboard.html', context)
-
+@login_required()
 def buy_credit(request):
     if request.user.is_authenticated:
         u = User.objects.get(pk=request.user.pk)
@@ -315,596 +255,7 @@ def buy_credit(request):
     context = {'name': name}
     return render(request, 'buy_credit.html', context)
 
-def lend_crypto(request):
-    if not request.user.is_authenticated:
-        return redirect('authentication:Home')
-    auth_confirmation = True
-
-
-    # borrow_offers = TransactionB.objects.filter(transaction_type="BORROW", state="OPEN")
-    borrow_offers = TransactionB.objects.exclude(emitter=request.user).filter(transaction_type="BORROW", state="OPEN")
-
-    context = {
-        "authConfirmation": auth_confirmation,
-        "borrow_offers": borrow_offers
-    }
-
-    return render(request, 'lend_crypto.html', context)
-
-def borrow_offer(request):
-    if not request.user.is_authenticated:
-        return redirect('authentication:Home')
-    auth_confirmation = True
-    context = {
-        "authConfirmation": auth_confirmation
-    }
-
-    transaction_primary_id = request.GET.get('id','')
-
-    if request.method == "GET":
-        if not transaction_primary_id:
-            return redirect('atm_functions:BorrowMoney')
-        
-        transaction = TransactionB.objects.get(pk=transaction_primary_id)
-        if transaction.interest_rate == 5:
-            transaction.days_to_pay = 15
-        elif transaction.interest_rate == 10:
-            transaction.days_to_pay = 30
-        elif transaction.interest_rate == 15:
-            transaction.days_to_pay = 60
-        elif transaction.interest_rate == 20:
-            transaction.days_to_pay = 90
-
-        context['offer'] = transaction
-
-        return render(request, 'borrow_offer.html', context)
-
-    elif request.method == "POST":
-        if not transaction_primary_id:
-            return redirect('atm_functions:LendMoney')
-        
-        transaction = TransactionB.objects.get(pk=transaction_primary_id)
-
-        try:
-            balance_object = Balance.objects.get(email=request.user, currency_name=transaction.currency_name_collateral)
-        except:
-            messages.info(request, "You do not have a balance, please make a deposit before accepting a offer.")
-            return redirect('atm_functions:BorrowCrypto')
-        # print(balance_object)
-        if balance_object.amount < transaction.amount:
-            messages.info(request, f"Insufficient balance. You can only borrow up to {float(balance_object.amount)} {transaction.currency_name.currency_name}.")
-            return redirect('atm_functions:BorrowCrypto')
-
-        currency_object = transaction.currency_name
-        # <--------------------------  PAYMENT CURRENCY GENERATION -------------------------------------------->
-        cryptoapis_utils = CryptoApisUtils()
-
-        address, error = cryptoapis_utils.generate_address(request.user, currency_object)
-        if error is not None:
-            messages.info(request, error)
-            return redirect('atm_functions:BorrowCrypto')
-        # <--------------------------  PAYMENT CURRENCY GENERATION -------------------------------------------->
-
-        commission = 1 - 0.01
-
-        balance_object.amount -= transaction.amount_collateral
-        balance_object.save()
-
-        transaction.state = "IN PROGRESS"
-        transaction.start_datetime = timezone.now()
-        transaction.receptor = request.user
-
-        interest_rate = transaction.interest_rate
-
-        if interest_rate == 5:
-            transaction.end_datetime = timezone.now() + timedelta(days=15)
-        elif interest_rate == 10:
-            transaction.end_datetime = timezone.now() + timedelta(days=30)
-        elif interest_rate == 15:
-            transaction.end_datetime = timezone.now() + timedelta(days=60)
-        elif interest_rate == 20:
-            transaction.end_datetime = timezone.now() + timedelta(days=90)
-
-        transaction.save()
-        receptor = transaction.receptor
-        emitter = transaction.emitter
-
-        try:
-            receptor_balance = Balance.objects.get(email=receptor, currency_name=transaction.currency_name)
-        except:
-            receptor_balance = Balance(email=request.user, currency_name=currency_object, amount = 0)
-
-        receptor_balance.amount += transaction.amount * Decimal(commission)
-        receptor_balance.save()
-
-        inprogress_transactionb_email(
-                                    str(emitter), 
-                                    transaction.id_b, 
-                                    transaction.transaction_id, 
-                                    transaction.currency_name.currency_name, 
-                                    transaction.currency_name_collateral.currency_name, 
-                                    transaction.transaction_type, 
-                                    transaction.amount, 
-                                    transaction.amount_collateral, 
-                                    transaction.interest_rate,
-                                    (transaction.end_datetime - timezone.now()).days,
-                                    transaction.start_datetime,
-                                    transaction.end_datetime
-                                    )
-
-        if transaction.transaction_type == "LEND":
-            transaction.transaction_type = "BORROW"
-        elif transaction.transaction_type == "BORROW":
-            transaction.transaction_type = "LEND"
-
-        inprogress_transactionb_email(
-                                    str(receptor), 
-                                    transaction.id_b, 
-                                    transaction.transaction_id, 
-                                    transaction.currency_name.currency_name, 
-                                    transaction.currency_name_collateral.currency_name, 
-                                    transaction.transaction_type, 
-                                    transaction.amount, 
-                                    transaction.amount_collateral, 
-                                    transaction.interest_rate,
-                                    (transaction.end_datetime - timezone.now()).days,
-                                    transaction.start_datetime,
-                                    transaction.end_datetime
-                                    )
-
-        messages.info(request, f"The offer with ID: {transaction.id_b} has been started.")
-        return redirect('atm_functions:LendMoney')
-
-    return render(request, 'borrow_offer.html', context)
-
-def lend_offer(request):
-    if not request.user.is_authenticated:
-        return redirect('authentication:Home')
-    auth_confirmation = True
-    context = {
-        "authConfirmation": auth_confirmation
-    }
-
-    transaction_primary_id = request.GET.get('id','')
-
-    if request.method == "GET":
-        if not transaction_primary_id:
-            return redirect('atm_functions:LendMoney')
-        
-        transaction = TransactionB.objects.get(pk=transaction_primary_id)
-        if transaction.interest_rate == 5:
-            transaction.days_to_pay = 15
-        elif transaction.interest_rate == 10:
-            transaction.days_to_pay = 30
-        elif transaction.interest_rate == 15:
-            transaction.days_to_pay = 60
-        elif transaction.interest_rate == 20:
-            transaction.days_to_pay = 90
-
-        context['offer'] = transaction
-
-        return render(request, 'lend_offer.html', context)
-
-    elif request.method == "POST":
-        if not transaction_primary_id:
-            return redirect('atm_functions:LendMoney')
-        
-        transaction = TransactionB.objects.get(pk=transaction_primary_id)
-
-        try:
-            balance_object = Balance.objects.get(email=request.user, currency_name=transaction.currency_name)
-        except:
-            messages.info(request, "You do not have a balance, please make a deposit before accepting a offer.")
-            return redirect('atm_functions:LendCrypto')
-        # print(balance_object)
-        if balance_object.amount < transaction.amount:
-            messages.info(request, f"Insufficient balance. You can only lend up to {float(balance_object.amount)} {transaction.currency_name.currency_name}.")
-            return redirect('atm_functions:LendCrypto')
-        
-        commission = 1 - 0.01
-
-        balance_object.amount -= transaction.amount
-        balance_object.save()
-
-        transaction.state = "IN PROGRESS"
-        transaction.start_datetime = timezone.now()
-        transaction.receptor = request.user
-
-        interest_rate = transaction.interest_rate
-
-        if interest_rate == 5:
-            transaction.end_datetime = timezone.now() + timedelta(days=15)
-        elif interest_rate == 10:
-            transaction.end_datetime = timezone.now() + timedelta(days=30)
-        elif interest_rate == 15:
-            transaction.end_datetime = timezone.now() + timedelta(days=60)
-        elif interest_rate == 20:
-            transaction.end_datetime = timezone.now() + timedelta(days=90)
-
-        transaction.save()
-
-        emitter = transaction.emitter
-        receptor = transaction.receptor
-
-
-        emitter_balance = Balance.objects.get(email=emitter, currency_name=transaction.currency_name)
-        emitter_balance.amount += transaction.amount * Decimal(commission)
-        emitter_balance.save()
-
-        inprogress_transactionb_email(
-                                    str(emitter), 
-                                    transaction.id_b, 
-                                    transaction.transaction_id, 
-                                    transaction.currency_name.currency_name, 
-                                    transaction.currency_name_collateral.currency_name, 
-                                    transaction.transaction_type, 
-                                    transaction.amount, 
-                                    transaction.amount_collateral, 
-                                    transaction.interest_rate,
-                                    (transaction.end_datetime - timezone.now()).days,
-                                    transaction.start_datetime,
-                                    transaction.end_datetime
-                                    )
-
-        if transaction.transaction_type == "LEND":
-            transaction.transaction_type = "BORROW"
-        elif transaction.transaction_type == "BORROW":
-            transaction.transaction_type = "LEND"
-
-        inprogress_transactionb_email(
-                                    str(receptor), 
-                                    transaction.id_b, 
-                                    transaction.transaction_id, 
-                                    transaction.currency_name.currency_name, 
-                                    transaction.currency_name_collateral.currency_name, 
-                                    transaction.transaction_type, 
-                                    transaction.amount, 
-                                    transaction.amount_collateral, 
-                                    transaction.interest_rate,
-                                    (transaction.end_datetime - timezone.now()).days,
-                                    transaction.start_datetime,
-                                    transaction.end_datetime
-                                    )
-        
-        messages.info(request, f"The offer with ID: {transaction.id_b} has been started.")
-        return redirect('atm_functions:LendMoney')
-
-    return render(request, 'lend_crypto.html', context)
-
-def create_borrowing_offer(request):
-    if not request.user.is_authenticated:
-        return redirect('authentication:Home')
-    auth_confirmation = True
-
-    context = {
-        "authConfirmation": auth_confirmation
-    }
-
-    iframe = request.GET.get('iframe','')
-    if iframe:
-        context["iframe"] = True
-
-    if request.method == "GET":
-        context["exchange_rates"] = []
-
-        # currencies = Cryptocurrency.objects.filter(Q(symbol='USDC') | Q(symbol='USDT') | Q(symbol='WBTC'))
-
-        # balances = list(Balance.objects.filter(email=request.user, currency_name__in=currencies))
-
-        context["exchange_rates"] += get_currencies_exchange_rate()
-
-        return render(request, 'create_borrowing_offer.html', context)
-
-    elif request.method == "POST":
-        currency = request.POST.get('currency').split(" ")[0]
-        amount = float(request.POST.get('currency_crypto_amount'))
-        amount_usd = float(request.POST.get('currency_amount'))
-        currency_collateral = request.POST.get('currency_collateral').split(" ")[0]
-        amount_collateral = request.POST.get('currency_amount_collateral')
-        interest_rate = request.POST.get('interest_rate')
-
-        if currency_collateral == "NotSelected":
-            messages.info(request, "Please select a collateral currency.")
-            return redirect('atm_functions:CreateBorrowingOffer')
-        
-        if amount_collateral == "":
-            messages.info(request, "Collateral amount invalid, please try again")
-            return redirect('atm_functions:CreateBorrowingOffer')
-
-        currency_object = Cryptocurrency.objects.get(symbol=currency)
-        currency_collateral_object = Cryptocurrency.objects.get(symbol=currency_collateral)     
-
-        try:
-            currency_balance = Balance.objects.get(email=request.user, currency_name=currency_object)
-        except:
-            new_currency_balance = Balance(email=request.user, currency_name=currency_object, amount = 0)
-            new_currency_balance.save()
-
-        try:
-            collateral_balance = Balance.objects.get(email=request.user, currency_name=currency_collateral_object)
-        except:
-            collateral_balance = Balance(email=request.user, currency_name=currency_collateral_object, amount = 0)
-        # print(collateral_balance.__dict__, amount_collateral)
-        if float(collateral_balance.amount) < float(amount_collateral):
-            messages.info(request, f"Insufficient collateral balance. You can only borrow up to {float(collateral_balance.amount)} {currency_collateral}.")
-            return redirect('atm_functions:CreateBorrowingOffer')
-
-        # <--------------------------  PAYMENT CURRENCY GENERATION -------------------------------------------->
-        cryptoapis_utils = CryptoApisUtils()
-
-        address, error = cryptoapis_utils.generate_address(request.user, currency_object)
-        if error is not None:
-            messages.info(request, error)
-            return redirect('atm_functions:CreateBorrowingOffer')
-
-        # currency_addresses = Address.objects.filter(email=request.user, currency_name=currency_object).count()
-
-        # if currency_addresses == 0:
-        #     available_addresses = Address.objects.filter(currency_name=currency_object, email=None)
-        #     if len(available_addresses) != 0:
-        #         address = available_addresses[0]
-        #         address.email = request.user
-        #         address.save()
-        #     else:
-        #         cryptoapis_client = CryptoApis()
-
-        #         # Get current number of addresses for that currency
-        #         number_of_addresses = Address.objects.filter(currency_name=currency_object).count()
-
-        #         try:
-        #             deposit_address = cryptoapis_client.generate_deposit_address(currency_object.blockchain, currency_object.network, number_of_addresses)
-        #         except:
-        #             messages.info(request, "Error generating address. Please try again.")
-        #             return redirect('atm_functions:CreateBorrowingOffer')
-
-        #         if currency_object.blockchain == "xrp":
-        #             newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_object, expiration_datetime = None)
-        #         else:
-        #             newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_object)
-        #         newAddress.save()
-        # <--------------------------  PAYMENT CURRENCY GENERATION -------------------------------------------->
-
-        collateral_balance.amount -= Decimal(float(amount_collateral))
-        collateral_balance.save()
-
-        transaction_counter = TransactionB.objects.filter(emitter=request.user).count()
-        transaction_type = "BORROW"
-        transaction_id = f"{str(request.user)}|{transaction_type}|{transaction_counter}|{currency}|{amount}|{currency_collateral}|{amount_collateral}|{interest_rate}"
-
-        # print(transaction_id)
-
-        transaction_b = TransactionB(transaction_id=transaction_id, emitter=request.user, currency_name = currency_object, currency_name_collateral = currency_collateral_object, transaction_type=transaction_type, state="OPEN", amount=amount, amount_collateral=amount_collateral, interest_rate=interest_rate)
-        transaction_b.save()
-        
-        #Missing to create a formal redirect page
-
-        messages.success(request, "Your borrowing offer has been created")
-        # print("Transaction B created")
-        return redirect('atm_functions:LendCrypto')
-
-    return render(request, 'create_borrowing_offer.html', context)
-
-def create_lending_offer(request):
-    if not request.user.is_authenticated:
-        return redirect('authentication:Home')
-    auth_confirmation = True
-
-    context = {
-        "authConfirmation": auth_confirmation
-    }
-
-    if request.method == "GET":
-        context["exchange_rates"] = []
-
-        context["exchange_rates"] += get_currencies_exchange_rate()
-
-        return render(request, 'create_lending_offer.html', context)
-
-    elif request.method == "POST":
-        currency = request.POST.get('currency').split(" ")[0]
-        amount = float(request.POST.get('currency_crypto_amount'))
-        amount_usd = float(request.POST.get('currency_amount'))
-        currency_collateral = request.POST.get('currency_collateral').split(" ")[0]
-        amount_collateral = request.POST.get('currency_amount_collateral')
-        interest_rate = request.POST.get('interest_rate')
-
-        if currency_collateral == "NotSelected":
-            messages.info(request, "Please select a collateral currency.")
-            return redirect('atm_functions:CreateLendinggOffer')
-        
-        if amount_collateral == "":
-            messages.info(request, "Collateral amount invalid, please try again")
-            return redirect('atm_functions:CreateLendingOffer')
-
-        currency_object = Cryptocurrency.objects.get(symbol=currency)
-        currency_collateral_object = Cryptocurrency.objects.get(symbol=currency_collateral)
-
-        try:
-            currency_collateral_balance = Balance.objects.get(email=request.user, currency_name=currency_collateral_object)
-        except:
-            new_currency_collateral_balance = Balance(email=request.user, currency_name=currency_collateral_object, amount = 0)
-            new_currency_collateral_balance.save()
-        
-        try:
-            currency_balance = Balance.objects.get(email=request.user, currency_name=currency_object)
-        except:
-            currency_balance = Balance(email=request.user, currency_name=currency_object, amount = 0)
-        if float(currency_balance.amount) < float(amount):
-            print(currency_balance.amount, amount)
-            messages.info(request, f"Insufficient payment balance. You can only lend up to {float(currency_balance.amount)} {currency}.")
-            return redirect('atm_functions:CreateLendingOffer')
-        
-        # <--------------------------  COLLATERAL CURRENCY GENERATION -------------------------------------------->
-
-        cryptoapis_utils = CryptoApisUtils()
-
-        address, error = cryptoapis_utils.generate_address(request.user, currency_collateral_object)
-        if error is not None:
-            messages.info(request, error)
-            return redirect('atm_functions:CreateLendingOffer')
-        
-        # currency_collateral_addresses = Address.objects.filter(email=request.user, currency_name=currency_collateral_object).count()
-
-        # if currency_collateral_addresses == 0:
-        #     available_addresses = Address.objects.filter(currency_name=currency_collateral_object, email=None)
-        #     if len(available_addresses) != 0:
-        #         address = available_addresses[0]
-        #         address.email = request.user
-        #         address.save()
-        #     else:
-        #         cryptoapis_client = CryptoApis()
-
-        #         # Get current number of addresses for that currency
-        #         number_of_addresses = Address.objects.filter(currency_name=currency_collateral).count()
-
-        #         try:
-        #             deposit_address = cryptoapis_client.generate_deposit_address(currency_object.blockchain, currency_collateral_object.network, number_of_addresses)
-        #         except:
-        #             messages.info(request, "Error generating address. Please try again.")
-        #             return redirect('atm_functions:CreateLendingOffer')
-
-        #         if currency_object.blockchain == "xrp":
-        #             newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_collateral_object, expiration_datetime = None)
-        #         else:
-        #             newAddress = Address(address=deposit_address, email=request.user, currency_name=currency_collateral_object)
-        #         newAddress.save()
-        # <--------------------------  COLLATERAL CURRENCY GENERATION -------------------------------------------->
-
-        currency_balance.amount -= Decimal(float(amount))
-        currency_balance.save()
-
-        transaction_counter = TransactionB.objects.filter(emitter=request.user).count()
-        transaction_type = "LEND"
-        transaction_id = f"{str(request.user)}|{transaction_type}|{transaction_counter}|{currency}|{amount}|{currency_collateral}|{amount_collateral}|{interest_rate}"
-
-        transaction_b = TransactionB(transaction_id=transaction_id, emitter=request.user, currency_name = currency_object, currency_name_collateral = currency_collateral_object, transaction_type=transaction_type, state="OPEN", amount=amount, amount_collateral=amount_collateral, interest_rate=interest_rate)
-        transaction_b.save()
-
-        messages.success(request, "Your lending offer has been created")
-        # print("Transaction B created")
-        return redirect('atm_functions:LendCrypto')
-        
-
-    return render(request, 'create_lending_offer.html', context)
-
-def remove_offer(request):
-    if request.method == "POST":
-        offer_id = request.POST.get('offerID')
-
-        offer = TransactionB.objects.get(id_b=offer_id)
-        
-        if offer.state != "OPEN":
-            # messages.info(request, "Something went wrong, please try again later")
-            return HttpResponse(status=405)
-        
-        emitter_id = offer.emitter_id
-        emitter_object = User.objects.get(pk=emitter_id)
-
-        offer_type = offer.transaction_type
-        if offer_type == "BORROW":
-            currency_collateral_object = offer.currency_name_collateral
-
-            balance_object = Balance.objects.get(email=emitter_object, currency_name=currency_collateral_object)
-            balance_object.amount += offer.amount_collateral
-
-        elif offer_type == "LEND":
-            currency_object = offer.currency_name
-
-            balance_object = Balance.objects.get(email=emitter_object, currency_name=currency_object)
-            balance_object.amount += offer.amount
-
-        balance_object.save()
-        
-        offer.state = "CANCELED"
-        offer.save()
-        # print(offer.__dict__)
-        # messages.success(request, "Your borrowing offer has been removed")
-
-        return HttpResponse(status=200)
-    return redirect('atm_functions:MyTransactions')
-
-def pay_offer(request):
-    if request.method == "POST":
-        offer_id = request.POST.get('offerID')
-
-        offer = TransactionB.objects.get(id_b=offer_id)
-        
-        if offer.state != "IN PROGRESS":
-            # messages.info(request, "Something went wrong, please try again later")
-            return HttpResponse(status=405)
-        
-        offer_type = offer.transaction_type
-        if offer_type == "BORROW":
-            borrower_user = User.objects.get(pk=offer.emitter_id)
-            lender_user = User.objects.get(pk=offer.receptor_id)
-        elif offer_type == "LEND":
-            borrower_user = User.objects.get(pk=offer.receptor_id)
-            lender_user = User.objects.get(pk=offer.emitter_id)
-
-        currency_object = offer.currency_name
-        currency_collateral_object = offer.currency_name_collateral
-
-        borrower_balance_object = Balance.objects.get(email=borrower_user, currency_name=currency_object)
-        borrower_balance_collateral_object = Balance.objects.get(email=borrower_user, currency_name=currency_collateral_object)
-
-        lender_balance_object = Balance.objects.get(email=lender_user, currency_name=currency_collateral_object)
-        lender_balance_collateral_object = Balance.objects.get(email=lender_user, currency_name=currency_collateral_object)
-
-        if borrower_balance_object.amount < offer.amount:
-            messages.info(request, "Insufficient payment balance")
-            return HttpResponse(status=405)
-        
-        cryptoapis_client = CryptoApis()
-
-        if currency_object.currency_name == "XRP":
-            sender_address = Address.objects.get(email=borrower_user, currency_name=currency_object)
-            receiver_address = Address.objects.get(email=lender_user, currency_name=currency_object)
-
-            transaction_response = cryptoapis_client.generate_coins_transaction_from_address(
-                                                                                               currency_object.blockchain, 
-                                                                                                "mainnet",
-                                                                                                sender_address.address, 
-                                                                                                receiver_address.address, 
-                                                                                                offer.amount)
-        else:
-            borrower_balance_object.amount -= offer.amount
-            lender_balance_object.amount += offer.amount
-
-        borrower_balance_collateral_object.amount += offer.amount_collateral   
-
-        borrower_balance_object.save()
-        lender_balance_object.save()
-        borrower_balance_collateral_object.save()
-
-        offer.state = "CLOSED"
-        offer.save()
-        # print(offer.__dict__)
-        # messages.success(request, "Your borrowing offer has been removed")
-
-        return HttpResponse(status=200)
-
-    return redirect('atm_functions:MyTransactions')
-
-def earn_money(request):
-    if request.user.is_authenticated:
-        u = User.objects.get(pk=request.user.pk)
-        name = u.first_name
-    else:
-        name = None
-    context = {'name': name}
-    return render(request, 'earn_money.html', context)
-
-
-def shop(request):
-    if request.user.is_authenticated:
-        u = User.objects.get(pk=request.user.pk)
-        name = u.first_name
-    else:
-        name = None
-    context = {'name': name}
-    return render(request, 'atm_shop.html', context)
-
-
+@login_required()
 def atm_settings(request):
     if request.user.is_authenticated:
         u = User.objects.get(pk=request.user.pk)
@@ -920,7 +271,7 @@ def atm_settings(request):
     }
     return render(request, 'atm_settings.html', context)
 
-
+@login_required()
 def connect_wallet(request):
     if request.session['wallet_conn']:
         messages.info(request, "Your Coinbase account has already been connected.")
@@ -936,7 +287,7 @@ def connect_wallet(request):
 
     return render(request, 'connect_wallet.html', context)
 
-
+@login_required()
 def approve_wallet(request):
     code = request.GET.get('code','')
 
@@ -970,7 +321,7 @@ def approve_wallet(request):
     else:
         return redirect('atm_functions:ConnectWallet')
 
-
+@login_required()
 def disconnect_wallet(request):
 
     coinbase_client = OAuthClient(
@@ -983,6 +334,7 @@ def disconnect_wallet(request):
 
     return redirect('atm_functions:ConnectWallet')
 
+@login_required()
 def transfer_money(request):
     if not request.user.is_authenticated:
         return redirect('authentication:Home')
@@ -991,6 +343,7 @@ def transfer_money(request):
     
     return render(request, 'transfer_selection.html', context)
 
+@login_required()
 def send_cryptoshare_wallet(request):
     if not request.user.is_authenticated:
         return redirect('authentication:Home')
@@ -1004,6 +357,7 @@ def send_cryptoshare_wallet(request):
     
     return render(request,'send_cryptoshare_wallet.html', context)
 
+@login_required()
 def send_coinbase_wallet(request):
 
     if not request.session['wallet_conn']:
@@ -1033,7 +387,7 @@ def send_coinbase_wallet(request):
 
     return render(request, 'send_money.html', context)
 
-
+@login_required()
 def send_money_confirmation(request):
     form_response = request.POST
 
@@ -1185,8 +539,7 @@ def send_money_confirmation(request):
     else:
         return redirect('atm_functions:TransferMoney')
 
-
-
+@login_required()
 def my_addresses(request):
     if not request.user.is_authenticated:
         return redirect('authentication:Home')
@@ -1199,8 +552,7 @@ def my_addresses(request):
             }
     return render(request, 'my_addresses.html', context)
 
-    pass
-
+@login_required()
 def my_transactions(request):
     if not request.user.is_authenticated:
         return redirect('authentication:Home')
@@ -1220,76 +572,7 @@ def my_transactions(request):
 
     return render(request, 'my_transactions.html', context)
 
-def register_address(request):
-    if not request.user.is_authenticated:
-        return redirect('authentication:Home')
-
-
-    currencies = Cryptocurrency.objects.all()
-    auth_confirmation = True
-
-    context = {'authConfirmation': auth_confirmation, 
-                'currencies': currencies
-                }
-
-    iframe = request.GET.get('iframe','')
-    if iframe:
-        context["iframe"] = True
-
-
-    if request.method == "GET":
-        return render(request, 'register_address.html', context)
-
-
-    if request.method == "POST":
-        form_response = request.POST
-        email_object = request.user
-        # email_object = Account.objects.get(user= email)
-
-        address = form_response["address"]
-        # address = form_response["address"].lower()
-
-        if address.isspace():
-            messages.info(request, "Invalid address. Please try again.")
-            return redirect('atm_functions:RegisterAddress')
-
-        currency_details = form_response["currency"].split("|")
-        currency_name = currency_details[0]
-        currency_blockchain = currency_details[1]
-        currency_network = currency_details[2]
-
-        if currency_blockchain == "ethereum":
-            address = address.lower()
-
-        cryptoapis_client = CryptoApis()
-        # print(f"Blockchain {currency_blockchain} , Network {currency_network} , Address {address}")
-        is_valid_address = cryptoapis_client.is_valid_address(currency_blockchain, currency_network, address)
-        if not is_valid_address:
-            messages.info(request, "Invalid address. Please try again.")
-            return redirect('atm_functions:RegisterAddress')
-
-        currency_object = Cryptocurrency.objects.get(currency_name=currency_name)
-
-        newAddress = Address(address=address, email=email_object, currency_name=currency_object)
-        newAddress.save()
-
-        #Check if there is already a balance with that currency name for that email
-        balance_exists = Balance.objects.filter(email=email_object, currency_name=currency_object)
-        if not balance_exists:
-            # print("Balance does not exist")
-            new_balance = Balance(email=email_object, currency_name=currency_object, amount = 0)
-            new_balance.save()
-
-
-        messages.info(request, "Address registered successfully.")
-
-
-        # addresses = Address.objects.all()
-        # print(addresses)
-        
-    #USDC, USDT, DAI, LITECOIN, BITCOIN, BITCOIN CASH, ETHEREUM, CARDANO
-    return render(request, 'register_address.html', context)
-
+@login_required()
 def generate_address(request):
     blockchain = request.GET.get('blockchain','')
     network = request.GET.get('network','')
@@ -1318,129 +601,6 @@ def generate_address(request):
     messages.info(request, "Address generated successfully.")
 
     return redirect('atm_functions:CryptoShareWallet')
-
-    # return HttpResponse(status=200)
-
-def card_dashboard(request):
-    if not request.user.is_authenticated:
-        return redirect('authentication:Home')
-
-    auth_confirmation = True
-    context = {"authConfirmation": auth_confirmation,
-                "start_auth": False,
-                "finish_auth": False,
-                "has_card": False,
-                "aptopayments_auth_info": {
-                                            "verification_id": "None"
-                }
-            }
-    
-    if "aptopayments_verification_id" in request.session:
-        context["aptopayments_auth_info"]["verification_id"] = request.session["aptopayments_verification_id"]
-    else:
-        if request.POST.get("start_auth",""):
-            country_code = request.POST["country_code"]
-            phone_number = request.POST["phone_number"]
-
-            aptopayments_client = AptoPayments()
-
-            verification = aptopayments_client.start_phone_verification_process(country_code, phone_number)
-            try:
-                if verification["status"] != "pending":
-                    messages.info(request, "Error starting verification process. Please try again.")
-                    return redirect('atm_functions:CardDashboard')
-            except:
-                messages.info(request, "Error starting verification process. Please try again.")
-                return redirect('atm_functions:CardDashboard')
-
-            context["start_auth"] = True
-            context["aptopayments_auth_info"]["verification_id"] = verification["verification_id"]        
-
-
-        elif request.POST.get("finish_auth",""):
-            code = request.POST["code"]
-            verification_id = request.POST["verification_id"]
-
-            aptopayments_client = AptoPayments()
-
-            complete_verification = aptopayments_client.complete_verification_process(code, verification_id)
-
-            try:
-                if complete_verification["status"] != "passed":
-                    messages.info(request, "Error finishing verification process. Please try again.")
-                    return redirect('atm_functions:CardDashboard')
-            except:
-                messages.info(request, "Error finishing verification process. Please try again.")
-                return redirect('atm_functions:CardDashboard')
-
-            print(complete_verification)
-
-            login_data = aptopayments_client.login_user(verification_id)
-            print(login_data)
-
-            request.session["aptopayments_verification_id"] = verification_id
-            context["aptopayments_auth_info"]["verification_id"] = verification_id
-
-
-    return render(request, 'card_dashboard.html', context)
-
-def aptopayments_create_user(request):
-    if not request.user.is_authenticated:
-        return redirect('authentication:Home')
-
-    context = {"authConfirmation": True}
-
-    iframe = request.GET.get('iframe','')
-    if iframe:
-        context["iframe"] = True
-        
-        verification_id = request.GET.get('verification_id','')
-        context["verification_id"] = verification_id
-
-    if request.method == "GET":
-
-        return render(request, 'aptopayments_create_user.html', context)
-    
-    if request.method == "POST":
-        verification_id = request.POST.get('verification_id','')
-
-        first_name = request.POST.get('first_name','')
-        last_name = request.POST.get('last_name','')
-        email = request.POST.get('email','')
-        country_code = request.POST.get('country_code','')
-        phone_number = request.POST.get('phone_number','')
-        birthday = request.POST.get('birthday','')
-        street_address = request.POST.get('street_one','')
-        street_address_2 = request.POST.get('street_two','')
-        city = request.POST.get('city','')
-        state = request.POST.get('state','')
-        postal_code = request.POST.get('postal_code','')
-        country = request.POST.get('country','')
-
-        aptopayments_client = AptoPayments()
-
-        print(verification_id, first_name, last_name, email, country_code, phone_number, birthday, street_address, street_address_2, city, state, postal_code, country)
-
-        try:
-            request_test = aptopayments_client.create_user(email, verification_id, country_code, phone_number, birthday, first_name, last_name, street_address, street_address_2, city, state, postal_code, country)
-        except:
-            print("ERROOOOOOOR")
-        
-        print(request_test)
-
-        html = """
-            <!DOCTYPE html>
-            <head>
-            <title>Form submitted</title>
-            <script type='text/javascript'>window.parent.location.href += "?test=Testing";</script>
-            <script type='text/javascript'>window.parent.location.reload();</script>
-            </head>
-            <body></body></html>
-            """
-        return HttpResponse(html)
-
-
-    return render(request, 'aptopayments_create_user.html', context)
 
 def get_credit_grade(request):
     user = Account.objects.get(user = request.user)

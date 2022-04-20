@@ -180,8 +180,11 @@ def login(request):
             request.session['wallet_conn'] = False
             request.session['access_token'] = None
             request.session['refresh_token'] = None
+            
+            next_url = request.GET.get('next', "atm_functions:Home")
 
-            return redirect('atm_functions:Home')
+            return redirect(next_url)
+
         else:
             messages.info(request, "Incorrect login information. Please try again.")
             return render(request, 'login.html')
