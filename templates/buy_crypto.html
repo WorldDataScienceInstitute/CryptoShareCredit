@@ -8,17 +8,13 @@
 <body>
     {% include 'atm_sidebar.html' %}
 
-    {% if authConfirmation %}
     {% include 'messages.html' %}
     <div class="content-container">
         <h2 class="ml-4">Buy Crypto</h2>
-
         <!-- <iframe id="screen_iframe" frameBorder="0" height=590px; width="100%auto" src="" style="margin: 0 auto; display:block; overflow: hidden;" scrolling="no"></iframe> -->
         <iframe id="screen_iframe" frameBorder="0" height=800pxauto; width="100%auto" src="{% url 'atm_functions:BuyCryptoWidget' %}"></iframe>
 
     </div>
-
-    {% endif %}
 
     <script type="text/javascript">
         function googleTranslateElementInit() {

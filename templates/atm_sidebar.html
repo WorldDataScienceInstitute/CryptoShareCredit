@@ -6,8 +6,10 @@
 <div class="sidebar-container">
     <div class="sidebar-logo"">
             <a href="{% url 'atm_functions:Home' %}"><img src="{% static '/images/logo.png' %}"></a>
+            {% if request.user.is_authenticated %}
             <h2 id="credit_grade"><b>CREDIT GRADE: </b></h2>
             <h6 style="text-align: center;"><a href="{% url 'atm_functions:BuyCredit' %}">(Improve Credit Grade)</a></h6>
+            {% endif %}
             <!-- <h2 id="title"><b>COINBASE</b></h2>
             {% if request.session.wallet_conn %}
             <h3 style="text-align: center;"> Wallet connected </h3>
@@ -68,12 +70,6 @@
             </a>
         </li>
 
-        <!-- <li style="border-style: none none solid none;border-color: white">
-            <a href="{% url 'atm_functions:Borrow' %}">
-                <i class="fa fa-users" aria-hidden="true"></i>BORROW<span style="color:green;">$</span>
-            </a>
-        </li> -->
-
         <li>
             <a href="{% url 'atm_functions:CheckCredit' %}">
                 <i class="fa fa-info-circle" aria-hidden="true"></i>CHECK CREDIT
@@ -97,19 +93,22 @@
                 <i class="fas fa-cogs" aria-hidden="true"></i>&nbsp;&nbsp;SETTINGS
             </a>
         </li>
-        
+        {% if request.user.is_authenticated %}
         <form action="{% url 'authentication:Logout' %}" method="POST">
             {% csrf_token %}
                 <button class="m-4 logout">Log out <i
                         class="fa fa-sign-out-alt"></i></button>
         </form>
+        {% endif %}
     </ul>
 </div>
 
     
 <script type="text/javascript">
     window.onload = function() {
-        GetCreditGrade();
+        if ({{ request.user.is_authenticated|yesno:"true,false" }}){
+            GetCreditGrade();
+        }
     }
     function getCookie(name) {
         var cookieValue = null;

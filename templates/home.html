@@ -54,12 +54,19 @@
             <br>
         </div>-->
     </div>
-    <div class="container my-4" style="padding:0px;">
+    <!-- <div class="container my-4" style="padding:0px;">
         <div class="row" style="margin:0px;">
             <video src="{% static '/images/how_cs_works.mp4' %}" id="demo"
             style="margin-left:auto;margin-right:auto;zoom:85%;max-width: 100vw;" autoplay loop muted playsinline>
         </div>
         <script> $( window ).load(function() { $('#demo' ).get(0).play();}); </script>
+    </div> -->
+    <h1 class="text-primary title" style="text-align: center; font-weight: 600;">Welcome to Cryptoshare Banq</h1>
+    <h1 class="text-primary title" style="text-align: center; font-weight: 600;">(A Peer to Peer Decentralized Financial System)</h1>
+    <div class="container my-4" style="padding:0px;">
+        <div class="row" style="margin:0px;">
+            <img style="margin-left:auto; margin-right:auto; max-width: 100vw;" src="{% static '/images/home_image.png' %}">
+        </div>
     </div>
     <div class="container my-4">
         <div class="row">
@@ -73,7 +80,7 @@
                 {% if name is None %}
                  <p style="font-size:14px;color:rgb(0, 0, 0);text-align:center;"><i class="fas fa-address-card" aria-hidden="true"></i> Connect your Cryptocurrency Wallet and use Crypto you Already Own<br> as Collateral to <b>Borrow or Lend</b> to other people.</p>
                 <a href="{% url 'authentication:Login' %}"><button type="button"
-                    class="btn btn-primary btn-lg btn-block">Borrow/Lend Crypto</button>
+                    class="btn btn-primary btn-lg btn-block">Create/Login Account</button>
                     <!--<p style="font-size:12px;">Connect your Cryptocurrency wallet and use Crypto you already own as collateral to borrow or lend to other people.</p> -->
                 </a>
                 <hr>
@@ -129,9 +136,7 @@
         </div>
     </div>
     
-    {% include 'widget_usercount.html' %}
-    <!--{% include 'info_card.html' %}-->
-    
+    {% include 'widget_usercount.html' %}    
     <!-- Code provided by Google -->
     
     <script type="text/javascript">

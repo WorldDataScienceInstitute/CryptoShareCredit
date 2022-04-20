@@ -7,13 +7,13 @@
 
 <body>
     {% include 'atm_sidebar.html' %}
-    <div class="content-container">
+    <div class="content-container" style="margin-top: 5%;">
         {% include 'messages.html' %}
         <div style="text-align:center" class="ml-4 mt-4" style="width:30%;min-width:400px;">
             <form action="/atm/SendMoneyConfirmation/?wallet=cryptoshare" method="post">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label for="sendingAccount">Sending Account</label>
+                <div class="form-group" style="margin-right: 5%;">
+                    <label for="sendingAccount"><b>Your Account/Buyer/Sender</b></label>
                     <select class="form-control" id="sendingAccount" aria-describedby="sendingAccount" name="sendingAccount">
                         <option disabled>Select Account</option >
                         {% for balance in balances %}
@@ -21,17 +21,17 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="sendingAmount">Amount to send</label>
+                <div class="form-group" style="margin-right: 5%;">
+                    <label for="sendingAmount"><b>Amount to send</b></label>
                     <input type="number" class="form-control" id="sendingAmount" aria-describedby="sendingAmount" name="sendingAmount"
                         step=".0001" placeholder="Amount you want to send">
                 </div>
-                <div class="form-group">
-                    <label for="recipientUser">Recipient Address</label>
+                <div class="form-group" style="margin-right: 5%;">
+                    <label for="recipientUser"><b>Recipient/Seller/Vendor</b></label>
                     <input type="text" class="form-control" id="recipientUser" aria-describedby="recipientUser" name="recipientUser"
                         placeholder="Please enter the recipient address">
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button style="margin-left:auto; margin-right:auto;" type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
     </div>
