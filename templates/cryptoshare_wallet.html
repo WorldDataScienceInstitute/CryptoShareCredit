@@ -80,6 +80,11 @@
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
     </script>
     
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
     
     <script type="text/javascript">
         function triggerHtmlEvent(element, eventName) {
@@ -108,14 +113,38 @@
             });
         });
     </script>
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/jquery.sticky.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
+
+    <script>
+        window.onload = function() {
+            $('#DepositWarning').modal('toggle');
+        }
+    </script>
+
+
 </body>
 {% include 'atm_footer.html' %}
 </html>
+
+<!-- Modal -->
+<div id="DepositWarning" class="modal" style="z-index: 2000;">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>DEPOSIT ACCEPTANCE FORM</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <br>
+            <p style="color: black;font-weight: 400;">This is a Message from CryptoShare.</p>
+            <br>
+            <b><p style="color: black;font-weight: 400;">We require 1% of each deposit of our members or your wallet will be revoked in 6 days. We use this money to keep maintain the platform.</p></b>
+            <small>*By closing this modal in any form you accept the retention of 1% from each deposit made to your Crypto$hare Wallet*</small>
+        </div>
+    </div>
+    
+</div>
 
 <!-- Modal -->
 <div id="ERC-20" class="modal" style="z-index: 2000;">
