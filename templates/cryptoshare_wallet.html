@@ -60,7 +60,7 @@
                         <tr>
                             <td style="text-align: center;">{{ address.symbol }} </td>
                             <td style="text-align: center;">{{ address.currency_name }} </td>
-                            <td style="text-align: center; width: auto;"><a href="/atm/GenerateAddress/?blockchain={{ address.blockchain }}&network=mainnet&currency={{ address.currency_name }}"><button type="button" class="btn btn-primary">Generate Deposit Address</button></a></td>
+                            <td style="text-align: center; width: auto;"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ address.blockchain }}&network=mainnet&currency={{ address.currency_name }}">Generate Deposit Address</a></td>
                         </tr>
                     {% endif %}
 
@@ -114,6 +114,7 @@
     <script src="{% static 'js/jquery.sticky.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
 </body>
+{% include 'atm_footer.html' %}
 </html>
 
 <!-- Modal -->

@@ -1,7 +1,6 @@
 {% load static %}
 {% static "images" as baseUrl %}
-<script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="a1dbfda1-7509-40e9-a372-ba0655662cba";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
-
+{% include 'crisp_client.html' %}
 <footer>
     <script src="https://widgets.coingecko.com/coingecko-coin-price-marquee-widget.js"></script>
     <coingecko-coin-price-marquee-widget  coin-ids="bitcoin,ethereum,litecoin,bitcoin-cash,ripple,stellar,algorand,tezos,cosmos"
