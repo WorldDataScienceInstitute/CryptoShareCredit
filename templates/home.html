@@ -61,8 +61,8 @@
         </div>
         <script> $( window ).load(function() { $('#demo' ).get(0).play();}); </script>
     </div> -->
-    <h1 class="text-primary title" style="text-align: center; font-weight: 600;">Welcome to Cryptoshare Banq</h1>
-    <h1 class="text-primary title" style="text-align: center; font-weight: 600;">(A Peer to Peer Decentralized Financial System)</h1>
+    <h1 class="" style="color: #0000FF; text-align: center; font-weight: 600;">Welcome to Cryptoshare BanQ</h1>
+    <h1 class="" style="color: #0000FF; text-align: center; font-weight: 600;">(A Peer to Peer Decentralized Financial System)</h1>
     <div class="container my-4" style="padding:0px;">
         <div class="row" style="margin:0px;">
             <img style="margin-left:auto; margin-right:auto; max-width: 100vw;" src="{% static '/images/home_image.png' %}">
@@ -110,7 +110,6 @@
                         <!--<p style="font-size:12px;">You have a once and a lifetime opportunity to Invest in Future Equity in Cryptoshare that one day can be listed on Stock Exchange.</p> -->
                     </button>
                 </a>
-                <hr>
                 <!--"https://pages.viral-loops.com/cryptoshare-getmoney"-->
                 <!-- <p style="font-size:14px;color:rgb(0, 0, 0);text-align:center;"><i class="far fa-money-bill-alt"></i> <b> Get Money </b>for every User that creates an account and uses your Referral Link<br> with this Crypto$hare Incentive Program.</p>
                 <a href="" target="_blank">
@@ -119,12 +118,6 @@
                     </button>
                 </a>
                 <hr> -->
-                <p style="font-size:14px;color:rgb(0, 0, 0);text-align:center;"><i class="fa fa-users" aria-hidden="true"></i> Initiative to <b>Fund Innovative Projects from People of Color Around<br> the World using Cryptocurrency</b> Donated from  Users.</p>
-                <a href="{% url 'authentication:GiveBack' %}">
-                    <button type="button" class="btn btn-primary btn-lg btn-block">
-                        Give Crypto
-                    </button>
-                </a>
                 {% if name is not None %}
                 <br>
                 <form action="{% url 'authentication:Logout' %}" method="POST">

@@ -147,10 +147,6 @@ def cryptoshare_wallet(request):
                                 }
                                 ]
     }
-    
-    iframe = request.GET.get('iframe','')
-    if iframe:
-        context["iframe"] = True
 
     currencies = Address.objects.filter(email=request.user).values("currency_name")
     currencies_addresses = Address.objects.filter(email=request.user)
@@ -158,11 +154,16 @@ def cryptoshare_wallet(request):
     currencies_dict = {}
     for currency in currencies_addresses:
         currencies_dict[currency.currency_name.currency_name] = currency.address
+        
     #Get all wallet addresses from Cryptocurrency table that match currency_name field in currencies variable
     addresses = Cryptocurrency.objects.filter(currency_name__in=currencies)
     context["addresses"] = addresses
 
     for address in addresses:
+        #Changing address blockchain for displaying in frontend
+        if address.blockchain == "xrp":
+            address.blockchain = "ripple"
+
         if address.currency_name == "Litecoin":
             address.wallet_address = currencies_dict["Litecoin"]
             context["address_confirmations"][0]["has_address"] = True
