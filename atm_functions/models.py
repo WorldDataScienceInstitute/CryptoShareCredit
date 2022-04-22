@@ -13,8 +13,8 @@ class Account(models.Model):
     # phone number used for verification
     email = models.CharField(max_length=40, null=True)
     credit_grade = models.CharField(max_length=4, default="FFF")
-    # country = models.CharField(max_length=57, null=True)
-    # birthday = models.DateField(null=True)
+    country = models.CharField(max_length=57, null=True)
+    birthdate = models.DateField(null=True)
 
 class History(models.Model):
     EmailId = models.OneToOneField(to=User, on_delete=models.CASCADE, primary_key=True)

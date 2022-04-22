@@ -59,11 +59,18 @@ def email(request):
             email = request.POST.get('email').lower()
             first_name = request.POST.get('fname')
             last_name = request.POST.get('lname')
+            country = request.POST.get('country')
+            birthdate = request.POST.get('birthdate')
+
+            if country is None:
+                messages.info(request, "Please select a country")
+                return render(request, 'email.html', context)
+                
             user = User.objects.create_user(
                 email=email, username=email, password=pin,
                 first_name=first_name, last_name=last_name
                 )
-            Account.objects.create(user=user, email=email)
+            Account.objects.create(user=user, email=email, country=country, birthdate=birthdate)
             code_creation_email(to_addr=email, pin=pin)
             messages.success(request, mark_safe(
                 f"""A confirmation email has been sent to you from {settings.DEFAULT_FROM_EMAIL}.<br>
