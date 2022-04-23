@@ -31,7 +31,8 @@ import json
 
 def home(request):
     if not request.user.is_authenticated:
-        return render(request, "buy_blockchain_credit_lines.html")
+        return render(request, 'atm_login.html')
+        # return render(request, "buy_blockchain_credit_lines.html")
 
     context = {}
     return redirect('atm_functions:CheckCredit')

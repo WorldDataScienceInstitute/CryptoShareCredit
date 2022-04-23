@@ -194,8 +194,8 @@ def login(request):
 
         else:
             messages.info(request, "Incorrect login information. Please try again.")
-            return render(request, 'login.html')
-    return render(request, 'login.html')
+            return redirect('atm_functions:Home')
+    return redirect('atm_functions:Home')
 
 
 def logout(request):
