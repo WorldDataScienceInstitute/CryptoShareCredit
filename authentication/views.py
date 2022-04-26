@@ -53,7 +53,7 @@ def email(request):
     if request.method == 'POST':
         if User.objects.filter(email=request.POST.get('email').lower()).exists():
             messages.info(request, "An account with this email already exists.")
-            return render(request, 'email.html', context)
+            return render(request, 'atm_register.html', context)
         else:
             pin = request.POST.get('pin')
             email = request.POST.get('email').lower()
@@ -64,7 +64,7 @@ def email(request):
 
             if country is None:
                 messages.info(request, "Please select a country")
-                return render(request, 'email.html', context)
+                return render(request, 'atm_register.html', context)
                 
             user = User.objects.create_user(
                 email=email, username=email, password=pin,
@@ -76,9 +76,11 @@ def email(request):
                 f"""A confirmation email has been sent to you from {settings.DEFAULT_FROM_EMAIL}.<br>
                 If you do not receive it within a few minutes, check your spam/junk folder.""")
                 )
-            return redirect('authentication:Home')
+            # return redirect('authentication:Home')
+            return redirect('atm_functions:Home')
     else:
-        return render(request, 'email.html', context)
+        # return render(request, 'email.html', context)
+        return render(request, 'atm_register.html', context)
 
 
 def reset_password(request):
