@@ -212,7 +212,10 @@ def buy_crypto_widget(request):
     erc20_objects = Cryptocurrency.objects.filter(blockchain="ethereum")
 
     API_KEY = os.environ['ONRAMPER_PRODUCTION_KEY']
-    available_cryptos = []
+    if addresses_objects.count() != 0:
+        available_cryptos = []
+    else:
+        available_cryptos = ["BTC", "LTC", "BCH", "DASH", "XRP", "ZEC", "DOGE", "ETH", "USDC", "USDT", "WBTC"]
 
     addresses = {
                 "BTC": "",
