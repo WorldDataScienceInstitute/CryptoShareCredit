@@ -9,6 +9,38 @@
     {% if name is not None %}
     {% include 'a_sessiontimeout.html' %}
     {% endif %}
+
+    <style>
+        #circuitsVideo {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            z-index: -100;
+            opacity: 0.35;
+        }
+
+            /* Add some content at the bottom of the video/page */
+        .content {
+            position: fixed;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            color: #f1f1f1;
+            width: 100%;
+            padding: 20px;
+        }
+
+
+    </style>
+
+    <video autoplay muted loop id="circuitsVideo">
+        <source src="{% static '/videos/home_video.mp4' %}" type="video/mp4">
+    </video>
+
+    <div class="content" id="#circuitsVideo">
+
+    </div>
     <div class="container my-4">
         {% include 'messages.html' %}
     </div>
