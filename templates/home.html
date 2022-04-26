@@ -9,6 +9,11 @@
     {% if name is not None %}
     {% include 'a_sessiontimeout.html' %}
     {% endif %}
+    <video autoplay muted loop id="circuitsVideo">
+        <source src="{% static '/videos/home_video.mp4' %}" type="video/mp4">
+    </video>
+
+    </div>
     <div class="container my-4">
         {% include 'messages.html' %}
     </div>
@@ -129,5 +134,16 @@
     <script src="{% static 'js/main.js' %}"></script>
     {% include 'footer.html' %}
 </body>
+<style>
+    #circuitsVideo {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        min-width: 100%;
+        min-height: 100%;
+        z-index: -100;
+        opacity: 0.35;
+    }
+</style>
 </html>
 
