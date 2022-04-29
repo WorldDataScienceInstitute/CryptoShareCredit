@@ -1,0 +1,210 @@
+{% load static %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+
+<body>
+    {% include 'atm_sidebar.html' %}
+    <div class="content-container">
+        <h2 class="ml-4 text-primary">Swap Crypto</h2>
+        <br>
+        {% include 'messages.html' %}
+        {% include 'a_sessiontimeout.html' %}
+        {% if step == 1 %}
+        <div style="text-align:center" class="ml-4 mt-4" style="width:30%;min-width:400px;">
+            <form action="{% url 'atm_functions:SwapCrypto' %}?step=2" method="post">
+                {% csrf_token %}
+                <div class="form-group" style="margin-right: 5%;">
+                    <label for="receiveCrypto"><b>Select the crypto you have</b></label>
+                    <select class="form-control" id="receiveCrypto" aria-describedby="receiveCrypto" name="receiveCrypto" required>
+                        <option disabled selected>Select Account</option >
+                        {% for crypto in receivable_cryptos %}
+                        <option value="{{ crypto.id }}|{{ crypto.name }}">{{ crypto.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-right: 5%;">
+                    <label for="exchangingAmount"><b>Amount to exchange in your selected crypto</b></label>
+                    <input type="number" class="form-control" id="exchangingAmount" aria-describedby="exchangingAmount" name="exchangingAmount"
+                        step=".0001" placeholder="Amount you want to exchange" required>
+                </div>
+
+                <div class="form-group" style="margin-right: 5%;">
+                    <label for="depositCrypto"><b>Select the crypto you want to swap to</b></label>
+                    <select class="form-control" id="depositCrypto" aria-describedby="depositCrypto" name="depositCrypto" required>
+                        <option disabled selected>Select Account</option >
+                        {% for crypto in depositable_cryptos %}
+                        <option value="{{ crypto.id }}|{{ crypto.name }}">{{ crypto.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button style="margin-left:auto; margin-right:auto;" type="submit" class="btn btn-primary">Calculate rate</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if step == 2 %}
+        <div style="text-align:center" class="ml-4 mt-4" style="width:30%;min-width:400px;">
+            <form action="{% url 'atm_functions:SwapCrypto' %}?step=3" method="post">
+                {% csrf_token %}
+                <div class="form-group" style="margin-right: 5%;">
+                    <label for="receiveCrypto"><b>Select the crypto you have</b></label>
+                    <select class="form-control" id="receiveCrypto" aria-describedby="receiveCrypto" name="receiveCrypto" readonly required>
+                        <option value="{{ receiveCrypto.id }}" readonly>{{ receiveCrypto.name }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-right: 5%;">
+                    <label for="exchangingAmount"><b>Amount to exchange in your selected crypto</b></label>
+                    <input type="number" class="form-control" id="exchangingAmount" aria-describedby="exchangingAmount" name="exchangingAmount"
+                        step=".0001" placeholder="Amount you want to exchange" value="{{ exchangingAmount }}" readonly required>
+                </div>
+
+                <div class="form-group" style="margin-right: 5%;">
+                    <label for="depositCrypto"><b>Select the crypto you want to swap to</b></label>
+                    <select class="form-control" id="depositCrypto" aria-describedby="depositCrypto" name="depositCrypto" readonly required>
+                        <option value="{{ depositCrypto.id }}" readonly>{{ depositCrypto.name }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-right: 5%;">
+                    <label for="destinationAddress"><b>Enter the address where you want to receive funds</b></label>
+                    <input type="text" class="form-control" id="destinationAddress" aria-describedby="destinationAddress" name="destinationAddress"
+                        placeholder="Address where you are going to receive the funds" required>
+                </div>
+
+                <div class="form-group" style="margin-right: 5%;">
+                    <label for="refundAddress"><b>Enter the refund address in case something goes wrong </b></label>
+                    <input type="text" class="form-control" id="refundAddress" aria-describedby="refundAddress" name="refundAddress"
+                        placeholder="Address where you are going to receive the refunded funds" required>
+                </div>
+
+                <div style="text-align:center" class="ml-4 mt-4" style="width:30%;min-width:400px;">
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col" style="text-align: center;">DEPOSIT AMOUNT</th>
+                            <th scope="col" style="text-align: center;">FINAL AMOUNT</th>
+                            <th scope="col" style="text-align: center;">MINIMUM DEPOSIT</th>
+                            <th scope="col" style="text-align: center;">MAXIMUM DEPOSIT</th>
+                            <th scope="col" style="text-align: center;">NETWORK FEE</th>
+                            <th scope="col" style="text-align: center;">NETWORK FEE INCLUDED</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+            
+                            <tr>
+                                <td style="text-align: center;">{{ rate_result.depositAmount|floatformat:"5" }}</td>
+                                <td style="text-align: center;">{{ rate_result.finalAmount|floatformat:"5" }}</td>
+                                <td style="text-align: center;">{{ rate_result.minimumDeposit|floatformat:"5" }}</td>
+                                <td style="text-align: center;">{{ rate_result.maximumDeposit|floatformat:"5" }}</td>
+                                <td style="text-align: center;">{{ rate_result.receive_network_fee|floatformat:"5" }}</td>
+                                <td style="text-align: center;">{{ rate_result.receive_network_fee_included }}</td>
+                            </tr>
+            
+
+                            <tr>
+                                <td style="text-align: center; color: rgb(143, 143, 143);">Amount to deposit.</td>
+                                <td style="text-align: center; color: rgb(143, 143, 143);">Final receiving amount in swapped crypto.</td>
+                                <td style="text-align: center; color: rgb(143, 143, 143);">Minimum deposit to make.</td>
+                                <td style="text-align: center; color: rgb(143, 143, 143);">Maximum deposit to make.</td>
+                                <td style="text-align: center; color: rgb(143, 143, 143);">The network fee to pay</td>
+                                <td style="text-align: center; color: rgb(143, 143, 143);">Is the network fee included in the final amount?</td>
+                                <td style="text-align: center; color: rgb(143, 143, 143);"></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                <button style="margin-left:auto; margin-right:auto;" type="submit" class="btn btn-primary">Accept Swap</button>
+            </form>
+        </div>
+
+        {% endif %}
+    </div>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+
+    <!-- <script>
+        window.onload = function() {
+            $('#DepositWarning').modal('toggle');
+            if ({{ request.user.is_authenticated|yesno:"true,false" }}){
+                GetCreditGrade();
+            }
+        }
+    </script> -->
+
+
+</body>
+
+<style>
+    .swap-crypto{
+        background-color:blue; 
+        padding-bottom: 20px; 
+        border-radius: 15px; 
+        border: 2px solid;
+        border-color: gray;
+    }
+
+    .single-crypto-box{
+        padding-left: 20px;
+        padding-right: 20px;
+        border: 2px solid;
+        border-color: gray;
+    }
+
+    .col-lg-2,
+    .col-md-3,
+    .col-xs-6 {
+        margin-top: 30px !important;
+    }
+</style>
+{% include 'atm_footer.html' %}
+
+</html>
