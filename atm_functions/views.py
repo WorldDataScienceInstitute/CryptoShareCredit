@@ -780,20 +780,23 @@ def update_exchange_rates(request):
                         "BTC": "bitcoin",
                         "XRP": "ripple",
                         "DOGE": "dogecoin",
+                        "BAT": "basic-attention-token",
+                        "LINK": "chainlink",
+                        "SHIB": "shiba-inu",
+                        "MKR": "maker",
+                        "XAUT": "tether-gold",
                         }
 
-    # ids = []
+    ids = []
 
-    # for option in querystring_options.values():
-    #     ids.append(option)
+    for option in querystring_options.values():
+        ids.append(option)
 
-    # url = f"https://api.coingecko.com/api/v3/simple/price?ids={','.join(ids)}&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
-
-    ids = 'ethereum,litecoin,bitcoin-cash,dash,zcash,usd-coin,tether,bitcoin,bitcoin,ripple,dogecoin'
-    url = f"https://api.coingecko.com/api/v3/simple/price?ids={ids}&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+    url = f"https://api.coingecko.com/api/v3/simple/price?ids={','.join(ids)}&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+    # ids = 'ethereum,litecoin,bitcoin-cash,dash,zcash,usd-coin,tether,bitcoin,bitcoin,ripple,dogecoin'
+    # url = f"https://api.coingecko.com/api/v3/simple/price?ids={ids}&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
 
     response = requests.get(url).json()
-
 
     for currency in currencies:
         if currency.symbol == "TEST" or currency.currency_name == "ethereum_ropsten":
