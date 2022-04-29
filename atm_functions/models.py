@@ -41,8 +41,7 @@ class Balance(models.Model):
     email = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=15, decimal_places=8)
 
-# type is one of 'deposit' or 'withdrawal'
-# state is one of 'approved', 'in progress', or 'canceled'
+#Transaction for Deposits and Withdrawals
 class TransactionA(models.Model):
     id_a = models.AutoField(primary_key=True)
     transaction_id = models.CharField(max_length=255, unique=True)
@@ -55,6 +54,7 @@ class TransactionA(models.Model):
     amount = models.DecimalField(max_digits=15, decimal_places=8)
     creation_datetime = models.DateTimeField(auto_now_add=True)
 
+#Transaction for lending and borrowing
 class TransactionB(models.Model):
     id_b = models.AutoField(primary_key=True)
     transaction_id = models.CharField(max_length=255, unique=True)
@@ -72,3 +72,16 @@ class TransactionB(models.Model):
     creation_datetime = models.DateTimeField(auto_now_add=True)
     start_datetime = models.DateTimeField(null=True)
     end_datetime = models.DateTimeField(null=True)
+
+#Transaction for swapping
+class TransactionC(models.Model):
+    id_c = models.AutoField(primary_key=True)
+    transaction_id = models.CharField(max_length=38, unique=True)
+    email = models.ForeignKey(User, on_delete=models.CASCADE)
+    crypto_id_from = models.CharField(max_length=10)
+    crypto_id_swap_to = models.CharField(max_length=10)
+    address_destination = models.CharField(max_length=100)
+    address_refund = models.CharField(max_length=100)
+    amount = models.DecimalField(max_digits=15, decimal_places=8)
+    network_fee = models.DecimalField(max_digits=15, decimal_places=8)
+    amount_estimated_return = models.DecimalField(max_digits=15, decimal_places=8)
