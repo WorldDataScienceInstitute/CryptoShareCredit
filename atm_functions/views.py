@@ -32,10 +32,12 @@ import json
 
 def home(request):
     if not request.user.is_authenticated:
-        return render(request, 'atm_login.html')
+        next_url = request.GET.get('next', "atm_functions:Home")
+        context = { "next_url": next_url }
+        return render(request, 'atm_login.html', context)
         # return render(request, "buy_blockchain_credit_lines.html")
 
-    context = {}
+
     return redirect('atm_functions:CheckCredit')
 
 
