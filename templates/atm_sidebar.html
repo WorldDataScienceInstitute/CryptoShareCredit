@@ -126,9 +126,9 @@
 <script type="text/javascript">
     window.onload = function() {
         // console.log(localStorage.hideAlert);
-        if (!localStorage.hideAlert) {
-            $('#DepositWarning').modal('toggle');
-        }
+        // if (!localStorage.hideAlert) {
+        //     $('#DepositWarning').modal('toggle');
+        // }
         if ({{ request.user.is_authenticated|yesno:"true,false" }}){
             GetCreditGrade();
         }
