@@ -208,6 +208,7 @@ def buy_crypto(request):
 
     return render(request, 'buy_crypto.html', context)
 
+@login_required()
 def buy_crypto_widget(request):
     addresses_objects = Address.objects.filter(email=request.user)
     erc20_objects = Cryptocurrency.objects.filter(blockchain="ethereum")
@@ -251,6 +252,7 @@ def buy_crypto_widget(request):
 
     return render(request, 'buy_crypto_widget.html', context)
 
+@login_required()
 def crypto_news(request):
     url = "https://crypto-pulse.p.rapidapi.com/news"
 
@@ -267,134 +269,137 @@ def crypto_news(request):
 
     return render(request, 'crypto_news.html', context)
 
+@login_required()
 def swap_crypto(request):
 
-    process_step = request.GET.get('step','1')
-    # print(process_step)
+    return render(request, 'swap_crypto.html')
 
-    if process_step == '1':
-        url = "https://www.coinzark.com/api/v2/swap/currencies"
-        response = requests.get(url).json()
+    # process_step = request.GET.get('step','1')
+    # # print(process_step)
 
-        if response["success"] == "false":
-            messages.info(request, "Something went wrong, please try again later.")
-            return redirect('atm_functions:Home')
+    # if process_step == '1':
+    #     url = "https://www.coinzark.com/api/v2/swap/currencies"
+    #     response = requests.get(url).json()
 
-        context = {
-                "step": 1,
-                }
+    #     if response["success"] == "false":
+    #         messages.info(request, "Something went wrong, please try again later.")
+    #         return redirect('atm_functions:Home')
+
+    #     context = {
+    #             "step": 1,
+    #             }
         
-        result = response["result"]
+    #     result = response["result"]
 
-        receivable_cryptos = []
-        depositable_cryptos = []
+    #     receivable_cryptos = []
+    #     depositable_cryptos = []
 
-        for crypto in result:
-            # print(crypto["id"], crypto["canDeposit"], crypto["canReceive"])
-            if crypto["canDeposit"]:
-                depositable_cryptos.append(crypto)
-            if crypto["canReceive"]:
-                receivable_cryptos.append(crypto)
+    #     for crypto in result:
+    #         # print(crypto["id"], crypto["canDeposit"], crypto["canReceive"])
+    #         if crypto["canDeposit"]:
+    #             depositable_cryptos.append(crypto)
+    #         if crypto["canReceive"]:
+    #             receivable_cryptos.append(crypto)
         
-        context["receivable_cryptos"] = receivable_cryptos
-        context["depositable_cryptos"] = depositable_cryptos
+    #     context["receivable_cryptos"] = receivable_cryptos
+    #     context["depositable_cryptos"] = depositable_cryptos
 
-        return render(request, 'swap_crypto.html', context)
+    #     return render(request, 'swap_crypto.html', context)
 
-    if process_step == "2" or process_step == "3":
-        receive_crypto = request.POST.get('receiveCrypto','').split("|")
-        deposit_crypto = request.POST.get('depositCrypto','').split("|")
-        exchangingAmount = request.POST.get('exchangingAmount','')
+    # if process_step == "2" or process_step == "3":
+    #     receive_crypto = request.POST.get('receiveCrypto','').split("|")
+    #     deposit_crypto = request.POST.get('depositCrypto','').split("|")
+    #     exchangingAmount = request.POST.get('exchangingAmount','')
 
-        if not receive_crypto or not deposit_crypto or not exchangingAmount:
-            messages.info(request, "Please fill all fields before proceeding.")
-            return redirect('atm_functions:Home')
+    #     if not receive_crypto or not deposit_crypto or not exchangingAmount:
+    #         messages.info(request, "Please fill all fields before proceeding.")
+    #         return redirect('atm_functions:Home')
 
-    if process_step == "2":
-        context = {
-                "step": 2,
-                }
+    # if process_step == "2":
+    #     context = {
+    #             "step": 2,
+    #             }
 
-        url = f"https://www.coinzark.com/api/v2/swap/rate?from={receive_crypto[0]}&to={deposit_crypto[0]}&amount={exchangingAmount}"
-        response = requests.get(url).json()
+    #     url = f"https://www.coinzark.com/api/v2/swap/rate?from={receive_crypto[0]}&to={deposit_crypto[0]}&amount={exchangingAmount}"
+    #     response = requests.get(url).json()
 
-        if response["success"] == "false":
-            messages.info(request, "Something went wrong, please try again later.")
-            return redirect('atm_functions:Home')
-        result = response["result"]
+    #     if response["success"] == "false":
+    #         messages.info(request, "Something went wrong, please try again later.")
+    #         return redirect('atm_functions:Home')
+    #     result = response["result"]
 
-        context["receiveCrypto"] = {
-                                    "id": receive_crypto[0],
-                                    "name": receive_crypto[1]
-                                    }
+    #     context["receiveCrypto"] = {
+    #                                 "id": receive_crypto[0],
+    #                                 "name": receive_crypto[1]
+    #                                 }
 
-        context["depositCrypto"] = {
-                                    "id": deposit_crypto[0],
-                                    "name": deposit_crypto[1]
-                                    }
+    #     context["depositCrypto"] = {
+    #                                 "id": deposit_crypto[0],
+    #                                 "name": deposit_crypto[1]
+    #                                 }
 
-        context["exchangingAmount"] = exchangingAmount
-        context["rate_result"] = result
+    #     context["exchangingAmount"] = exchangingAmount
+    #     context["rate_result"] = result
 
-        return render(request, 'swap_crypto.html', context)
+    #     return render(request, 'swap_crypto.html', context)
     
-    elif process_step == "3":
-        context = {
-                "step": 3,
-                }
+    # elif process_step == "3":
+    #     context = {
+    #             "step": 3,
+    #             }
 
-        address_destination = request.POST.get('destinationAddress','')
-        address_refund = request.POST.get('refundAddress','')
+    #     address_destination = request.POST.get('destinationAddress','')
+    #     address_refund = request.POST.get('refundAddress','')
 
-        url = f"https://www.coinzark.com/api/v2/swap/rate?from={receive_crypto[0]}&to={deposit_crypto[0]}&amount={exchangingAmount}"
-        response = requests.get(url).json()
+    #     url = f"https://www.coinzark.com/api/v2/swap/rate?from={receive_crypto[0]}&to={deposit_crypto[0]}&amount={exchangingAmount}"
+    #     response = requests.get(url).json()
 
-        if response["success"] == "false":
-            messages.info(request, "Something went wrong, please try again later.")
-            return redirect('atm_functions:Home')
+    #     if response["success"] == "false":
+    #         messages.info(request, "Something went wrong, please try again later.")
+    #         return redirect('atm_functions:Home')
 
-        url = f"https://www.coinzark.com/api/v2/swap/create"
+    #     url = f"https://www.coinzark.com/api/v2/swap/create"
 
-        data = {
-                "from": receive_crypto[0],
-                "to": deposit_crypto[0],
-                "amount": exchangingAmount,
-                "destination": address_destination,
-                "refund": address_refund
-            }
+    #     data = {
+    #             "from": receive_crypto[0],
+    #             "to": deposit_crypto[0],
+    #             "amount": exchangingAmount,
+    #             "destination": address_destination,
+    #             "refund": address_refund
+    #         }
 
-            # data = {
-            #     "from": "BTC",
-            #     "to": "LTC",
-            #     "amount": 0.0001,
-            #     "destination": "Ldg8nAfsUR7DTJ4DHXVhEviwrsDf3H8Viu",
-            #     "refund": "bc1qmsqmdcslcfvhs7j4ftkxpyng25umfuwmyyy2u6"
-            # }
-        print(data)
+    #         # data = {
+    #         #     "from": "BTC",
+    #         #     "to": "LTC",
+    #         #     "amount": 0.0001,
+    #         #     "destination": "Ldg8nAfsUR7DTJ4DHXVhEviwrsDf3H8Viu",
+    #         #     "refund": "bc1qmsqmdcslcfvhs7j4ftkxpyng25umfuwmyyy2u6"
+    #         # }
+    #     print(data)
 
-        response2 = requests.post(url, json=data).json()
-        if response2["success"] == "false":
-            messages.info(request, "Something went wrong, please try again later.")
-            return redirect('atm_functions:Home')
+    #     response2 = requests.post(url, json=data).json()
+    #     if response2["success"] == "false":
+    #         messages.info(request, "Something went wrong, please try again later.")
+    #         return redirect('atm_functions:Home')
 
-        transaction_id = response2["result"]["uuid"]
+    #     transaction_id = response2["result"]["uuid"]
 
-        transaction_swap = TransactionC(
-                                        transaction_id = transaction_id, 
-                                        email = request.user, 
-                                        crypto_id_from = receive_crypto[0], 
-                                        crypto_id_to = deposit_crypto[0], 
-                                        address_destination = address_destination, 
-                                        address_refund = address_refund, 
-                                        amount = exchangingAmount,
-                                        network_fee = response["result"]["receive_network_fee"],
-                                        amount_estimated_return = response["result"]["receive_network_fee_included"]
-                                        )
-        transaction_swap.save()
+    #     transaction_swap = TransactionC(
+    #                                     transaction_id = transaction_id, 
+    #                                     email = request.user, 
+    #                                     crypto_id_from = receive_crypto[0], 
+    #                                     crypto_id_to = deposit_crypto[0], 
+    #                                     address_destination = address_destination, 
+    #                                     address_refund = address_refund, 
+    #                                     amount = exchangingAmount,
+    #                                     network_fee = response["result"]["receive_network_fee"],
+    #                                     amount_estimated_return = response["result"]["receive_network_fee_included"]
+    #                                     )
+    #     transaction_swap.save()
 
-        print(receive_crypto[0], deposit_crypto[0], exchangingAmount)
+    #     print(receive_crypto[0], deposit_crypto[0], exchangingAmount)
 
-        return redirect('atm_functions:MyTransactions')
+    #     return redirect('atm_functions:MyTransactions')
 
 @login_required()
 def buy_credit(request):
