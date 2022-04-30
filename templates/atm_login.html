@@ -20,7 +20,7 @@
             <h2 class="text-primary" style="color: cornflowerblue!important;">Login Here</h2>
             <h4 style="text-align:center ;">Don't Have an Account? <a href="{% url 'authentication:Email' %}">Create one!</a></h4>
             {% include 'messages.html' %}
-            <form method="POST" action="{% url 'authentication:Login' %}">
+            <form method="POST" action="{% url 'authentication:Login' %}?next={{ next_url }}">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="exampleInputEmail1">Email:</label>
