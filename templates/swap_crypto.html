@@ -4,6 +4,11 @@
 <!doctype html>
 <html lang="en">
 {% include 'header.html' %}
+<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery.sticky.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
 
 <body>
     {% include 'atm_sidebar.html' %}
@@ -12,10 +17,54 @@
         <br>
         {% include 'messages.html' %}
         {% include 'a_sessiontimeout.html' %}
+        <div style="text-align:center" class="ml-4 mt-4" style="width:30%;min-width:400px;">
+            <form action="{% url 'atm_functions:SwapCrypto' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="sendCrypto">The crypto you have</label>
+                    <input type="text" class="form-control" id="sendCrypto" aria-describedby="sendCrypto" name="sendCrypto"
+                        placeholder="You send" list="sendOptions" autocomplete="no" onchange="simpleSwapClient.changeGetOptions(this.value);" onfocus="this.value=''; document.getElementById('getCrypto').value='';">
+                    <datalist id="sendOptions">
+                        <option value="BTC">Bitcoin</option>
+                        <option value="ETH">Ethereum</option>
+                        <option value="LTC">Litecoin</option>
+                        <option value="BCH">Bitcoin Cash</option>
+                        <option value="ZEC">Zcash</option>
+                        <option value="XRP">XRP</option>
+                        <option value="DASH">Dash</option>
+                        <option value="DOGE">Dogecoin</option>
+                        <option value="LINK">Chainlink (ERC-20)</option>
+                        <option value="SHIB">SHIBA INU (ERC-20)</option>
+                        <option value="BAT">Basic Attention Token (ERC-20)</option>
+                        <option value="USDC">USD Coin (ERC-20)</option>
+                        <option value="USDTERC20">Tether (ERC-20)</option>
+                        <option value="WBTC">Wrapped Bitcoin (ERC-20)</option>
+                        <option value="MKR">Maker (ERC-20)</option>
+                    </datalist> 
+                </div>
+                <div class="form-group">
+                    <label for="getCrypto">The crypto you want</label>
+                    <input type="text" class="form-control" id="getCrypto" aria-describedby="getCrypto" name="getCrypto"
+                        placeholder="You send" list="getOptions" autocomplete="no" onfocus="this.value='';">
+                    <datalist id="getOptions">
+                    </datalist> 
+                </div>
+                <div class="form-group">
+                    <label for="sendingAmount">Amount to send</label>
+                    <input type="number" class="form-control" id="sendingAmount" aria-describedby="sendingAmount" name="sendingAmount"
+                        placeholder="Amount you want to send">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
         <div class="content-container" style="margin: 0 auto; ">
             <div class="container">
                 <iframe id="simpleswap-frame" style="display: block; border-style:none;" name="SimpleSwap Widget" width="528px" height="392px" src="https://simpleswap.io/widget/3b210683-5009-4e90-bcaa-fb6a844d6128" frameborder="0"></iframe>
             </div>
+        </div>
+
+        <div>
+            <button type="button" onclick="simpleSwapClient.getExchangePairsForCurrency('BTC');"></button>
         </div>
     </div>
 
@@ -30,11 +79,8 @@
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
     </script>
 
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/jquery.sticky.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/simpleswap_client.js' %}"></script>
+
 
     <script type="text/javascript">
         function triggerHtmlEvent(element, eventName) {
@@ -62,6 +108,34 @@
                 }
             });
         });
+
+
+        // class SimpleSwapClient {
+        //     constructor(){
+        //         this.url = "{% url 'atm_functions:SimpleSwapAPI' %}";
+        //         this.csrfmiddlewaretoken = getCookie('csrftoken')
+        //     }
+
+        //     getExchangePairsForCurrency(symbol){
+        //         var endpoint = "?type=CURRENCY_EXCHANGE_PAIRS";
+        //         var data = {
+        //             csrfmiddlewaretoken: getCookie('csrftoken'),
+        //             symbol: symbol
+
+        //         };
+        //         $.ajax({
+        //             type: "POST",
+        //             url: this.url + endpoint,
+        //             data: data,
+        //             success: function(response){
+        //                 console.log(response);
+        //             },
+        //             error: function(response){
+        //                 console.log(response);
+        //             }
+        //         });
+        //     }
+        // }
     </script>
 
     <!-- <script>
