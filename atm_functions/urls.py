@@ -25,6 +25,10 @@ urlpatterns = [
      path("SendMoneyConfirmation/", views.send_money_confirmation, name="SendMoneyConfirmation"),
      path("TransferMoney/", views.transfer_money, name="TransferMoney"),
 
+     #API ENDPOINTS
+     path("SimpleSwapAPI/", views.simpleswap_api, name="SimpleSwapAPI"),
+
+
      #WEBHOOKS
      path("ConfirmationsCoinTransactions/", views.confirmations_coin_transactions, name="ConfirmationsCryptoTransactions"),
      path("ConfirmedCoinTransactions/", views.confirmed_coin_transactions, name="ConfirmedCoinTransactions"),

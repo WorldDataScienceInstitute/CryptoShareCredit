@@ -4,6 +4,11 @@
 <!doctype html>
 <html lang="en">
 {% include 'header.html' %}
+<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery.sticky.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
 
 <body>
     {% include 'atm_sidebar.html' %}
@@ -12,11 +17,119 @@
         <br>
         {% include 'messages.html' %}
         {% include 'a_sessiontimeout.html' %}
-        <div class="content-container" style="margin: 0 auto; ">
+        <div style="text-align:center" class="ml-4 mt-4" style="width:30%;min-width:400px;">
+            <form action="{% url 'atm_functions:SwapCrypto' %}" method="post">
+                {% csrf_token %}
+                <div class="content step">
+                    <div class="form-group">
+                        <label for="sendCrypto">The crypto you have</label>
+                        <input type="text" class="form-control" id="sendCrypto" aria-describedby="sendCrypto" name="sendCrypto"
+                            placeholder="You send" list="sendOptions" autocomplete="no" 
+                            onchange="simpleSwapClient.changeGetOptions(this.value); " 
+                            onfocus="sendCryptoFocus();" 
+                            required>
+                        <datalist id="sendOptions">
+                            <option value="BTC">Bitcoin</option>
+                            <option value="ETH">Ethereum</option>
+                            <option value="LTC">Litecoin</option>
+                            <option value="BCH">Bitcoin Cash</option>
+                            <option value="ZEC">Zcash</option>
+                            <option value="XRP">XRP</option>
+                            <option value="DASH">Dash</option>
+                            <option value="DOGE">Dogecoin</option>
+                            <option value="LINK">Chainlink (ERC-20)</option>
+                            <option value="SHIB">SHIBA INU (ERC-20)</option>
+                            <option value="BAT">Basic Attention Token (ERC-20)</option>
+                            <option value="USDC">USD Coin (ERC-20)</option>
+                            <option value="USDTERC20">Tether (ERC-20)</option>
+                            <option value="WBTC">Wrapped Bitcoin (ERC-20)</option>
+                            <option value="MKR">Maker (ERC-20)</option>
+                        </datalist> 
+                        <small id="exchangeLimits" class="form-text text-muted" style="padding: 5px; text-align: left;" >...</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="getCrypto">The crypto you want</label>
+                        <input type="text" class="form-control" id="getCrypto" aria-describedby="getCrypto" name="getCrypto"
+                            placeholder="You get" list="getOptions" autocomplete="no" 
+                            onchange="simpleSwapClient.changeMinimumAmount(document.getElementById('sendCrypto').value, this.value); simpleSwapClient.changeEstimatedExchangeAmount(document.getElementById('sendCrypto').value, this.value, document.getElementById('sendingAmount').value);" 
+                            onfocus="this.value='';" 
+                            required>
+                        <datalist id="getOptions">
+                        </datalist> 
+                    </div>
+                    <div class="form-group">
+                        <label for="sendingAmount">Amount to send</label>
+                        <input type="number" class="form-control" id="sendingAmount" aria-describedby="sendingAmount" name="sendingAmount" placeholder="Amount you want to send" step=".000001"
+                            onkeyup="simpleSwapClient.changeEstimatedExchangeAmount(document.getElementById('sendCrypto').value, document.getElementById('getCrypto').value, this.value);" 
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="approximateAmount">Approximately amount to get ≈</label>
+                        <input type="number" class="form-control" id="approximateAmount" aria-describedby="approximateAmount" name="approximateAmount"
+                            placeholder="≈" readonly required>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="step(0,1);">Next</button>
+                </div>
+                <div class="content step" style="display: none">
+                    <div class="form-group">
+                        <label for="receiverAddress">Enter the wallet address</label>
+                        <input type="text" class="form-control" id="receiverAddress" aria-describedby="receiverAddress" name="receiverAddress"
+                        placeholder="The recipient's address" required>
+                    </div>
+                    <div class="form-group extraData">
+                        <label for="extraData">Enter the destination tag (optional)</label>
+                        <input type="text" class="form-control" id="extraData" aria-describedby="extraData" name="extraData"
+                        placeholder="Enter the destination tag">
+                    </div>
+                    <div class="form-group">
+                        <label for="refundAddress">Enter your refund wallet address (In case something goes wrong)</label>
+                        <input type="text" class="form-control" id="refundAddress" aria-describedby="refundAddress" name="refundAddress"
+                        placeholder="Your refund address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="refundAddressED">Enter your extra data for your refund wallet address (optional)</label>
+                        <input type="text" class="form-control" id="refundAddressED" aria-describedby="refundAddressED" name="refundAddressED"
+                        placeholder="Your refund address extra data">
+                    </div>
+                    <div class="btn-group" role="group" >
+                        <button type="button" class="btn btn-primary" style="margin-right: 20px;" onclick="step(1,0);">Previous</button>
+                        <button type="submit" class="btn btn-info">Swap</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- <div class="content-container" style="margin: 0 auto; ">
             <div class="container">
                 <iframe id="simpleswap-frame" style="display: block; border-style:none;" name="SimpleSwap Widget" width="528px" height="392px" src="https://simpleswap.io/widget/3b210683-5009-4e90-bcaa-fb6a844d6128" frameborder="0"></iframe>
             </div>
-        </div>
+        </div> -->
+        <br>
+        <h2 class="ml-4 text-primary">My Swaps</h2>
+        <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: center;">ID</th>
+                <th scope="col" style="text-align: center;">From</th>
+                <th scope="col" style="text-align: center;">To</th>
+                <th scope="col" style="text-align: center;">Details</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for transaction in swap_transactions %}
+                    <tr>
+                        <th scope="row" style="text-align: center;">{{ transaction.id_c }} </th>
+                        <td style="text-align: center;">{{ transaction.crypto_id_from|upper }} </td>
+                        <td style="text-align: center;">{{ transaction.crypto_id_to|upper }} </td>
+                        <td style="text-align: center;">
+                            <a href="https://simpleswap.io/exchange?id={{ transaction.transaction_id }}" target="_blank">
+                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
+                                id="button-withdraw">Details</button>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 
     <script type="text/javascript">
@@ -30,11 +143,8 @@
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
     </script>
 
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/jquery.sticky.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/simpleswap_client.js' %}"></script>
+
 
     <script type="text/javascript">
         function triggerHtmlEvent(element, eventName) {
@@ -62,18 +172,36 @@
                 }
             });
         });
-    </script>
 
-    <!-- <script>
-        window.onload = function() {
-            $('#DepositWarning').modal('toggle');
-            if ({{ request.user.is_authenticated|yesno:"true,false" }}){
-                GetCreditGrade();
-            }
+        function sendCryptoFocus(){
+            document.getElementById('sendCrypto').value=''; 
+            document.getElementById('exchangeLimits').innerHTML=''; 
+            document.getElementById('getCrypto').value='';
         }
-    </script> -->
+
+        function step(hideStep, showStep){
 
 
+            var steps = document.getElementsByClassName("step");
+            var extraData = document.getElementsByClassName("extraData");
+            var addressInput = document.getElementById('receiverAddress');
+            var extraDataInput = document.getElementById('receiverAddress');
+
+
+            steps[hideStep].style.display = "none";
+            steps[showStep].style.display = "block";
+
+            if (!simpleSwapClient.hasExtraData){
+                extraData[0].style.display = "none";
+            }else{
+                extraDataInput.setAttribute("pattern", simpleSwapClient.currencyData.extraPattern)
+                extraData[0].style.display = "block";
+            }
+
+            addressInput.setAttribute("pattern", simpleSwapClient.currencyData.validation_address)
+
+        }
+    </script>
 </body>
 
 <style>
