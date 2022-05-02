@@ -338,7 +338,7 @@ swap_crypto_info = {
         "confirmations_from": "24",
         "image": "/static/img/currencies/U.svg"
     },
-    "USDT": {
+    "USDTERC20": {
         "symbol": "usdterc20",
         "network": "ERC20",
         "has_extra_id": False,
