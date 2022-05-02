@@ -137,6 +137,265 @@ def calculate_credit_grade(user):
             user.save()
             break
 
+swap_crypto_info = {
+    "BTC": {
+        "symbol": "btc",
+        "network": "",
+        "has_extra_id": False,
+        "extra_id": "",
+        "name": "Bitcoin",
+        "warnings_from": [],
+        "warnings_to": [],
+        "validation_address": "^[13][a-km-zA-HJ-NP-Z1-9]{25,80}$|^(bc1)[0-9A-Za-z]{25,80}$",
+        "validation_extra": None,
+        "address_explorer": "https://blockchair.com/bitcoin/address/{}?from=simpleswap",
+        "tx_explorer": "https://blockchair.com/bitcoin/transaction/{}?from=simpleswap",
+        "confirmations_from": "1",
+        "image": "/static/img/currencies/btc.svg"
+    },
+    "ETH": {
+        "symbol": "eth",
+        "network": "",
+        "has_extra_id": False,
+        "extra_id": "",
+        "name": "Ethereum",
+        "warnings_from": [
+            "Please be careful not to deposit your ETH from a smart contract."
+        ],
+        "warnings_to": [
+            "Please be careful not to provide a smart contract as your ETH payout address."
+        ],
+        "validation_address": "^(0x)[0-9A-Fa-f]{40}$",
+        "validation_extra": None,
+        "address_explorer": "https://etherscan.io/address/{}",
+        "tx_explorer": "https://etherscan.io/tx/{}",
+        "confirmations_from": "1",
+        "image": "/static/img/currencies/eth.svg"
+    },
+    "LTC": {
+        "symbol": "ltc",
+        "network": "",
+        "has_extra_id": False,
+        "extra_id": "",
+        "name": "Litecoin",
+        "warnings_from": [],
+        "warnings_to": [],
+        "validation_address": "^(L|M|3)[A-Za-z0-9]{33}$|^(ltc1)[0-9A-Za-z]{39}$",
+        "validation_extra": None,
+        "address_explorer": "https://blockchair.com/litecoin/address/{}?from=simpleswap",
+        "tx_explorer": "https://blockchair.com/litecoin/transaction/{}?from=simpleswap",
+        "confirmations_from": "1",
+        "image": "/static/img/currencies/ltc.svg"
+    },
+    "BCH": {
+        "symbol": "bch",
+        "network": "",
+        "has_extra_id": False,
+        "extra_id": "",
+        "name": "Bitcoin Cash",
+        "warnings_from": [],
+        "warnings_to": [],
+        "validation_address": "^([13][a-km-zA-HJ-NP-Z1-9]{25,34})$|^((bitcoincash:)?(q|p)[a-z0-9]{41})$|^((BITCOINCASH:)?(Q|P)[A-Z0-9]{41})$",
+        "validation_extra": None,
+        "address_explorer": "https://blockchair.com/bitcoin-cash/address/{}?from=simpleswap",
+        "tx_explorer": "https://blockchair.com/bitcoin-cash/transaction/{}?from=simpleswap",
+        "confirmations_from": "2",
+        "image": "/static/img/currencies/bch.svg"
+    },
+    "ZEC":{
+        "symbol": "zec",
+        "network": "",
+        "has_extra_id": False,
+        "extra_id": "",
+        "name": "Zcash",
+        "warnings_from": [],
+        "warnings_to": [],
+        "validation_address": "^(t)[A-Za-z0-9]{34}$",
+        "validation_extra": None,
+        "address_explorer": "https://explorer.zcha.in/accounts/{}",
+        "tx_explorer": "https://explorer.zcha.in/transactions/{}",
+        "confirmations_from": "12",
+        "image": "/static/img/currencies/zec.svg"
+    },
+    "XRP": {
+        "symbol": "xrp",
+        "network": "",
+        "has_extra_id": True,
+        "extra_id": "Destination tag",
+        "name": "XRP",
+        "warnings_from": [],
+        "warnings_to": [],
+        "validation_address": "^r[1-9A-HJ-NP-Za-km-z]{25,34}$",
+        "validation_extra": "^([0-9]{1,19})$",
+        "address_explorer": "https://blockchair.com/ripple/account/{}?from=simpleswap",
+        "tx_explorer": "https://blockchair.com/ripple/transaction/{}?from=simpleswap",
+        "confirmations_from": "10",
+        "image": "/static/img/currencies/xrp.svg"
+    },
+    "DASH": {
+        "symbol": "dash",
+        "network": "",
+        "has_extra_id": False,
+        "extra_id": "",
+        "name": "Dash",
+        "warnings_from": [],
+        "warnings_to": [],
+        "validation_address": "^[X|7][0-9A-Za-z]{33}$",
+        "validation_extra": None,
+        "address_explorer": "https://blockchair.com/dash/address/{}?from=simpleswap",
+        "tx_explorer": "https://blockchair.com/dash/transaction/{}?from=simpleswap",
+        "confirmations_from": "10",
+        "image": "/static/img/currencies/dash.svg"
+    },
+    "DOGE": {
+        "symbol": "doge",
+        "network": "",
+        "has_extra_id": False,
+        "extra_id": "",
+        "name": "Dogecoin",
+        "warnings_from": [],
+        "warnings_to": [],
+        "validation_address": "^(D|A|9)[a-km-zA-HJ-NP-Z1-9]{33,34}$",
+        "validation_extra": None,
+        "address_explorer": "https://blockchair.com/dogecoin/address/{}?from=simpleswap",
+        "tx_explorer": "https://blockchair.com/dogecoin/transaction/{}?from=simpleswap",
+        "confirmations_from": "6",
+        "image": "/static/img/currencies/doge.svg"
+    },
+    "LINK": {
+        "symbol": "link",
+        "network": "ERC20",
+        "has_extra_id": False,
+        "extra_id": "",
+        "name": "Chainlink",
+        "warnings_from": [
+            "Please note that only LINK ERC-20 tokens are available for the deposit."
+        ],
+        "warnings_to": [
+            "Please note that only LINK ERC-20 tokens are available for the withdrawal."
+        ],
+        "validation_address": "^(0x)[0-9A-Fa-f]{40}$",
+        "validation_extra": None,
+        "address_explorer": "https://etherscan.io/address/{}",
+        "tx_explorer": "https://etherscan.io/tx/{}",
+        "confirmations_from": "24",
+        "image": "/static/img/currencies/link.svg"
+    },
+    "SHIB": {
+        "symbol": "shib",
+        "network": "ERC20",
+        "has_extra_id": False,
+        "extra_id": "",
+        "name": "SHIBA INU",
+        "warnings_from": [
+            "Please note that only SHIB ERC-20 tokens are available for the deposit."
+        ],
+        "warnings_to": [
+            "Please note that only SHIB ERC-20 tokens are available for the withdrawal."
+        ],
+        "validation_address": "^(0x)[0-9A-Fa-f]{40}$",
+        "validation_extra": None,
+        "address_explorer": "https://etherscan.io/address/{}",
+        "tx_explorer": "https://etherscan.io/tx/{}",
+        "confirmations_from": "24",
+        "image": "/static/img/currencies/S.svg"
+    },
+    "BAT": {
+        "symbol": "bat",
+        "network": "ERC20",
+        "has_extra_id": False,
+        "extra_id": "",
+        "name": "Basic Attention Token",
+        "warnings_from": [
+            "Please note that only BAT ERC-20 tokens are available for the deposit."
+        ],
+        "warnings_to": [
+            "Please note that only BAT ERC-20 tokens are available for the withdrawal."
+        ],
+        "validation_address": "^(0x)[0-9A-Fa-f]{40}$",
+        "validation_extra": None,
+        "address_explorer": "https://etherscan.io/address/{}",
+        "tx_explorer": "https://etherscan.io/tx/{}",
+        "confirmations_from": "24",
+        "image": "/static/img/currencies/bat.svg"
+    },
+    "USDC": {
+        "symbol": "usdc",
+        "network": "ERC20",
+        "has_extra_id": False,
+        "extra_id": "",
+        "name": "USD Coin",
+        "warnings_from": [
+            "Please note that only USDC ERC-20 tokens are available for the deposit."
+        ],
+        "warnings_to": [
+            "Please note that only USDC ERC-20 tokens are available for the withdrawal."
+        ],
+        "validation_address": "^(0x)[0-9A-Fa-f]{40}$",
+        "validation_extra": None,
+        "address_explorer": "https://etherscan.io/address/{}",
+        "tx_explorer": "https://etherscan.io/tx/{}",
+        "confirmations_from": "24",
+        "image": "/static/img/currencies/U.svg"
+    },
+    "USDT": {
+        "symbol": "usdterc20",
+        "network": "ERC20",
+        "has_extra_id": False,
+        "extra_id": "825",
+        "name": "Tether ERC20",
+        "warnings_from": [
+            "Please note that only USDT ERC-20 tokens are available for the deposit."
+        ],
+        "warnings_to": [
+            "Please note that only USDT ERC-20 tokens are available for the withdrawal."
+        ],
+        "validation_address": "^(0x)[0-9A-Fa-f]{40}$",
+        "validation_extra": None,
+        "address_explorer": "https://etherscan.io/address/{}",
+        "tx_explorer": "https://etherscan.io/tx/{}",
+        "confirmations_from": "24",
+        "image": "/static/img/currencies/T.svg"
+    },
+    "WBTC": {
+        "symbol": "wbtc",
+        "network": "ERC20",
+        "has_extra_id": False,
+        "extra_id": "",
+        "name": "Wrapped Bitcoin",
+        "warnings_from": [
+            "Please note that only WBTC ERC-20 tokens are available for the deposit."
+        ],
+        "warnings_to": [
+            "Please note that only WBTC ERC-20 tokens are available for the withdrawal."
+        ],
+        "validation_address": "^(0x)[0-9A-Fa-f]{40}$",
+        "validation_extra": None,
+        "address_explorer": "https://etherscan.io/address/{}",
+        "tx_explorer": "https://etherscan.io/tx/{}",
+        "confirmations_from": "24",
+        "image": "/static/img/currencies/W.svg"
+    },
+    "MKR": {
+        "symbol": "mkr",
+        "network": "ERC20",
+        "has_extra_id": False,
+        "extra_id": "",
+        "name": "Maker",
+        "warnings_from": [
+            "Please note that only MKR ERC-20 tokens are available for the deposit."
+        ],
+        "warnings_to": [
+            "Please note that only MKR ERC-20 tokens are available for the withdrawal."
+        ],
+        "validation_address": "^(0x)[0-9A-Fa-f]{40}$",
+        "validation_extra": None,
+        "address_explorer": "https://etherscan.io/address/{}",
+        "tx_explorer": "https://etherscan.io/tx/{}",
+        "confirmations_from": "24",
+        "image": "/static/img/currencies/mkr.svg"
+    },
+}
 
 """
 country_dict = {

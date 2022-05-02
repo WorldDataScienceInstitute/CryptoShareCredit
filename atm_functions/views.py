@@ -6,14 +6,14 @@ from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 from django.db.models import Q
 from .models import User
 from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, TransactionA, TransactionB, TransactionC
 # from common.utils import currency_list
-from common.utils import get_currencies_exchange_rate, calculate_credit_grade
+from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info
 from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email
 from common.cryptoapis import CryptoApis
 from common.cryptoapis_utils import CryptoApisUtils
@@ -275,7 +275,48 @@ def crypto_news(request):
 @login_required()
 def swap_crypto(request):
     if request.method == "GET":
-        return render(request, 'swap_crypto.html')
+
+        swap_transactions = TransactionC.objects.filter(email=request.user)
+
+        context = {
+                    "swap_transactions": swap_transactions
+        }
+
+        return render(request, 'swap_crypto.html', context)
+
+    # return HttpResponseRedirect(f"https://simpleswap.io/exchange?id={}")
+    currency_from = request.POST.get("sendCrypto")
+    currency_to = request.POST.get("getCrypto")
+    address_to = request.POST.get("receiverAddress")
+    user_refund_address = request.POST.get("refundAddress")
+    user_refund_extra_id = request.POST.get("refundAddressED", None)
+    amount = request.POST.get("sendingAmount")
+    extra_id_to = request.POST.get("extraData", None)
+
+    estimated_amount = request.POST.get("approximateAmount")
+
+    simpleswap_client = SimpleSwap()
+
+    try:
+        if not user_refund_extra_id:
+            response = simpleswap_client.create_new_exchange(currency_from, currency_to, address_to, user_refund_address, user_refund_extra_id, amount)
+        else:
+            response = simpleswap_client.create_new_exchange(currency_from, currency_to, address_to, user_refund_address, user_refund_extra_id, amount, extra_id_to)
+    except:
+        messages.info(request, "Something went wrong. Please try again.")
+        return redirect('atm_functions:SwapCrypto')
+
+    # print(response)
+    try:
+        TransactionC.objects.create(transaction_id=response["id"], email=request.user, crypto_id_from=currency_from, crypto_id_to=currency_to, address_destination=address_to, address_destination_ed=extra_id_to, address_refund=user_refund_address, address_refund_ed=user_refund_extra_id, amount=amount, amount_estimated=response["amount_to"])
+    except:
+        messages.info(request, "Something went wrong. Please try again.")
+        return redirect('atm_functions:SwapCrypto')
+
+    messages.info(request, "Your swap request was completed successfully!")
+
+    return redirect('atm_functions:SwapCrypto')
+
 
 @login_required()
 def buy_credit(request):
@@ -695,10 +736,17 @@ def simpleswap_api(request):
     elif request_type == "MINIMAL_EXCHANGE_AMOUNT":
         currency_from = request.POST.get('currency_from','')
         currency_to = request.POST.get('currency_to','')
+
+        currency_data = swap_crypto_info[currency_to]
         
         minimal_exchange_amount = simpleswap_client.get_minimal_exchange_amount(currency_from, currency_to)
 
-        return HttpResponse(json.dumps(minimal_exchange_amount), content_type="application/json")
+        response = {
+                    "minimal_exchange_amount": minimal_exchange_amount,
+                    "currency_data": currency_data
+        }
+
+        return HttpResponse(json.dumps(response), content_type="application/json")
 
 @csrf_exempt
 def update_exchange_rates(request):

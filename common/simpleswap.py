@@ -6,9 +6,9 @@ import os
 class SimpleSwap:
     def __init__(self):
         self.BASE = "https://api.simpleswap.io/v1"
+        self.API_KEY = os.environ.get("SIMPLESWAP_API_KEY")
         self.QUERYPARAMS = {
-                            # "api_key": os.environ.get("SIMPLESWAP_API_KEY")
-                            "api_key": "d7202cef-1406-4810-8735-749255cd8ae1"
+                            "api_key": self.API_KEY
         }
         self.USER_AGENT = "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1467.0 Safari/537.36"
         self.HEADERS = {
@@ -47,6 +47,25 @@ class SimpleSwap:
         response = requests.get(url, headers=self.HEADERS, params=(dict(self.QUERYPARAMS,**endpoint_params))).json()
         return response
     
+    def create_new_exchange(self, currency_from, currency_to, address_to, user_refund_address, user_refund_extra_id, amount, extra_id_to=None):
+        url = self.BASE + f"/create_exchange"
+
+        data = {
+                "api_key": self.API_KEY,
+                "fixed": False,
+                "currency_from": currency_from,
+                "currency_to": currency_to,
+                "address_to": address_to,
+                "user_refund_address": user_refund_address,
+                "user_refund_extra_id": user_refund_extra_id,
+                "amount": amount
+        }
+
+        if extra_id_to is not None:
+            data["extra_id_to"] = extra_id_to
+
+        response = requests.post(url, headers=self.HEADERS, params=(self.QUERYPARAMS), json=data).json()
+        return response
 
 
 if __name__ == "__main__":
