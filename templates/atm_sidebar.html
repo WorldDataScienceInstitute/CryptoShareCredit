@@ -47,26 +47,26 @@
 
         <li style="border-style: solid none none none;border-color: white" id="desc">
             <a href="{% url 'atm_functions:BuyCrypto' %}">
-                <i class="fas fa-address-card" aria-hidden="true"></i>&nbsp;&nbsp;BUY CRYPTO
+                <i class="fas fa-address-card" aria-hidden="true"></i>&nbsp;&nbsp;BUY<span><img src="{% static '/images/sidebar_coin.png' %}" class="sidebarCoin"></span>
             </a>
         </li>
 
         <li>
             <a href="{% url 'atm_functions:SwapCrypto' %}">
-                <i class="fa-solid fa-retweet"></i>&nbsp;&nbsp;SWAP CRYPTO
+                <i class="fa-solid fa-retweet"></i>&nbsp;&nbsp;SWAP<span><img src="{% static '/images/sidebar_coin.png' %}" class="sidebarCoin"></span>
             </a>
         </li>
 
         <li style="border-style: solid none none none; border-color: white">
             <a href="{% url 'atm_functions:CryptoShareWallet' %}">
-                <i class="fa-solid fa-wallet" aria-hidden="true"></i>&nbsp; CRYPTO$HARE WALLET<span style="color:green;">$</span>
+                <i class="fa-solid fa-wallet" aria-hidden="true"></i>&nbsp; CRYPTO<span style="color:green;">$</span>HARE WALLET
             </a>
         </li>
 
         <li>
             <!-- <a href=""> -->
             <a href="{% url 'atm_functions:BuyCredit' %}">
-                <i class="fa-solid fa-sack-dollar" aria-hidden="true"></i>&nbsp;&nbsp;BUY CREDIT<span style="color:green;">$</span>
+                <i class="fa-solid fa-sack-dollar" aria-hidden="true"></i>&nbsp;&nbsp;BUY CREDIT
             </a>
         </li>        
 
@@ -84,7 +84,7 @@
 
         <li style="border-style: none none solid none;border-color: white">
             <a href="{% url 'atm_functions:TransferMoney' %}">
-                <i class="fa fa-paper-plane" aria-hidden="true"></i>TRANSFER<span style="color:green;">$</span>
+                <i class="fa fa-paper-plane" aria-hidden="true"></i>TRANSFER<span><img src="{% static '/images/sidebar_coin.png' %}" class="sidebarCoin"></span>
             </a>
         </li>
 
@@ -189,6 +189,15 @@
         });
     };
 </script>
+
+<style>
+    .sidebarCoin {
+        height: 20px;
+        width: auto;
+        position: relative;
+        padding-left: 5px;
+    }
+</style>
 
 <!-- Modal -->
 <div id="DepositWarning" class="modal" style="z-index: 2000;">
