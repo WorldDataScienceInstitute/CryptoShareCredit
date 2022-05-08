@@ -28,6 +28,7 @@ class Cryptocurrency(models.Model):
     blockchain = models.CharField(max_length=21)
     network = models.CharField(max_length=10)
     symbol = models.CharField(max_length=10)
+    currency_type = models.CharField(max_length=10)
     exchange_rate = models.DecimalField(max_digits=15, decimal_places=6)
 
 class Address(models.Model):

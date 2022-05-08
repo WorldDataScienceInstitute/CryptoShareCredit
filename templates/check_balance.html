@@ -10,13 +10,11 @@
         <h2 class="ml-4 text-primary">Credit Grade & Wealth</h2>
         <br>
         {% include 'messages.html' %}
-        {% if name is not None %}
         {% include 'a_sessiontimeout.html' %}
         <h3 class="ml-5">Welcome back, {{ name }}!</h3>
         <!-- <h5 class="ml-5">Information for account ending in {{ debit_last_four }}</h5> -->
-        {% if request.session.wallet_conn %}
+        <h2 class="ml-4 text-secondary" style="font-size: 25px;">Crypto$hare Pay Wallet</h2>
         <table class="table">
-            <caption style="caption-side: top; text-align: center;">Coinbase Balances</caption>
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -25,28 +23,7 @@
               </tr>
             </thead>
             <tbody>
-                {% for account, amount in accounts.items %}
-                    <tr>
-                        <th scope="row">{{ forloop.counter }} </th>
-                        <td>{{ account }} </td>
-                        <td>{{ amount }} </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
-        <table class="table">
-            <caption style="caption-side: top; text-align: center;">Native Balances</caption>
-
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Currency</th>
-                <th scope="col">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-                {% for currency in cryptoapis_balances %}
+                {% for currency in payments_addresses %}
                     <tr>
                         <th scope="row">{{ forloop.counter }} </th>
                         <td>{{ currency.currency_name.currency_name }} </td>
@@ -55,9 +32,25 @@
                 {% endfor %}
             </tbody>
         </table>
-        {% else %}
-        <h5 class="ml-5">You are not currently signed in. To sign in or make an account, <a href="{% url 'authentication:Home' %}">click or tap here.</a></h5>
-        {% endif %}
+        <h2 class="ml-4 text-secondary" style="font-size: 25px;">Crypto$hare Savings Wallet</h2>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Currency</th>
+                <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for currency in savings_addresses %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }} </th>
+                        <td>{{ currency.currency_name.currency_name }} </td>
+                        <td>{{ currency.amount }} </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     
     <script type="text/javascript">

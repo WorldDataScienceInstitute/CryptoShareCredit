@@ -71,7 +71,7 @@ def get_currencies_exchange_rate():
 
 def calculate_credit_grade(user):
 
-    balances = Balance.objects.filter(email = user)
+    balances = Balance.objects.filter(email = user, currency_name__currency_type="SAVINGS")
     user = Account.objects.get(user = user)
 
     total_usd_balance = 0
