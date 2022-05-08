@@ -166,9 +166,8 @@ def cryptoshare_wallet(request):
 
     for address in addresses:
         #Changing address blockchain for displaying in frontend
-        if address.blockchain == "xrp":
-            address.blockchain = "ripple"
-
+        # if address.blockchain == "xrp":
+        #     address.blockchain = "ripple"
         if address.currency_name == "Litecoin":
             address.wallet_address = currencies_dict["Litecoin"]
             context["address_confirmations"][0]["has_address"] = True
@@ -186,6 +185,7 @@ def cryptoshare_wallet(request):
             context["address_confirmations"][3]["has_address"] = True
         
         elif address.currency_name == "XRP":
+            address.blockchain = "ripple"
             address.wallet_address = currencies_dict["XRP"]
             context["address_confirmations"][4]["has_address"] = True
 
