@@ -52,47 +52,26 @@ def credit_grades(request):
 @login_required()
 def check_balance(request):
 
-    accounts = {}
+    u = User.objects.get(pk=request.user.pk)
 
-    if 'wallet_conn' in request.session:
-        if request.session['wallet_conn']:
-            wallet_conn = request.session['wallet_conn']
+    # get first name
+    name = u.first_name
 
-            coinbase_client = OAuthClient(
-                request.session['access_token'], request.session['refresh_token'])
-            all_accounts = coinbase_client.get_accounts()["data"]
+    #---------------------- CRYPTOAPIS ----------------------#
+    cryptoapis_balances = Balance.objects.filter(email=request.user).select_related("currency_name")
 
-            # Get into dict only the accounts that have a balance greater than 0
-            for account in all_accounts:
-                if float(account['balance']['amount']) > 0:
-                    accounts[account['currency']] = account['balance']['amount']
-        else:
-            wallet_conn = False
-    else:
-        wallet_conn = False
+    context = {
+        "name": name,
+        "savings_addresses": [],
+        "payments_addresses": []
+    }
 
-    if request.user.is_authenticated:
-        # get account details for user
-        u = User.objects.get(pk=request.user.pk)
+    for balance in cryptoapis_balances:
+        if balance.currency_name.currency_type == "SAVINGS":
+            context["savings_addresses"].append(balance)
+        elif balance.currency_name.currency_type == "PAYMENTS":
+            context["payments_addresses"].append(balance)
 
-        # get first name
-        name = u.first_name
-
-        #---------------------- CRYPTOAPIS ----------------------#
-        cryptoapis_balances = Balance.objects.filter(email=request.user)
-
-        context = {
-            'name': name,
-            'wallet_conn': wallet_conn,
-            'accounts': accounts,
-            'cryptoapis_balances': cryptoapis_balances
-        }
-    else:
-        context = {
-            'name': None,
-            'wallet_conn': wallet_conn,
-            'accounts': accounts
-        }
     return render(request, 'check_balance.html', context)
 
 @login_required()
@@ -106,100 +85,98 @@ def cryptoshare_wallet(request):
                                     "currency_name": "Litecoin",
                                     "blockchain": "litecoin",
                                     "symbol": "LTC",
+                                    "type": "PAYMENTS",
                                     "has_address": False
                                 },
                                 {
                                     "currency_name": "Bitcoin Cash",
                                     "blockchain": "bitcoin-cash",
                                     "symbol": "BCH",
+                                    "type": "PAYMENTS",
                                     "has_address": False
                                 },
                                 {
                                     "currency_name": "Dash",
                                     "blockchain": "dash",
                                     "symbol": "DASH",
+                                    "type": "PAYMENTS",
                                     "has_address": False
                                 },
                                 {
                                     "currency_name": "Zcash",
                                     "blockchain": "zcash",
                                     "symbol": "ZEC",
+                                    "type": "PAYMENTS",
                                     "has_address": False
                                 },
                                 {
                                     "currency_name": "XRP",
                                     "blockchain": "xrp",
                                     "symbol": "XRP",
+                                    "type": "PAYMENTS",
                                     "has_address": False
                                 },
                                 {
                                     "currency_name": "Bitcoin",
                                     "blockchain": "bitcoin",
                                     "symbol": "BTC",
+                                    "type": "SAVINGS",
                                     "has_address": False
                                 },
                                 {
                                     "currency_name": "Dogecoin",
                                     "blockchain": "dogecoin",
                                     "symbol": "DOGE",
+                                    "type": "PAYMENTS",
                                     "has_address": False
                                 },
                                 {
                                     "currency_name": "Ethereum",
                                     "blockchain": "ethereum",
                                     "symbol": "ETH",
+                                    "type": "SAVINGS",
                                     "has_address": False
                                 }
-                                ]
+                                ],
+        "savings_addresses": [],
+        "payments_addresses": []
     }
 
-    currencies = Address.objects.filter(email=request.user).values("currency_name")
-    currencies_addresses = Address.objects.filter(email=request.user)
+    currencies_addresses = Address.objects.filter(email=request.user).select_related("currency_name")
 
-    currencies_dict = {}
-    for currency in currencies_addresses:
-        currencies_dict[currency.currency_name.currency_name] = currency.address
-        
-    #Get all wallet addresses from Cryptocurrency table that match currency_name field in currencies variable
-    addresses = Cryptocurrency.objects.filter(currency_name__in=currencies)
-    context["addresses"] = addresses
-
-    for address in addresses:
+    for address in currencies_addresses:
         #Changing address blockchain for displaying in frontend
-        # if address.blockchain == "xrp":
-        #     address.blockchain = "ripple"
-        if address.currency_name == "Litecoin":
-            address.wallet_address = currencies_dict["Litecoin"]
+        if address.currency_name.currency_name == "Litecoin":
             context["address_confirmations"][0]["has_address"] = True
 
-        elif address.currency_name == "Bitcoin Cash":
-            address.wallet_address = currencies_dict["Bitcoin Cash"]
+        elif address.currency_name.currency_name == "Bitcoin Cash":
             context["address_confirmations"][1]["has_address"] = True
 
-        elif address.currency_name == "Dash":
-            address.wallet_address = currencies_dict["Dash"]
+        elif address.currency_name.currency_name == "Dash":
             context["address_confirmations"][2]["has_address"] = True
         
-        elif address.currency_name == "Zcash":
-            address.wallet_address = currencies_dict["Zcash"]
+        elif address.currency_name.currency_name == "Zcash":
             context["address_confirmations"][3]["has_address"] = True
         
-        elif address.currency_name == "XRP":
-            address.blockchain = "ripple"
-            address.wallet_address = currencies_dict["XRP"]
+        elif address.currency_name.currency_name == "XRP":
             context["address_confirmations"][4]["has_address"] = True
 
-        elif address.currency_name == "Bitcoin":
-            address.wallet_address = currencies_dict["Bitcoin"]
+        elif address.currency_name.currency_name == "Bitcoin":
             context["address_confirmations"][5]["has_address"] = True
 
-        elif address.currency_name == "Dogecoin":
-            address.wallet_address = currencies_dict["Dogecoin"]
+        elif address.currency_name.currency_name == "Dogecoin":
             context["address_confirmations"][6]["has_address"] = True
 
-        elif address.currency_name == "Ethereum":
-            address.wallet_address = currencies_dict["Ethereum"]
+        elif address.currency_name.currency_name == "Ethereum":
             context["address_confirmations"][7]["has_address"] = True
+
+        if address.currency_name.currency_type == "SAVINGS":
+            print("HERE")
+            context["savings_addresses"].append(address)
+        elif address.currency_name.currency_type == "PAYMENTS":
+            context["payments_addresses"].append(address)
+
+    # context["addresses"] = currencies_addresses
 
     return render(request, 'cryptoshare_wallet.html', context)
 

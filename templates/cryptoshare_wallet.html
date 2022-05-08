@@ -9,31 +9,49 @@
     <div class="content-container">
         <h2 class="ml-4 text-primary">CryptoShare Addresses</h2>
         <br>
+        <h2 class="text-muted" style="font-size: 15px; text-align: center;">Improve your Credit Grade by depositing Crypto in your Cryptoshare Wallet using the Blockchain Credit System.<a href="{% url 'atm_functions:CreditGrades' %}"> (More info)</a></h3>
+        <br>
         {% include 'messages.html' %}
         {% include 'a_sessiontimeout.html' %}
             {% if request.session.wallet_conn %}
             <h1> Coinbase Wallet usage is currently in progress, not available for the moment</h1>
             {% endif %}
+            <h2 class="ml-4 text-secondary" style="font-size: 25px;">Crypto$hare Pay Wallet</h2>
             <table class="table">
-                <caption style="caption-side: top; text-align: center;">Improve your Credit Grade by depositing Crypto in your Cryptoshare Wallet using the Blockchain Credit System.<a href="{% url 'atm_functions:CreditGrades' %}"> (More info)</a></caption>
+                <caption style="caption-side: top; text-align: center;">These are Cryptos that are fast and are accepted by Businesses around the world for  Shopping, Paying Bills, and Entertainment.</caption>
                 <thead>
                   <tr>
                     <th scope="col">Symbol</th>
                     <th scope="col">Currency</th>
-                    <!-- <th scope="col">Blockchain</th> -->
-                    <!-- <th scope="col">Network</th> -->
                     <th scope="col">CryptoShare Wallet Address</th>
-                    <!-- <th> Actions</th> -->
                 </tr>
                 </thead>
                 <tbody>
-                    {% for address in addresses %}
+                    {% for address in payments_addresses %}
                         <tr>
-                            <td>{{ address.symbol }} </td>
-                            <td>{{ address.currency_name }} </td>
-                            <!-- <td>{{ address.blockchain }} </td> -->
-                            <!-- <td>{{ address.network }} </td> -->
-                            <td>{{ address.wallet_address }} </td>
+                            <td>{{ address.currency_name.symbol }} </td>
+                            <td>{{ address.currency_name.currency_name }} </td>
+                            <td>{{ address.address }} </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h2 class="ml-4 text-secondary" style="font-size: 25px;">Crypto$hare Savings Wallet</h2>
+            <table class="table">
+                <caption style="caption-side: top; text-align: center;">The Crypto stored here is counted towards your Credit Grade</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Symbol</th>
+                    <th scope="col">Currency</th>
+                    <th scope="col">CryptoShare Wallet Address</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for address in savings_addresses %}
+                        <tr>
+                            <td>{{ address.currency_name.symbol }} </td>
+                            <td>{{ address.currency_name.currency_name }} </td>
+                            <td>{{ address.address }} </td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -51,6 +69,7 @@
               <tr>
                 <th scope="col" style="text-align: center;">Symbol</th>
                 <th scope="col" style="text-align: center;">Currency</th>
+                <th scope="col" style="text-align: center;">Address Type</th>
                 <th scope="col" style="text-align: center;">Generate</th>
             </tr>
             </thead>
@@ -60,6 +79,7 @@
                         <tr>
                             <td style="text-align: center;">{{ address.symbol }} </td>
                             <td style="text-align: center;">{{ address.currency_name }} </td>
+                            <td style="text-align: center;">{{ address.type }} </td>
                             <td style="text-align: center; width: auto;"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ address.blockchain }}&network=mainnet&currency={{ address.currency_name }}">Generate Deposit Address</a></td>
                         </tr>
                     {% endif %}
