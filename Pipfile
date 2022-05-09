@@ -24,9 +24,9 @@ coinbase = "*"
 python-dateutil= "==2.8.1"
 celery = "*"
 redis = "*"
+moesifdjango = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.8"
-
