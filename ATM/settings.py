@@ -55,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'moesifdjango.middleware.moesif_middleware',
 ]
 
 ROOT_URLCONF = 'ATM.urls'
@@ -167,6 +168,22 @@ LOGIN_URL = 'atm_functions:Home'
 
 #CELERY config
 CELERY_BROKER_URL = 'redis://:p334a76fb64842055b48d0a15b2c5642e87b8ba2a89e8ad4717d2d078520af750@ec2-52-73-18-209.compute-1.amazonaws.com:22859'
+
+#Moesif config
+def identifyUser(req, res):
+    if req.user and req.user.is_authenticated:
+        return req.user.username
+    else:
+        return None
+
+MOESIF_MIDDLEWARE = {
+    'APPLICATION_ID': 'eyJhcHAiOiI3MTA6Njc1IiwidmVyIjoiMi4wIiwib3JnIjoiMTYzOjI1OSIsImlhdCI6MTY1MTM2MzIwMH0.Tq7DPB2d6yeyiUCqwJLgJmk2OMfwaBjljrBVxotG9oo',
+
+    'CAPTURE_OUTGOING_REQUESTS': True, # Set to True to also capture outgoing calls to 3rd parties.
+
+    'IDENTIFY_USER': identifyUser # Optional hook to link API calls to users
+}
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
