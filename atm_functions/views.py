@@ -171,7 +171,6 @@ def cryptoshare_wallet(request):
             context["address_confirmations"][7]["has_address"] = True
 
         if address.currency_name.currency_type == "SAVINGS":
-            print("HERE")
             context["savings_addresses"].append(address)
         elif address.currency_name.currency_type == "PAYMENTS":
             context["payments_addresses"].append(address)
@@ -967,6 +966,9 @@ def confirmations_coin_transactions(request):
 @csrf_exempt
 # @require_POST
 def confirmed_coin_transactions(request):
+    print(request.body)
+    return HttpResponse(status=200)
+
     if request.method == "GET":
         return redirect('atm_functions:Home')
     elif request.method == "POST":
