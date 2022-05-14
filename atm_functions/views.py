@@ -914,11 +914,13 @@ def confirmations_coin_transactions(request):
         return redirect('authentication:Home')
     
     elif request.method == "POST":
-        request_reader = request.META.get('wsgi.input')
-        # print(request.headers)
+        if ("Transfer-Encoding" in request.headers) and (request.headers["Transfer-Encoding"] == "chunked"):
+            request_reader = request.META.get('wsgi.input')
 
-        # bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING ENVIRRONMENT
-        bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION ENVIRONMENT
+            # bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING ENVIRRONMENT
+            bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION ENVIRONMENT
+        else:
+            bpayload = request.body
 
         payload = bpayload.decode("utf-8")
 
@@ -966,16 +968,16 @@ def confirmations_coin_transactions(request):
 @csrf_exempt
 # @require_POST
 def confirmed_coin_transactions(request):
-    print(request.body)
-    return HttpResponse(status=200)
-
     if request.method == "GET":
         return redirect('atm_functions:Home')
     elif request.method == "POST":
-        request_reader = request.META.get('wsgi.input')
+        if ("Transfer-Encoding" in request.headers) and (request.headers["Transfer-Encoding"] == "chunked"):
+            request_reader = request.META.get('wsgi.input')
 
-        # bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING ENVIRRONMENT
-        bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION ENVIRONMENT
+            # bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING ENVIRRONMENT
+            bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION ENVIRONMENT
+        else:
+            bpayload = request.body
 
         payload = bpayload.decode("utf-8")
 
@@ -1054,14 +1056,16 @@ def confirmed_token_transactions(request):
         return redirect('atm_functions:Home')
     elif request.method == "POST":
 
-        ETHEREUM_DEPOSIT_ADDRESS = "0x70568e1a620468a49136aee7febd357bb9469b2c"
+        # ETHEREUM_DEPOSIT_ADDRESS = "0x70568e1a620468a49136aee7febd357bb9469b2c"
         commission = 1 - 0.01
-        request_reader =request.META.get('wsgi.input')
 
-        # print(request.headers)
+        if ("Transfer-Encoding" in request.headers) and (request.headers["Transfer-Encoding"] == "chunked"):
+            request_reader = request.META.get('wsgi.input')
 
-        # bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING ENVIRRONMENT
-        bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION ENVIRONMENT
+            # bpayload = request_reader.stream.read1()  # UNCOMMENT FOR LOCAL TESTING ENVIRRONMENT
+            bpayload = request_reader.read() #UNCOMMENT FOR PRODUCTION ENVIRONMENT
+        else:
+            bpayload = request.body
 
         payload = bpayload.decode("utf-8")
 
@@ -1109,7 +1113,7 @@ def confirmed_token_transactions(request):
 
         transaction_intern_id = str(transactionA.id_a) + "|" + transaction_id 
         creation_date = timezone.now()
-        deposit_funds_email(str(sender_object.email), transaction_intern_id, response_data["blockchain"], response_data["network"] ,amount, tx_currency, ETHEREUM_DEPOSIT_ADDRESS, creation_date)
+        deposit_funds_email(str(sender_object.email), transaction_intern_id, response_data["blockchain"], response_data["network"] ,amount, tx_currency, sender_address, creation_date)
 
         # print(response)
         # print(payload.decode("utf-8"))
