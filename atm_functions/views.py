@@ -1039,8 +1039,8 @@ def confirmed_coin_transactions(request):
             creation_date = timezone.now()
             deposit_funds_email(str(sender_object.email), transaction_intern_id, response_data["blockchain"], response_data["network"] ,amount, tx_currency, sender_address, creation_date)
 
-            # sender_object.expiration_datetime = None
-            # sender_object.save()
+            sender_object.expiration_datetime = None
+            sender_object.save()
 
             calculate_credit_grade(sender_object.email)
 
