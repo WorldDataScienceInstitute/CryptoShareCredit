@@ -1,0 +1,103 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+{% include 'home_header.html' %}
+<link rel="stylesheet" href="{% static 'css/home_css3.css' %}">
+
+
+<header>
+    <div class="container my-4">
+        <a href="/" class="text-black">
+                <img class="site-logo" src="{% static '/images/CSlogo.png' %}">
+        </a>
+    </div>
+</header>
+<body>
+    <!-- {% include 'banner.html' %} -->
+    {% if name is not None %}
+    {% include 'a_sessiontimeout.html' %}
+    {% endif %}
+    <video autoplay muted loop id="homeVideo" preload>
+        <source src="{% static '/videos/background_city.mp4' %}" type="video/mp4">
+    </video>
+
+    <div class="container my-4">
+        {% include 'messages.html' %}
+    </div>
+    <div class="container vertical-center">
+        <h2 class="text-grad2" style="text-align: center;">WELCOME TO</h2>
+        <h1 class="text-grad" style="text-align: center; font-weight: 600; overflow-wrap: break-word; ">Cryptoshare&nbsp; BanQ</h1>
+        <h2 class="text-grad2" style="text-align: center;">A PEER TO PEER DECENTRALIZED FINANCIAL SYSTEM</h2>
+    </div>
+
+    
+    <div class="container " style="min-height: 60px; max-width: 450px;">
+        <div class="btn-grad"> 
+            <a href="{% url 'atm_functions:Home' %}" style="text-decoration: none; color: inherit;">
+                {% if not request.user.is_authenticated %}
+                <h1 style="font-size: 150%; line-height: 100%; ">CREATE / LOGIN ACCOUNT </h1>
+                {% else %}
+                <h1 style="font-size: 150%; line-height: 100%;">MY ACCOUNT </h1>
+                {% endif %}
+            </a> 
+        </div>
+           
+    </div>
+
+    <div style="position: absolute; bottom: 0; right: 0; left: 0;">
+        <div class="container banq-members btn-grad" style="max-width: 250px; max-height: 120px;">
+            <h1 style="font-size: 15px; line-height: 60px;">{{user_count}} BANQ MEMBERS </h1>  
+        </div>
+        <div class="banq-members2">
+            <h1 class="text-grad banq-members2" style="text-align: center; font-weight: 600; display: block; font-size: 2.0vh;">BUILD WEALTH USING CRYPTO CREDIT</h1>
+        </div>
+    </div>
+
+</body>
+
+    <!-- Code provided by Google -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+        
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+    <!-- <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script> -->
+{% include 'crisp_client.html' %}
+</html>
+

@@ -31,7 +31,7 @@
     </div>
 
     
-    <div class="container " style="min-height: 60px; max-width: 450px;">
+    <div class="container" style="min-height: 60px; max-width: 450px;">
         <div class="btn-grad"> 
             <a href="{% url 'atm_functions:Home' %}" style="text-decoration: none; color: inherit;">
                 {% if not request.user.is_authenticated %}
@@ -43,7 +43,16 @@
         </div>
            
     </div>
-{% include 'widget_usercount.html' %}
+
+    <div style="position: absolute; bottom: 0; right: 0; left: 0;">
+        <div class="container banq-members btn-grad" style="max-width: 250px; max-height: 120px;">
+            <h1 style="font-size: 15px; line-height: 60px;">{{user_count}} BANQ MEMBERS </h1>  
+        </div>
+        <div class="banq-members2">
+            <h1 class="text-grad banq-members2" style="text-align: center; font-weight: 600; display: block; font-size: 2.0vh;">BUILD WEALTH USING CRYPTO</h1>
+        </div>
+    </div>
+
 </body>
 
     <!-- Code provided by Google -->
