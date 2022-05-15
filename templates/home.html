@@ -14,7 +14,7 @@
         </a>
     </div>
 </header>
-<body style="overflow: hidden;">
+<body>
     <!-- {% include 'banner.html' %} -->
     {% if name is not None %}
     {% include 'a_sessiontimeout.html' %}
@@ -42,8 +42,9 @@
             {% endif %}
         </a>    
     </div>
-
 </body>
+{% include 'widget_usercount.html' %}
+
     <!-- Code provided by Google -->
     <script type="text/javascript">
         function googleTranslateElementInit() {

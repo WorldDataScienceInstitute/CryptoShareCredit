@@ -18,7 +18,7 @@ body::-webkit-scrollbar {
 @font-face {
     font-family: ethno;
     src: local('ethno'), 
-        url("../fonts/ethnocentricrg/ethnocentricrg.otf") format('opentype');
+        url("../fonts/ethnocentricrg/ethnocentricrg.a3b1643f5b47.otf") format('opentype');
 }
 .btn-grad {
     font-family: ethno;
