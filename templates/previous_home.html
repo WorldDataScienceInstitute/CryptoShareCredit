@@ -1,0 +1,147 @@
+{% load static %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+<body>
+    {% include 'banner.html' %}
+    {% if name is not None %}
+    {% include 'a_sessiontimeout.html' %}
+    {% endif %}
+    <video autoplay muted loop id="homeVideo" preload>
+        <source src="{% static '/videos/home_video.mp4' %}" type="video/mp4">
+        <!-- <source src="{% static '/videos/cryptoshare_banq_landing_page.mp4' %}" type="video/mp4"> -->
+    </video>
+
+    </div>
+    <div class="container my-4">
+        {% include 'messages.html' %}
+    </div>
+    <h1 class="" style="color: #0071bc; text-align: center; font-weight: 600;">Welcome to Cryptoshare BanQ</h1>
+    <h1 class="" style="color: #0071bc; text-align: center; font-weight: 600;">(A Peer to Peer Decentralized Financial System)</h1>
+    <div class="container my-4" style="padding:0px;">
+        <div class="row" style="margin:0px;">
+            <img style="margin-left:auto; margin-right:auto; max-width: 100vw;" src="{% static '/images/image_home.png' %}">
+        </div>
+    </div>
+    <div class="container my-4">
+        <div class="row">
+            <div class="card container1 bg-light" style="opacity: 0.9;">
+                {% if name is None %}
+                <h2 class="text-primary title">Welcome!</h2>
+                {% else %}
+                <h2 class="text-primary title">Welcome,  {{ name }}!</h2>
+                {% endif %}
+                <p class="signed_in">Make a selection:</p>
+                {% if name is None %}
+                <p style="font-size:14px;color:rgb(0, 0, 0);text-align:center;"><i class="fas fa-address-card" aria-hidden="true"></i> Become a Member of our <b>Cryptocurrency Decentralized Banq</b><br> and Build Wealth using <b>Crypto Credit.</b></p>
+                <a href="{% url 'atm_functions:Home' %}"><button type="button"
+                    class="btn btn-primary btn-lg btn-block">Create/Login Account</button>
+                    <!--<p style="font-size:12px;">Connect your Cryptocurrency wallet and use Crypto you already own as collateral to borrow or lend to other people.</p> -->
+                </a>
+                <hr>
+                {% elif auth_level == 1 %}
+                <!-- <a href="{% url 'authentication:Registration' %}"><button type="button"
+                    class="btn btn-primary btn-lg btn-block">Create Digital Card Wallet</button>
+                </a> -->
+                {% elif auth_level == 2 %}
+                <a href="{% url 'authentication:CardProducts' %}"><button type="button"
+                    class="btn btn-primary btn-lg btn-block">Apply for Digital Debit Card</button>
+                </a>
+                {% elif auth_level == 3 %}
+                <a href="{% url 'authentication:CardInfo' %}"><button type="button"
+                    class="btn btn-primary btn-lg btn-block">View Debit Card Info</button>
+                </a>
+                {% endif %}
+                {% if name is not None %}
+                <a href="{% url 'atm_functions:Home' %}"><button type="button"
+                    class="btn btn-primary btn-lg btn-block">My Account</button>
+                </a>
+                <hr>
+                {% endif %}
+                <!--"https://pages.viral-loops.com/cryptoshare-getmoney"-->
+                <!-- <p style="font-size:14px;color:rgb(0, 0, 0);text-align:center;"><i class="far fa-money-bill-alt"></i> <b> Get Money </b>for every User that creates an account and uses your Referral Link<br> with this Crypto$hare Incentive Program.</p>
+                <a href="" target="_blank">
+                    <button type="button" class="btn btn-secondary btn-lg btn-block" disabled>
+                        Get Money
+                    </button>
+                </a>
+                <hr> -->
+                {% if name is not None %}
+                <br>
+                <form action="{% url 'authentication:Logout' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Logout</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    {% include 'widget_usercount.html' %}    
+    <!-- Code provided by Google -->
+    
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+    
+    
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+        
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% include 'footer.html' %}
+</body>
+<style>
+    #homeVideo {
+        /* opacity: 0.7; */
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        min-width: 100%;
+        width: 100%;
+        min-height: 100%;
+        object-fit: cover;
+        height: 100vh;
+        z-index: -100;
+    }
+</style>
+</html>
+
