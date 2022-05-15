@@ -31,7 +31,6 @@ def home(request):
     # else:
     return render(request, 'home.html', context)
 
-
 def signing(request):
     if request.user.is_authenticated:
         u = User.objects.get(pk=request.user.pk)
