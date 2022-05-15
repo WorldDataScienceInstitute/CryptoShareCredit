@@ -39,7 +39,7 @@
     background: linear-gradient(to right, #e285fe 45%, #4dcfff  48%, #3a8cf6  83%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-size: 5.0vh;
+    font-size: 4.0vh;
 }
 .text-grad2 {
     font-family: ethno;
