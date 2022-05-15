@@ -1,10 +1,8 @@
 {% load static %}
-{% static "images" as baseUrl %}
-
 <!doctype html>
 <html lang="en">
 {% include 'home_header.html' %}
-<link rel="stylesheet" href="{% static 'css/home_css2.css' %}">
+<link rel="stylesheet" href="{% static 'css/home_css.css' %}">
 
 
 <header>
@@ -33,17 +31,20 @@
     </div>
 
     
-    <div class="container my-4 btn-grad" style="height: 60px; max-width: 450px;">
-        <a href="{% url 'atm_functions:Home' %}" style="text-decoration: none; color: inherit;">
-            {% if not request.user.is_authenticated %}
-            <h1 style="vertical-align: middle; font-size: 20px; line-height: 60px;">CREATE / LOGIN ACCOUNT </h1>
-            {% else %}
-            <h1 style="vertical-align: middle; font-size: 20px; line-height: 60px;">MY ACCOUNT </h1>
-            {% endif %}
-        </a>    
+    <div class="container " style="min-height: 60px; max-width: 450px;">
+        <div class="btn-grad"> 
+            <a href="{% url 'atm_functions:Home' %}" style="text-decoration: none; color: inherit;">
+                {% if not request.user.is_authenticated %}
+                <h1 style="font-size: 150%; line-height: 100%; ">CREATE / LOGIN ACCOUNT </h1>
+                {% else %}
+                <h1 style="font-size: 150%; line-height: 100%;">MY ACCOUNT </h1>
+                {% endif %}
+            </a> 
+        </div>
+           
     </div>
-</body>
 {% include 'widget_usercount.html' %}
+</body>
 
     <!-- Code provided by Google -->
     <script type="text/javascript">
@@ -83,11 +84,11 @@
             });
         });
     </script>
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <!-- <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.sticky.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script> -->
 {% include 'crisp_client.html' %}
 </html>
 
