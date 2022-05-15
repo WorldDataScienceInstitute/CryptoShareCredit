@@ -26,10 +26,17 @@ def home(request):
         'user_count': user_count,
         'last_check': last_check
         }
+
+    user_agent = request.META['HTTP_USER_AGENT']
+    try:
+        user_agent.index("Mobile")
+        return render(request, 'home_mobile.html', context)
+    except ValueError:
+        return render(request, 'home_desktop.html', context)
     # if request.method == "POST":
     #     return render(request, 'signin-up.html', context)
     # else:
-    return render(request, 'home.html', context)
+    
 
 def signing(request):
     if request.user.is_authenticated:
