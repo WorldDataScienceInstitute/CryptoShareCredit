@@ -7,46 +7,70 @@
 <body>
     {% include 'atm_sidebar.html' %}
     <div class="content-container">
-        <h2 class="ml-4 text-primary">Credit Grade & Wealth</h2>
-        <br>
         {% include 'messages.html' %}
         {% include 'a_sessiontimeout.html' %}
+        <h2 class="ml-4 text-primary">STEPS TO BUILDING CRYPTO WEALTH</h2>
+        <div class="container" style="padding: 0; z-index: -1000;">
+            <ol class="list-group">
+                <li class="list-group-item">1.- Create a Crypto Savings Wallet on this Screen Below</li>
+                <li class="list-group-item">2.- <a href="{% url 'atm_functions:BuyCrypto' %}">Buy Crypto</a></li>
+                <li class="list-group-item">3.- Deposit into Crypto Savings Wallet & <a href="{% url 'atm_functions:CreditGrades' %}">Credit Grade</a> Increases</li>
+                <li class="list-group-item">4.- Create a Business Account, Buy & Sell Services</li>
+                <li class="list-group-item">5.- Borrow & Lend Crypto</li>
+                <li class="list-group-item">6.- Create a Crypto Will/Trust</li>
+            </ol>
+        </div>
+        <br>
         <h3 class="ml-5">Welcome back, {{ name }}!</h3>
         <!-- <h5 class="ml-5">Information for account ending in {{ debit_last_four }}</h5> -->
         <h2 class="ml-4 text-secondary" style="font-size: 25px;">Crypto$hare Pay Wallet</h2>
         <table class="table">
+            <caption style="caption-side: top; text-align: center;">These wallets are used to pay for everyday expenses because of transaction speed. XRP and Bitcoin Cash have the fastest transaction speeds. The Crypto in these wallets will not be counted in Credit Grade.</caption>
             <thead>
-              <tr>
-                <th scope="col">#</th>
+                <tr>
+                <th scope="col">Symbol</th>
                 <th scope="col">Currency</th>
-                <th scope="col">Amount</th>
-              </tr>
+                <th scope="col">Balance</th>
+                <th scope="col">CryptoShare Wallet Address</th>
+            </tr>
             </thead>
             <tbody>
-                {% for currency in payments_addresses %}
+                {% for currency in payments_currencies %}
                     <tr>
-                        <th scope="row">{{ forloop.counter }} </th>
-                        <td>{{ currency.currency_name.currency_name }} </td>
-                        <td>{{ currency.amount }} </td>
+                        <td>{{ currency.symbol }} </td>
+                        <td>{{ currency.currency_name }} </td>
+                        <td>{{ currency.balance }} </td>
+                    {% if not currency.has_address %}
+                        <td style="width: auto;"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ currency.blockchain }}&network=mainnet&currency={{ currency.currency_name }}">Create Pay Address</a></td>
+                    {% else %}
+                        <td>{{ currency.address }} </td>
+                    {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
         <h2 class="ml-4 text-secondary" style="font-size: 25px;">Crypto$hare Savings Wallet</h2>
         <table class="table">
+            <caption style="caption-side: top; text-align: center;">The Cryptocurrency in your Savings Wallet will be used for your <a href="{% url 'atm_functions:CreditGrades' %}">Credit Grade</a></caption>
             <thead>
-              <tr>
-                <th scope="col">#</th>
+                <tr>
+                <th scope="col">Symbol</th>
                 <th scope="col">Currency</th>
-                <th scope="col">Amount</th>
-              </tr>
+                <th scope="col">Balance</th>
+                <th scope="col">CryptoShare Wallet Address</th>
+            </tr>
             </thead>
             <tbody>
-                {% for currency in savings_addresses %}
+                {% for currency in savings_currencies %}
                     <tr>
-                        <th scope="row">{{ forloop.counter }} </th>
-                        <td>{{ currency.currency_name.currency_name }} </td>
-                        <td>{{ currency.amount }} </td>
+                        <td>{{ currency.symbol }} </td>
+                        <td>{{ currency.currency_name }} </td>
+                        <td>{{ currency.balance }} </td>
+                    {% if not currency.has_address %}
+                        <td style="width: auto;"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ currency.blockchain }}&network=mainnet&currency={{ currency.currency_name }}">Create Savings Address</a></td>
+                    {% else %}
+                        <td>{{ currency.address }} </td>
+                    {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
