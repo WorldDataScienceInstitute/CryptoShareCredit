@@ -53,24 +53,49 @@ def credit_grades(request):
 def check_balance(request):
 
     u = User.objects.get(pk=request.user.pk)
-
     # get first name
     name = u.first_name
 
-    #---------------------- CRYPTOAPIS ----------------------#
-    cryptoapis_balances = Balance.objects.filter(email=request.user).select_related("currency_name")
+    excluding_currencies = ["TEST_COIN","ethereum_ropsten"]
+    available_currencies = Cryptocurrency.objects.all().exclude(currency_name__in=excluding_currencies).values()
+    user_addresses = Address.objects.filter(email=request.user).exclude(currency_name__in=excluding_currencies).select_related("currency_name")
+    user_balances = Balance.objects.filter(email=request.user).exclude(currency_name__in=excluding_currencies).select_related("currency_name")
+
+    # currencies = {currency["symbol"]: currency for currency in available_currencies}
+    currencies = {}
+    for currency in available_currencies:
+        currencies[currency["symbol"]] = currency
+        currencies[currency["symbol"]]["has_address"] = False
+        currencies[currency["symbol"]]["balance"] = 0
+        currencies[currency["symbol"]]["address"] = ""
+
+
+    for address in user_addresses:
+        currencies[address.currency_name.symbol]["has_address"] = True
+        currencies[address.currency_name.symbol]["address"] = address.address
+
+    for balance in user_balances:
+        currencies[balance.currency_name.symbol]["balance"] = balance.amount
+
+    savings_currencies = []
+    payments_currencies = []
+
+    for currency in currencies.values():
+        if currency["blockchain"] == "ethereum" and currency["symbol"] != "ETH":
+            currency["has_address"] = True
+            currency["address"] = currencies["ETH"]["address"]
+            currency["currency_name"] += " (ERC-20)"
+
+        if currency["currency_type"] == "SAVINGS":
+            savings_currencies.append(currency)
+        elif currency["currency_type"] == "PAYMENTS":
+            payments_currencies.append(currency)
 
     context = {
         "name": name,
-        "savings_addresses": [],
-        "payments_addresses": []
+        "savings_currencies": savings_currencies,
+        "payments_currencies": payments_currencies
     }
-
-    for balance in cryptoapis_balances:
-        if balance.currency_name.currency_type == "SAVINGS":
-            context["savings_addresses"].append(balance)
-        elif balance.currency_name.currency_type == "PAYMENTS":
-            context["payments_addresses"].append(balance)
 
     return render(request, 'check_balance.html', context)
 
