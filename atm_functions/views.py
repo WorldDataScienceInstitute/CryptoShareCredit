@@ -658,7 +658,7 @@ def generate_address(request):
 
     if not blockchain or not network or not currency:
         messages.info(request, "Invalid option, please try again.")
-        return redirect('atm_functions:CryptoShareWallet')
+        return redirect('atm_functions:Home')
     
     #Check if there is already a balance with that currency name for that email
     balance_exists = Balance.objects.filter(email=email_object, currency_name=currency_object)
@@ -671,11 +671,11 @@ def generate_address(request):
     address, error = cryptoapis_utils.generate_address(request.user, currency_object, register_function = True)
     if error is not None:
         messages.info(request, error)
-        return redirect('atm_functions:CryptoShareWallet')
+        return redirect('atm_functions:Home')
     
     messages.info(request, "Address generated successfully.")
 
-    return redirect('atm_functions:CryptoShareWallet')
+    return redirect('atm_functions:Home')
 
 def get_credit_grade(request):
     user = Account.objects.get(user = request.user)
