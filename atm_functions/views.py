@@ -677,6 +677,19 @@ def generate_address(request):
 
     return redirect('atm_functions:CryptoShareWallet')
 
+@login_required()
+def blockchain_wills(request):
+
+    bch_object = Cryptocurrency.objects.get(currency_name="Bitcoin Cash")
+    user_balance = Balance.objects.get(email=request.user, currency_name=bch_object)
+
+    if user_balance.amount < 1:
+        messages.info(request, "You do not have enough funds to create a blockchain will. Please deposit funds to your wallet.")
+        return redirect('atm_functions:Home')
+        
+    return render(request, 'blockchain_wills.html')
+    pass
+
 def get_credit_grade(request):
     user = Account.objects.get(user = request.user)
 
