@@ -42,6 +42,32 @@ class Balance(models.Model):
     email = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=15, decimal_places=8)
 
+class BlockchainWill(models.Model):
+    id_w = models.AutoField(primary_key=True)
+    email = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.CharField(max_length=15)
+    creation_datetime = models.DateTimeField(auto_now_add=True)
+    full_legal_name = models.CharField(max_length=255, null=True)
+    birthdate = models.DateField(null=True)
+    birth_country = models.CharField(max_length=57, null=True)
+    associated_email1 = models.CharField(max_length=40, null=True)
+    associated_email2 = models.CharField(max_length=40, null=True)
+    associated_email3 = models.CharField(max_length=40, null=True)
+    #MISSING SELFIE PHOTO
+    #MISSING DRIVER LICENCE, PASSPORT, VISA, OR NATIONAL ID
+    #MISSING VIDEO SAYING YOUR NAME
+
+class Beneficiary(models.Model):
+    blockchain_wills = models.ManyToManyField(BlockchainWill)
+    full_legal_name = models.CharField(max_length=255)
+    birthdate = models.DateField()
+    birth_country = models.CharField(max_length=57)
+    relationship = models.CharField(max_length=50)
+    associated_email1 = models.CharField(max_length=40, null=True)
+    associated_email2 = models.CharField(max_length=40, null=True)
+    will_percentage = models.IntegerField()
+    #MISSING PHOTO
+    
 #Transaction for Deposits and Withdrawals
 class TransactionA(models.Model):
     id_a = models.AutoField(primary_key=True)

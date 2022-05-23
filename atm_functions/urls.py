@@ -5,6 +5,7 @@ app_name = "atm_functions"
 urlpatterns = [
      path("", views.home, name="Home"),
      path("ApproveWallet/", views.approve_wallet, name="ApproveWallet"),
+     path("BlockchainWills/", views.blockchain_wills, name="BlockchainWills"),
      path("BuyCrypto/", views.buy_crypto, name="BuyCrypto"),
      path("BuyCredit/", views.buy_credit, name="BuyCredit"),
      path("BuyCryptoWidget/", views.buy_crypto_widget, name="BuyCryptoWidget"),
