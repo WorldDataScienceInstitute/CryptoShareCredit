@@ -13,6 +13,7 @@
         <br>
         {% include 'messages.html' %}
         {% include 'a_sessiontimeout.html' %}
+        <h4 class="ml-2" style="text-align: center;">Prepurchase your blockchain will</h4>
         <form action="/atm/BlockchainWills/" method="post">
             {% csrf_token %}
             <div class="form-group">
@@ -70,8 +71,8 @@
             </div>
             <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="cb_suplemental_document" name="cb_suplemental_document" required>
-                    <label class="form-check-label" for="cb_suplemental_document">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_attorney" name="cb_attorney" required>
+                    <label class="form-check-label" for="cb_attorney">
                         I understand I should consult with an Attorney before I purchase.
                     </label>
                 </div>
@@ -80,8 +81,56 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
         <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
-            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Must have 120% of Collateral Currency in Coinbase Wallet or CryptoShare Address to Submit</small>
+            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Must have at least 1 BCH deposited in your CryptoShare Wallet for creating a will</small>
         </div>
+
+        <br>
+        <h2 class="ml-4 text-primary">My Blockchain Wills</h2>
+        <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: center;">ID</th>
+                <th scope="col" style="text-align: center;">Status</th>
+                <th scope="col" style="text-align: center;">Creation Date</th>
+                <th scope="col" style="text-align: center;">Details</th>
+                <th scope="col" style="text-align: center;">Credential</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for will in blockchain_wills %}
+                    <tr>
+                        <th scope="row" style="text-align: center;">{{ will.id_w }} </th>
+                        <td style="text-align: center;">{{ will.status }} </td>
+                        <td style="text-align: center;">{{ will.creation_datetime }} </td>
+                        <td style="text-align: center;">
+                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
+                                id="button-beneficiaries" disabled>Full Details</button>
+                        </td>
+                        <td style="text-align: center;">
+                            <!-- <a href="" target="_blank"> -->
+                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
+                                id="button-credential" disabled>Credential</button>
+                            <!-- </a> -->
+                        </td>
+                    </tr>
+                {% endfor %}
+                {% if not blockchain_wills %}
+                    <tr>
+                        <th scope="row" style="text-align: center;" colspan="3">No Wills</th>
+                        <td style="text-align: center;">
+                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
+                                id="button-beneficiaries" disabled>Full Details</button>
+                        </td>
+                        <td style="text-align: center;">
+                            <!-- <a href="" target="_blank"> -->
+                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
+                                id="button-credential" disabled>Credential</button>
+                            <!-- </a> -->
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
     </div>
     <script type="text/javascript">
         function googleTranslateElementInit() {

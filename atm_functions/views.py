@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.db.models import Q
 from .models import User
 from decimal import Decimal
-from atm_functions.models import Account, Address, Balance, Cryptocurrency, TransactionA, TransactionB, TransactionC
+from atm_functions.models import Account, Address, Balance, Cryptocurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info
 from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email
@@ -680,15 +680,26 @@ def generate_address(request):
 @login_required()
 def blockchain_wills(request):
 
-    bch_object = Cryptocurrency.objects.get(currency_name="Bitcoin Cash")
-    user_balance = Balance.objects.get(email=request.user, currency_name=bch_object)
+    if request.method == "POST":
+        bch_object = Cryptocurrency.objects.get(currency_name="Bitcoin Cash")
+        user_balance = Balance.objects.get(email=request.user, currency_name=bch_object)
 
-    if user_balance.amount < 1:
-        messages.info(request, "You do not have enough funds to create a blockchain will. Please deposit funds to your wallet.")
-        return redirect('atm_functions:Home')
-        
+        if user_balance.amount < 1:
+            messages.info(request, "You do not have enough funds to create a blockchain will. Please deposit BCH to your wallet.")
+            return redirect('atm_functions:Home')
+            
+        bch_object.amount -= 1
+        blockchain_will = BlockchainWill.objects.create(email= request.user, status="PREPURCHASED")
+
+        return redirect('atm_functions:BlockchainWills')
+    if request.method == "GET":
+        blockchain_wills = BlockchainWill.objects.filter(email=request.user)
+        context = {
+            "blockchain_wills": blockchain_wills
+        }
+        return render(request, 'blockchain_wills.html', context)
+
     return render(request, 'blockchain_wills.html')
-    pass
 
 def get_credit_grade(request):
     user = Account.objects.get(user = request.user)
