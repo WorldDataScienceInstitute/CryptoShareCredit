@@ -53,9 +53,9 @@ class BlockchainWill(models.Model):
     associated_email1 = models.CharField(max_length=40, null=True)
     associated_email2 = models.CharField(max_length=40, null=True)
     associated_email3 = models.CharField(max_length=40, null=True)
-    #MISSING SELFIE PHOTO
-    #MISSING DRIVER LICENCE, PASSPORT, VISA, OR NATIONAL ID
-    #MISSING VIDEO SAYING YOUR NAME
+    selfie_photo_url = models.CharField(max_length=255, null=True)      
+    document_id_url = models.CharField(max_length=255, null=True)      
+    video_url = models.CharField(max_length=255, null=True)      
 
 class Beneficiary(models.Model):
     blockchain_wills = models.ManyToManyField(BlockchainWill)
@@ -66,7 +66,7 @@ class Beneficiary(models.Model):
     associated_email1 = models.CharField(max_length=40, null=True)
     associated_email2 = models.CharField(max_length=40, null=True)
     will_percentage = models.IntegerField()
-    #MISSING PHOTO
+    selfie_photo_url = models.CharField(max_length=255, null=True)      
     
 #Transaction for Deposits and Withdrawals
 class TransactionA(models.Model):
