@@ -66,18 +66,27 @@ def email(request):
             first_name = request.POST.get('fname')
             last_name = request.POST.get('lname')
             country = request.POST.get('country')
+            state = request.POST.get('usa_states', None)
             birthdate = request.POST.get('birthdate')
-
+            
             if country is None:
                 messages.info(request, "Please select a country")
                 return render(request, 'atm_register.html', context)
+            
+            if country == "US":
+                if state is None:
+                    messages.info(request, "Please select a US state")
+                    return render(request, 'atm_register.html', context)
                 
             user = User.objects.create_user(
                 email=email, username=email, password=pin,
                 first_name=first_name, last_name=last_name
                 )
-            Account.objects.create(user=user, email=email, country=country, birthdate=birthdate)
+
+            Account.objects.create(user=user, email=email, country=country, birthdate=birthdate, state=state)
+
             code_creation_email(to_addr=email, pin=pin)
+            
             messages.success(request, mark_safe(
                 f"""A confirmation email has been sent to you from {settings.DEFAULT_FROM_EMAIL}.<br>
                 If you do not receive it within a few minutes, check your spam/junk folder.""")
