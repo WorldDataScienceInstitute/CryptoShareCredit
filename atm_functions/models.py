@@ -14,6 +14,7 @@ class Account(models.Model):
     email = models.CharField(max_length=40, null=True)
     credit_grade = models.CharField(max_length=4, default="FFF")
     country = models.CharField(max_length=57, null=True)
+    state = models.CharField(max_length=57, null=True)
     birthdate = models.DateField(null=True)
 
 class History(models.Model):
