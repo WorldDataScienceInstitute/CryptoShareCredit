@@ -67,8 +67,7 @@
                                 <label for="country">Country:</label>
                                 <!-- <input type="text" class="form-control" name="country" id="country"
                                 required maxlength="56"> -->
-                                <select type="text" class="form-control" name="country" id="country"
-                                required>
+                                <select type="text" class="form-control" name="country" id="country" onchange="activateStates();" required>
                                     <option disabled selected>Select country</option>
                                     <option value="AF">Afghanistan</option>
                                     <option value="AX">Aland Islands</option>
@@ -287,13 +286,78 @@
                                     <option value="ZM">Zambia</option>
                                 </select>
                             </div>
+                            <div class="form-group col-md-6" id="usa_states_div" style="display: none">
+                                <label for="usa_states">USA States:</label>
+                                <select type="text" class="form-control" name="usa_states" id="usa_states" required>
+                                    <option disabled selected>Select a State</option>
+                                    <option value="US_CA">California</option>
+                                    <option value="US_KY">Kentucky</option>
+                                    <option value="US_MA">Massachusetts</option>
+                                    <option value="US_MT">Montana</option>
+                                    <option value="US_ND">North Dakota</option>
+                                    <option value="US_UT">Utah</option>
+                                    <option value="US_WY">Wyoming</option>
+                                    <option value="US_AL" disabled>Alabama (NOT ALLOWED)</option>
+                                    <option value="US_AK" disabled>Alaska (NOT ALLOWED)</option>
+                                    <option value="US_AZ" disabled>Arizona (NOT ALLOWED)</option>
+                                    <option value="US_AR" disabled>Arkansas (NOT ALLOWED)</option>
+                                    <!-- <option value="US_CA">California</option> -->
+                                    <option value="US_CO" disabled>Colorado (NOT ALLOWED)</option>
+                                    <option value="US_CT" disabled>Connecticut (NOT ALLOWED)</option>
+                                    <option value="US_DE" disabled>Delaware (NOT ALLOWED)</option>
+                                    <option value="US_DC" disabled>District Of Columbia (NOT ALLOWED)</option>
+                                    <option value="US_FL" disabled>Florida (NOT ALLOWED)</option>
+                                    <option value="US_GA" disabled>Georgia (NOT ALLOWED)</option>
+                                    <option value="US_HI" disabled>Hawaii (NOT ALLOWED)</option>
+                                    <option value="US_ID" disabled>Idaho (NOT ALLOWED)</option>
+                                    <option value="US_IL" disabled>Illinois (NOT ALLOWED)</option>
+                                    <option value="US_IN" disabled>Indiana (NOT ALLOWED)</option>
+                                    <option value="US_IA" disabled>Iowa (NOT ALLOWED)</option>
+                                    <option value="US_KS" disabled>Kansas (NOT ALLOWED)</option>
+                                    <!-- <option value="US_KY">Kentucky</option> -->
+                                    <option value="US_LA" disabled>Louisiana (NOT ALLOWED)</option>
+                                    <option value="US_ME" disabled>Maine (NOT ALLOWED)</option>
+                                    <option value="US_MD" disabled>Maryland (NOT ALLOWED)</option>
+                                    <!-- <option value="US_MA">Massachusetts</option> -->
+                                    <option value="US_MI" disabled>Michigan (NOT ALLOWED)</option>
+                                    <option value="US_MN" disabled>Minnesota (NOT ALLOWED)</option>
+                                    <option value="US_MS" disabled>Mississippi (NOT ALLOWED)</option>
+                                    <option value="US_MO" disabled>Missouri (NOT ALLOWED)</option>
+                                    <!-- <option value="US_MT">Montana</option> -->
+                                    <option value="US_NE" disabled>Nebraska (NOT ALLOWED)</option>
+                                    <option value="US_NV" disabled>Nevada (NOT ALLOWED)</option>
+                                    <option value="US_NH" disabled>New Hampshire (NOT ALLOWED)</option>
+                                    <option value="US_NJ" disabled>New Jersey (NOT ALLOWED)</option>
+                                    <option value="US_NM" disabled>New Mexico (NOT ALLOWED)</option>
+                                    <option value="US_NY" disabled>New York (NOT ALLOWED)</option>
+                                    <option value="US_NC" disabled>North Carolina (NOT ALLOWED)</option>
+                                    <!-- <option value="US_ND">North Dakota</option> -->
+                                    <option value="US_OH" disabled>Ohio (NOT ALLOWED)</option>
+                                    <option value="US_OK" disabled>Oklahoma (NOT ALLOWED)</option>
+                                    <option value="US_OR" disabled>Oregon (NOT ALLOWED)</option>
+                                    <option value="US_PA" disabled>Pennsylvania (NOT ALLOWED)</option>
+                                    <option value="US_RI" disabled>Rhode Island (NOT ALLOWED)</option>
+                                    <option value="US_SC" disabled>South Carolina (NOT ALLOWED)</option>
+                                    <option value="US_SD" disabled>South Dakota (NOT ALLOWED)</option>
+                                    <option value="US_TN" disabled>Tennessee (NOT ALLOWED)</option>
+                                    <option value="US_TX" disabled>Texas (NOT ALLOWED)</option>
+                                    <!-- <option value="US_UT">Utah</option> -->
+                                    <option value="US_VT" disabled>Vermont (NOT ALLOWED)</option>
+                                    <option value="US_VA" disabled>Virginia (NOT ALLOWED)</option>
+                                    <option value="US_WA" disabled>Washington (NOT ALLOWED)</option>
+                                    <option value="US_WV" disabled>West Virginia (NOT ALLOWED)</option>
+                                    <option value="US_WI" disabled>Wisconsin (NOT ALLOWED)</option>
+                                    <!-- <option value="US_WY">Wyoming</option> -->
+                                </select>
+                            </div>
                             <div class="form-group col-md-6">
                                 <label for="birthdate">Birthdate:</label>
                                 <input onclick="dateController();" type="date" class="form-control" name="birthdate" id="birthdate" max=""
                                 required>
                             </div>
-                            <div id="toggle-pin">
-                                <input type="checkbox" onclick="togglePINVis()"> Show PIN
+                            <div class="form-group col-md-12" id="toggle-pin">
+                                <label for="ShowPin">Show PIN:</label>
+                                <input class="form-control" type="checkbox" onclick="togglePINVis()"> 
                             </div>
                             <div class="form-row col-12">
                                 <div id='pin_match'></div>
@@ -305,8 +369,8 @@
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="confirm_terms" name="confirm_terms" required>
-                                <label class="form-check-label" for="confirm_terms">
+                                <input class="form-check-input" type="checkbox" value="" id="confirm_terms3" name="confirm_terms3" required>
+                                <label class="form-check-label" for="confirm_terms3">
                                     <em>I attest that I am 18 years old, and Agree to the
                                         <a href="https://www.docdroid.net/d7k8f79/cryptoshare-banq-terms-and-conditionsdocx-pdf" target="_blank">Terms & Conditions</a>
                                         and 
@@ -358,103 +422,127 @@
                     }
                     const button = this;
                     GRToolbox.processCustomerAndBonus(grSetting).then(function(){
-                        button.onclick=function(){};button.click();});}};
-                        const grSettingCookie={
-                            "grCookieLifeTime": "180",
-                        },
-                        e=window,t=document;e.addEventListener("load",function(){const e=t.createElement("script");e.type="text/javascript",e.async=!0,e.src="https://e9f87d8c82343264e6ba-2977c39e5e9390b1a89ab5ed2a171102.ssl.cf1.rackcdn.com/toolbox/geniusreferrals-toolbox_3.3.1.min.js",e.onload=function(){GRToolbox.catchReferrer(grSettingCookie);t.getElementById("submit").onclick = submit;};const n=t.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)},!1)}();
-                    </script>
+                        button.onclick=function(){};button.click();
+                    }
+                    );
+                    }
+        };
+        const grSettingCookie={
+            "grCookieLifeTime": "180",
+        },
+        e=window,t=document;e.addEventListener("load",function(){const e=t.createElement("script");e.type="text/javascript",e.async=!0,e.src="https://e9f87d8c82343264e6ba-2977c39e5e9390b1a89ab5ed2a171102.ssl.cf1.rackcdn.com/toolbox/geniusreferrals-toolbox_3.3.1.min.js",e.onload=function(){GRToolbox.catchReferrer(grSettingCookie);t.getElementById("submit").onclick = submit;};const n=t.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)},!1)}();
+            
+                    
+    </script>
                     <!-- ENDING GENIUS REFERRALS TRACKING CODE -->
                     
-                    <script type="text/javascript">
+
+    <script type="text/javascript">
                         // toggle PIN visibility
-                        function togglePINVis() {
-                            var button = document.getElementById("pin");
-                            var button2 = document.getElementById("conf_pin");
-                            if (button.type == 'password') {
-                                button.type = 'text';
-                                button2.type = 'text';
-                            } else {
-                                button.type = 'password';
-                                button2.type = 'password';
-                            }
-                        }
-                        // set PIN matching text
-                        $('#pin, #conf_pin').on('keyup', function () {
-                            if (($('#pin').val().length == 0) || ($('#conf_pin').val().length==0)) {
-                                $('#pin_match').html('');
-                            }
-                            else if ($('#pin').val() == $('#conf_pin').val())
-                            {
-                                if (($('#pin').val().length == 6) & ($('#conf_pin').val().length==6)) {
-                                    $('#pin_match').html('PINs match!').css('color', 'green');
-                                    $('#submit').prop('disabled', false);
-                                }
-                                else {
-                                    $('#pin_match').html('PIN must be 6 digits.').css('color', 'red');
-                                    $('#submit').prop('disabled', true);
-                                }
-                            }
-                            else {
-                                $('#pin_match').html('PINs do not match.').css('color', 'red');
-                                $('#submit').prop('disabled', true);
-                            }
-                        });
-                        function googleTranslateElementInit() {
-                            new google.translate.TranslateElement({
-                                pageLanguage: 'en',
-                                autoDisplay: false
-                            }, 'google_translate_element'); //remove the layout
-                        }
-                    </script>
-                    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
-                    </script>
-                    <script type="text/javascript">
-                        function triggerHtmlEvent(element, eventName) {
-                            var event;
-                            if (document.createEvent) {
-                                event = document.createEvent('HTMLEvents');
-                                event.initEvent(eventName, true, true);
-                                element.dispatchEvent(event);
-                            } else {
-                                event = document.createEventObject();
-                                event.eventType = eventName;
-                                element.fireEvent('on' + event.eventType, event);
-                            }
-                        }
-                        
-                        $('.translation-links a').click(function (e) {
-                            e.preventDefault();
-                            var lang = $(this).data('lang');
-                            $('#google_translate_element select option').each(function () {
-                                if ($(this).text().indexOf(lang) > -1) {
-                                    $(this).parent().val($(this).val());
-                                    var container = document.getElementById('google_translate_element');
-                                    var select = container.getElementsByTagName('select')[0];
-                                    triggerHtmlEvent(select, 'change');
-                                }
-                            });
-                        });
-                    </script>
-                    <script>
-                        function dateController() {
-                            dateInput = document.getElementById("birthdate");
+        function togglePINVis() {
+            var button = document.getElementById("pin");
+            var button2 = document.getElementById("conf_pin");
+            if (button.type == 'password') {
+                button.type = 'text';
+                button2.type = 'text';
+            } else {
+                button.type = 'password';
+                button2.type = 'password';
+            }
+        }
+        // set PIN matching text
+        $('#pin, #conf_pin').on('keyup', function () {
+            if (($('#pin').val().length == 0) || ($('#conf_pin').val().length==0)) {
+                $('#pin_match').html('');
+            }
+            else if ($('#pin').val() == $('#conf_pin').val())
+            {
+                if (($('#pin').val().length == 6) & ($('#conf_pin').val().length==6)) {
+                    $('#pin_match').html('PINs match!').css('color', 'green');
+                    $('#submit').prop('disabled', false);
+                }
+                else {
+                    $('#pin_match').html('PIN must be 6 digits.').css('color', 'red');
+                    $('#submit').prop('disabled', true);
+                }
+            }
+            else {
+                $('#pin_match').html('PINs do not match.').css('color', 'red');
+                $('#submit').prop('disabled', true);
+            }
+        });
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript"></script>
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+        
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+    <script>
+        function dateController() {
+            dateInput = document.getElementById("birthdate");
 
-                            DIFFERENCE = 568036800000;
-                            currentDate = new Date();
-                            majorDate = currentDate - DIFFERENCE;
-                            
-                            maxDate = new Date(majorDate);
+            DIFFERENCE = 568036800000;
+            currentDate = new Date();
+            majorDate = currentDate - DIFFERENCE;
+            
+            maxDate = new Date(majorDate);
 
-                            dateInput.max = maxDate.toISOString().split("T")[0];
-                        }
-                    </script>
-                    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-                    <script src="{% static 'js/popper.min.js' %}"></script>
-                    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-                    <script src="{% static 'js/jquery.sticky.js' %}"></script>
-                    <script src="{% static 'js/main.js' %}"></script>
-                    {% include 'footer.html' %}
-                </body>
-                </html>
+            dateInput.max = maxDate.toISOString().split("T")[0];
+        }
+    </script>
+
+    <script type="text/javascript">
+        function activateStates() {
+            var countryInput = document.getElementById("country");
+            var statesDiv = document.getElementById("usa_states_div");
+
+            var country = countryInput.value;
+            if (country == "US"){
+                statesDiv.style.display = "block";
+            }else{
+                statesDiv.style.display = "none";
+            }
+
+
+
+        }
+    </script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% include 'footer.html' %}
+</body>
+
+</html>
                 
