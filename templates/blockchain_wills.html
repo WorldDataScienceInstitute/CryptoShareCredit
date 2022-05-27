@@ -13,13 +13,12 @@
         <br>
         {% include 'messages.html' %}
         {% include 'a_sessiontimeout.html' %}
-        <h4 class="ml-2" style="text-align: center;">Prepurchase your blockchain will</h4>
         <form action="/atm/BlockchainWills/" method="post">
             {% csrf_token %}
             <div class="form-group">
-                <label for="currency_amount"><b>Blockchain Will Price: </b>  <em>In Bitcoin Cash (BCH)</em></label>
+                <label for="currency_amount"><b>Blockchain Will Price: </b>  <em>In Dash (DASH)</em></label>
                 <input type="number" class="form-control" id="will_price" aria-describedby="will_price" name="will_price"
-                    step=".0001" value="1" required readonly>
+                    step=".0001" value="3" required readonly>
             </div>
             <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
                 <div class="form-check">
@@ -81,7 +80,7 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
         <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
-            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Must have at least 1 BCH deposited in your CryptoShare Wallet for creating a will</small>
+            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Must have at least 3 DASH deposited in your CryptoShare Wallet for creating a will</small>
         </div>
 
         <br>

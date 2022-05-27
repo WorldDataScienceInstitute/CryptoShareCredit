@@ -681,15 +681,17 @@ def generate_address(request):
 def blockchain_wills(request):
 
     if request.method == "POST":
-        bch_object = Cryptocurrency.objects.get(currency_name="Bitcoin Cash")
-        user_balance = Balance.objects.get(email=request.user, currency_name=bch_object)
+        currency_object = Cryptocurrency.objects.get(currency_name="Dash")
+        user_balance = Balance.objects.get(email=request.user, currency_name=currency_object)
 
-        if user_balance.amount < 1:
-            messages.info(request, "You do not have enough funds to create a blockchain will. Please deposit BCH to your wallet.")
+        blockchain_will_price = 3
+
+        if user_balance.amount < blockchain_will_price:
+            messages.info(request, "You do not have enough funds to create a blockchain will. Please deposit DASH to your wallet.")
             return redirect('atm_functions:Home')
             
-        bch_object.amount -= 1
-        bch_object.save()
+        user_balance.amount -= blockchain_will_price
+        user_balance.save()
         blockchain_will = BlockchainWill.objects.create(email= request.user, status="PREPURCHASED")
 
         return redirect('atm_functions:BlockchainWills')
