@@ -4,6 +4,7 @@
 <!doctype html>
 <html lang="en">
 {% include 'header.html' %}
+<script type="text/javascript" src="{% static 'qrcodejs/qrcode.js' %}"></script>
 <body>
     {% include 'atm_sidebar.html' %}
     <div class="content-container">
@@ -32,6 +33,7 @@
                     <th class="td_currency" scope="col">Currency</th>
                     <th class="td-balance" scope="col">Balance</th>
                     <th class="td-address" scope="col">CryptoShare Wallet Address</th>
+                    <th class="td-address" scope="col">QR Code</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,6 +46,9 @@
                         <td style="width: auto;"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ currency.blockchain }}&network=mainnet&currency={{ currency.currency_name }}">Create Pay Address</a></td>
                     {% else %}
                         <td class="td-address">{{ currency.address }} </td>
+                        <td class="td-address">
+                            <div id="qrcode_{{ currency.symbol }}" class="btn btn-info" onclick="makeCode('qrcode_{{ currency.symbol }}' ,'{{ currency.address }}');">Show Address</div>
+                        </td>
                     {% endif %}
                     </tr>
                 {% endfor %}
@@ -58,6 +63,7 @@
                     <th class="td_currency" scope="col">Currency</th>
                     <th class="td-balance" scope="col">Balance</th>
                     <th class="td-address" scope="col">CryptoShare Wallet Address</th>
+                    <th class="td-address" scope="col">QR Code</th>
                 </tr>
             </thead>
             <tbody>
@@ -71,6 +77,9 @@
                     <td class="td-address"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ static_currencies.BTC.blockchain }}&network=mainnet&currency={{ static_currencies.BTC.currency_name }}">Create Savings Address</a></td>
                 {% else %}
                     <td class="td-address">{{ static_currencies.BTC.address }} </td>
+                    <td class="td-address">
+                        <div id="qrcode_BTC" class="btn btn-info" onclick="makeCode('qrcode_BTC' ,'{{ static_currencies.BTC.address }}');">Show Address</div>
+                    </td>
                 {% endif %}
                 </tr>
                 <!-- BITCOIN -->
@@ -86,6 +95,9 @@
                     <td class="td-address"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ static_currencies.ETH.blockchain }}&network=mainnet&currency={{ static_currencies.ETH.currency_name }}">Create Savings Address</a></td>
                 {% else %}
                     <td class="td-address">{{ static_currencies.ETH.address }} </td>
+                    <td class="td-address">
+                        <div id="qrcode_ETH" class="btn btn-info" onclick="makeCode('qrcode_ETH' ,'{{ static_currencies.ETH.address }}');">Show Address</div>
+                    </td>
                 {% endif %}
                 </tr>
                 <!-- ETHEREUM -->
@@ -171,11 +183,61 @@
             });
         });
     </script>
+
+    <script>
+        window.onload = function() {
+            // console.log(localStorage.hideAlert);
+            if (!localStorage.hideAlert) {
+                $('#DepositWarning').modal('toggle');
+            }
+            if ({{ request.user.is_authenticated|yesno:"true,false" }}){
+                GetCreditGrade();
+            }
+        }
+    </script>
+
+    <script type="text/javascript">
+        
+        
+        function makeCode (elementId ,address) {		
+            divButton = document.getElementById(elementId);
+            divButton.innerHTML = "";
+            divButton.onclick = "";
+            var qrcode = new QRCode(document.getElementById(elementId), {
+                width : 100,
+                height : 100
+            });
+            qrcode.makeCode(address);
+        }
+    </script>
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.sticky.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
+    <!-- Modal -->
+<div id="DepositWarning" class="modal" style="z-index: 2000;">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>DEPOSIT ACCEPTANCE FORM</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <br>
+            <p style="color: black;font-weight: 400;">This is a Message from CryptoShare.</p>
+            <br>
+            <b><p style="color: black;font-weight: 400;">We require 1% of each deposit of our members or your wallet will be revoked in 6 days. We use this Crypto to Maintain the platform.</p></b>
+            <div class="d-flex justify-content-center">
+                <button style="text-align: center;" class="btn btn-danger" data-toggle="modal" id="Close" onclick="$('#DepositWarning').modal('hide');">Close</button> 
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button style="text-align: center;" class="btn btn-success" data-toggle="modal" id="NeverShowAgain" onclick="neverShowAgainModal()">Never show again</button> 
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 {% include 'atm_footer.html' %}
 </html>
