@@ -24,53 +24,53 @@
         <h3 class="ml-5">Welcome back, {{ name }}!</h3>
         <!-- <h5 class="ml-5">Information for account ending in {{ debit_last_four }}</h5> -->
         <h2 class="ml-4 text-secondary" style="font-size: 25px;">Crypto$hare Pay Wallet</h2>
-        <table class="table">
+        <table class="table crypto ">
             <caption style="caption-side: top; text-align: center;">These wallets are used to pay for everyday expenses because of transaction speed. XRP and Dash have the fastest transaction speeds. The Crypto in these wallets will not be counted in Credit Grade.</caption>
             <thead>
                 <tr>
-                <th scope="col">Symbol</th>
-                <th scope="col">Currency</th>
-                <th scope="col">Balance</th>
-                <th scope="col">CryptoShare Wallet Address</th>
-            </tr>
+                    <th class="td_symbol" scope="col">Symbol</th>
+                    <th class="td_currency" scope="col">Currency</th>
+                    <th class="td-balance" scope="col">Balance</th>
+                    <th class="td-address" scope="col">CryptoShare Wallet Address</th>
+                </tr>
             </thead>
             <tbody>
                 {% for currency in payments_currencies %}
                     <tr>
-                        <td>{{ currency.symbol }} </td>
-                        <td>{{ currency.currency_name }} </td>
-                        <td>{{ currency.balance }} </td>
+                        <td class="td_symbol">{{ currency.symbol }} </td>
+                        <td class="td_currency">{{ currency.currency_name }} </td>
+                        <td class="td-balance">{{ currency.balance }} </td>
                     {% if not currency.has_address %}
                         <td style="width: auto;"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ currency.blockchain }}&network=mainnet&currency={{ currency.currency_name }}">Create Pay Address</a></td>
                     {% else %}
-                        <td>{{ currency.address }} </td>
+                        <td class="td-address">{{ currency.address }} </td>
                     {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
         <h2 class="ml-4 text-secondary" style="font-size: 25px;">Crypto$hare Savings Wallet</h2>
-        <table class="table">
+        <table class="table crypto">
             <caption style="caption-side: top; text-align: center;">The Cryptocurrency in your Savings Wallet will be used for your <a href="{% url 'atm_functions:CreditGrades' %}">Credit Grade</a></caption>
             <thead>
                 <tr>
-                <th scope="col">Symbol</th>
-                <th scope="col">Currency</th>
-                <th scope="col">Balance</th>
-                <th scope="col">CryptoShare Wallet Address</th>
-            </tr>
+                    <th class="td_symbol" scope="col">Symbol</th>
+                    <th class="td_currency" scope="col">Currency</th>
+                    <th class="td-balance" scope="col">Balance</th>
+                    <th class="td-address" scope="col">CryptoShare Wallet Address</th>
+                </tr>
             </thead>
             <tbody>
                 <!-- BITCOIN -->
                 <!-- BITCOIN -->
                 <tr>
-                    <td>BTC </td>
-                    <td>Bitcoin </td>
-                    <td>{{ static_currencies.BTC.balance }} </td>
+                    <td class="td_symbol">BTC </td>
+                    <td class="td_currency">Bitcoin </td>
+                    <td class="td-balance">{{ static_currencies.BTC.balance }} </td>
                 {% if not static_currencies.BTC.has_address %}
-                    <td style="width: auto;"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ static_currencies.BTC.blockchain }}&network=mainnet&currency={{ static_currencies.BTC.currency_name }}">Create Savings Address</a></td>
+                    <td class="td-address"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ static_currencies.BTC.blockchain }}&network=mainnet&currency={{ static_currencies.BTC.currency_name }}">Create Savings Address</a></td>
                 {% else %}
-                    <td>{{ static_currencies.BTC.address }} </td>
+                    <td class="td-address">{{ static_currencies.BTC.address }} </td>
                 {% endif %}
                 </tr>
                 <!-- BITCOIN -->
@@ -79,13 +79,13 @@
                 <!-- ETHEREUM -->
                 <!-- ETHEREUM -->
                 <tr>
-                    <td>ETH </td>
-                    <td>Ethereum </td>
-                    <td>{{ static_currencies.ETH.balance }} </td>
+                    <td class="td_symbol">ETH </td>
+                    <td class="td_currency">Ethereum </td>
+                    <td class="td-balance">{{ static_currencies.ETH.balance }} </td>
                 {% if not static_currencies.ETH.has_address %}
-                    <td style="width: auto;"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ static_currencies.ETH.blockchain }}&network=mainnet&currency={{ static_currencies.ETH.currency_name }}">Create Savings Address</a></td>
+                    <td class="td-address"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ static_currencies.ETH.blockchain }}&network=mainnet&currency={{ static_currencies.ETH.currency_name }}">Create Savings Address</a></td>
                 {% else %}
-                    <td>{{ static_currencies.ETH.address }} </td>
+                    <td class="td-address">{{ static_currencies.ETH.address }} </td>
                 {% endif %}
                 </tr>
                 <!-- ETHEREUM -->
@@ -99,11 +99,11 @@
 
                 {% for currency in erc20_tokens %}
                     <tr>
-                        <td>{{ currency.symbol }} </td>
-                        <td>{{ currency.currency_name }} </td>
-                        <td>{{ currency.balance }} </td>
+                        <td class="td_symbol">{{ currency.symbol }} </td>
+                        <td class="td_currency">{{ currency.currency_name }} <span style="display: block;">(ERC-20)</span></td>
+                        <td class="td-balance">{{ currency.balance }} </td>
                     {% if not currency.has_address %}
-                        <td style="width: auto;"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ currency.blockchain }}&network=mainnet&currency={{ currency.currency_name }}">Create Savings Address</a></td>
+                        <td class="td-address" ><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ currency.blockchain }}&network=mainnet&currency={{ currency.currency_name }}">Create Savings Address</a></td>
                     {% else %}
                         <td> </td>
                     {% endif %}
@@ -112,7 +112,26 @@
             </tbody>
         </table>
     </div>
-    
+    <style>
+        table.crypto{
+            table-layout:fixed;
+        }
+        .td_symbol {
+            width:100px;
+        }
+        .td_currency {
+            text-align: center;
+            width:120px;
+        }
+        .td-balance {
+            text-align: center;
+            width:150px;
+        }
+        .td-address{
+            text-align: center;
+            width:300px;
+        }
+    </style>
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
@@ -152,28 +171,6 @@
             });
         });
     </script>
-    
-    <!-- <div class="row">
-        <div class="col-5 d-flex justify-content-center text-center">
-            <div class="card container1">
-                <h2 class="text-primary">HAVE FUN USING CRYPTOSHARE!!!</h2>
-                <br>
-                <button type="submit" class="btn btn-primary btn-lg btn-block">Create Account</button>
-                <button type="submit" class="btn btn-secondary btn-lg btn-block">Login to Account</button>
-            </div>
-        </div>
-        <div class="col-xl-7 d-flex justify-content-center text-center">
-            <div class="card container1">
-                <h2 class="text-primary">CREATED BY :</h2>
-                
-                <h5>Anade Davis - Data Science Manager </h5>
-                <h5>Shailee R. Desai - (Project Lead) Data Analyst </h5>
-                <h5>Alexander Rodriguez - (Project Lead) Data Analyst </h5>
-                <h5>William Munson - Data Scientist</h5>
-                <h5>Harleen Bagga - Data Scientist</h5>
-            </div>
-        </div>
-    </div> -->
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>

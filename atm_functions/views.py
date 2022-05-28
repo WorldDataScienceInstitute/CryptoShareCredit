@@ -86,7 +86,7 @@ def check_balance(request):
         if currency["blockchain"] == "ethereum" and currency["symbol"] != "ETH":
             currency["has_address"] = True
             currency["address"] = currencies["ETH"]["address"]
-            currency["currency_name"] += " (ERC-20)"
+            # currency["currency_name"] += " (ERC-20)"
 
             erc20_tokens.append(currency)
 
