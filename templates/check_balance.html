@@ -61,7 +61,43 @@
             </tr>
             </thead>
             <tbody>
-                {% for currency in savings_currencies %}
+                <!-- BITCOIN -->
+                <!-- BITCOIN -->
+                <tr>
+                    <td>BTC </td>
+                    <td>Bitcoin </td>
+                    <td>{{ static_currencies.BTC.balance }} </td>
+                {% if not static_currencies.BTC.has_address %}
+                    <td style="width: auto;"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ static_currencies.BTC.blockchain }}&network=mainnet&currency={{ static_currencies.BTC.currency_name }}">Create Savings Address</a></td>
+                {% else %}
+                    <td>{{ static_currencies.BTC.address }} </td>
+                {% endif %}
+                </tr>
+                <!-- BITCOIN -->
+                <!-- BITCOIN -->
+
+                <!-- ETHEREUM -->
+                <!-- ETHEREUM -->
+                <tr>
+                    <td>ETH </td>
+                    <td>Ethereum </td>
+                    <td>{{ static_currencies.ETH.balance }} </td>
+                {% if not static_currencies.ETH.has_address %}
+                    <td style="width: auto;"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ static_currencies.ETH.blockchain }}&network=mainnet&currency={{ static_currencies.ETH.currency_name }}">Create Savings Address</a></td>
+                {% else %}
+                    <td>{{ static_currencies.ETH.address }} </td>
+                {% endif %}
+                </tr>
+                <!-- ETHEREUM -->
+                <!-- ETHEREUM -->
+
+                <tr>
+                    <td colspan="4" style="text-align: center;">
+                        (The ERC-20 Coins Below can be transferred to this Ethereum Wallet)
+                    </td>
+                </tr>
+
+                {% for currency in erc20_tokens %}
                     <tr>
                         <td>{{ currency.symbol }} </td>
                         <td>{{ currency.currency_name }} </td>
@@ -69,7 +105,7 @@
                     {% if not currency.has_address %}
                         <td style="width: auto;"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ currency.blockchain }}&network=mainnet&currency={{ currency.currency_name }}">Create Savings Address</a></td>
                     {% else %}
-                        <td>{{ currency.address }} </td>
+                        <td> </td>
                     {% endif %}
                     </tr>
                 {% endfor %}
