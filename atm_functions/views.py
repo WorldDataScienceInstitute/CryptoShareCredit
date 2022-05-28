@@ -77,24 +77,35 @@ def check_balance(request):
     for balance in user_balances:
         currencies[balance.currency_name.symbol]["balance"] = balance.amount
 
-    savings_currencies = []
+    # savings_currencies = []
     payments_currencies = []
+    erc20_tokens = []
+    static_currencies = {}
 
     for currency in currencies.values():
         if currency["blockchain"] == "ethereum" and currency["symbol"] != "ETH":
             currency["has_address"] = True
             currency["address"] = currencies["ETH"]["address"]
-            currency["currency_name"] += " (ERC-20)"
+            # currency["currency_name"] += " (ERC-20)"
 
-        if currency["currency_type"] == "SAVINGS":
-            savings_currencies.append(currency)
-        elif currency["currency_type"] == "PAYMENTS":
+            erc20_tokens.append(currency)
+
+        # if currency["currency_type"] == "SAVINGS":
+        #     savings_currencies.append(currency)
+        if currency["currency_type"] == "PAYMENTS":
             payments_currencies.append(currency)
+
+        if currency["currency_name"] == "Bitcoin":
+            static_currencies["BTC"] = currency
+        elif currency["currency_name"] == "Ethereum":
+            static_currencies["ETH"] = currency
 
     context = {
         "name": name,
-        "savings_currencies": savings_currencies,
-        "payments_currencies": payments_currencies
+        # "savings_currencies": savings_currencies,
+        "payments_currencies": payments_currencies,
+        "erc20_tokens": erc20_tokens,
+        "static_currencies": static_currencies
     }
 
     return render(request, 'check_balance.html', context)
