@@ -47,7 +47,7 @@
                     {% else %}
                         <td class="td-address">{{ currency.address }} </td>
                         <td class="td-address">
-                            <div id="qrcode_{{ currency.symbol }}" class="btn btn-info" onclick="makeCode('qrcode_{{ currency.symbol }}' ,'{{ currency.address }}');">Show Address</div>
+                            <div id="qrcode_{{ currency.symbol }}" class="btn btn-info" onclick="makeCode('qrcode_{{ currency.symbol }}' ,'{{ currency.address }}');">Show QR Code</div>
                         </td>
                     {% endif %}
                     </tr>
@@ -78,7 +78,7 @@
                 {% else %}
                     <td class="td-address">{{ static_currencies.BTC.address }} </td>
                     <td class="td-address">
-                        <div id="qrcode_BTC" class="btn btn-info" onclick="makeCode('qrcode_BTC' ,'{{ static_currencies.BTC.address }}');">Show Address</div>
+                        <div id="qrcode_BTC" class="btn btn-info" onclick="makeCode('qrcode_BTC' ,'{{ static_currencies.BTC.address }}');">Show QR Code</div>
                     </td>
                 {% endif %}
                 </tr>
@@ -96,7 +96,7 @@
                 {% else %}
                     <td class="td-address">{{ static_currencies.ETH.address }} </td>
                     <td class="td-address">
-                        <div id="qrcode_ETH" class="btn btn-info" onclick="makeCode('qrcode_ETH' ,'{{ static_currencies.ETH.address }}');">Show Address</div>
+                        <div id="qrcode_ETH" class="btn btn-info" onclick="makeCode('qrcode_ETH' ,'{{ static_currencies.ETH.address }}');">Show QR Code</div>
                     </td>
                 {% endif %}
                 </tr>
@@ -141,7 +141,7 @@
         }
         .td-address{
             text-align: center;
-            width:300px;
+            width:400px;
         }
     </style>
     <script type="text/javascript">
