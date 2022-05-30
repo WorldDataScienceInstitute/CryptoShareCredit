@@ -13,6 +13,11 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
+            model_name='account',
+            name='state',
+            field=models.CharField(max_length=57, null=True),
+        ),
+        migrations.AddField(
             model_name='beneficiary',
             name='selfie_photo_url',
             field=models.CharField(max_length=255, null=True),
