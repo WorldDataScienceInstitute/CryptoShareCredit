@@ -2,6 +2,7 @@
 from email import message
 from multiprocessing import context
 from django.contrib import messages
+from django.urls import reverse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -658,7 +659,7 @@ def generate_address(request):
 
     if not blockchain or not network or not currency:
         messages.info(request, "Invalid option, please try again.")
-        return redirect('atm_functions:CryptoShareWallet')
+        return redirect('atm_functions:Home')
     
     #Check if there is already a balance with that currency name for that email
     balance_exists = Balance.objects.filter(email=email_object, currency_name=currency_object)
@@ -671,27 +672,30 @@ def generate_address(request):
     address, error = cryptoapis_utils.generate_address(request.user, currency_object, register_function = True)
     if error is not None:
         messages.info(request, error)
-        return redirect('atm_functions:CryptoShareWallet')
+        return redirect('atm_functions:Home')
     
     messages.info(request, "Address generated successfully.")
 
-    return redirect('atm_functions:CryptoShareWallet')
+    return redirect('atm_functions:Home')
 
 @login_required()
 def blockchain_wills(request):
 
     if request.method == "POST":
-        bch_object = Cryptocurrency.objects.get(currency_name="Bitcoin Cash")
-        user_balance = Balance.objects.get(email=request.user, currency_name=bch_object)
+        currency_object = Cryptocurrency.objects.get(currency_name="Dash")
+        user_balance = Balance.objects.get(email=request.user, currency_name=currency_object)
 
-        if user_balance.amount < 1:
-            messages.info(request, "You do not have enough funds to create a blockchain will. Please deposit BCH to your wallet.")
+        blockchain_will_price = 0.25
+
+        if user_balance.amount < blockchain_will_price:
+            messages.info(request, "You do not have enough funds to create a blockchain will. Please deposit DASH to your wallet.")
             return redirect('atm_functions:Home')
             
-        bch_object.amount -= 1
-        blockchain_will = BlockchainWill.objects.create(email= request.user, status="PREPURCHASED")
+        user_balance.amount -= Decimal(blockchain_will_price)
+        user_balance.save()
+        blockchain_will = BlockchainWill.objects.create(email= request.user, status="NOT COMPLETED")
 
-        return redirect('atm_functions:BlockchainWills')
+        return redirect(reverse('atm_functions:RegisterBlockchainWill')+f"?id={blockchain_will.id_w}")
     if request.method == "GET":
         blockchain_wills = BlockchainWill.objects.filter(email=request.user)
         context = {
@@ -700,6 +704,80 @@ def blockchain_wills(request):
         return render(request, 'blockchain_wills.html', context)
 
     return render(request, 'blockchain_wills.html')
+
+@login_required()
+def register_blockchain_will(request):
+
+    will_id = request.GET.get('id','')
+
+    if not will_id:
+        messages.info(request, "Invalid request, please try again.")
+        return redirect('atm_functions:BlockchainWills')
+    else:
+        blockchain_will = BlockchainWill.objects.get(id_w=will_id)
+        if blockchain_will.email != request.user:
+
+            messages.info(request, "Invalid request, please try again.")
+            return redirect('atm_functions:BlockchainWills')
+
+    if request.method == "GET":
+        return render(request, 'blockchain_will_edit.html')
+
+
+    grantor_fullname = request.POST.get("grantor_fullname")
+    grantor_birthdate = request.POST.get("grantor_birthdate")
+    grantor_country = request.POST.get("grantor_country")
+    grantor_email_1 = request.POST.get("grantor_email_1")
+    grantor_email_2 = request.POST.get("grantor_email_2")
+    grantor_email_3 = request.POST.get("grantor_email_3")
+    grantor_selfie_photo_url = request.POST.get("grantor_selfie_photo")
+    grantor_id_document_url = request.POST.get("grantor_id_document")
+
+    blockchain_will.full_legal_name = grantor_fullname
+    blockchain_will.birthdate = grantor_birthdate
+    blockchain_will.birth_country = grantor_country
+    blockchain_will.associated_email1 = grantor_email_1
+    blockchain_will.associated_email2 = grantor_email_2
+    blockchain_will.associated_email3 = grantor_email_3
+    blockchain_will.selfie_photo_url = grantor_selfie_photo_url
+    blockchain_will.id_document_url = grantor_id_document_url
+
+    #BENEFICIARY
+
+    beneficiary_fullname = request.POST.get("beneficiary_fullname")
+    beneficiary_birthdate = request.POST.get("beneficiary_birthdate")
+    beneficiary_country = request.POST.get("beneficiary_country")
+    beneficiary_relationship = request.POST.get("beneficiary_relationship")
+    beneficiary_email_1 = request.POST.get("beneficiary_email_1")
+    beneficiary_email_2 = request.POST.get("beneficiary_email_2")
+    beneficiary_selfie_photo_url = request.POST.get("beneficiary_selfie_photo")
+
+    # BlockchainWill.objects.create(email= request.user, status="PREPURCHASED")
+    beneficiary = Beneficiary.objects.create(
+                                            full_legal_name = beneficiary_fullname,
+                                            birthdate = beneficiary_birthdate,
+                                            birth_country = beneficiary_country,
+                                            relationship = beneficiary_relationship,
+                                            associated_email1 = beneficiary_email_1,
+                                            associated_email2 = beneficiary_email_2,
+                                            will_percentage = 100,
+                                            selfie_photo_url = beneficiary_selfie_photo_url
+    )
+
+    beneficiary.blockchain_wills.add(blockchain_will)
+
+    cryptoapis_client = CryptoApis()
+    transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet("dash", "mainnet", "Xh1daZF6rafvc2gieJXzhr71wQtzuvk6C3", "0.25", data="TEST")
+
+
+    blockchain_will.status = "ACTIVE"
+    blockchain_will.save()
+
+    messages.info(request, "Blockchain Will successfully created.")
+
+
+    return redirect('atm_functions:BlockchainWills')
+   
 
 def get_credit_grade(request):
     user = Account.objects.get(user = request.user)
