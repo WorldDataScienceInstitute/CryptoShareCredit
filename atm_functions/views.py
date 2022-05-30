@@ -2,6 +2,7 @@
 from email import message
 from multiprocessing import context
 from django.contrib import messages
+from django.urls import reverse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -681,29 +682,21 @@ def generate_address(request):
 def blockchain_wills(request):
 
     if request.method == "POST":
-        bch_object = Cryptocurrency.objects.get(currency_name="Bitcoin Cash")
-        user_balance = Balance.objects.get(email=request.user, currency_name=bch_object)
+        currency_object = Cryptocurrency.objects.get(currency_name="Dash")
+        user_balance = Balance.objects.get(email=request.user, currency_name=currency_object)
 
-        if user_balance.amount < 1:
-            messages.info(request, "You do not have enough funds to create a blockchain will. Please deposit BCH to your wallet.")
+        blockchain_will_price = 0.25
+
+        if user_balance.amount < blockchain_will_price:
+            messages.info(request, "You do not have enough funds to create a blockchain will. Please deposit DASH to your wallet.")
             return redirect('atm_functions:Home')
             
-        bch_object.amount -= 1
-        bch_object.save()
-        blockchain_will = BlockchainWill.objects.create(email= request.user, status="PREPURCHASED")
+        user_balance.amount -= Decimal(blockchain_will_price)
+        user_balance.save()
+        blockchain_will = BlockchainWill.objects.create(email= request.user, status="NOT COMPLETED")
 
-        return redirect('atm_functions:BlockchainWills')
+        return redirect(reverse('atm_functions:RegisterBlockchainWill')+f"?id={blockchain_will.id_w}")
     if request.method == "GET":
-        will_id = request.GET.get('id','')
-
-        if will_id:
-            blockchain_wil = BlockchainWill.objects.get(id_w=will_id)
-            context = {
-                    "blockchain_wil": blockchain_wil,
-                    "will_id": will_id
-            }
-            return render(request, 'blockchain_will_edit.html', context)
-
         blockchain_wills = BlockchainWill.objects.filter(email=request.user)
         context = {
             "blockchain_wills": blockchain_wills
@@ -715,13 +708,21 @@ def blockchain_wills(request):
 @login_required()
 def register_blockchain_will(request):
 
-    if request.method == "GET":
-        return redirect('atm_functions:BlockchainWills')
-
     will_id = request.GET.get('id','')
+
     if not will_id:
         messages.info(request, "Invalid request, please try again.")
         return redirect('atm_functions:BlockchainWills')
+    else:
+        blockchain_will = BlockchainWill.objects.get(id_w=will_id)
+        if blockchain_will.email != request.user:
+
+            messages.info(request, "Invalid request, please try again.")
+            return redirect('atm_functions:BlockchainWills')
+
+    if request.method == "GET":
+        return render(request, 'blockchain_will_edit.html')
+
 
     grantor_fullname = request.POST.get("grantor_fullname")
     grantor_birthdate = request.POST.get("grantor_birthdate")
@@ -732,7 +733,6 @@ def register_blockchain_will(request):
     grantor_selfie_photo_url = request.POST.get("grantor_selfie_photo")
     grantor_id_document_url = request.POST.get("grantor_id_document")
 
-    blockchain_will = BlockchainWill.objects.get(id_w=will_id)
     blockchain_will.full_legal_name = grantor_fullname
     blockchain_will.birthdate = grantor_birthdate
     blockchain_will.birth_country = grantor_country
@@ -767,7 +767,7 @@ def register_blockchain_will(request):
     beneficiary.blockchain_wills.add(blockchain_will)
 
     cryptoapis_client = CryptoApis()
-    transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet("bitcoin-cash", "mainnet", "bitcoincash:qpyh2dfkhrm6n4ztga79dlfn6sxxrrap85sg45g229", "0.0005", data="TEST")
+    transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet("dash", "mainnet", "Xh1daZF6rafvc2gieJXzhr71wQtzuvk6C3", "0.25", data="TEST")
 
 
     blockchain_will.status = "ACTIVE"
