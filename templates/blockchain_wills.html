@@ -18,7 +18,7 @@
             <div class="form-group">
                 <label for="currency_amount"><b>Blockchain Will Price: </b>  <em>In Dash (DASH)</em></label>
                 <input type="number" class="form-control" id="will_price" aria-describedby="will_price" name="will_price"
-                    step=".0001" value="3" required readonly>
+                    step=".0001" value="1" required readonly>
             </div>
             <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
                 <div class="form-check">
@@ -80,7 +80,7 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
         <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
-            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Must have at least 3 DASH deposited in your CryptoShare Wallet for creating a will</small>
+            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Must have at least 1 DASH deposited in your CryptoShare Wallet for creating a Blockchain Will</small>
         </div>
 
         <br>
@@ -91,7 +91,7 @@
                 <th scope="col" style="text-align: center;">ID</th>
                 <th scope="col" style="text-align: center;">Status</th>
                 <th scope="col" style="text-align: center;">Creation Date</th>
-                <th scope="col" style="text-align: center;">Details</th>
+                <th scope="col" style="text-align: center;">Will Details</th>
                 <th scope="col" style="text-align: center;">Credential</th>
             </tr>
             </thead>
@@ -102,8 +102,16 @@
                         <td style="text-align: center;">{{ will.status }} </td>
                         <td style="text-align: center;">{{ will.creation_datetime }} </td>
                         <td style="text-align: center;">
+                            {% if will.status != "ACTIVE" %}
+                            <a href="{% url 'atm_functions:RegisterBlockchainWill' %}?id={{ will.id_w }}">
                                 <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
-                                id="button-beneficiaries" disabled>Full Details</button>
+                                id="button-beneficiaries" >Edit Will</button>
+                            </a>
+                            {% else %}
+                            <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
+                                id="button-beneficiaries" disabled>Open Will</button>
+                            {% endif %}
+                                
                         </td>
                         <td style="text-align: center;">
                             <!-- <a href="" target="_blank"> -->
@@ -130,6 +138,9 @@
                 {% endif %}
             </tbody>
         </table>
+        <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
+            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Only the Last Blockchain Will be Used</small>
+        </div>
     </div>
     <script type="text/javascript">
         function googleTranslateElementInit() {
