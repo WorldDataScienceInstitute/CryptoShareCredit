@@ -78,24 +78,35 @@ def check_balance(request):
     for balance in user_balances:
         currencies[balance.currency_name.symbol]["balance"] = balance.amount
 
-    savings_currencies = []
+    # savings_currencies = []
     payments_currencies = []
+    erc20_tokens = []
+    static_currencies = {}
 
     for currency in currencies.values():
         if currency["blockchain"] == "ethereum" and currency["symbol"] != "ETH":
             currency["has_address"] = True
             currency["address"] = currencies["ETH"]["address"]
-            currency["currency_name"] += " (ERC-20)"
+            # currency["currency_name"] += " (ERC-20)"
 
-        if currency["currency_type"] == "SAVINGS":
-            savings_currencies.append(currency)
-        elif currency["currency_type"] == "PAYMENTS":
+            erc20_tokens.append(currency)
+
+        # if currency["currency_type"] == "SAVINGS":
+        #     savings_currencies.append(currency)
+        if currency["currency_type"] == "PAYMENTS":
             payments_currencies.append(currency)
+
+        if currency["currency_name"] == "Bitcoin":
+            static_currencies["BTC"] = currency
+        elif currency["currency_name"] == "Ethereum":
+            static_currencies["ETH"] = currency
 
     context = {
         "name": name,
-        "savings_currencies": savings_currencies,
-        "payments_currencies": payments_currencies
+        # "savings_currencies": savings_currencies,
+        "payments_currencies": payments_currencies,
+        "erc20_tokens": erc20_tokens,
+        "static_currencies": static_currencies
     }
 
     return render(request, 'check_balance.html', context)
@@ -278,44 +289,45 @@ def crypto_news(request):
 def swap_crypto(request):
     if request.method == "GET":
 
-        swap_transactions = TransactionC.objects.filter(email=request.user)
+        # swap_transactions = TransactionC.objects.filter(email=request.user)
 
-        context = {
-                    "swap_transactions": swap_transactions
-        }
+        # context = {
+        #             "swap_transactions": swap_transactions
+        # }
 
-        return render(request, 'swap_crypto.html', context)
+        # return render(request, 'swap_crypto.html', context)
+        return render(request, 'swap_crypto.html')
 
-    # return HttpResponseRedirect(f"https://simpleswap.io/exchange?id={}")
-    currency_from = request.POST.get("sendCrypto")
-    currency_to = request.POST.get("getCrypto")
-    address_to = request.POST.get("receiverAddress")
-    user_refund_address = request.POST.get("refundAddress")
-    user_refund_extra_id = request.POST.get("refundAddressED", None)
-    amount = request.POST.get("sendingAmount")
-    extra_id_to = request.POST.get("extraData", None)
+    # # return HttpResponseRedirect(f"https://simpleswap.io/exchange?id={}")
+    # currency_from = request.POST.get("sendCrypto")
+    # currency_to = request.POST.get("getCrypto")
+    # address_to = request.POST.get("receiverAddress")
+    # user_refund_address = request.POST.get("refundAddress")
+    # user_refund_extra_id = request.POST.get("refundAddressED", None)
+    # amount = request.POST.get("sendingAmount")
+    # extra_id_to = request.POST.get("extraData", None)
 
-    estimated_amount = request.POST.get("approximateAmount")
+    # estimated_amount = request.POST.get("approximateAmount")
 
-    simpleswap_client = SimpleSwap()
+    # simpleswap_client = SimpleSwap()
 
-    try:
-        if not user_refund_extra_id:
-            response = simpleswap_client.create_new_exchange(currency_from, currency_to, address_to, user_refund_address, user_refund_extra_id, amount)
-        else:
-            response = simpleswap_client.create_new_exchange(currency_from, currency_to, address_to, user_refund_address, user_refund_extra_id, amount, extra_id_to)
-    except:
-        messages.info(request, "Something went wrong. Please try again.")
-        return redirect('atm_functions:SwapCrypto')
+    # try:
+    #     if not user_refund_extra_id:
+    #         response = simpleswap_client.create_new_exchange(currency_from, currency_to, address_to, user_refund_address, user_refund_extra_id, amount)
+    #     else:
+    #         response = simpleswap_client.create_new_exchange(currency_from, currency_to, address_to, user_refund_address, user_refund_extra_id, amount, extra_id_to)
+    # except:
+    #     messages.info(request, "Something went wrong. Please try again.")
+    #     return redirect('atm_functions:SwapCrypto')
 
-    # print(response)
-    try:
-        TransactionC.objects.create(transaction_id=response["id"], email=request.user, crypto_id_from=currency_from, crypto_id_to=currency_to, address_destination=address_to, address_destination_ed=extra_id_to, address_refund=user_refund_address, address_refund_ed=user_refund_extra_id, amount=amount, amount_estimated=response["amount_to"])
-    except:
-        messages.info(request, "Something went wrong. Please try again.")
-        return redirect('atm_functions:SwapCrypto')
+    # # print(response)
+    # try:
+    #     TransactionC.objects.create(transaction_id=response["id"], email=request.user, crypto_id_from=currency_from, crypto_id_to=currency_to, address_destination=address_to, address_destination_ed=extra_id_to, address_refund=user_refund_address, address_refund_ed=user_refund_extra_id, amount=amount, amount_estimated=response["amount_to"])
+    # except:
+    #     messages.info(request, "Something went wrong. Please try again.")
+    #     return redirect('atm_functions:SwapCrypto')
 
-    messages.info(request, "Your swap request was completed successfully!")
+    # messages.info(request, "Your swap request was completed successfully!")
 
     return redirect('atm_functions:SwapCrypto')
 
