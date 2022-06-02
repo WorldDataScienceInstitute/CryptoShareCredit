@@ -14,7 +14,6 @@
         <br>
         {% include 'messages.html' %}
         {% include 'a_sessiontimeout.html' %}
-        <h4 class="ml-2" style="text-align: center;">Prepurchase your blockchain will</h4>
         <form action="/atm/RegisterBlockchainWill/?id={{ will_id }}" method="post">
             {% csrf_token %}
             <div class="form-group">
@@ -280,11 +279,13 @@
             <div class="form-group">
                 <input type="hidden" data-maxFileSize="1" data-accepted="image/jpeg" name="grantor_selfie_photo" id="grantor_selfie_photo" class="simple-file-upload">
             </div>
+            <small id="selfie_document_help" class="form-text text-muted" style="color: white; text-align: left; padding: 5px; ">*Write Down your Birth Date on a Sheet of Paper and take a Selfie with it (must match your face from ID and Remove Glasses/Head Gear)</small>
             <br>
             <h4>ID Document</h4>
             <div class="form-group">
                 <input type="hidden" data-maxFileSize="1" data-accepted="image/jpeg" name="grantor_id_document" id="grantor_id_document" class="simple-file-upload">
             </div>
+            <small id="ID_document_help" class="form-text text-muted" style="color: white; text-align: left; padding: 5px; ">*All Information above must match ID (must Include Name, Picture, Country, and Birth Date)</small>
 
 
             <br>
@@ -560,12 +561,13 @@
             <div class="form-group">
                 <input type="hidden" data-maxFileSize="1" data-accepted="image/jpeg" name="beneficiary_selfie_photo" id="beneficiary_selfie_photo" class="simple-file-upload">
             </div>
+            <!-- <small id="beneficiary_selfie_document_help" class="form-text text-muted" style="color: white; text-align: left; padding: 5px; ">*Write Down your Birth Date on a Sheet of Paper and take a Selfie with it (must match your face from ID and Remove Glasses/Head Gear)</small> -->
 
 
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
         <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
-            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Must have at least 3 DASH deposited in your CryptoShare Wallet for creating a Blockchain Will</small>
+            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Must have at least 1 DASH deposited in your CryptoShare Wallet for creating a Blockchain Will</small>
         </div>
 
     </div>
