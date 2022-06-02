@@ -697,7 +697,7 @@ def blockchain_wills(request):
         currency_object = Cryptocurrency.objects.get(currency_name="Dash")
         user_balance = Balance.objects.get(email=request.user, currency_name=currency_object)
 
-        blockchain_will_price = 0.25
+        blockchain_will_price = 1
 
         if user_balance.amount < blockchain_will_price:
             messages.info(request, "You do not have enough funds to create a blockchain will. Please deposit DASH to your wallet.")
@@ -779,7 +779,7 @@ def register_blockchain_will(request):
     beneficiary.blockchain_wills.add(blockchain_will)
 
     cryptoapis_client = CryptoApis()
-    transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet("dash", "mainnet", "Xh1daZF6rafvc2gieJXzhr71wQtzuvk6C3", "0.25", data="TEST")
+    transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet("dash", "mainnet", "Xh1daZF6rafvc2gieJXzhr71wQtzuvk6C3", "1", data=f"CryptoShare Blockchain Will - {blockchain_will.id_w}|{str(blockchain_will.email)}")
 
 
     blockchain_will.status = "ACTIVE"

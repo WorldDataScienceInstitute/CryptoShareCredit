@@ -1,4 +1,5 @@
 {% load static %}
+{% load tz %}
 {% static "images" as baseUrl %}
 
 <!doctype html>
@@ -48,7 +49,7 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="cb_beneficiary" name="cb_beneficiary" required>
                     <label class="form-check-label" for="cb_beneficiary">
-                        I understand that in case of my death or incapacity, I agree the Crypto in My Crypto$hare Wallet will be given to the Beneficiary that I chose.
+                        I understand in the case of my death or incapacity, my Crypto$hare Wallet will be given to My Chosen Beneficiary.
                     </label>
                 </div>
             </div>
@@ -73,6 +74,22 @@
                     <input class="form-check-input" type="checkbox" value="" id="cb_attorney" name="cb_attorney" required>
                     <label class="form-check-label" for="cb_attorney">
                         I understand I should consult with an Attorney before I purchase.
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_changes" name="cb_changes" required>
+                    <label class="form-check-label" for="cb_changes">
+                        I understand that I have to Create a New Blockchain Will if I want to make changes.
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_lastwill" name="cb_lastwill" required>
+                    <label class="form-check-label" for="cb_lastwill">
+                        I understand the Last Blockchain Will purchased is the one that will be used.
                     </label>
                 </div>
             </div>
