@@ -26,13 +26,13 @@
             <div class="form-group">
                 <label for="grantor_birthdate">Date of Birth</label>
                 <input type="date" class="form-control" id="grantor_birthdate" aria-describedby="grantor_birthdate" name="grantor_birthdate"
-                    placeholder="Birthdate" value="{{ blockchain_will.birthdate|date:'Y-m-d'|default:'' }}" required>
+                    placeholder="Birthdate" value="{{ blockchain_will.birthdate|date:'Y-m-d'|default:'' }}" onkeydown="event.preventDefault()" data-date-inline-picker="true" required>
             </div>
             <br>
             <div class="form-group">
                 <label for="grantor_birthdate2">Date of Birth Verification</label>
                 <input type="date" class="form-control" id="grantor_birthdate2" aria-describedby="grantor_birthdate2" name="grantor_birthdate2"
-                    placeholder="Birthdate" selected="selected" value="{{ blockchain_will.birthdate|date:'Y-m-d'|default:'' }}" required>
+                    placeholder="Birthdate" selected="selected" value="{{ blockchain_will.birthdate|date:'Y-m-d'|default:'' }}" onkeydown="event.preventDefault()" required>
             </div>
             <br>
             <div class="form-group">
@@ -67,7 +67,7 @@
             <div class="form-group">
                 <input type="hidden" data-tag="{{ blockchain_will.email }}" data-preview="true" data-maxFileSize="1" data-accepted="image/*" name="grantor_selfie_photo" id="grantor_selfie_photo" class="simple-file-upload" value="{{ blockchain_will.selfie_photo_url|default:''}}">
             </div>
-            <small id="selfie_document_help" class="form-text text-muted" style="color: white; text-align: left; padding: 5px; ">*Write Down your Birth Date on a Sheet of Paper and take a Selfie with it (must match your face from ID and Remove Glasses/Head Gear)</small>
+            <small id="selfie_document_help" class="form-text" style="color: red; text-align: left; padding: 5px; "><b>*Write Down your Birth Date on a Sheet of Paper and take a Selfie with it (must match your face from ID and Remove Glasses/Head Gear)</b></small>
             <br>
             <h4>ID Document</h4>
             <div class="form-group">
@@ -91,13 +91,13 @@
             <div class="form-group">
                 <label for="beneficiary_birthdate">Insert Beneficiary Date of Birth</label>
                 <input type="date" class="form-control" id="beneficiary_birthdate" aria-describedby="beneficiary_birthdate" name="beneficiary_birthdate"
-                    placeholder="Birthdate" value="{{ beneficiary.birthdate|date:'Y-m-d'|default:'' }}" required>
+                    placeholder="Birthdate" value="{{ beneficiary.birthdate|date:'Y-m-d'|default:'' }}" onkeydown="event.preventDefault()" required>
             </div>
             <br>
             <div class="form-group">
                 <label for="beneficiary_birthdate2">Insert Beneficiary Date of Birth Verification</label>
                 <input type="date" class="form-control" id="beneficiary_birthdate2" aria-describedby="beneficiary_birthdate2" name="beneficiary_birthdate2"
-                    placeholder="Birthdate" value="{{ beneficiary.birthdate|date:'Y-m-d'|default:'' }}" required>
+                    placeholder="Birthdate" value="{{ beneficiary.birthdate|date:'Y-m-d'|default:'' }}" onkeydown="event.preventDefault()" required>
             </div>
             <br>
             <div class="form-group">
@@ -238,6 +238,9 @@
                 data: data,
                 success: function(response){
                     let button = document.getElementById('saveButton');
+                    if(response["status"] === "NEW_BENEFICIARY"){
+                        document.getElementById('beneficiary_id').value = response["beneficiary_id"];
+                    }
                     button.innerHTML = `<button type="button" class="btn btn-primary" disabled>Saved</button>`;
                     setTimeout(function(){
                         button.innerHTML = `<button type="button" class="btn btn-primary" onclick="saveButton()">Save</button>`;
