@@ -242,14 +242,17 @@
                     setTimeout(function(){
                         button.innerHTML = `<button type="button" class="btn btn-primary" onclick="saveButton()">Save</button>`;
                     }, 4000);
-                    console.log(response);
                 },
                 error: function(response){
                     alert("Something went wrong, please try again later!");
-                    console.log(response);
                 }
             });
         };
+
+        window.setInterval(function() {
+            saveButton();
+            // console.log("Saving Will...");
+        }, 45000);
     </script>
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
