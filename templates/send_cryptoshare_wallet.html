@@ -17,7 +17,7 @@
                     <select class="form-control" id="sendingAccount" aria-describedby="sendingAccount" name="sendingAccount">
                         <option disabled>Select Account</option >
                         {% for balance in balances %}
-                        <option value="{{ balance.currency_name.currency_name }}|{{ balance.currency_name.blockchain }}">{{ balance.currency_name.symbol }} : {{ balance.currency_name.currency_name }} || Balance : {{ balance.amount }}</option>
+                        <option value="{{ balance.currency_name.currency_name }}|{{ balance.currency_name.blockchain }}|{{ balance.amount|floatformat:4 }}">{{ balance.currency_name.symbol }} : {{ balance.currency_name.currency_name }} || Balance : {{ balance.amount|floatformat:4 }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -25,6 +25,7 @@
                     <label for="sendingAmount"><b>Amount to send</b></label>
                     <input type="number" class="form-control" id="sendingAmount" aria-describedby="sendingAmount" name="sendingAmount"
                         step=".000001" placeholder="Amount you want to send">
+                    <button type="button" class="btn btn-primary mt-2" onclick="setMaxAmount();">MAX AMOUNT</button>
                 </div>
                 <div class="form-group" style="margin-right: 5%;">
                     <label for="recipientUser"><b>Recipient/Seller/Vendor</b></label>
@@ -35,6 +36,18 @@
             </form>
         </div>
     </div>
+
+    <script type="text/javascript">
+        //Get balance amount from sendingAccount and make it max value
+        function setMaxAmount(){
+            var sendingAccount = document.getElementById("sendingAccount");
+            var balance = sendingAccount.options[sendingAccount.selectedIndex].value.split("|")[2];
+            document.getElementById("sendingAmount").max = balance;
+            document.getElementById("sendingAmount").value = balance;
+        }
+
+
+    </script>
 
     <script type="text/javascript">
         function googleTranslateElementInit() {

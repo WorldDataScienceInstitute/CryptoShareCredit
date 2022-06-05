@@ -788,19 +788,21 @@ def register_blockchain_will(request):
     beneficiary_email_2 = request.POST.get("beneficiary_email_2", None)
     beneficiary_selfie_photo_url = request.POST.get("beneficiary_selfie_photo", None)
 
-    beneficiary_exists = Beneficiary.objects.filter(pk=beneficiary_id).exists()
-    if not beneficiary_exists:
-        beneficiary = Beneficiary.objects.create(
-                                                full_legal_name = beneficiary_fullname,
-                                                birthdate = beneficiary_birthdate,
-                                                birth_country = beneficiary_country,
-                                                relationship = beneficiary_relationship,
-                                                associated_email1 = beneficiary_email_1,
-                                                associated_email2 = beneficiary_email_2,
-                                                will_percentage = 100,
-                                                selfie_photo_url = beneficiary_selfie_photo_url
-        )
-        beneficiary.blockchain_wills.add(blockchain_will)
+    if not beneficiary_id:
+        try:
+            beneficiary = Beneficiary.objects.create(
+                                                    full_legal_name = beneficiary_fullname,
+                                                    birthdate = beneficiary_birthdate,
+                                                    birth_country = beneficiary_country,
+                                                    relationship = beneficiary_relationship,
+                                                    associated_email1 = beneficiary_email_1,
+                                                    associated_email2 = beneficiary_email_2,
+                                                    will_percentage = 100,
+                                                    selfie_photo_url = beneficiary_selfie_photo_url
+            )
+            beneficiary.blockchain_wills.add(blockchain_will)
+        except:
+            beneficiary_id = True
 
     else:
         beneficiary = Beneficiary.objects.get(pk=int(beneficiary_id))
@@ -829,7 +831,15 @@ def register_blockchain_will(request):
     blockchain_will.save()
 
     if save_will:
-        return HttpResponse(status=200)
+        json_response = {
+            "beneficiary_id": beneficiary.id
+        }
+        if not beneficiary_id:
+            json_response["status"] = "NEW_BENEFICIARY",
+        else:
+            json_response["status"] = "SUCCESS"
+
+        return HttpResponse(json.dumps(json_response), content_type="application/json")
 
     return redirect('atm_functions:BlockchainWills')
    

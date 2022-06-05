@@ -10,10 +10,65 @@
     {% include 'atm_sidebar.html' %}
     {% endif %}
     <div class="content-container">
-        <h2 class="ml-4 text-primary">Create your Blockchain Will</h2>
-        <br>
         {% include 'messages.html' %}
         {% include 'a_sessiontimeout.html' %}
+        <h2 class="ml-4 text-primary">My Blockchain Wills</h2>
+        <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: center;">ID</th>
+                <th scope="col" style="text-align: center;">Status</th>
+                <th scope="col" style="text-align: center;">Creation Date</th>
+                <th scope="col" style="text-align: center;">Will Details</th>
+                <th scope="col" style="text-align: center;">Credential</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for will in blockchain_wills %}
+                    <tr>
+                        <th scope="row" style="text-align: center;">{{ will.id_w }} </th>
+                        <td style="text-align: center;">{{ will.status }} </td>
+                        <td style="text-align: center;">{{ will.creation_datetime }} </td>
+                        <td style="text-align: center;">
+                            {% if will.status != "ACTIVE" %}
+                            <a href="{% url 'atm_functions:RegisterBlockchainWill' %}?id={{ will.id_w }}">
+                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
+                                id="button-beneficiaries" >Edit Will</button>
+                            </a>
+                            {% else %}
+                            <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
+                                id="button-beneficiaries" disabled>Open Will</button>
+                            {% endif %}
+                                
+                        </td>
+                        <td style="text-align: center;">
+                            <!-- <a href="" target="_blank"> -->
+                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
+                                id="button-credential" disabled>Credential</button>
+                            <!-- </a> -->
+                        </td>
+                    </tr>
+                {% endfor %}
+                {% if not blockchain_wills %}
+                    <tr>
+                        <th scope="row" style="text-align: center;" colspan="3">No Wills</th>
+                        <td style="text-align: center;">
+                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
+                                id="button-beneficiaries" disabled>Full Details</button>
+                        </td>
+                        <td style="text-align: center;">
+                            <!-- <a href="" target="_blank"> -->
+                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
+                                id="button-credential" disabled>Credential</button>
+                            <!-- </a> -->
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <br>
+        <h2 class="ml-4 text-primary">Create your Blockchain Will</h2>
+        <br>
         <form action="/atm/BlockchainWills/" method="post">
             {% csrf_token %}
             <div class="form-group">
@@ -100,61 +155,7 @@
             <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Must have at least 1 DASH deposited in your CryptoShare Wallet for creating a Blockchain Will</small>
         </div>
 
-        <br>
-        <h2 class="ml-4 text-primary">My Blockchain Wills</h2>
-        <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th scope="col" style="text-align: center;">ID</th>
-                <th scope="col" style="text-align: center;">Status</th>
-                <th scope="col" style="text-align: center;">Creation Date</th>
-                <th scope="col" style="text-align: center;">Will Details</th>
-                <th scope="col" style="text-align: center;">Credential</th>
-            </tr>
-            </thead>
-            <tbody>
-                {% for will in blockchain_wills %}
-                    <tr>
-                        <th scope="row" style="text-align: center;">{{ will.id_w }} </th>
-                        <td style="text-align: center;">{{ will.status }} </td>
-                        <td style="text-align: center;">{{ will.creation_datetime }} </td>
-                        <td style="text-align: center;">
-                            {% if will.status != "ACTIVE" %}
-                            <a href="{% url 'atm_functions:RegisterBlockchainWill' %}?id={{ will.id_w }}">
-                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
-                                id="button-beneficiaries" >Edit Will</button>
-                            </a>
-                            {% else %}
-                            <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
-                                id="button-beneficiaries" disabled>Open Will</button>
-                            {% endif %}
-                                
-                        </td>
-                        <td style="text-align: center;">
-                            <!-- <a href="" target="_blank"> -->
-                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
-                                id="button-credential" disabled>Credential</button>
-                            <!-- </a> -->
-                        </td>
-                    </tr>
-                {% endfor %}
-                {% if not blockchain_wills %}
-                    <tr>
-                        <th scope="row" style="text-align: center;" colspan="3">No Wills</th>
-                        <td style="text-align: center;">
-                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
-                                id="button-beneficiaries" disabled>Full Details</button>
-                        </td>
-                        <td style="text-align: center;">
-                            <!-- <a href="" target="_blank"> -->
-                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
-                                id="button-credential" disabled>Credential</button>
-                            <!-- </a> -->
-                        </td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table>
+        
         <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
             <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Only the Last Blockchain Will be Used</small>
         </div>
