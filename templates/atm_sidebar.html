@@ -175,10 +175,15 @@
 
     function testRequest(){
         // var url = "https://api.simpleswap.io/v1?api_key=1bec8024-bf17-4faf-b96e-fd74646ad793";
-        var url = "https://api.simpleswap.io/v1/get_pairs?api_key=1bec8024-bf17-4faf-b96e-fd74646ad793&fixed=false&symbol=BTC"
+        var url = "{% url 'atm_functions:TestReceiver' %}"
+        var data = {
+            csrfmiddlewaretoken: getCookie('csrftoken'),
+            symbol: "BTC"
+        };
         $.ajax({
-            type: "GET",
+            type: "POST",
             url: url,
+            data: data,
             success: function(response){
                 console.log(response);
             },
