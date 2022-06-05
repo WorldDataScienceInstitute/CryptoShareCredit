@@ -13,12 +13,48 @@
         <h2 class="ml-4 text-primary">STEPS TO BUILDING CRYPTO WEALTH</h2>
         <div class="container" style="padding: 0; z-index: -1000;">
             <ol class="list-group">
-                <li class="list-group-item"><i class="fa-solid fa-square-check"></i> Create a Crypto Savings Wallet on this Screen Below</li>
-                <li class="list-group-item"><i class="fa-solid fa-square-check"></i> <a href="{% url 'atm_functions:BuyCrypto' %}">Buy Crypto</a></li>
-                <li class="list-group-item"><i class="fa-solid fa-square-check"></i> Deposit into Crypto Savings Wallet & <a href="{% url 'atm_functions:CreditGrades' %}">Credit Grade</a> Increases</li>
-                <li class="list-group-item"><i class="fa-solid fa-square-check"></i> Create a Business Account, Buy, & Sell Services</li>
-                <li class="list-group-item"><i class="fa-solid fa-square-check"></i> Borrow & Lend Crypto</li>
-                <li class="list-group-item"><i class="fa-solid fa-square-check"></i> Create a Crypto Will</li>
+                <li class="list-group-item">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="cb1" onclick="localStorage.setItem('cb1', 1);">
+                        Default switch checkbox input
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="cb2" onclick="localStorage.setItem('cb2', 1);">
+                        Create a Crypto Savings Wallet on this Screen Below
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="cb3" onclick="localStorage.setItem('cb3', 1);">
+                        <a href="{% url 'atm_functions:BuyCrypto' %}">Buy Crypto</a>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="cb4" onclick="localStorage.setItem('cb4', 1);">
+                        Deposit into Crypto Savings Wallet & <a href="{% url 'atm_functions:CreditGrades' %}">Credit Grade</a> Increases
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="cb5" onclick="localStorage.setItem('cb5', 1);">
+                        Create a Business Account, Buy, & Sell Services
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="cb6" onclick="localStorage.setItem('cb6', 1);">
+                        Borrow & Lend Crypto
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="cb7" onclick="localStorage.setItem('cb7', 1);">
+                        Create a Crypto Will
+                    </div>
+                </li>
             </ol>
         </div>
         <br>
@@ -193,6 +229,14 @@
             if ({{ request.user.is_authenticated|yesno:"true,false" }}){
                 GetCreditGrade();
             }
+
+            //if cb1 to cb7 are set to 1 in localstorage, set the checkbox to checked, do it with a for
+            for (var i = 1; i < 8; i++) {
+                if (localStorage.getItem('cb' + i) == 1) {
+                    $('#cb' + i).prop('checked', true);
+                }
+            }
+            
         }
     </script>
 
