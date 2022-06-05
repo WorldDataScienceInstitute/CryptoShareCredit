@@ -14,7 +14,7 @@ from .models import User
 from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC
 # from common.utils import currency_list
-from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info
+from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples
 from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email
 from common.cryptoapis import CryptoApis
 from common.cryptoapis_utils import CryptoApisUtils
@@ -733,17 +733,40 @@ def register_blockchain_will(request):
             return redirect('atm_functions:BlockchainWills')
 
     if request.method == "GET":
-        return render(request, 'blockchain_will_edit.html')
+        beneficiary = Beneficiary.objects.filter(blockchain_wills__in = [blockchain_will])
+        if beneficiary:
+            beneficiary = beneficiary[0]
+        else:
+            # beneficiary = Beneficiary(
+            #                             full_legal_name = "",
+            #                             birthdate = "",
+            #                             birth_country = "",
+            #                             relationship = "",
+            #                             associated_email1 = "",
+            #                             associated_email2 = "",
+            #                             will_percentage = 100,
+            #                             selfie_photo_url = ""
+            #                         )
+            beneficiary = None
 
+        countries = countries_tuples
 
-    grantor_fullname = request.POST.get("grantor_fullname")
-    grantor_birthdate = request.POST.get("grantor_birthdate")
-    grantor_country = request.POST.get("grantor_country")
-    grantor_email_1 = request.POST.get("grantor_email_1")
-    grantor_email_2 = request.POST.get("grantor_email_2")
-    grantor_email_3 = request.POST.get("grantor_email_3")
-    grantor_selfie_photo_url = request.POST.get("grantor_selfie_photo")
-    grantor_id_document_url = request.POST.get("grantor_id_document")
+        context = {
+            "blockchain_will": blockchain_will,
+            "beneficiary": beneficiary,
+            "beneficiary_relationships": ["Wife", "Child", "Friend", "Other"],
+            "countries": countries
+        }
+        return render(request, 'blockchain_will_edit.html', context)
+
+    grantor_fullname = request.POST.get("grantor_fullname", None)
+    grantor_birthdate = request.POST.get("grantor_birthdate", None)
+    grantor_country = request.POST.get("grantor_country", None)
+    grantor_email_1 = request.POST.get("grantor_email_1", None)
+    grantor_email_2 = request.POST.get("grantor_email_2", None)
+    grantor_email_3 = request.POST.get("grantor_email_3", None)
+    grantor_selfie_photo_url = request.POST.get("grantor_selfie_photo", None)
+    grantor_id_document_url = request.POST.get("grantor_id_document", None)
 
     blockchain_will.full_legal_name = grantor_fullname
     blockchain_will.birthdate = grantor_birthdate
@@ -752,41 +775,61 @@ def register_blockchain_will(request):
     blockchain_will.associated_email2 = grantor_email_2
     blockchain_will.associated_email3 = grantor_email_3
     blockchain_will.selfie_photo_url = grantor_selfie_photo_url
-    blockchain_will.id_document_url = grantor_id_document_url
+    blockchain_will.document_id_url = grantor_id_document_url
 
     #BENEFICIARY
 
-    beneficiary_fullname = request.POST.get("beneficiary_fullname")
-    beneficiary_birthdate = request.POST.get("beneficiary_birthdate")
-    beneficiary_country = request.POST.get("beneficiary_country")
-    beneficiary_relationship = request.POST.get("beneficiary_relationship")
-    beneficiary_email_1 = request.POST.get("beneficiary_email_1")
-    beneficiary_email_2 = request.POST.get("beneficiary_email_2")
-    beneficiary_selfie_photo_url = request.POST.get("beneficiary_selfie_photo")
+    beneficiary_id = request.POST.get("beneficiary_id", None)
+    beneficiary_fullname = request.POST.get("beneficiary_fullname", None)
+    beneficiary_birthdate = request.POST.get("beneficiary_birthdate", None)
+    beneficiary_country = request.POST.get("beneficiary_country", None)
+    beneficiary_relationship = request.POST.get("beneficiary_relationship", None)
+    beneficiary_email_1 = request.POST.get("beneficiary_email_1", None)
+    beneficiary_email_2 = request.POST.get("beneficiary_email_2", None)
+    beneficiary_selfie_photo_url = request.POST.get("beneficiary_selfie_photo", None)
 
-    # BlockchainWill.objects.create(email= request.user, status="PREPURCHASED")
-    beneficiary = Beneficiary.objects.create(
-                                            full_legal_name = beneficiary_fullname,
-                                            birthdate = beneficiary_birthdate,
-                                            birth_country = beneficiary_country,
-                                            relationship = beneficiary_relationship,
-                                            associated_email1 = beneficiary_email_1,
-                                            associated_email2 = beneficiary_email_2,
-                                            will_percentage = 100,
-                                            selfie_photo_url = beneficiary_selfie_photo_url
-    )
+    beneficiary_exists = Beneficiary.objects.filter(pk=beneficiary_id).exists()
+    if not beneficiary_exists:
+        beneficiary = Beneficiary.objects.create(
+                                                full_legal_name = beneficiary_fullname,
+                                                birthdate = beneficiary_birthdate,
+                                                birth_country = beneficiary_country,
+                                                relationship = beneficiary_relationship,
+                                                associated_email1 = beneficiary_email_1,
+                                                associated_email2 = beneficiary_email_2,
+                                                will_percentage = 100,
+                                                selfie_photo_url = beneficiary_selfie_photo_url
+        )
+        beneficiary.blockchain_wills.add(blockchain_will)
 
-    beneficiary.blockchain_wills.add(blockchain_will)
+    else:
+        beneficiary = Beneficiary.objects.get(pk=int(beneficiary_id))
 
-    cryptoapis_client = CryptoApis()
-    transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet("dash", "mainnet", "Xh1daZF6rafvc2gieJXzhr71wQtzuvk6C3", "1", data=f"CryptoShare Blockchain Will - {blockchain_will.id_w}|{str(blockchain_will.email)}")
+        beneficiary.full_legal_name = beneficiary_fullname
+        beneficiary.birthdate = beneficiary_birthdate
+        beneficiary.birth_country = beneficiary_country
+        beneficiary.relationship = beneficiary_relationship
+        beneficiary.associated_email1 = beneficiary_email_1
+        beneficiary.associated_email2 = beneficiary_email_2
+        beneficiary.selfie_photo_url = beneficiary_selfie_photo_url
+        beneficiary.save()
 
 
-    blockchain_will.status = "ACTIVE"
+    save_will = request.GET.get('save_will','')
+
+    if not save_will:
+        cryptoapis_client = CryptoApis()
+        transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet("dash", "mainnet", "Xh1daZF6rafvc2gieJXzhr71wQtzuvk6C3", "1", data=f"CryptoShare Blockchain Will - {blockchain_will.id_w}|{str(blockchain_will.email)}")
+        print(transaction_response)
+
+        blockchain_will.status = "ACTIVE"
+        messages.info(request, "Blockchain Will successfully created.")
+
+
     blockchain_will.save()
 
-    messages.info(request, "Blockchain Will successfully created.")
-
+    if save_will:
+        return HttpResponse(status=200)
 
     return redirect('atm_functions:BlockchainWills')
    
@@ -1268,7 +1311,9 @@ def confirmed_token_transactions(request):
 @csrf_exempt
 def test_receiver(request):
 
-    t = TransactionA.objects.get(id_a=6)
-    test_email("albertonavarreteramirez@gmail.com",t.transaction_id, t.currency_name.blockchain, t.currency_name.network ,t.amount, {"symbol":"TST","currency_name":"TEST"}, t.address.address, t.creation_datetime)
+    symbol = request.POST.get('symbol','')
+    save = request.GET.get('save_will','')
+    print(symbol)
+    print(save)
     print("OK")
     return HttpResponse(status=200)
