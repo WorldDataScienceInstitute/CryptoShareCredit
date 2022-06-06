@@ -5,11 +5,12 @@
 <html lang="en">
 {% include 'header.html' %}
 <script src="https://app.simplefileupload.com/buckets/b658f0169bb34560f19fb46531211607.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <body>
     {% if iframe is None %}
     {% include 'atm_sidebar.html' %}
     {% endif %}
-    <div class="content-container">
+    <div class="content-container" onload="verifyInputs();">
         <h2 class="ml-4 text-primary">Create your Blockchain Will</h2>
         <br>
         {% include 'messages.html' %}
@@ -33,6 +34,10 @@
                 <label for="grantor_birthdate2">Date of Birth Verification</label>
                 <input type="date" class="form-control" id="grantor_birthdate2" aria-describedby="grantor_birthdate2" name="grantor_birthdate2"
                     placeholder="Birthdate" selected="selected" value="{{ blockchain_will.birthdate|date:'Y-m-d'|default:'' }}" onkeydown="event.preventDefault()" required>
+            </div>
+            <div class="form-row col-12">
+                <div id='birthdate_match'></div>
+                <input type="hidden" id="birthdate_match_v" aria-describedby="birthdate_match_v" name="birthdate_match_v" value="0">
             </div>
             <br>
             <div class="form-group">
@@ -61,6 +66,10 @@
                 <label for="grantor_email_3">Insert a 3rd Email Associated with You</label>
                 <input type="text" class="form-control" id="grantor_email_3" aria-describedby="grantor_email_3" name="grantor_email_3"
                     placeholder="Associated email 3" value="{{ blockchain_will.associated_email3|default:'' }}" required>
+            </div>
+            <div class="form-row col-12">
+                <div id='grantor_email_match'></div>
+                <input type="hidden" id="grantor_email_match_v" aria-describedby="grantor_email_match_v" name="grantor_email_match_v" value="0">
             </div>
             <br>
             <h4>Selfie Photo</h4>
@@ -99,6 +108,10 @@
                 <input type="date" class="form-control" id="beneficiary_birthdate2" aria-describedby="beneficiary_birthdate2" name="beneficiary_birthdate2"
                     placeholder="Birthdate" value="{{ beneficiary.birthdate|date:'Y-m-d'|default:'' }}" onkeydown="event.preventDefault()" required>
             </div>
+            <div class="form-row col-12">
+                <div id='beneficiary_birthdate_match'></div>
+                <input type="hidden" id="beneficiary_birthdate_match_v" aria-describedby="beneficiary_birthdate_match_v" name="beneficiary_birthdate_match_v" value="0">
+            </div>
             <br>
             <div class="form-group">
                 <label for="beneficiary_country">Insert Beneficiary Country:</label>
@@ -118,10 +131,6 @@
                     {% for option in beneficiary_relationships %}
                     <option value="{{option}}" {% if beneficiary.relationship == option %}selected{% endif %}>{{option}}</option>
                     {% endfor %}
-                    <!-- <option value="Wife">Wife</option>
-                    <option value="Child">Child</option>
-                    <option value="Friend">Friend</option>
-                    <option value="Friend">Other</option> -->
                 </select>
             </div>
             <br>
@@ -136,6 +145,10 @@
                 <input type="text" class="form-control" id="beneficiary_email_2" aria-describedby="beneficiary_email_2" name="beneficiary_email_2"
                     placeholder="Associated email 2" value="{{ beneficiary.associated_email2|default:''}}" required>
             </div>
+            <div class="form-row col-12">
+                <div id='beneficiary_email_match'></div>
+                <input type="hidden" id="beneficiary_email_match_v" aria-describedby="beneficiary_email_match_v" name="beneficiary_email_match_v" value="0">
+            </div>
             <br>
             <h4>Insert Photo of Beneficiary</h4>
             <div class="form-group">
@@ -148,7 +161,7 @@
             </div>
 
             
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button id="submit" type="submit" class="btn btn-primary" disabled>Submit</button>
         </form>
         <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
             <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Must have at least 1 DASH deposited in your CryptoShare Wallet for creating a Blockchain Will</small>
@@ -252,10 +265,115 @@
             });
         };
 
+        function verifyInputs(){
+            console.log("TEST");
+            verify_grantor_birthdate();
+            verify_beneficiary_birthdate();
+
+            verify_grantor_email();
+            verify_beneficiary_email();
+
+            let grantor_birthdate = document.getElementById("birthdate_match_v").value;
+            let grantor_email = document.getElementById("grantor_email_match_v").value;
+
+            let beneficiary_birthdate = document.getElementById("beneficiary_birthdate_match_v").value;
+            let beneficiary_email = document.getElementById("beneficiary_email_match_v").value;
+
+            if (grantor_birthdate == 0 || grantor_email == 0 || beneficiary_birthdate == 0 || beneficiary_email == 0){
+                $('#submit').prop('disabled', true);
+            } else{
+                $('#submit').prop('disabled', false);
+            }
+        }
+
+        function verify_grantor_birthdate(){
+            if (($('#grantor_birthdate').val() === "") || ($('#grantor_birthdate2').val() === "")) {
+                $('#birthdate_match').html('');
+            }
+            else if ($('#grantor_birthdate').val() === $('#grantor_birthdate2').val())
+            {
+                $('#birthdate_match').html('Birthdates match!').css('color', 'green');
+                $('#birthdate_match_v').val(1);
+            }
+            else {
+                $('#birthdate_match').html('Birthdates don\'t match.').css('color', 'red');
+                $('#birthdate_match_v').val(0);
+            }
+        }
+
+        function verify_grantor_email(){
+            if (($('#grantor_email_1').val() === "") || ($('#grantor_email_2').val() === "") || ($('#grantor_email_3').val() === "")) {
+                $('#grantor_email_match').html('');
+            }
+            else if ($('#grantor_email_1').val() === $('#grantor_email_2').val() || $('#grantor_email_2').val() === $('#grantor_email_3').val() || $('#grantor_email_1').val() === $('#grantor_email_3').val())
+            {
+                $('#grantor_email_match').html('Emails have to be different!').css('color', 'red');
+                $('#grantor_email_match_v').val(0);
+            }
+            else {
+                $('#grantor_email_match').html('Emails are ok!').css('color', 'green');
+                $('#grantor_email_match_v').val(1);
+            }
+        }
+
+        function verify_beneficiary_birthdate(){
+            if (($('#beneficiary_birthdate').val() === "") || ($('#beneficiary_birthdate2').val() === "")) {
+                $('#beneficiary_birthdate_match').html('');
+            }
+            else if ($('#beneficiary_birthdate').val() === $('#beneficiary_birthdate2').val())
+            {
+                $('#beneficiary_birthdate_match').html('Birthdates match!').css('color', 'green');
+                $('#beneficiary_birthdate_match_v').val(1);
+            }
+            else {
+                $('#beneficiary_birthdate_match').html('Birthdates don\'t match.').css('color', 'red');
+                $('#beneficiary_birthdate_match_v').val(0);
+            }
+        }
+
+        function verify_beneficiary_email(){
+            if (($('#beneficiary_email_1').val() === "") || ($('#beneficiary_email_2').val() === "")) {
+                $('#beneficiary_email_match').html('');
+            }
+            else if ($('#beneficiary_email_1').val() === $('#beneficiary_email_2').val())
+            {
+                $('#beneficiary_email_match').html('Emails have to be different!').css('color', 'red');
+                $('#beneficiary_email_match_v').val(0);
+            }
+            else {
+                $('#beneficiary_email_match').html('Emails are ok!').css('color', 'green');
+                $('#beneficiary_email_match_v').val(1);
+            }
+        }
+        
+        $('#grantor_birthdate, #grantor_birthdate2').on('change', function () {
+            verify_grantor_birthdate();
+            verifyInputs();
+        });
+
+        $('#grantor_email_1, #grantor_email_2, #grantor_email_3').on('keyup', function () {
+            verify_grantor_email();
+            verifyInputs();
+        });
+
+        $('#beneficiary_birthdate, #beneficiary_birthdate2').on('change', function () {
+            verify_beneficiary_birthdate();
+            verifyInputs();
+        });
+
+        $('#beneficiary_email_1, #beneficiary_email_2').on('keyup', function () {
+            verify_beneficiary_email();
+            verifyInputs();
+        });
+
         window.setInterval(function() {
             saveButton();
             // console.log("Saving Will...");
         }, 45000);
+
+        window.onload = function() {
+            verifyInputs();
+        }
     </script>
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
