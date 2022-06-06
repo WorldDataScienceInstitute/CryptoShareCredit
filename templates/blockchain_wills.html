@@ -28,7 +28,7 @@
                     <tr>
                         <th scope="row" style="text-align: center;">{{ will.id_w }} </th>
                         <td style="text-align: center;">{{ will.status }} </td>
-                        <td style="text-align: center;">{{ will.creation_datetime }} </td>
+                        <td style="text-align: center;">{{ will.creation_datetime }} UTC </td>
                         <td style="text-align: center;">
                             {% if will.status != "ACTIVE" %}
                             <a href="{% url 'atm_functions:RegisterBlockchainWill' %}?id={{ will.id_w }}">
