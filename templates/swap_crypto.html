@@ -12,16 +12,21 @@
 
 <body>
     {% include 'atm_sidebar.html' %}
-    <div class="content-container" style="height: 500px;">
-        <h2 class="ml-4 text-primary">Swap Crypto</h2>
-        <br>
-        {% include 'messages.html' %}
-        {% include 'a_sessiontimeout.html' %}
-        <div class="content-container" style="position: relative; width: 100%;  padding-top: 100%;">
-            <iframe id="simpleswap-frame" style="border-style:none; position: absolute; top: 0; left: 0; bottom: 0; right: 0; width: 100%; height: 450px;" name="SimpleSwap Widget" width="528px" height="392px" src="https://simpleswap.io/widget/c9d52bbb-27f8-4d31-aa2a-7ed8d240da0b" frameborder="0"></iframe>
+    <div class="content-container" style="margin-top: 5%; height: max-content;">
+
+        <div id="swapzonePartnersWidget"        
+            data-from="btc" 
+            data-to="eth" 
+            data-size="full" 
+            data-refid="DocSgKA5Ir"
+            data-mode = "light"
+            data-hidelogo = true
+        >
         </div>
     </div>
 
+    <script src="https://swapzone.io/script/partners-widget.js"></script>
+    
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({

@@ -60,13 +60,13 @@ class BlockchainWill(models.Model):
 
 class Beneficiary(models.Model):
     blockchain_wills = models.ManyToManyField(BlockchainWill)
-    full_legal_name = models.CharField(max_length=255)
-    birthdate = models.DateField()
-    birth_country = models.CharField(max_length=57)
-    relationship = models.CharField(max_length=50)
+    full_legal_name = models.CharField(max_length=255, null=True)
+    birthdate = models.DateField(null=True)
+    birth_country = models.CharField(max_length=57, null=True)
+    relationship = models.CharField(max_length=50, null=True)
     associated_email1 = models.CharField(max_length=40, null=True)
     associated_email2 = models.CharField(max_length=40, null=True)
-    will_percentage = models.IntegerField()
+    will_percentage = models.IntegerField(null=True)
     selfie_photo_url = models.CharField(max_length=255, null=True)      
     
 #Transaction for Deposits and Withdrawals

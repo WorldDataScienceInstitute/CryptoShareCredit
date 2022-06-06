@@ -706,6 +706,9 @@ def blockchain_wills(request):
         user_balance.amount -= Decimal(blockchain_will_price)
         user_balance.save()
         blockchain_will = BlockchainWill.objects.create(email= request.user, status="NOT COMPLETED")
+        beneficiary = Beneficiary(will_percentage=100)
+        beneficiary.save()
+        beneficiary.blockchain_wills.add(blockchain_will)
 
         return redirect(reverse('atm_functions:RegisterBlockchainWill')+f"?id={blockchain_will.id_w}")
     if request.method == "GET":
@@ -788,41 +791,22 @@ def register_blockchain_will(request):
     beneficiary_email_2 = request.POST.get("beneficiary_email_2", None)
     beneficiary_selfie_photo_url = request.POST.get("beneficiary_selfie_photo", None)
 
-    if not beneficiary_id:
-        try:
-            beneficiary = Beneficiary.objects.create(
-                                                    full_legal_name = beneficiary_fullname,
-                                                    birthdate = beneficiary_birthdate,
-                                                    birth_country = beneficiary_country,
-                                                    relationship = beneficiary_relationship,
-                                                    associated_email1 = beneficiary_email_1,
-                                                    associated_email2 = beneficiary_email_2,
-                                                    will_percentage = 100,
-                                                    selfie_photo_url = beneficiary_selfie_photo_url
-            )
-            beneficiary.blockchain_wills.add(blockchain_will)
-        except:
-            beneficiary_id = True
-
-    else:
-        beneficiary = Beneficiary.objects.get(pk=int(beneficiary_id))
-
-        beneficiary.full_legal_name = beneficiary_fullname
+    beneficiary = Beneficiary.objects.get(pk=int(beneficiary_id))
+    beneficiary.full_legal_name = beneficiary_fullname
+    if beneficiary_birthdate:
         beneficiary.birthdate = beneficiary_birthdate
-        beneficiary.birth_country = beneficiary_country
-        beneficiary.relationship = beneficiary_relationship
-        beneficiary.associated_email1 = beneficiary_email_1
-        beneficiary.associated_email2 = beneficiary_email_2
-        beneficiary.selfie_photo_url = beneficiary_selfie_photo_url
-        beneficiary.save()
-
+    beneficiary.birth_country = beneficiary_country
+    beneficiary.relationship = beneficiary_relationship
+    beneficiary.associated_email1 = beneficiary_email_1
+    beneficiary.associated_email2 = beneficiary_email_2
+    beneficiary.selfie_photo_url = beneficiary_selfie_photo_url
+    beneficiary.save()
 
     save_will = request.GET.get('save_will','')
 
     if not save_will:
         cryptoapis_client = CryptoApis()
         transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet("dash", "mainnet", "Xh1daZF6rafvc2gieJXzhr71wQtzuvk6C3", "1", data=f"CryptoShare Blockchain Will - {blockchain_will.id_w}|{str(blockchain_will.email)}")
-        print(transaction_response)
 
         blockchain_will.status = "ACTIVE"
         messages.info(request, "Blockchain Will successfully created.")
