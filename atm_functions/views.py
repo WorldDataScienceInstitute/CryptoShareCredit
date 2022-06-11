@@ -738,6 +738,31 @@ def generate_address(request):
     return redirect('atm_functions:Home')
 
 @login_required()
+def businesses(request):
+    return render(request, 'businesses.html')
+
+@login_required()
+def create_business(request):
+
+    return render(request, 'create_business.html')
+
+@login_required()
+def edit_business(request):
+
+    return render(request, 'businesses.html')
+
+
+@login_required()
+def manage_businesses(request):
+
+    return render(request, 'create_business.html')
+
+@login_required()
+def search_business(request):
+
+    return render(request, 'businesses.html')
+
+@login_required()
 def blockchain_wills(request):
 
     if request.method == "POST":

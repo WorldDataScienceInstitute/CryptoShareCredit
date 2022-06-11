@@ -1,0 +1,191 @@
+{% load static %}
+{% load tz %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+<body>
+    {% if iframe is None %}
+    {% include 'atm_sidebar.html' %}
+    {% endif %}
+    <div class="content-container">
+        {% include 'messages.html' %}
+        {% include 'a_sessiontimeout.html' %}
+        <h2 class="ml-4 text-primary">Create Business</h2>
+        <br>
+        <form action="/atm/BlockchainWills/" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="business_name"><b>New Business Name</b></label>
+                <input type="text" class="form-control" id="business_name" aria-describedby="business_name" name="business_name"
+                    placeholder="Enter your new business name" required>
+            </div>
+            <div class="form-group">
+                <label for="business_price"><b>Business Creation Price: </b>  <em>In Dash (DASH)</em></label>
+                <input type="number" class="form-control" id="business_price" aria-describedby="business_price" name="business_price"
+                    step=".0001" value="1" required readonly>
+            </div>
+            <h2 class="ml-4 text-secondary" style="font-size: 25px;">Blockchain Business Bylaws</h2>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_money_laundring" name="cb_money_laundring" required>
+                    <label class="form-check-label" for="cb_money_laundring">
+                        I Understand that this Business should not be used for anything illegal in my country, Fraud, or Money Laundering. 
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_country_laws" name="cb_country_laws" required>
+                    <label class="form-check-label" for="cb_country_laws">
+                        I Understand if I break any laws in my Country, Cryptoshare Banq is not liable and will cooperate with Local Law Enforcement.
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_business_validity" name="cb_business_validity" required>
+                    <label class="form-check-label" for="cb_business_validity">
+                        I Understand this business is only Valid in the Cryptoshare Banq Ecosystem and Metaverse (this Business will not be Recognized or Enforced in My Country).
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_currency" name="cb_currency" required>
+                    <label class="form-check-label" for="cb_currency">
+                        I Understand the only Currency I can accept is Cryptocurrency (not FIAT).
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_business_pay" name="cb_business_pay" required>
+                    <label class="form-check-label" for="cb_business_pay">
+                        I Understand this Business Account allows People and other Businesses to pay me using my Business Name.
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_local_laws" name="cb_local_laws" required>
+                    <label class="form-check-label" for="cb_local_laws">
+                        I Understand any money I make should be reported on my Local Taxes.
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_blockchain" name="cb_blockchain" required>
+                    <label class="form-check-label" for="cb_blockchain">
+                        I Understand that Blockchain is Transparent, every transaction will be Recorded and Categorized for  Record Keeping.
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_disputes" name="cb_disputes" required>
+                    <label class="form-check-label" for="cb_disputes">
+                        I Understand each Business Dispute will be decided by a Minimum of 3 Cryptoshare Banq Members (All Decisions are Final).
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_smart_contract" name="cb_smart_contract" required>
+                    <label class="form-check-label" for="cb_smart_contract">
+                        I Understand that Each Business Deal will be bound by a Digital/Smart Contract.
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_filling_cost" name="cb_filling_cost" required>
+                    <label class="form-check-label" for="cb_filling_cost">
+                        I Understand their is a Blockchain Business Filing Cost (supports our Platform).
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_yearly_cost" name="cb_yearly_cost" required>
+                    <label class="form-check-label" for="cb_yearly_cost">
+                        I Understand the Filing Cost is due Every Year (365 days from your Creation Date).
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_crypto_ban" name="cb_crypto_ban" required>
+                    <label class="form-check-label" for="cb_crypto_ban">
+                        I Declare Cryptocurrency is not Banned or Illegal in my Country.
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_business_laws" name="cb_business_laws" required>
+                    <label class="form-check-label" for="cb_business_laws">
+                        I Affirm that I have Read all of the Blockchain Business Bylaws.
+                    </label>
+                </div>
+            </div>
+            <small id="addressRegisterHelp" class="form-text text-muted">We'll never share information with anyone else</small>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
+            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Must have at least 1 DASH deposited in your CryptoShare Wallet for creating a Blockchain Will</small>
+        </div>
+
+        
+        <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
+            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Only the Last Blockchain Will be Used</small>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+    
+    
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+        
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
