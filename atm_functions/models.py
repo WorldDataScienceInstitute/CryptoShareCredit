@@ -16,6 +16,7 @@ class Account(models.Model):
     country = models.CharField(max_length=57, null=True)
     state = models.CharField(max_length=57, null=True)
     birthdate = models.DateField(null=True)
+    username = models.CharField(max_length=57, unique=True, null=True)
 
 class History(models.Model):
     EmailId = models.OneToOneField(to=User, on_delete=models.CASCADE, primary_key=True)

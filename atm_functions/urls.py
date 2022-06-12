@@ -20,6 +20,7 @@ urlpatterns = [
      path("GetCreditGrade/", views.get_credit_grade, name="GetCreditGrade"),
      path("MyAddresses/", views.my_addresses, name="MyAddresses"),
      path("MyTransactions/", views.my_transactions, name="MyTransactions"),
+     path("Profile/", views.profile, name="Profile"),
      path("SwapCrypto/", views.swap_crypto, name="SwapCrypto"),
      path("Settings/", views.atm_settings, name="Settings"),
      path("SendCoinbaseWallet/", views.send_coinbase_wallet, name="SendCoinbaseWallet"),
