@@ -42,6 +42,53 @@ def home(request):
 
     return redirect('atm_functions:CheckCredit')
 
+@login_required()
+def profile(request):
+    user = Account.objects.get(user = request.user)
+    countries = countries_tuples
+
+    if request.method == "GET":
+
+        context = {
+            "user": user,
+            "countries": countries
+        }
+        return render(request, "user_profile.html", context)
+    
+    elif request.method == "POST":
+        action = request.GET.get('action','')
+
+        if action == "ChangeUsername":
+            new_username = request.POST.get('username','').lower()
+
+            user.username = new_username
+            user.save()
+
+            messages.success(request, "Username changed successfully")
+            return redirect('atm_functions:Profile')
+        
+        elif action == "UpdateProfileInfo":
+            new_first_name = request.POST.get('first_name','')
+            new_last_name = request.POST.get('last_name','')
+            new_country = request.POST.get('country','')
+            new_birthdate = request.POST.get('birthdate','')
+
+            user.first_name = new_first_name
+            user.last_name = new_last_name
+            user.country = new_country
+            user.birthdate = new_birthdate
+
+            if new_country == "US":
+                state = request.POST.get('state','')
+                user.state = state
+
+            user.save()
+
+            messages.success(request, "Profile information updated successfully")
+            return redirect('atm_functions:Profile')    
+        
+
+
 
 # @login_required(login_url='authentication:Login')
 @login_required()
