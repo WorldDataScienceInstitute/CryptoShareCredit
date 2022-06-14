@@ -18,6 +18,13 @@ class Account(models.Model):
     birthdate = models.DateField(null=True)
     username = models.CharField(max_length=57, unique=True, null=True)
 
+class Business(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    official_name = models.CharField(max_length=57)
+    system_name = models.CharField(max_length=57)
+    username = models.CharField(max_length=25, unique=True, null=True)
+    category = models.CharField(max_length=30)
+
 class History(models.Model):
     EmailId = models.OneToOneField(to=User, on_delete=models.CASCADE, primary_key=True)
     Amount = models.BigIntegerField()

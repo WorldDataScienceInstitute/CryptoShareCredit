@@ -5,7 +5,6 @@
 <!doctype html>
 <html lang="en">
 {% include 'header.html' %}
-
 <body>
     {% if iframe is None %}
     {% include 'atm_sidebar.html' %}
@@ -13,25 +12,8 @@
     <div class="content-container">
         {% include 'messages.html' %}
         {% include 'a_sessiontimeout.html' %}
-        <h2 class="ml-4 text-primary">Businesses</h2>
+        <h2 class="ml-4 text-primary">Search Business</h2>
         <br>
-        <div class="btn-group container-fluid justify-content-center" style="margin-bottom: 20px;">
-            <h5 class="ml-4">
-                <a href="{% url 'atm_functions:CreateBusiness' %}">
-                    <button type="button" class="btn btn-primary btn-lg">
-                        Create Business
-                    </button>
-                </a>
-            </h5>
-            <h5 class="ml-4">
-                <a href="{% url 'atm_functions:ManageBusinesses' %}">
-                    <button type="button" class="btn btn-primary btn-lg">
-                        Manage Business
-                    </button>
-                </a>
-            </h5>
-        </div>
-
         <form action="{% url 'atm_functions:SearchBusiness' %}" method="post">
             {% csrf_token %}
             <div class="btn-group container-fluid justify-content-center">
@@ -107,8 +89,8 @@
     </script>
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
     </script>
-
-
+    
+    
     <script type="text/javascript">
         function triggerHtmlEvent(element, eventName) {
             var event;
@@ -122,7 +104,7 @@
                 element.fireEvent('on' + event.eventType, event);
             }
         }
-
+        
         $('.translation-links a').click(function (e) {
             e.preventDefault();
             var lang = $(this).data('lang');
@@ -142,5 +124,4 @@
     <script src="{% static 'js/jquery.sticky.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
 </body>
-
 </html>
