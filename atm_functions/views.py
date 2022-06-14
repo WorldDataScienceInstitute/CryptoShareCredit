@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.db.models import Q
 from .models import User
 from decimal import Decimal
-from atm_functions.models import Account, Address, Balance, Cryptocurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC
+from atm_functions.models import Account, Address, Balance, Cryptocurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, Business
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples
 from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email
@@ -736,6 +736,87 @@ def generate_address(request):
     messages.info(request, "Address generated successfully.")
 
     return redirect('atm_functions:Home')
+
+@login_required()
+def businesses(request):
+    businesses = Business.objects.all()
+
+    context = {
+            'businesses': businesses
+            }
+            
+    return render(request, 'businesses.html', context)
+
+@login_required()
+def create_business(request):
+
+    if request.method == "GET":
+        return render(request, 'create_business.html')
+
+    if request.method == "POST":
+        business_official_name = request.POST.get("business_name", None)
+        business_system_name = business_official_name.lower()
+        business_category = request.POST.get("business_category", None)
+        business_price = 1
+
+        name_exists = Business.objects.filter(system_name=business_system_name)
+        if name_exists:
+            messages.info(request, "Business name already exists.")
+            return redirect('atm_functions:CreateBusiness')
+        
+        currency_object = Cryptocurrency.objects.get(currency_name="Dash")
+        user_balance = Balance.objects.get(email=request.user, currency_name=currency_object)
+
+        if user_balance.amount < business_price:
+            messages.info(request, "You do not have enough funds to create a blockchain will. Please deposit DASH to your wallet.")
+            return redirect('atm_functions:Home')
+        
+        user_balance.amount -= Decimal(business_price)
+        user_balance.save()
+
+        new_business = Business(owner=request.user, official_name=business_official_name, system_name=business_system_name, category=business_category)
+        new_business.save()
+
+        messages.info(request, "Business created successfully.")
+        return redirect('atm_functions:Businesses')
+
+
+@login_required()
+def edit_business(request):
+
+    return render(request, 'businesses.html')
+
+
+@login_required()
+def manage_businesses(request):
+    businesses = Business.objects.filter(owner=request.user)
+
+    context = {
+        "businesses": businesses
+    }
+
+    return render(request, 'manage_businesses.html', context)
+
+@login_required()
+def search_business(request):
+
+    search_option = request.POST.get("SearchOption", None)
+    search_value = request.POST.get("SearchValue", None)
+
+    if search_option == "StartsWith":
+        businesses = Business.objects.filter(system_name__startswith=search_value.lower())
+
+    elif search_option == "Contains":
+        businesses = Business.objects.filter(system_name__contains=search_value.lower())
+
+    elif search_option == "ExactMatch":
+        businesses = Business.objects.filter(system_name=search_value.lower())
+
+    context = {
+        "businesses": businesses
+    }
+
+    return render(request, 'search_businesses.html', context)
 
 @login_required()
 def blockchain_wills(request):
