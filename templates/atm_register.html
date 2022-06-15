@@ -272,7 +272,7 @@
                                     <option value="AE">United Arab Emirates</option>
                                     <option value="GB">United Kingdom</option>
                                     <!-- <option value="US">United States</option> -->
-                                    <option value="UM">United States Minor Outlying Islands</option>
+                                    <!-- <option value="UM">United States Minor Outlying Islands</option> -->
                                     <option value="UY">Uruguay</option>
                                     <option value="UZ">Uzbekistan</option>
                                     <option value="VU">Vanuatu</option>
@@ -538,14 +538,74 @@
 
 
         }
+        function registerEmail(){
+            var url = "{% url 'atm_functions:RegisterWaitlistEmail' %}"
+            var data = {
+                email: document.getElementById("UserEmail");
+            };
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                success: function(response){
+                    console.log(response);
+                },
+                error: function(response){
+                    console.log(response);
+                }
+            });
+        };
     </script>
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.sticky.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        window.onload = function() {
+            if (!localStorage.hideUSAList) {
+                $('#USAWaitingList').modal('toggle');
+            }
+        }
+
+        function USA_Waiting_Acceptance(){
+            localStorage.setItem('hideUSAList', true);
+            $("#USAWaitingList").modal('hide');
+        }
+    </script>
     {% include 'footer.html' %}
+
 </body>
 
 </html>
-                
+<!-- Modal -->
+<div id="USAWaitingList" class="modal" style="z-index: 2000;">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>USA WAITING LIST</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <br>
+            <p style="color: black;font-weight: 400;">US Residents Join Waiting List for July 2022</p>
+            <br>
+            <b><p style="color: black;font-weight: 400;">IF you are from US, please enter your email for joining the waiting list.</p></b>
+            <div class="d-flex justify-content-center">
+                <form action="{% url 'atm_functions:RegisterWaitlistEmail' %}" method="post" onsubmit="USA_Waiting_Acceptance()">
+                    {% csrf_token %}
+                    <div style="text-align:center; margin: 30px;" >
+                        <div class="col-auto my-1">
+                            <input type="email" style="text-align:center;" name="UserEmail" class="form-control-plaintext border border-primary" id="UserEmail" placeholder="Your Email" required>
+                        </div>
+                    </div>
+                    <button style="text-align: center;" class="btn btn-danger" data-toggle="modal" id="Close" onclick="$('#USAWaitingList').modal('hide');">Close</button> 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button type="submit" class="btn btn-success" data-toggle="modal" id="SubmitToList">Join the Waiting List</button> 
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

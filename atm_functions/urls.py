@@ -43,6 +43,7 @@ urlpatterns = [
      path("ConfirmedTokenTransactions/", views.confirmed_token_transactions, name="ConfirmedTokenTransactions"),
      path("DailyRoutine/", views.daily_routine, name="DailyRoutine"),
      path("UpdateExchangeRates/", views.update_exchange_rates, name="UpdateExchangeRates"),
+     path("RegisterWaitlistEmail/", views.register_waitlist_email, name="RegisterWaitlistEmail"),
      path("TestReceiver/", views.test_receiver, name="TestReceiver")
      # path("NotificationService/", views.notification_service, name="NotificationService")
 ]

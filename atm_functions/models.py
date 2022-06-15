@@ -25,6 +25,10 @@ class Business(models.Model):
     username = models.CharField(max_length=25, unique=True, null=True)
     category = models.CharField(max_length=30)
 
+class WaitingList(models.Model):
+    id_wl = models.AutoField(primary_key=True)
+    email = models.CharField(max_length=40)
+
 class History(models.Model):
     EmailId = models.OneToOneField(to=User, on_delete=models.CASCADE, primary_key=True)
     Amount = models.BigIntegerField()

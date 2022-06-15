@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.db.models import Q
 from .models import User
 from decimal import Decimal
-from atm_functions.models import Account, Address, Balance, Cryptocurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, Business
+from atm_functions.models import Account, Address, Balance, Cryptocurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, Business, WaitingList
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples
 from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email
@@ -1028,6 +1028,14 @@ def simpleswap_api(request):
         }
 
         return HttpResponse(json.dumps(response), content_type="application/json")
+
+@csrf_exempt
+def register_waitlist_email(request):
+    email = request.POST.get('UserEmail','')
+
+    WaitingList.objects.create(email=email)
+
+    return redirect ('authentication:Email')
 
 @csrf_exempt
 def update_exchange_rates(request):
