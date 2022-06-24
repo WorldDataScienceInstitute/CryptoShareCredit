@@ -45,7 +45,18 @@
     </div>
 
     <div style="position: absolute; bottom: 0; right: 0; left: 0;">
-        <div class="container banq-members btn-grad" style="max-width: 250px; max-height: 120px;">
+        <div class="container" style="max-width: 250px; padding-bottom: 10px;">
+            <form method="POST">
+                {% csrf_token %}
+                    <select class="form-control col-md-2" aria-label="Default select example" name="language" onchange="location = this.value; this.form.submit();">
+                        <option selected disable>Select language</option>
+                        <option value="#googtrans(en|en)" data-lang="en">English</option>
+                        <option value="#googtrans(en|es)" data-lang="en">Español</option>
+                        <option value="#googtrans(en|pt)" data-lang="en">Portugues</option>
+                    </select>
+            </form>
+        </div>
+        <div class="container banq-members btn-grad" style="max-width: 350px; max-height: 120px;">
             <h1 style="font-size: 15px; line-height: 60px;">{{user_count}} BANQ MEMBERS </h1>  
         </div>
         <div class="banq-members2">
