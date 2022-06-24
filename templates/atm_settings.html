@@ -12,15 +12,20 @@
     <div class="content-container">
         <h2 class="ml-4">Settings</h2>
         <h5 class="ml-4 mt-4">Change Language</h5>
-        <form method="POST">
-            {% csrf_token %}
-            <ul>
-                <li style="list-style: none;"><a href="#googtrans(en|en)"><input type="radio" name="language"><label for="en">&nbsp;English</label></a></li>
-                <li style="list-style: none;"><a href="#googtrans(en|es)"><input type="radio" name="language"><label for="es">&nbsp;Espanol</label></a></li>
-                <li style="list-style: none;"><a href="#googtrans(en|pt)"><input type="radio" name="language"><label for="pt">&nbsp;Portugues</label></a></li>
-            </ul>
-        <button type="submit" class="btn-sm btn-primary">Submit</button>
-    </form>
+        <div class="ml-4 mt-4">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <select class="form-control col-md-2" aria-label="Default select example" name="language" onchange="location = this.value; this.form.submit();">
+                        <option selected disable>Select language</option>
+                        <option value="#googtrans(en|en)" data-lang="en">English</option>
+                        <option value="#googtrans(en|es)" data-lang="en">Español</option>
+                        <option value="#googtrans(en|pt)" data-lang="en">Portugues</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
     </div>
     
     <script type="text/javascript">
@@ -35,6 +40,13 @@
     </script>
     
     
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
     <script type="text/javascript">
         function triggerHtmlEvent(element, eventName) {
             var event;
@@ -62,11 +74,6 @@
             });
         });
     </script>
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/jquery.sticky.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
 </body>
 
 </html>
