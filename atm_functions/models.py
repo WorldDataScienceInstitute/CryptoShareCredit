@@ -57,6 +57,7 @@ class Balance(models.Model):
 
 class BlockchainWill(models.Model):
     id_w = models.AutoField(primary_key=True)
+    transaction_id = models.CharField(max_length=255, unique=True, null=True)
     email = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=15)
     creation_datetime = models.DateTimeField(auto_now_add=True)

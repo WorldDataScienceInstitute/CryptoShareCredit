@@ -315,6 +315,16 @@ def buy_crypto_widget(request):
 
     return render(request, 'buy_crypto_widget.html', context)
 
+@login_required
+def estate_net_worth(request):
+
+    if request.method == "GET":
+        return render(request, 'estate_net_worth.html')
+
+
+    return render(request, 'estate_net_worth.html')
+    pass
+
 @login_required()
 def crypto_news(request):
     url = "https://crypto-pulse.p.rapidapi.com/news"
@@ -935,8 +945,10 @@ def register_blockchain_will(request):
     if not save_will:
         cryptoapis_client = CryptoApis()
         transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet("dash", "mainnet", "Xh1daZF6rafvc2gieJXzhr71wQtzuvk6C3", "1", data=f"CryptoShare Blockchain Will - {blockchain_will.id_w}|{str(blockchain_will.email)}")
+        transaction_id = transaction_response["transactionRequestId"]
 
         blockchain_will.status = "ACTIVE"
+        blockchain_will.transaction_id = transaction_id
         messages.info(request, "Blockchain Will successfully created.")
 
 
