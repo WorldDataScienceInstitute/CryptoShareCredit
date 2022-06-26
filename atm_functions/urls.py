@@ -13,6 +13,8 @@ urlpatterns = [
      path("SearchBusiness/", views.search_business, name="SearchBusiness"),
      path("BlockchainWills/", views.blockchain_wills, name="BlockchainWills"),
      path("RegisterBlockchainWill/", views.register_blockchain_will, name="RegisterBlockchainWill"),
+     path("CertificateBlockchainWill/", views.certificate_blockchain_will, name="CertificateBlockchainWill"),     
+     path("CertificateBlockchainWill/<int:id>/", views.certificate_blockchain_will, name="CertificateBlockchainWill"),     
      path("BuyCrypto/", views.buy_crypto, name="BuyCrypto"),
      path("BuyCredit/", views.buy_credit, name="BuyCredit"),
      path("BuyCryptoWidget/", views.buy_crypto_widget, name="BuyCryptoWidget"),
@@ -45,6 +47,6 @@ urlpatterns = [
      path("DailyRoutine/", views.daily_routine, name="DailyRoutine"),
      path("UpdateExchangeRates/", views.update_exchange_rates, name="UpdateExchangeRates"),
      path("RegisterWaitlistEmail/", views.register_waitlist_email, name="RegisterWaitlistEmail"),
-     path("TestReceiver/", views.test_receiver, name="TestReceiver")
+     path("TestReceiver/<int:year>/", views.test_receiver, name="TestReceiver")
      # path("NotificationService/", views.notification_service, name="NotificationService")
 ]

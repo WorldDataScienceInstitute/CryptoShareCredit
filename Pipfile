@@ -25,6 +25,8 @@ python-dateutil= "==2.8.1"
 celery = "*"
 redis = "*"
 moesifdjango = "*"
+pillow = "*"
+opencv-python = "*"
 
 [dev-packages]
 

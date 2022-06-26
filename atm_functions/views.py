@@ -1,15 +1,18 @@
 # from time import timezone
 from email import message
 from multiprocessing import context
+from django.conf import settings as django_settings
 from django.contrib import messages
 from django.urls import reverse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, FileResponse, Http404
 from django.utils import timezone
 from django.db.models import Q
+from django.templatetags.static import static
+from django.utils import formats
 from .models import User
 from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, Business, WaitingList
@@ -31,6 +34,8 @@ import hashlib
 import os
 import requests
 import json
+import cv2
+from PIL import Image
 
 def home(request):
     if not request.user.is_authenticated:
@@ -966,6 +971,69 @@ def register_blockchain_will(request):
         return HttpResponse(json.dumps(json_response), content_type="application/json")
 
     return redirect('atm_functions:BlockchainWills')
+
+@login_required()
+def certificate_blockchain_will(request, id = None):
+    def write_text(image, text, FONT, textsize, x, y):
+
+        textX = (x - textsize[0]) // 2
+        textY = (y + textsize[1]) // 2
+
+        cv2.putText(image, text, (textX, textY), FONT, 1, (0, 0, 0), 1, cv2.LINE_AA)
+
+    def generate_certificate(name, transactionId, innerTransactionId, date):
+        template_url = os.path.join(django_settings.BASE_DIR, 'static/pdf_templates/Will_Certificate_Template.jpg')
+        temp_certificates = os.path.join(django_settings.BASE_DIR, 'static/temp_certificates')
+        new_certificate = f"{temp_certificates}/{name.strip()}.pdf"
+
+        certificate_template_image = cv2.imread(template_url)
+        FONT = cv2.FONT_HERSHEY_DUPLEX
+
+        text = name.strip()
+
+        textsize_name = cv2.getTextSize(text, FONT, 1, 0)[0]
+        textsize = cv2.getTextSize(text, FONT, 0.5, 0)[0]
+
+        coordinates = [
+            [180 * 2, 1020 * 2],
+            [540 * 2, 1180 * 2],
+            [100 * 2, 1590 * 2],
+            [1040 * 2, 1830 * 2],
+        ]
+
+        write_text(certificate_template_image, transactionId.strip(), FONT, textsize, coordinates[0][0], coordinates[0][1])
+        write_text(certificate_template_image, date.strip(), FONT, textsize, coordinates[1][0], coordinates[1][1])
+        write_text(certificate_template_image, innerTransactionId.strip(), FONT, textsize, coordinates[2][0], coordinates[2][1])
+        write_text(certificate_template_image, name.strip(), FONT, textsize_name, coordinates[3][0], coordinates[3][1])
+
+
+        cv2.imwrite(f"{temp_certificates}/{name.strip()}.jpg", certificate_template_image)
+
+        img = Image.open(f"{temp_certificates}/{name.strip()}.jpg")
+        img = img.convert("RGB")
+        img.save(new_certificate, format="PDF")
+
+        return new_certificate
+
+    if id is None:
+        return redirect('atm_functions:BlockchainWills')
+
+    user = request.user
+    user_name = user.first_name + " " + user.last_name
+    blockchain_will = BlockchainWill.objects.get(pk=id)
+
+    if blockchain_will.email != request.user or blockchain_will.status != "ACTIVE":
+        return redirect('atm_functions:BlockchainWills')
+
+    if blockchain_will.transaction_id is None:
+        blockchain_will.transaction_id = "18b513a31bc8381ca73258b98229c8661d562ae92e30df81936aa398c74e3118"
+
+    url = generate_certificate(user_name, blockchain_will.transaction_id, f"{id}|{blockchain_will.transaction_id}", f"{formats.date_format(blockchain_will.creation_datetime, 'DATETIME_FORMAT')} UTC")
+
+    try:
+        return FileResponse(open(url, 'rb'), content_type='application/pdf')
+    except FileNotFoundError:
+        raise Http404()
    
 
 def get_credit_grade(request):
@@ -1451,8 +1519,9 @@ def confirmed_token_transactions(request):
 
 
 @csrf_exempt
-def test_receiver(request):
+def test_receiver(request, year = None):
 
+    print(year)
     symbol = request.POST.get('symbol','')
     save = request.GET.get('save_will','')
     print(symbol)
