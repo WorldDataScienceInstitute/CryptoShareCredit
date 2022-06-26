@@ -20,7 +20,7 @@
                 <th scope="col" style="text-align: center;">Status</th>
                 <th scope="col" style="text-align: center;">Creation Date</th>
                 <th scope="col" style="text-align: center;">Will Details</th>
-                <th scope="col" style="text-align: center;">Credential</th>
+                <th scope="col" style="text-align: center;">Certificate</th>
             </tr>
             </thead>
             <tbody>
@@ -43,8 +43,15 @@
                         </td>
                         <td style="text-align: center;">
                             <!-- <a href="" target="_blank"> -->
+                            {% if will.status != "ACTIVE" %}
                                 <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
-                                id="button-credential" disabled>Credential</button>
+                                id="button-credential" disabled>Certificate</button>
+                            {% else %}
+                            <a href="{% url 'atm_functions:CertificateBlockchainWill' %}{{ will.id_w }}/">
+                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
+                                id="button-credential">Certificate</button>
+                            </a>
+                            {% endif %}
                             <!-- </a> -->
                         </td>
                     </tr>
