@@ -1006,8 +1006,9 @@ def certificate_blockchain_will(request, id = None):
         write_text(certificate_template_image, innerTransactionId.strip(), FONT, textsize, coordinates[2][0], coordinates[2][1])
         write_text(certificate_template_image, name.strip(), FONT, textsize_name, coordinates[3][0], coordinates[3][1])
 
-
-        cv2.imwrite(f"{temp_certificates}/{name.strip()}.jpg", certificate_template_image)
+        cv2_path = f"{temp_certificates}/{name.strip()}.jpg"
+        cv2.imwrite(cv2_path, certificate_template_image)
+        print(cv2_path)
 
         img = Image.open(f"{temp_certificates}/{name.strip()}.jpg")
         img = img.convert("RGB")
