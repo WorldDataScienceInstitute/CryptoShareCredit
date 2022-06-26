@@ -1,0 +1,98 @@
+<div class="container col-12" style="padding: 0;">
+    <button id="button_widget" type="button" class="btn btn-primary btn-lg fixed-button" onclick="show_widget(); WidgetCurrencies();">
+        <i class="fa-solid fa-wallet"></i>
+    </button>
+    
+    <div id="balances_widget" class="container col-md-12 fixed-balances" style="display: none; margin-right: 60px; margin-top: 50px;">
+        <div class="card" style="background-color: rgba(0, 112, 248, 0.827);" >
+            <table class="table" id="table_widget">
+                <thead>
+                    <tr>
+                        <th scope="col">Symbol</th>
+                        <th scope="col">Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .fixed-button {
+        position:fixed; 
+        top:0; 
+        right:0;
+        z-index: 1000;
+    }
+    .fixed-balances {
+        position:fixed; 
+        top:0; 
+        left:0;
+        z-index: 999;
+        margin-left: 30%;
+    }
+</style>
+
+<script type="text/javascript">
+
+    function hide_widget(){
+        var widget = document.getElementById('balances_widget');
+        widget.style.display = "none";
+        
+        //Change onclick function of button to show widget+
+        var button = document.getElementById('button_widget');
+        button.onclick = function() {
+            show_widget();
+        };
+    }
+
+    function show_widget(){
+        var widget = document.getElementById('balances_widget');
+
+        widget.style.display = "block";
+
+        //Change onclick function of button to hide widget
+        var button = document.getElementById('button_widget');
+        button.onclick = function() {
+            hide_widget();
+        };
+    }
+
+    function WidgetCurrencies(){
+        var url = "{% url 'atm_functions:CurrenciesWidget' %}";
+        var data = {
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        };
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: data,
+            success: function(response){
+                var table = document.getElementById('table_widget');
+                $("#table_widget tr").remove(); //Remove all rows
+                var tHeaders = table.insertRow(table.rows.length);
+
+                var symbol = tHeaders.insertCell(0);
+                var balance = tHeaders.insertCell(1);
+
+                symbol.innerHTML = "<b>Symbol</b>";
+                balance.innerHTML = "<b>Balance</b>";
+
+                for (const key in response){
+                    var newRow = table.insertRow(table.rows.length);
+                    var symbol = newRow.insertCell(0);
+                    var balance = newRow.insertCell(1);
+
+                    symbol.innerHTML = response[key]["symbol"];
+                    balance.innerHTML = response[key]["balance"];
+                }
+            },
+            error: function(response){
+                document.getElementById("table_widget").innerHTML = "WIDGET ERROR";
+            }
+        });
+    };
+
+</script>

@@ -25,7 +25,6 @@ urlpatterns = [
      path("ConnectWallet/", views.connect_wallet, name="ConnectWallet"),
      path("DisconnectWallet/", views.disconnect_wallet, name="DisconnectWallet"),
      path("GenerateAddress/", views.generate_address, name="GenerateAddress"),
-     path("GetCreditGrade/", views.get_credit_grade, name="GetCreditGrade"),
      path("MyAddresses/", views.my_addresses, name="MyAddresses"),
      path("MyTransactions/", views.my_transactions, name="MyTransactions"),
      path("Profile/", views.profile, name="Profile"),
@@ -38,6 +37,8 @@ urlpatterns = [
 
      #API ENDPOINTS
      path("SimpleSwapAPI/", views.simpleswap_api, name="SimpleSwapAPI"),
+     path("GetCreditGrade/", views.get_credit_grade, name="GetCreditGrade"),
+     path("CurrenciesWidget/", views.get_currencies_balance_widget, name="CurrenciesWidget"),
 
 
      #WEBHOOKS
