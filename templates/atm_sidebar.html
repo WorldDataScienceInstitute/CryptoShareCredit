@@ -118,6 +118,13 @@
         </li>
 
         <li>
+            <!-- <a href="{% url 'atm_functions:EstateNetWorth' %}"> -->
+            <a href="">
+                <i class="fa-solid fa-chart-line"></i>&nbsp;&nbsp;&nbsp;ESTATE NET WORTH
+            </a>
+        </li>
+
+        <li>
             <a href="{% url 'atm_functions:Settings' %}">
                 <i class="fas fa-cogs" aria-hidden="true"></i>&nbsp;&nbsp;SETTINGS
             </a>
@@ -181,26 +188,6 @@
             },
             error: function(response){
                 document.getElementById("credit_grade").innerHTML = "CREDIT GRADE: ERROR";
-            }
-        });
-    };
-
-    function testRequest(){
-        // var url = "https://api.simpleswap.io/v1?api_key=1bec8024-bf17-4faf-b96e-fd74646ad793";
-        var url = "{% url 'atm_functions:TestReceiver' %}"
-        var data = {
-            csrfmiddlewaretoken: getCookie('csrftoken'),
-            symbol: "BTC"
-        };
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: data,
-            success: function(response){
-                console.log(response);
-            },
-            error: function(response){
-                console.log(response);
             }
         });
     };
