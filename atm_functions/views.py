@@ -1044,6 +1044,29 @@ def get_credit_grade(request):
     }
     return HttpResponse(json.dumps(test), content_type="application/json")
 
+def get_currencies_balance_widget(request):
+    user = request.user
+
+    symbols = [
+        "BTC",
+        "ETH",
+        "USDC",
+        "DASH",
+        "LTC"
+    ]
+    balances = Balance.objects.filter(email= user, currency_name__symbol__in = symbols).select_related('currency_name')
+
+    response = {}
+
+    for balance in balances:
+        currency = {
+            "symbol": balance.currency_name.symbol,
+            "balance": round(float(balance.amount), 2)
+        }
+        response[balance.currency_name.symbol] = currency
+    
+    return HttpResponse(json.dumps(response), content_type="application/json")
+
 # @csrf_exempt
 def simpleswap_api(request):
     if request.method == "GET":
