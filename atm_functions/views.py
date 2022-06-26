@@ -1008,7 +1008,6 @@ def certificate_blockchain_will(request, id = None):
 
         cv2_path = f"{temp_certificates}/{name.strip()}.jpg"
         cv2.imwrite(cv2_path, certificate_template_image)
-        print(cv2_path)
 
         img = Image.open(f"{temp_certificates}/{name.strip()}.jpg")
         img = img.convert("RGB")
