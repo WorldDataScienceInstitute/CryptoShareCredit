@@ -1054,7 +1054,7 @@ def get_currencies_balance_widget(request):
         "DASH",
         "LTC"
     ]
-    balances = Balance.objects.filter(email= request.user, currency_name__symbol__in = symbols).select_related('currency_name')
+    balances = Balance.objects.filter(email= user, currency_name__symbol__in = symbols).select_related('currency_name')
 
     response = {}
 
