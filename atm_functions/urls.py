@@ -10,6 +10,7 @@ urlpatterns = [
      path("ManageBusinesses/", views.manage_businesses, name="ManageBusinesses"),
      path("EditBusiness/", views.edit_business, name="EditBusiness"),
      path("EstateNetWorth/", views.estate_net_worth, name="EstateNetWorth"),
+     path("EditEstateNetWorth/", views.edit_estate_net_worth, name="EditEstateNetWorth"),
      path("SearchBusiness/", views.search_business, name="SearchBusiness"),
      path("BlockchainWills/", views.blockchain_wills, name="BlockchainWills"),
      path("RegisterBlockchainWill/", views.register_blockchain_will, name="RegisterBlockchainWill"),
