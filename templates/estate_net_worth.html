@@ -28,11 +28,6 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" id="username" name="username" placeholder="Please enter a new username" value="{{ net_worth|default:0 }}"  style="text-align: center;" required>
                             </div>
-                            <small id="selfie_document_help" class="form-text text-white" style="text-align: left; padding: 5px; ">
-                                <b>
-                                    *This is the username that you will use for making transactions inside the Crypto$hare ecosystem.
-                                </b>
-                            </small>
                             <a href="{% url 'atm_functions:EditEstateNetWorth' %}">
                                 <button type="button" class="btn btn-info">Edit your Estate Net Worth</button>
                             </a>
