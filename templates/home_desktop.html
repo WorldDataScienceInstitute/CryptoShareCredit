@@ -2,7 +2,7 @@
 <!doctype html>
 <html lang="en">
 {% include 'home_header.html' %}
-<link rel="stylesheet" href="{% static 'css/home_css4.css' %}">
+<link rel="stylesheet" href="{% static 'css/home_css5.css' %}">
 
 
 <header>
@@ -48,17 +48,21 @@
         <div class="container" style="max-width: 250px; padding-bottom: 10px;">
             <form method="POST">
                 {% csrf_token %}
-                    <select class="form-control col-md-2" aria-label="Default select example" name="language" onchange="location = this.value; this.form.submit();">
-                        <option selected disable>Select language</option>
-                        <option value="#googtrans(en|en)" data-lang="en">English</option>
-                        <option value="#googtrans(en|es)" data-lang="en">Español</option>
-                        <option value="#googtrans(en|pt)" data-lang="en">Portugues</option>
-                    </select>
+                    <input type="hidden" name="language" value=""/>
             </form>
         </div>
-        <div class="container banq-members btn-grad" style="max-width: 350px; max-height: 120px;">
-            <h1 style="font-size: 15px; line-height: 60px;">{{user_count}} BANQ MEMBERS </h1>  
+        <div class="container" style="display: flex; flex-direction: row; justify-content: space-between; max-width: max-content;">
+            <div class="container banq-members btn-grad" style="max-width: 150px; max-height: 120px;" onclick="location.hash='googtrans(en|en)'; location.reload();">
+                <h1 style="font-size: 15px; line-height: 60px;">English</h1>  
+            </div>
+            <div class="container banq-members btn-grad" style="max-width: 150px; max-height: 120px;" onclick="location.hash='googtrans(en|es)'; location.reload();">
+                <h1 style="font-size: 15px; line-height: 60px;">Español</h1>  
+            </div>
+            <div class="container banq-members btn-grad" style="max-width: 150px; max-height: 120px; position: relative;" onclick="location.hash='googtrans(en|pt)'; location.reload();">
+                <h1 style="font-size: 15px; line-height: 60px;">Português</h1>  
+            </div>
         </div>
+
         <div class="banq-members2">
             <h1 class="text-grad banq-members2" style="text-align: center; font-weight: 600; display: block; font-size: 2.0vh;">BUILD WEALTH USING CRYPTO CREDIT</h1>
         </div>

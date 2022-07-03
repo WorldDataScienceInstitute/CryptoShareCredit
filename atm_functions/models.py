@@ -55,7 +55,7 @@ class Cryptocurrency(models.Model):
 
 class Address(models.Model):
     address = models.CharField(max_length=100, primary_key=True)
-    email = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    email = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     currency_name = models.ForeignKey(Cryptocurrency, on_delete=models.CASCADE)
     expiration_datetime = models.DateTimeField(default=timezone.now()+timedelta(days=6), null= True)
 

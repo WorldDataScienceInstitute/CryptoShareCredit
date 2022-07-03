@@ -16,7 +16,7 @@ load_dotenv()
 
 
 def get_user_count():
-    return User.objects.count(), dt.now().astimezone(pytz.timezone('US/Eastern')).strftime("%D")
+    return User.objects.all().count(), dt.now().astimezone(pytz.timezone('US/Eastern')).strftime("%D")
     #return Account.objects.count(), dt.now().astimezone('localtimezone').strftime("%D %r %Z")  
 
 def generate_pin():
