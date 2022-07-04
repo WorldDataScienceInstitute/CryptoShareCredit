@@ -35,7 +35,7 @@
 
         <li style="border-style: solid none none none;border-color: white" id="desc">
             <a href="{% url 'atm_functions:Home' %}">
-                <i class="fa-solid fa-house"></i>&nbsp;&nbsp;HOME / WALLETS
+                <i class="fa-solid fa-house" style="color: gold;"></i>&nbsp;&nbsp;HOME / WALLETS
             </a>
         </li>
 
@@ -47,13 +47,13 @@
 
         <li style="border-style: solid none none none;border-color: white" id="desc">
             <a href="{% url 'atm_functions:BuyCrypto' %}">
-                <i class="fa-solid fa-sack-dollar"></i>&nbsp;&nbsp;BUY<span><img src="{% static '/images/sidebar_coin.png' %}" class="sidebarCoin"></span>
+                <i class="fa-solid fa-sack-dollar" style="color: gold;"></i>&nbsp;&nbsp;BUY<span><img src="{% static '/images/sidebar_coin.png' %}" class="sidebarCoin"></span>
             </a>
         </li>
 
         <li>
             <a href="{% url 'atm_functions:SwapCrypto' %}">
-                <i class="fa-solid fa-retweet"></i>&nbsp;SWAP<span><img src="{% static '/images/sidebar_coin.png' %}" class="sidebarCoin"></span>
+                <i class="fa-solid fa-retweet" style="color: gold;"></i>&nbsp;SWAP<span><img src="{% static '/images/sidebar_coin.png' %}" class="sidebarCoin"></span>
             </a>
         </li>
 
@@ -65,19 +65,19 @@
 
         <li style="border-style: solid none none none; border-color: white">
             <a href="{% url 'atm_functions:CreditGrades' %}">
-                <i class="fa-solid fa-landmark-dome"></i>&nbsp;&nbsp;CREDIT GRADES
+                <i class="fa-solid fa-landmark-dome" style="color: gold;"></i>&nbsp;&nbsp;CREDIT GRADES
             </a>
         </li>
     
         <li>
             <a href="{% url 'atm_functions:Businesses' %}">
-                <i class="fa-solid fa-briefcase"></i>&nbsp;&nbsp;BUSINESSES
+                <i class="fa-solid fa-briefcase" style="color: gold;"></i>&nbsp;&nbsp;BUSINESSES
             </a>
         </li>
 
         <li>
             <a href="{% url 'atm_functions:BlockchainWills' %}">
-                <i class="fa-solid fa-file-signature"></i>&nbsp;&nbsp;BLOCKCHAIN WILLS
+                <i class="fa-solid fa-file-signature" style="color: gold;"></i>&nbsp;&nbsp;BLOCKCHAIN WILLS
             </a>
         </li>
 
@@ -89,7 +89,7 @@
 
         <li style="border-style: none none solid none;border-color: white">
             <a href="{% url 'atm_functions:TransferMoney' %}">
-                <i class="fa fa-paper-plane" aria-hidden="true"></i>TRANSFER<span><img src="{% static '/images/sidebar_coin.png' %}" class="sidebarCoin"></span>
+                <i class="fa fa-paper-plane" aria-hidden="true" style="color: gold;"></i>TRANSFER<span><img src="{% static '/images/sidebar_coin.png' %}" class="sidebarCoin"></span>
             </a>
         </li>
 
@@ -101,7 +101,7 @@
 
         <li style="border-style: none none solid none;border-color: white">
             <a href="{% url 'atm_functions:MyTransactions' %}">
-                <i class="fa fa-book" aria-hidden="true"></i>MY TRANSACTIONS
+                <i class="fa fa-book" aria-hidden="true" style="color: gold;"></i>MY TRANSACTIONS
             </a>
         </li>
 
@@ -113,20 +113,20 @@
 
         <li>
             <a href="{% url 'atm_functions:Profile' %}">
-                <i class="fa-solid fa-user"></i>&nbsp;&nbsp;&nbsp;PROFILE
+                <i class="fa-solid fa-user" style="color: gold;"></i>&nbsp;&nbsp;&nbsp;PROFILE
             </a>
         </li>
 
         <li>
             <a href="{% url 'atm_functions:EstateNetWorth' %}">
             <!-- <a href=""> -->
-                <i class="fa-solid fa-chart-line"></i>&nbsp;&nbsp;&nbsp;ESTATE NET WORTH
+                <i class="fa-solid fa-chart-line" style="color: gold;"></i>&nbsp;&nbsp;&nbsp;ESTATE NET WORTH
             </a>
         </li>
 
         <li>
             <a href="{% url 'atm_functions:Settings' %}">
-                <i class="fas fa-cogs" aria-hidden="true"></i>&nbsp;&nbsp;SETTINGS
+                <i class="fas fa-cogs" aria-hidden="true" style="color: gold;"></i>&nbsp;&nbsp;SETTINGS
             </a>
         </li>
         {% if request.user.is_authenticated %}
