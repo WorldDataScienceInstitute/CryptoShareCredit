@@ -1,0 +1,227 @@
+{% load static %}
+{% static "images" as baseUrl %}
+{% if name is not None %}
+{% include 'a_sessiontimeout.html' %}
+{% endif %}
+<div class="sidebar-container">
+    <div class="sidebar-logo"">
+            <a href="{% url 'atm_functions:Home' %}"><img src="{% static '/images/logo.png' %}"></a>
+            {% if request.user.is_authenticated %}
+            <h2 id="credit_grade"><b>CREDIT GRADE: </b></h2>
+            <h6 style="text-align: center;"><a href="{% url 'atm_functions:BuyCredit' %}">(Improve Credit Grade)</a></h6>
+            {% endif %}
+            <!-- <h2 id="title"><b>COINBASE</b></h2>
+            {% if request.session.wallet_conn %}
+            <h3 style="text-align: center;"> Wallet connected </h3>
+            {% else %}
+            <h3 style="text-align: center;"> Wallet not connected </h3>
+            {% endif %} -->
+    </div>
+    <br>
+    <ul class="sidebar-navigation" id="features">
+
+        <!-- <li style="border-style: none none solid none;border-color: white" id="desc">
+            {% if request.session.wallet_conn %}
+            <a href="{% url 'atm_functions:DisconnectWallet' %}">
+                <i class="fas fa-address-card" aria-hidden="true"></i>&nbsp;&nbsp;DISCONNECT WALLET
+            </a>
+            {% else %}
+            <a href="{% url 'atm_functions:ConnectWallet' %}">
+                <i class="fas fa-address-card" aria-hidden="true"></i>&nbsp;&nbsp;CONNECT WALLET
+            </a>
+            {% endif %}
+
+        </li> -->
+
+        <li style="border-style: solid none none none;border-color: white" id="desc">
+            <a href="{% url 'atm_functions:Home' %}">
+                <i class="fa-solid fa-house" style="color: gold;"></i>&nbsp;&nbsp;HOME / WALLETS
+            </a>
+        </li>
+
+        <!-- <li id="desc">
+            <a href="{% url 'atm_functions:CryptoNews' %}">
+                <i class="fa-solid fa-newspaper"></i>&nbsp;&nbsp;CRYPTO NEWS
+            </a>
+        </li> -->
+
+        <li style="border-style: solid none none none;border-color: white" id="desc">
+            <a href="{% url 'atm_functions:BuyCrypto' %}">
+                <i class="fa-solid fa-sack-dollar" style="color: gold;"></i>&nbsp;&nbsp;BUY<span><img src="{% static '/images/sidebar_coin.png' %}" class="sidebarCoin"></span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'atm_functions:SwapCrypto' %}">
+                <i class="fa-solid fa-retweet" style="color: gold;"></i>&nbsp;SWAP<span><img src="{% static '/images/sidebar_coin.png' %}" class="sidebarCoin"></span>
+            </a>
+        </li>
+
+        <!-- <li>
+            <a href="{% url 'atm_functions:BuyCredit' %}">
+                <i class="fa-solid fa-sack-dollar" aria-hidden="true"></i>&nbsp;&nbsp;BUY CREDIT
+            </a>
+        </li>         -->
+
+        <li style="border-style: solid none none none; border-color: white">
+            <a href="{% url 'atm_functions:CreditGrades' %}">
+                <i class="fa-solid fa-landmark-dome" style="color: gold;"></i>&nbsp;&nbsp;CREDIT GRADES
+            </a>
+        </li>
+    
+        <li>
+            <a href="{% url 'atm_functions:Businesses' %}">
+                <i class="fa-solid fa-briefcase" style="color: gold;"></i>&nbsp;&nbsp;BUSINESSES
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'atm_functions:BlockchainWills' %}">
+                <i class="fa-solid fa-file-signature" style="color: gold;"></i>&nbsp;&nbsp;BLOCKCHAIN WILLS
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'atm_functions:EstateNetWorth' %}">
+            <!-- <a href=""> -->
+                <i class="fa-solid fa-chart-line" style="color: gold;"></i>&nbsp;&nbsp;&nbsp;NET WORTH
+            </a>
+        </li>
+
+        <!-- <li>
+            <a href="">
+                <i class="fa-solid fa-futbol"></i>&nbsp;&nbsp;SPORTS BETTING (SOON)
+            </a>
+        </li> -->
+
+        <li style="border-style: none none solid none;border-color: white">
+            <a href="{% url 'atm_functions:TransferMoney' %}">
+                <i class="fa fa-paper-plane" aria-hidden="true" style="color: gold;"></i>TRANSFER<span><img src="{% static '/images/sidebar_coin.png' %}" class="sidebarCoin"></span>
+            </a>
+        </li>
+
+        <!-- <li>
+            <a href="{% url 'atm_functions:CheckCredit' %}">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>CHECK CREDIT
+            </a>
+        </li> -->
+
+        <li style="border-style: none none solid none;border-color: white">
+            <a href="{% url 'atm_functions:MyTransactions' %}">
+                <i class="fa fa-book" aria-hidden="true" style="color: gold;"></i>MY TRANSACTIONS
+            </a>
+        </li>
+
+        <!-- <li>
+            <a href="">
+                <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp;&nbsp;DEBIT CARD (JUNE 2022)
+            </a>
+        </li> -->
+
+        <li>
+            <a href="{% url 'atm_functions:Profile' %}">
+                <i class="fa-solid fa-user" style="color: gold;"></i>&nbsp;&nbsp;&nbsp;PROFILE
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'atm_functions:Settings' %}">
+                <i class="fas fa-cogs" aria-hidden="true" style="color: gold;"></i>&nbsp;&nbsp;SETTINGS
+            </a>
+        </li>
+        {% if request.user.is_authenticated %}
+        <form action="{% url 'authentication:Logout' %}" method="POST">
+            {% csrf_token %}
+                <button class="m-4 logout">Log out <i
+                        class="fa fa-sign-out-alt"></i></button>
+        </form>
+        {% endif %}
+    </ul>
+</div>
+{% include 'crisp_client.html' %}
+
+    
+<script type="text/javascript">
+    window.onload = function() {
+        // console.log(localStorage.hideAlert);
+        // if (!localStorage.hideAlert) {
+        //     $('#DepositWarning').modal('toggle');
+        // }
+        if ({{ request.user.is_authenticated|yesno:"true,false" }}){
+            GetCreditGrade();
+        }
+    }
+
+    function neverShowAgainModal() {
+        localStorage.setItem('hideAlert', true);
+        $("#DepositWarning").modal('hide');
+    };
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != "") {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    // document.getElementById("pay_amount").innerHTML = "Amount : "+ offerAmount;
+
+    function GetCreditGrade(){
+        var url = "{% url 'atm_functions:GetCreditGrade' %}";
+        var data = {
+            csrfmiddlewaretoken: getCookie('csrftoken')
+        };
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: data,
+            success: function(response){
+                document.getElementById("credit_grade").innerHTML = "CREDIT GRADE: "+ response["credit_grade"];
+            },
+            error: function(response){
+                document.getElementById("credit_grade").innerHTML = "CREDIT GRADE: ERROR";
+            }
+        });
+    };
+</script>
+
+<style>
+    .sidebarCoin {
+        height: 20px;
+        width: auto;
+        position: relative;
+        padding-left: 5px;
+    }
+</style>
+
+<!-- Modal -->
+<div id="DepositWarning" class="modal" style="z-index: 2000;">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>DEPOSIT ACCEPTANCE FORM</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <br>
+            <p style="color: black;font-weight: 400;">This is a Message from CryptoShare.</p>
+            <br>
+            <b><p style="color: black;font-weight: 400;">We require 1% of each deposit of our members or your wallet will be revoked in 6 days. We use this Crypto to Maintain the platform.</p></b>
+            <div class="d-flex justify-content-center">
+                <button style="text-align: center;" class="btn btn-danger" data-toggle="modal" id="Close" onclick="$('#DepositWarning').modal('hide');">Close</button> 
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button style="text-align: center;" class="btn btn-success" data-toggle="modal" id="NeverShowAgain" onclick="neverShowAgainModal()">Never show again</button> 
+            </div>
+        </div>
+    </div>
+</div>

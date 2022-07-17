@@ -7,13 +7,12 @@
 <body>
     {% if iframe is None %}
     {% include 'atm_sidebar.html' %}
-    {% include 'currencies_widget.html' %}
     {% endif %}
     {% include 'a_sessiontimeout.html' %}
-    <div class="content-container">
+    <div class="">
         {% include 'messages.html' %}
         <h2 class="ml-4">CREDIT GRADES</h2>
-        <div class="container my-4" style="padding:0px;">
+        <div class="my-4" style="padding:0px;">
             <div class="row" style="margin:0px;">
                 <img style="margin-left:auto; margin-right:auto; max-width: 100vw;" src="{% static '/images/credit_grades.png' %}">
             </div>
