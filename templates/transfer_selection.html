@@ -7,7 +7,6 @@
 <body>
     {% include 'atm_sidebar.html' %}
     {% include 'messages.html' %}
-    {% include 'currencies_widget.html' %}
     {% if auth_level > 0 %}
     {% include 'a_sessiontimeout.html' %}
     {% endif %}
@@ -21,7 +20,7 @@
         </div>
         <br>
         <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
-            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; "><b>*Must Create a CryptoShare Wallet First.. <a href="{% url 'atm_functions:CryptoShareWallet' %}">Click Here</a></b></small>
+            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; "><b>*Must Create a CryptoShare Wallet First.. <a href="{% url 'atm_functions:Home' %}">Click Here</a></b></small>
         </div>
     </div>
 
