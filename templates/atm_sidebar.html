@@ -3,140 +3,116 @@
 {% if name is not None %}
 {% include 'a_sessiontimeout.html' %}
 {% endif %}
-<div class="sidebar-container">
-    <div class="sidebar-logo"">
-            <a href="{% url 'atm_functions:Home' %}"><img src="{% static '/images/logo.png' %}"></a>
+        <!--========== BOX ICONS ==========-->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <!--========== HEADER ==========-->
+    <header class="header">
+        <div class="header__container">
+            <img src="{% static '/images/logo.png' %}" alt="" class="header__img">
+
             {% if request.user.is_authenticated %}
-            <h2 id="credit_grade"><b>CREDIT GRADE: </b></h2>
-            <h6 style="text-align: center;"><a href="{% url 'atm_functions:BuyCredit' %}">(Improve Credit Grade)</a></h6>
-            {% endif %}
-            <!-- <h2 id="title"><b>COINBASE</b></h2>
-            {% if request.session.wallet_conn %}
-            <h3 style="text-align: center;"> Wallet connected </h3>
-            {% else %}
-            <h3 style="text-align: center;"> Wallet not connected </h3>
-            {% endif %} -->
-    </div>
-    <br>
-    <ul class="sidebar-navigation" id="features">
 
-        <!-- <li style="border-style: none none solid none;border-color: white" id="desc">
-            {% if request.session.wallet_conn %}
-            <a href="{% url 'atm_functions:DisconnectWallet' %}">
-                <i class="fas fa-address-card" aria-hidden="true"></i>&nbsp;&nbsp;DISCONNECT WALLET
-            </a>
-            {% else %}
-            <a href="{% url 'atm_functions:ConnectWallet' %}">
-                <i class="fas fa-address-card" aria-hidden="true"></i>&nbsp;&nbsp;CONNECT WALLET
-            </a>
+            {% include 'currencies_widget.html' %}
             {% endif %}
 
-        </li> -->
 
-        <li style="border-style: solid none none none;border-color: white" id="desc">
-            <a href="{% url 'atm_functions:Home' %}">
-                <i class="fa-solid fa-house" style="color: gold;"></i>&nbsp;&nbsp;HOME / WALLETS
-            </a>
-        </li>
+            <div class="header__toggle">
+                <i class='bx bx-menu' id="header-toggle" style="color: white;"></i>
+            </div>
+        </div>
+    </header>
 
-        <!-- <li id="desc">
-            <a href="{% url 'atm_functions:CryptoNews' %}">
-                <i class="fa-solid fa-newspaper"></i>&nbsp;&nbsp;CRYPTO NEWS
-            </a>
-        </li> -->
 
-        <li style="border-style: solid none none none;border-color: white" id="desc">
-            <a href="{% url 'atm_functions:BuyCrypto' %}">
-                <i class="fa-solid fa-sack-dollar" style="color: gold;"></i>&nbsp;&nbsp;BUY<span><img src="{% static '/images/sidebar_coin.png' %}" class="sidebarCoin"></span>
-            </a>
-        </li>
+<br>
+<div class="nav" id="navbar">
+    <nav class="nav__container">
+        <div>           
+            <div class="nav__items nav__logo">
+                <a href="{% url 'atm_functions:Home' %}" class="sidebar-logo"><img src="{% static '/images/logo.png' %}"></a>
 
-        <li>
-            <a href="{% url 'atm_functions:SwapCrypto' %}">
-                <i class="fa-solid fa-retweet" style="color: gold;"></i>&nbsp;SWAP<span><img src="{% static '/images/sidebar_coin.png' %}" class="sidebarCoin"></span>
-            </a>
-        </li>
-
-        <!-- <li>
-            <a href="{% url 'atm_functions:BuyCredit' %}">
-                <i class="fa-solid fa-sack-dollar" aria-hidden="true"></i>&nbsp;&nbsp;BUY CREDIT
-            </a>
-        </li>         -->
-
-        <li style="border-style: solid none none none; border-color: white">
-            <a href="{% url 'atm_functions:CreditGrades' %}">
-                <i class="fa-solid fa-landmark-dome" style="color: gold;"></i>&nbsp;&nbsp;CREDIT GRADES
-            </a>
-        </li>
+                {% if request.user.is_authenticated %}
     
-        <li>
-            <a href="{% url 'atm_functions:Businesses' %}">
-                <i class="fa-solid fa-briefcase" style="color: gold;"></i>&nbsp;&nbsp;BUSINESSES
-            </a>
-        </li>
+                <span class="nav__logo-name" id="credit_grade" style="color: white;"><b>CREDIT GRADE: </b></span>
+    
+                <span class="nav__name" ><a href="{% url 'atm_functions:BuyCredit' %}">(Improve Credit Grade)</a></span>
+                {% endif %}
 
-        <li>
-            <a href="{% url 'atm_functions:BlockchainWills' %}">
-                <i class="fa-solid fa-file-signature" style="color: gold;"></i>&nbsp;&nbsp;BLOCKCHAIN WILLS
-            </a>
-        </li>
+            </div>
 
-        <!-- <li>
-            <a href="">
-                <i class="fa-solid fa-futbol"></i>&nbsp;&nbsp;SPORTS BETTING (SOON)
-            </a>
-        </li> -->
+            <div class="nav__list">
+                <div class="nav__items">
+                    <h3 class="nav__subtitle">Services</h3>
 
-        <li style="border-style: none none solid none;border-color: white">
-            <a href="{% url 'atm_functions:TransferMoney' %}">
-                <i class="fa fa-paper-plane" aria-hidden="true" style="color: gold;"></i>TRANSFER<span><img src="{% static '/images/sidebar_coin.png' %}" class="sidebarCoin"></span>
-            </a>
-        </li>
+                    <a href="{% url 'atm_functions:Home' %}" class="nav__link">
+                        <i class="nav__icon bx bxs-home" style="color: gold;"></i>
+                        <span class="nav__name">HOME / WALLETS</span>
+                    </a>
 
-        <!-- <li>
-            <a href="{% url 'atm_functions:CheckCredit' %}">
-                <i class="fa fa-info-circle" aria-hidden="true"></i>CHECK CREDIT
-            </a>
-        </li> -->
+                    <a href="{% url 'atm_functions:CreditGrades' %}" class="nav__link">
+                        <i class="nav__icon bx bxs-landmark" style="color: gold;"></i>
+                        <span class="nav__name">CREDIT GRADES</span>
+                    </a>
+                    
+                    <a href="{% url 'atm_functions:Businesses' %}" class="nav__link">
+                        <i class="nav__icon bx bxs-briefcase" style="color: gold;"></i>
+                        <span class="nav__name">BUSINESSES</span>
+                    </a>
 
-        <li style="border-style: none none solid none;border-color: white">
-            <a href="{% url 'atm_functions:MyTransactions' %}">
-                <i class="fa fa-book" aria-hidden="true" style="color: gold;"></i>MY TRANSACTIONS
-            </a>
-        </li>
+                    <a href="{% url 'atm_functions:BlockchainWills' %}" class="nav__link">
+                        <i class="nav__icon fa-solid fa-file-signature" style="color: gold;"></i>
+                        <span class="nav__name">BLOCKCHAIN WILLS</span>
+                    </a>
 
-        <!-- <li>
-            <a href="">
-                <i class="fas fa-credit-card" aria-hidden="true"></i>&nbsp;&nbsp;DEBIT CARD (JUNE 2022)
-            </a>
-        </li> -->
+                    <a href="{% url 'atm_functions:EstateNetWorth' %}" class="nav__link">
+                        <i class="nav__icon fa-solid fa-chart-line" style="color: gold;"></i>
+                        <span class="nav__name">NET WORTH</span>
+                    </a>
 
-        <li>
-            <a href="{% url 'atm_functions:Profile' %}">
-                <i class="fa-solid fa-user" style="color: gold;"></i>&nbsp;&nbsp;&nbsp;PROFILE
-            </a>
-        </li>
+                    <a href="{% url 'atm_functions:TransferMoney' %}" class="nav__link">
+                        <i class="nav__icon bx bxs-paper-plane" style="color: gold;"></i>
+                        <span class="nav__name">WITHDRAW</span>
+                    </a>
+                    
+                    <a href="{% url 'atm_functions:MyTransactions' %}" class="nav__link">
+                        <i class="nav__icon bx bxs-book" style="color: gold;"></i>
+                        <span class="nav__name">MY TRANSACTIONS</span>
+                    </a>
 
-        <li>
-            <a href="{% url 'atm_functions:EstateNetWorth' %}">
-            <!-- <a href=""> -->
-                <i class="fa-solid fa-chart-line" style="color: gold;"></i>&nbsp;&nbsp;&nbsp;ESTATE NET WORTH
-            </a>
-        </li>
+                    <div class="nav__dropdown">
+                        <a href="#" class="nav__link">
+                            <i class="nav__icon bx bxs-cog" style="color: gold;"></i>
+                            <span class="nav__name">SETTINGS</span>
+                            <i class='bx bx-chevron-down nav__icon nav__dropdown-icon'></i>
+                        </a>
 
-        <li>
-            <a href="{% url 'atm_functions:Settings' %}">
-                <i class="fas fa-cogs" aria-hidden="true" style="color: gold;"></i>&nbsp;&nbsp;SETTINGS
-            </a>
-        </li>
+                        <div class="nav__dropdown-collapse">
+                            <div class="nav__dropdown-content">
+                                <a href="{% url 'atm_functions:Profile' %}" class="nav__link">
+                                    <i class="nav__icon bx bxs-user-circle" style="color: gold;"></i>
+                                    <span class="nav__name">PROFILE</span>
+                                </a>
+                                <a href="{% url 'atm_functions:Settings' %}" class="nav__link">
+                                    <i class="nav__icon bx bxs-cog" style="color: gold;"></i>
+                                    <span class="nav__name">SETTINGS</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {% if request.user.is_authenticated %}
-        <form action="{% url 'authentication:Logout' %}" method="POST">
+        <form action="{% url 'authentication:Logout' %}" id="logout" method="POST">
             {% csrf_token %}
-                <button class="m-4 logout">Log out <i
-                        class="fa fa-sign-out-alt"></i></button>
         </form>
+        <a onclick="$('#logout').submit();" href="#logout" class="nav__link nav__logout">
+            <i class='bx bx-log-out nav__icon' ></i>
+                <span class="nav__name">Log Out</span>
+        </a>
+        
         {% endif %}
-    </ul>
+    </nav>
 </div>
 {% include 'crisp_client.html' %}
 
@@ -192,6 +168,8 @@
         });
     };
 </script>
+<script src="{% static 'js/sidebar.js' %}"></script>
+
 
 <style>
     .sidebarCoin {

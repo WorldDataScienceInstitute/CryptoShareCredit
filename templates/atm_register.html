@@ -8,15 +8,6 @@
 <body>
     {% include 'atm_sidebar.html' %}
     <div class="content-container">
-        <div class="site-mobile-menu site-navbar-target">
-            <div class="site-mobile-menu-header">
-                <div class="site-mobile-menu-close mt-3">
-                    <span class="icon-close2 js-menu-toggle"></span>
-                </div>
-            </div>
-            <div class="site-mobile-menu-body">
-            </div>
-        </div>
         {% include 'banner.html' %}
         <div class="container my-4">
             <div class="row" style="margin:0px;">
@@ -28,7 +19,6 @@
         <div class="container my-4" style="padding-bottom: 200px;">
             <h4 style="text-align:center ;">Already have an Account? <a href="{% url 'authentication:Login' %}">Login here!</a></h4>
             <div class="row">
-                <div class="card container1" style="max-width: 600px;">
                     {% include 'messages.html' %}
                     <form method="POST">
                         {% csrf_token %}
@@ -398,7 +388,6 @@
                     <a href="{% url 'authentication:Home' %}"><button type="submit"
                         class="btn btn-primary">Back</button>
                     </a>
-                </div>
             </div>
         </div>
     </div>

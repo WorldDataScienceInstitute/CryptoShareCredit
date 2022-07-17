@@ -8,14 +8,6 @@
     {% include 'atm_sidebar.html' %}
     <div class="content-container">
         {% include 'banner.html' %}
-        <div class="site-mobile-menu site-navbar-target">
-            <div class="site-mobile-menu-header">
-                <div class="site-mobile-menu-close mt-3">
-                    <span class="icon-close2 js-menu-toggle"></span>
-                </div>
-            </div>
-            <div class="site-mobile-menu-body"></div>
-        </div>
         <div class="container my-4">
             <h2 class="text-primary" style="color: cornflowerblue!important;">Login Here</h2>
             <h4 style="text-align:center ;">Don't Have an Account? <a href="{% url 'authentication:Email' %}">Create one!</a></h4>
@@ -32,7 +24,7 @@
                 <br>
                 <div class="btn-group-vertical ml-6 mt-6" role="group" aria-label="Basic example">
                     <div class="btn-group">
-                        <input class="text-center form-control-lg mb-2"  onpaste="return false;" onkeypress="return ((event.charCode <= 57 && event.charCode >= 48) || (event.charCode ==0 && event.charCode !=8))" id="code" name="pin" type="password" required pattern="[0-9]{4,6}">
+                        <input class="form-control"  onpaste="return false;" onkeypress="return ((event.charCode <= 57 && event.charCode >= 48) || (event.charCode ==0 && event.charCode !=8))" id="code" name="pin" type="password" required pattern="[0-9]{4,6}">
                     </div>
                     <span><input type="checkbox" onclick="togglePINVis()"> Show PIN</span>
                     <div class="reset-pin"><a href="{% url 'authentication:PasswordReset' %}">Reset PIN</a></div>
