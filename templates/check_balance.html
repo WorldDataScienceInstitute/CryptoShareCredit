@@ -264,29 +264,7 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.sticky.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
-    <!-- Modal -->
-<div id="DepositWarning" class="modal" style="z-index: 2000;">
-    <!-- Modal content -->
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>DEPOSIT ACCEPTANCE FORM</h3>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <br>
-            <p style="color: black;font-weight: 400;">This is a Message from CryptoShare.</p>
-            <br>
-            <b><p style="color: black;font-weight: 400;">We require 1% of each deposit of our members or your wallet will be revoked in 6 days. We use this Crypto to Maintain the platform.</p></b>
-            <div class="d-flex justify-content-center">
-                <button style="text-align: center;" class="btn btn-danger" data-toggle="modal" id="Close" onclick="$('#DepositWarning').modal('hide');">Close</button> 
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button style="text-align: center;" class="btn btn-success" data-toggle="modal" id="NeverShowAgain" onclick="neverShowAgainModal()">Never show again</button> 
-            </div>
-        </div>
-    </div>
-</div>
+    
 </body>
 {% include 'atm_footer.html' %}
 </html>
