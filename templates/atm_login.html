@@ -62,9 +62,13 @@
                 </div>
                 <br>
                 <br>
-                <button type="submit" class="btn btn-primary">Submit</button><br>
-                <a href="{% url 'authentication:Home' %}"><button type="button" class="btn btn-primary">Back</button>
-                </a>
+                <br>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button class="btn btn-primary" type="button" onclick='location.href="{% url 'authentication:Home' %}"'>
+                        Back
+                    </button>
+                </div>
             </form>
         </div>
     </div>

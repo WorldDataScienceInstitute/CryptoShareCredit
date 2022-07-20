@@ -10,7 +10,8 @@
     <div class="content-container">
         {% include 'messages.html' %}
         {% include 'a_sessiontimeout.html' %}
-        <h2 class="ml-4 text-primary">STEPS TO BUILDING CRYPTO WEALTH</h2>
+        <h3>Welcome back, {{ name }}!</h3>
+        <h2 class="text-center text-primary">STEPS TO BUILDING CRYPTO WEALTH</h2>
         <div class="container col-12" style="padding: 0;">
             <ol class="list-group">
                 <li class="list-group-item">
@@ -52,12 +53,12 @@
             </ol>
         </div>
         <br>
-        <h3 class="ml-5">Welcome back, {{ name }}!</h3>
         <!-- <h5 class="ml-5">Information for account ending in {{ debit_last_four }}</h5> -->
-        <h2 class="ml-4 text-secondary" style="font-size: 25px;">Crypto$hare Pay Wallet</h2>
-        <div class="container col-12" style="padding: 0;">
+        <h2 class="text-center text-secondary" style="font-size: 25px;">Crypto$hare Pay Wallet</h2>
+        <h6 class="text-center text-secondary">These wallets are used to pay for everyday expenses because of transaction speed. XRP and Dash have the fastest transaction speeds. The Crypto in these wallets will not be counted in Credit Grade.</h6>
+
+        <div class="container table-responsive" style="padding: 0;">
             <table class="table crypto ">
-                <caption style="caption-side: top; text-align: center;">These wallets are used to pay for everyday expenses because of transaction speed. XRP and Dash have the fastest transaction speeds. The Crypto in these wallets will not be counted in Credit Grade.</caption>
                 <thead>
                     <tr>
                         <th class="td_symbol" scope="col">Symbol</th>
@@ -76,7 +77,7 @@
                         {% if not currency.has_address %}
                             <td style="width: auto;"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ currency.blockchain }}&network=mainnet&currency={{ currency.currency_name }}">Create Pay Address</a></td>
                         {% else %}
-                            <td class="td-address">{{ currency.address }} </td>
+                            <td class="td-address" ><input class="form-control" type="text" style="text-align: center;" value="{{ currency.address }}" readonly onclick="$('#ClipboardAddress').toast('show'); navigator.clipboard.writeText(this.value);"></td>
                             <td class="td-address">
                                 <div id="qrcode_{{ currency.symbol }}" class="btn btn-info" onclick="makeCode('qrcode_{{ currency.symbol }}' ,'{{ currency.address }}');">Show QR Code</div>
                             </td>
@@ -87,75 +88,76 @@
             </table>
         </div>
 
-        <h2 class="ml-4 text-secondary" style="font-size: 25px;">Crypto$hare Savings Wallet</h2>
-        <table class="table crypto">
-            <caption style="caption-side: top; text-align: center;">The Cryptocurrency in your Savings Wallet will be used for your <a href="{% url 'atm_functions:CreditGrades' %}">Credit Grade</a></caption>
-            <thead>
-                <tr>
-                    <th class="td_symbol" scope="col">Symbol</th>
-                    <th class="td_currency" scope="col">Currency</th>
-                    <th class="td-balance" scope="col">Balance</th>
-                    <th class="td-address" scope="col">CryptoShare Wallet Address</th>
-                    <th class="td-address" scope="col">QR Code</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- BITCOIN -->
-                <!-- BITCOIN -->
-                <tr>
-                    <td class="td_symbol">BTC </td>
-                    <td class="td_currency">Bitcoin </td>
-                    <td class="td-balance">{{ static_currencies.BTC.balance }} </td>
-                {% if not static_currencies.BTC.has_address %}
-                    <td class="td-address"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ static_currencies.BTC.blockchain }}&network=mainnet&currency={{ static_currencies.BTC.currency_name }}">Create Savings Address</a></td>
-                {% else %}
-                    <td class="td-address">{{ static_currencies.BTC.address }} </td>
-                    <td class="td-address">
-                        <div id="qrcode_BTC" class="btn btn-info" onclick="makeCode('qrcode_BTC' ,'{{ static_currencies.BTC.address }}');">Show QR Code</div>
-                    </td>
-                {% endif %}
-                </tr>
-                <!-- BITCOIN -->
-                <!-- BITCOIN -->
-
-                <!-- ETHEREUM -->
-                <!-- ETHEREUM -->
-                <tr>
-                    <td class="td_symbol">ETH </td>
-                    <td class="td_currency">Ethereum </td>
-                    <td class="td-balance">{{ static_currencies.ETH.balance }} </td>
-                {% if not static_currencies.ETH.has_address %}
-                    <td class="td-address"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ static_currencies.ETH.blockchain }}&network=mainnet&currency={{ static_currencies.ETH.currency_name }}">Create Savings Address</a></td>
-                {% else %}
-                    <td class="td-address">{{ static_currencies.ETH.address }} </td>
-                    <td class="td-address">
-                        <div id="qrcode_ETH" class="btn btn-info" onclick="makeCode('qrcode_ETH' ,'{{ static_currencies.ETH.address }}');">Show QR Code</div>
-                    </td>
-                {% endif %}
-                </tr>
-                <!-- ETHEREUM -->
-                <!-- ETHEREUM -->
-
-                <tr>
-                    <td colspan="4" style="text-align: center;">
-                        (The ERC-20 Coins Below can be transferred to this Ethereum Wallet)
-                    </td>
-                </tr>
-
-                {% for currency in erc20_tokens %}
+        <h2 class="text-center text-secondary" style="font-size: 25px;">Crypto$hare Savings Wallet</h2>
+        <h6 class="text-center text-secondary">The Cryptocurrency in your Savings Wallet will be used for your <a href="{% url 'atm_functions:CreditGrades' %}">Credit Grade</a></h6>
+        <div class="container table-responsive" style="padding: 0;">
+            <table class="table crypto">
+                <thead>
                     <tr>
-                        <td class="td_symbol">{{ currency.symbol }} </td>
-                        <td class="td_currency">{{ currency.currency_name }} <span style="display: block;">(ERC-20)</span></td>
-                        <td class="td-balance">{{ currency.balance }} </td>
-                    {% if not currency.has_address %}
-                        <td class="td-address" ><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ currency.blockchain }}&network=mainnet&currency={{ currency.currency_name }}">Create Savings Address</a></td>
+                        <th class="td_symbol" scope="col">Symbol</th>
+                        <th class="td_currency" scope="col">Currency</th>
+                        <th class="td-balance" scope="col">Balance</th>
+                        <th class="td-address" scope="col">CryptoShare Wallet Address</th>
+                        <th class="td-address" scope="col">QR Code</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- BITCOIN -->
+                    <!-- BITCOIN -->
+                    <tr>
+                        <td class="td_symbol">BTC </td>
+                        <td class="td_currency">Bitcoin </td>
+                        <td class="td-balance">{{ static_currencies.BTC.balance }} </td>
+                    {% if not static_currencies.BTC.has_address %}
+                        <td class="td-address"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ static_currencies.BTC.blockchain }}&network=mainnet&currency={{ static_currencies.BTC.currency_name }}">Create Savings Address</a></td>
                     {% else %}
-                        <td> </td>
+                        <td class="td-address"><input class="form-control" type="text" style="text-align: center;" value="{{ static_currencies.BTC.address }}" readonly onclick="$('#ClipboardAddress').toast('show'); navigator.clipboard.writeText(this.value);"></td>                        
+                        <td class="td-address">
+                            <div id="qrcode_BTC" class="btn btn-info" onclick="makeCode('qrcode_BTC' ,'{{ static_currencies.BTC.address }}');">Show QR Code</div>
+                        </td>
                     {% endif %}
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    <!-- BITCOIN -->
+                    <!-- BITCOIN -->
+
+                    <!-- ETHEREUM -->
+                    <!-- ETHEREUM -->
+                    <tr>
+                        <td class="td_symbol">ETH </td>
+                        <td class="td_currency">Ethereum </td>
+                        <td class="td-balance">{{ static_currencies.ETH.balance }} </td>
+                    {% if not static_currencies.ETH.has_address %}
+                        <td class="td-address"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ static_currencies.ETH.blockchain }}&network=mainnet&currency={{ static_currencies.ETH.currency_name }}">Create Savings Address</a></td>
+                    {% else %}
+                        <td class="td-address"><input class="form-control" type="text" style="text-align: center;" value="{{ static_currencies.ETH.address }}" readonly onclick="$('#ClipboardAddress').toast('show'); navigator.clipboard.writeText(this.value);"></td>
+                        <td class="td-address">
+                            <div id="qrcode_ETH" class="btn btn-info" onclick="makeCode('qrcode_ETH' ,'{{ static_currencies.ETH.address }}');">Show QR Code</div>
+                        </td>
+                    {% endif %}
+                    </tr>
+                    <!-- ETHEREUM -->
+                    <!-- ETHEREUM -->
+
+                    <tr>
+                        <td colspan="4" style="text-align: center;">
+                            (The ERC-20 Coins Below can be transferred to this Ethereum Wallet)
+                        </td>
+                    </tr>
+
+                    {% for currency in erc20_tokens %}
+                        <tr>
+                            <td class="td_symbol">{{ currency.symbol }} </td>
+                            <td class="td_currency">{{ currency.currency_name }} <span style="display: block;">(ERC-20)</span></td>
+                            <td class="td-balance">{{ currency.balance }} </td>
+                        {% if not currency.has_address %}
+                            <td class="td-address" ><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ currency.blockchain }}&network=mainnet&currency={{ currency.currency_name }}">Create Savings Address</a></td>
+                        {% else %}
+                            <td> </td>
+                        {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
     </div>
     <style>
         table.crypto{
@@ -261,32 +263,22 @@
     </script>
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
     <script src="{% static 'js/jquery.sticky.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
-    <!-- Modal -->
-<div id="DepositWarning" class="modal" style="z-index: 2000;">
-    <!-- Modal content -->
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>DEPOSIT ACCEPTANCE FORM</h3>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <br>
-            <p style="color: black;font-weight: 400;">This is a Message from CryptoShare.</p>
-            <br>
-            <b><p style="color: black;font-weight: 400;">We require 1% of each deposit of our members or your wallet will be revoked in 6 days. We use this Crypto to Maintain the platform.</p></b>
-            <div class="d-flex justify-content-center">
-                <button style="text-align: center;" class="btn btn-danger" data-toggle="modal" id="Close" onclick="$('#DepositWarning').modal('hide');">Close</button> 
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button style="text-align: center;" class="btn btn-success" data-toggle="modal" id="NeverShowAgain" onclick="neverShowAgainModal()">Never show again</button> 
-            </div>
-        </div>
-    </div>
-</div>
+    
 </body>
+<div class="position-fixed top-0 end-0" style="z-index: 10000">
+    <div id="ClipboardAddress" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto">Copied to clipboard</strong>
+        <small>Now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        The selected address has been copied to your clipboard
+      </div>
+    </div>
+  </div>
 {% include 'atm_footer.html' %}
 </html>
