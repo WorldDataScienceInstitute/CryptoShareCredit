@@ -617,6 +617,133 @@ countries_dict = {
 
 countries_tuples = [ (k, v) for k, v in countries_dict.items() ]
 
+banned_countries = {
+    "AF": {
+        "name": "Afghanistan",
+        "code": "AF"
+    },
+    "BA": {
+        "name": "Balkans",
+        "code": "BA"
+    },
+    "BD": {
+        "name": "Bangladesh",
+        "code": "BD"
+    },
+    "BO": {
+        "name": "Bolivia",
+        "code": "BO"
+    },
+    "BY": {
+        "name": "Belarus",
+        "code": "BY"
+    },
+    "CD": {
+        "name": "Democratic Republic of the Congo",
+        "code": "CD"
+    },
+    "CI": {
+        "name": "Cote d'Ivoire",
+        "code": "CI"
+    },
+    "CN": {
+        "name": "China",
+        "code": "CN"
+    },
+    "CU": {
+        "name": "Cuba",
+        "code": "CU"
+    },
+    "DZ": {
+        "name": "Algeria",
+        "code": "DZ"
+    },
+    "EG": {
+        "name": "Egypt",
+        "code": "EG"
+    },
+    "ER": {
+        "name": "Eritrea",
+        "code": "ER"
+    },
+    "ID": {
+        "name": "Indonesia",
+        "code": "ID"
+    },
+    "IQ": {
+        "name": "Iraq",
+        "code": "IQ"
+    },
+    "IR": {
+        "name": "Iran",
+        "code": "IR"
+    },
+    "KH": {
+        "name": "Cambodia",
+        "code": "KH"
+    },
+    "KP": {
+        "name": "North Korea",
+        "code": "KP"
+    },
+    "LA": {
+        "name": "Laos",
+        "code": "LA"
+    },
+    "LR": {
+        "name": "Liberia",
+        "code": "LR"
+    },
+    "MA": {
+        "name": "Morocco",
+        "code": "MA"
+    },
+    "MK": {
+        "name": "North Macedonia",
+        "code": "MK"
+    },
+    "MM": {
+        "name": "Burma",
+        "code": "MM"
+    },
+    "NP": {
+        "name": "Nepal",
+        "code": "NP"
+    },
+    "QA": {
+        "name": "Qatar",
+        "code": "QA"
+    },
+    "RU": {
+        "name": "Russia",
+        "code": "RU"
+    },
+    "SD": {
+        "name": "Sudan",
+        "code": "SD"
+    },
+    "SY": {
+        "name": "Syria",
+        "code": "SY"
+    },
+    "TN": {
+        "name": "Tunisia",
+        "code": "TN"
+    },
+    "UA": {
+        "name": "Sevastopol",
+        "code": "UA"
+    },
+    "VE": {
+        "name": "Venezuela",
+        "code": "VE"
+    },
+    "ZW": {
+        "name": "Zimbabwe",
+        "code": "ZW"
+    }
+}
+
 """
 country_dict = {
     'US': "United States",

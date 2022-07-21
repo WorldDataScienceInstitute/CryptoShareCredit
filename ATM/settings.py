@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'moesifdjango.middleware.moesif_middleware',
+    'authentication.middleware.IPFilterMiddleware',
 ]
 
 ROOT_URLCONF = 'ATM.urls'
