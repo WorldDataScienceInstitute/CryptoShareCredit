@@ -10,12 +10,38 @@ class IPFilterMiddleware:
     def __call__(self, request):
         # Code to be executed for each request before
         # the view (and later middleware) are called.
-        user_ip = request.META["HTTP_X_FORWARDED_FOR"]
 
-        url = f"https://api.ipregistry.co/{user_ip}?key=b8rzmx4u1idb24hw"
-        ipregistry_response = requests.get(url).json()
+        # --------------------------------------------------
+        # --------------------------------------------------
+        # --------------------------------------------------
+        # # DEVELOPMENT ENVIRONMENT ONLY
+        # # DEVELOPMENT ENVIRONMENT ONLY
+        # # DEVELOPMENT ENVIRONMENT ONLY
 
-        country_code = ipregistry_response["location"]["country"]["code"]
+        # user_ip = request.META["HTTP_X_FORWARDED_FOR"]
+
+        # url = f"https://api.ipregistry.co/{user_ip}?key=b8rzmx4u1idb24hw"
+        # ipregistry_response = requests.get(url).json()
+
+        # country_code = ipregistry_response["location"]["country"]["code"]
+
+
+        # # DEVELOPMENT ENVIRONMENT ONLY
+        # # DEVELOPMENT ENVIRONMENT ONLY
+        # # DEVELOPMENT ENVIRONMENT ONLY
+        # --------------------------------------------------
+        # --------------------------------------------------
+        # --------------------------------------------------
+
+        # PRODUCTION ENVIRONMENT ONLY
+        # PRODUCTION ENVIRONMENT ONLY
+        # PRODUCTION ENVIRONMENT ONLY
+
+        country_code = request.META["HTTP_X_SUCURI_COUNTRY"]
+
+        # PRODUCTION ENVIRONMENT ONLY
+        # PRODUCTION ENVIRONMENT ONLY
+        # PRODUCTION ENVIRONMENT ONLY
 
         if country_code in banned_countries:
             return HttpResponse(status=404)
