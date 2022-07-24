@@ -36,8 +36,10 @@ class IPFilterMiddleware:
         # PRODUCTION ENVIRONMENT ONLY
         # PRODUCTION ENVIRONMENT ONLY
         # PRODUCTION ENVIRONMENT ONLY
-
-        country_code = request.META["HTTP_X_SUCURI_COUNTRY"]
+        try:
+            country_code = request.META["HTTP_X_SUCURI_COUNTRY"]
+        except KeyError:
+            country_code = "US"
 
         # PRODUCTION ENVIRONMENT ONLY
         # PRODUCTION ENVIRONMENT ONLY
