@@ -1,3 +1,4 @@
+from symtable import Symbol
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.base import Model
@@ -43,6 +44,13 @@ class History(models.Model):
     Amount = models.BigIntegerField()
     Date = models.DateTimeField()
 
+class DigitalCurrency(models.Model):
+    id_currency = models.AutoField(primary_key=True)
+    currency_name = models.CharField(max_length=50)
+    symbol = models.CharField(max_length=10)
+    currency_type = models.CharField(max_length=10)
+    exchange_rate = models.DecimalField(max_digits=15, decimal_places=6)
+
 class Cryptocurrency(models.Model):
     currency_name = models.CharField(max_length=50, primary_key=True)
     contract = models.CharField(max_length=255, unique=True)
@@ -53,6 +61,14 @@ class Cryptocurrency(models.Model):
     currency_type = models.CharField(max_length=10)
     exchange_rate = models.DecimalField(max_digits=15, decimal_places=6)
 
+class Currency(models.Model):
+    id_currency = models.AutoField(primary_key=True)
+    currency_type = models.CharField(max_length=10)
+    currency_name = models.CharField(max_length=50)
+    crypto_currency =  models.ForeignKey(Cryptocurrency, on_delete=models.SET_NULL, null=True)
+    digital_currency =  models.ForeignKey(DigitalCurrency, on_delete=models.SET_NULL, null=True)
+    is_active = models.BooleanField(default=True)
+
 class Address(models.Model):
     address = models.CharField(max_length=100, primary_key=True)
     email = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -60,7 +76,9 @@ class Address(models.Model):
     expiration_datetime = models.DateTimeField(default=timezone.now()+timedelta(days=6), null= True)
 
 class Balance(models.Model):
-    currency_name = models.ForeignKey(Cryptocurrency, on_delete=models.DO_NOTHING)
+    currency_type = models.CharField(max_length=10)
+    currency_name = models.ForeignKey(Cryptocurrency, on_delete=models.SET_NULL, null=True)
+    digital_currency_name = models.ForeignKey(DigitalCurrency, on_delete=models.SET_NULL, null=True)
     email = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=15, decimal_places=8)
 
@@ -91,7 +109,7 @@ class Beneficiary(models.Model):
     will_percentage = models.IntegerField(null=True)
     selfie_photo_url = models.CharField(max_length=255, null=True)      
     
-#Transaction for Deposits and Withdrawals
+#Transaction for Deposits and Withdrawals CRYPTO
 class TransactionA(models.Model):
     id_a = models.AutoField(primary_key=True)
     transaction_id = models.CharField(max_length=255, unique=True)
@@ -123,7 +141,7 @@ class TransactionB(models.Model):
     start_datetime = models.DateTimeField(null=True)
     end_datetime = models.DateTimeField(null=True)
 
-#Transaction for swapping
+#Transaction for swapping CRYPTO
 class TransactionC(models.Model):
     id_c = models.AutoField(primary_key=True)
     transaction_id = models.CharField(max_length=38, unique=True)
