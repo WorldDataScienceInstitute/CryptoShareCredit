@@ -15,7 +15,7 @@ from django.templatetags.static import static
 from django.utils import formats
 from .models import User
 from decimal import Decimal
-from atm_functions.models import Account, Address, Balance, Cryptocurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, Business, WaitingList, UserAssets
+from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, Business, WaitingList, UserAssets
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples
 from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email
@@ -109,36 +109,38 @@ def check_balance(request):
     # get first name
     name = u.first_name
 
+    digital_balances = Balance.objects.filter(email=request.user, currency_type="DIGITAL").select_related("digital_currency_name")
+
     excluding_currencies = ["TEST_COIN","ethereum_ropsten"]
-    available_currencies = Cryptocurrency.objects.all().exclude(currency_name__in=excluding_currencies).values()
-    user_addresses = Address.objects.filter(email=request.user).exclude(currency_name__in=excluding_currencies).select_related("currency_name")
-    user_balances = Balance.objects.filter(email=request.user).exclude(currency_name__in=excluding_currencies).select_related("currency_name")
+    available_crypto_currencies = Cryptocurrency.objects.all().exclude(currency_name__in=excluding_currencies).values()
+    crypto_addresses = Address.objects.filter(email=request.user).exclude(currency_name__in=excluding_currencies).select_related("currency_name")
+    crypto_balances = Balance.objects.filter(email=request.user, currency_type="CRYPTO").exclude(currency_name__in=excluding_currencies).select_related("currency_name")
 
     # currencies = {currency["symbol"]: currency for currency in available_currencies}
-    currencies = {}
-    for currency in available_currencies:
-        currencies[currency["symbol"]] = currency
-        currencies[currency["symbol"]]["has_address"] = False
-        currencies[currency["symbol"]]["balance"] = 0
-        currencies[currency["symbol"]]["address"] = ""
+    crypto_currencies = {}
+    for currency in available_crypto_currencies:
+        crypto_currencies[currency["symbol"]] = currency
+        crypto_currencies[currency["symbol"]]["has_address"] = False
+        crypto_currencies[currency["symbol"]]["balance"] = 0
+        crypto_currencies[currency["symbol"]]["address"] = ""
 
 
-    for address in user_addresses:
-        currencies[address.currency_name.symbol]["has_address"] = True
-        currencies[address.currency_name.symbol]["address"] = address.address
+    for address in crypto_addresses:
+        crypto_currencies[address.currency_name.symbol]["has_address"] = True
+        crypto_currencies[address.currency_name.symbol]["address"] = address.address
 
-    for balance in user_balances:
-        currencies[balance.currency_name.symbol]["balance"] = balance.amount
+    for balance in crypto_balances:
+        crypto_currencies[balance.currency_name.symbol]["balance"] = balance.amount
 
     # savings_currencies = []
     payments_currencies = []
     erc20_tokens = []
     static_currencies = {}
 
-    for currency in currencies.values():
+    for currency in crypto_currencies.values():
         if currency["blockchain"] == "ethereum" and currency["symbol"] != "ETH":
             currency["has_address"] = True
-            currency["address"] = currencies["ETH"]["address"]
+            currency["address"] = crypto_currencies["ETH"]["address"]
             # currency["currency_name"] += " (ERC-20)"
 
             erc20_tokens.append(currency)
@@ -155,6 +157,7 @@ def check_balance(request):
 
     context = {
         "name": name,
+        "digital_balances": digital_balances,
         # "savings_currencies": savings_currencies,
         "payments_currencies": payments_currencies,
         "erc20_tokens": erc20_tokens,

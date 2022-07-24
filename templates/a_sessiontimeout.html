@@ -1,22 +1,17 @@
-<div id="myModal" class="modal" style="z-index: 2000;">
-    <!-- Modal content -->
-    <div class="modal-content">
+<div class="modal fade" id="myModal" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
         <div class="modal-header">
-            <h3>Session Timeout Notice</h3>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+          <h5 class="modal-title" id="staticBackdropLabel">Session Timeout Notice</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <br>
-            <p style="color: black;font-weight: 400;">For your security, your session will time out after 1 minute.<br><br>
-            To stay signed in, click the &times; in the corner, or anywhere outside of this window.</p>
-            <br>
+            <p>For your security, your session will time out after 1 minute.</p>
+            <b><p>To stay signed in, click the &times; in the corner, or anywhere outside of this window.</p></b>
         </div>
+      </div>
     </div>
-    
 </div>
-
 <script>
     // https://stackoverflow.com/questions/23023916/how-to-implement-auto-logout-in-javascript
     var logoutWarn = 1000*60*4; // make logout notice appear after 4 minutes
@@ -41,7 +36,7 @@
     function idleWarning() {
         clearTimeout(warningTimer);
         timeoutTimer = setTimeout("idleLogout()", logoutNow);
-        modal.style.display = "block";
+        $('#myModal').modal('toggle');
     }
 
     // function to redirect to logout page
@@ -49,12 +44,7 @@
     var idleLogout = function() {
         window.location.href = '/Logout/';
     }
-    
-    // function to call when modal is closed
-    var logoutModal = function() {
-        modal.style.display = "block";
-    }
-    
+
     // Get the modal
     var modal = document.getElementById("myModal");
     
@@ -62,12 +52,11 @@
     var btn = document.getElementById("myBtn");
     
     // Get the span element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
+    var span = document.getElementsByClassName("btn-close")[0];
     
     // When the user clicks on (x), close the modal
     // Reset the logout timer
     span.onclick = function() {
-        modal.style.display = "none";
         resetTimers();
     }
     
@@ -75,7 +64,6 @@
     // Reset the logout timer
     window.onclick = function(event) {
         if (event.target == modal) {
-            modal.style.display = "none";
             resetTimers();
         }
     }
