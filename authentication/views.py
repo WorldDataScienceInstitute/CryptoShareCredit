@@ -3,7 +3,7 @@ from . import views
 from django.db.models import Q
 from django.contrib import auth
 from django.contrib.auth.models import User
-from atm_functions.models import Account
+from atm_functions.models import Account, DigitalCurrency, Balance
 from django.contrib import messages
 from django.conf import settings
 from django.utils.safestring import mark_safe
@@ -84,6 +84,10 @@ def email(request):
                 )
 
             Account.objects.create(user=user, email=email, country=country, birthdate=birthdate, state=state)
+
+            cryptoshare_credits = DigitalCurrency.objects.get(symbol="CSC")
+
+            Balance.objects.create(currency_type="DIGITAL", digital_currency_name=cryptoshare_credits, email = user, amount = 0)
 
             code_creation_email(to_addr=email, pin=pin)
             
