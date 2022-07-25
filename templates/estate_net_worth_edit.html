@@ -22,173 +22,188 @@
             <h2 class="ml-4" style="margin-bottom: 20px" >BANK ACCOUNTS</h2>
             <div id="assets_bank">
                 {% for bank in banks %}
-                <div class="form-group col-md-12 card">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Bank Name</h5>
                     <input type="hidden" id="asset_bank_id" aria-describedby="asset_bank_id" name="asset_bank_id" value="{{ bank.id_asset|default:'' }}">
-                    <label for=""><b>Enter Bank Name</b></label>
-                    <input type="text" class="form-control" id="asset_bank" aria-describedby="asset_bank" name="asset_bank"
-                        placeholder="Ex. JP Morgan" value="{{ bank.name }}" >
-                    <br>
-                    <input type="number" class="form-control" id="asset_bank-worth" aria-describedby="asset_bank-worth" name="asset_bank-worth"
-                        step=".01" placeholder="Bank Balance" value="{{ bank.worth }}">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_bank" aria-describedby="asset_bank" name="asset_bank"
+                            placeholder="Ex. JP Morgan" value="{{ bank.name }}" >
+                        <br>
+                        <input type="number" class="form-control" id="asset_bank-worth" aria-describedby="asset_bank-worth" name="asset_bank-worth"
+                            step=".01" placeholder="Bank Balance" value="{{ bank.worth }}">
+                    </div>
                 </div>
                 {% endfor %}
             </div>
-
-            <button type="button" class="btn btn-info float-right" style="margin-top: -20px;" onclick="addNewElement('assets_bank');">Add new bank</button>
-
+            
+            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_bank');">Add new bank</button>
+            
             <br>
             <h2 class="ml-4" style="margin-bottom: 20px" >REAL ESTATE</h2>
             <div id="assets_real_estate">
                 {% for real_estate in real_estates %}
-                <div class="form-group col-md-12 card">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Full Address</h5>
                     <input type="hidden" id="asset_real_estate_id" aria-describedby="asset_real_estate_id" name="asset_real_estate_id" value="{{ real_estate.id_asset|default:'' }}">
-                    <label for=""><b>Enter Full Address</b></label>
-                    <input type="text" class="form-control" id="asset_real-estate" aria-describedby="asset_real-estate" name="asset_real-estate"
-                        placeholder="Ex. 29 Baker Drive Miami, FL" value="{{ real_estate.name }}" >
-                    <br>
-                    <input type="number" class="form-control" id="asset_real-estate-worth" aria-describedby="asset_real-estate-worth" name="asset_real-estate-worth"
-                        step=".01" placeholder="Enter Estimated Home Value" value="{{ real_estate.worth }}">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_real-estate" aria-describedby="asset_real-estate" name="asset_real-estate"
+                            placeholder="Ex. 29 Baker Drive Miami, FL" value="{{ real_estate.name }}" >
+                        <br>
+                        <input type="number" class="form-control" id="asset_real-estate-worth" aria-describedby="asset_real-estate-worth" name="asset_real-estate-worth"
+                            step=".01" placeholder="Enter Estimated Home Value" value="{{ real_estate.worth }}">
+                    </div>
                 </div>
                 {% endfor %}
             </div>
-            <button type="button" class="btn btn-info float-right" style="margin-top: -20px;" onclick="addNewElement('assets_real_estate');">Add Real Estate</button>
+            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_real_estate');">Add Real Estate</button>
 
             <br>
             <h2 class="ml-4" style="margin-bottom: 20px" >INSURANCE</h2>
             <div id="assets_insurance">
                 {% for insurance in insurances %}
-                <div class="form-group col-md-12 card">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Insurance Policy Provider</h5>
                     <input type="hidden" id="asset_insurance_id" aria-describedby="asset_insurance_id" name="asset_insurance_id" value="{{ insurance.id_asset|default:'' }}">
-                    <label for=""><b>Enter Insurance Policy Provider</b></label>
-                    <input type="text" class="form-control" id="asset_insurance" aria-describedby="asset_insurance" name="asset_insurance"
-                        placeholder="Ex. MetLife Colombia Seguros de vida" value="{{ insurance.name }}" >
-                    <br>
-                    <input type="number" class="form-control" id="asset_insurance-worth" aria-describedby="asset_insurance-worth" name="asset_insurance-worth"
-                        step=".01" placeholder="Enter Life Insurance Value" value="{{ insurance.worth }}">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_insurance" aria-describedby="asset_insurance" name="asset_insurance"
+                            placeholder="Ex. MetLife Colombia Seguros de vida" value="{{ insurance.name }}" >
+                        <br>
+                        <input type="number" class="form-control" id="asset_insurance-worth" aria-describedby="asset_insurance-worth" name="asset_insurance-worth"
+                            step=".01" placeholder="Enter Life Insurance Value" value="{{ insurance.worth }}">
+                    </div>
                 </div>
                 {% endfor %}
             </div>
-            <button type="button" class="btn btn-info float-right" style="margin-top: -20px;" onclick="addNewElement('assets_insurance');">Add New Insurance</button>
+            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_insurance');">Add New Insurance</button>
 
             <br>
             <h2 class="ml-4" style="margin-bottom: 20px" >CRYPTO ASSETS (NOT DEPOSITED IN CRYPTOSHARE)</h2>
             <div id="assets_cryptocurrency">
                 {% for cryptocurrency in cryptocurrencies %}
-                <div class="form-group col-md-12 card">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Cryptocurrency Name</h5>
                     <input type="hidden" id="asset_cryptocurrency_id" aria-describedby="asset_cryptocurrency_id" name="asset_cryptocurrency_id" value="{{ cryptocurrency.id_asset|default:'' }}">
-                    <label for=""><b>Enter Cryptocurrency Name</b></label>
-                    <input type="text" class="form-control" id="asset_cryptocurrency" aria-describedby="asset_cryptocurrency" name="asset_cryptocurrency"
-                        placeholder="Ex. Bitcoin" value="{{ cryptocurrency.name }}" >
-                    <br>
-                    <input type="number" class="form-control" id="asset_cryptocurrency-worth" aria-describedby="asset_cryptocurrency-worth" name="asset_cryptocurrency-worth"
-                        step=".01" placeholder="Enter cryptocurrency estimated holdings value" value="{{ cryptocurrency.worth }}">
-                </div> 
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_cryptocurrency" aria-describedby="asset_cryptocurrency" name="asset_cryptocurrency"
+                            placeholder="Ex. Bitcoin" value="{{ cryptocurrency.name }}" >
+                        <br>
+                        <input type="number" class="form-control" id="asset_cryptocurrency-worth" aria-describedby="asset_cryptocurrency-worth" name="asset_cryptocurrency-worth"
+                            step=".01" placeholder="Enter cryptocurrency estimated holdings value" value="{{ cryptocurrency.worth }}">
+                    </div>
+                </div>
                 {% endfor %}
+
             </div>
-            <button type="button" class="btn btn-info float-right" style="margin-top: -20px;" onclick="addNewElement('assets_cryptocurrency');">Add New Cryptocurrency</button>
+            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_cryptocurrency');">Add New Cryptocurrency</button>
 
             <br>
             <h2 class="ml-4" style="margin-bottom: 20px" >NFT ASSETS</h2>
             <div id="assets_nft">
                 {% for nft in nfts %}
-                <div class="form-group col-md-12 card">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter NFT Name</h5>
                     <input type="hidden" id="asset_nft_id" aria-describedby="asset_nft_id" name="asset_nft_id" value="{{ nft.id_asset|default:'' }}">
-                    <label for=""><b>Enter NFT Name</b></label>
-                    <input type="text" class="form-control" id="asset_nft" aria-describedby="asset_nft" name="asset_nft"
-                        placeholder="Ex. Bored Ape Yacht Club" value="{{ nft.name }}">
-                    <br>
-                    <input type="number" class="form-control" id="asset_nft-worth" aria-describedby="asset_nft-worth" name="asset_nft-worth"
-                        step=".01" placeholder="Enter NFT Value" value="{{ nft.worth }}">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_nft" aria-describedby="asset_nft" name="asset_nft"
+                            placeholder="Ex. Bored Ape Yacht Club" value="{{ nft.name }}">
+                        <br>
+                        <input type="number" class="form-control" id="asset_nft-worth" aria-describedby="asset_nft-worth" name="asset_nft-worth"
+                            step=".01" placeholder="Enter NFT Value" value="{{ nft.worth }}">
+                    </div>
                 </div>
                 {% endfor %}
             </div>
-            <button type="button" class="btn btn-info float-right" style="margin-top: -20px;" onclick="addNewElement('assets_nft');">Add New NFT</button>
+            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_nft');">Add New NFT</button>
 
             <br>
             <h2 class="ml-4" style="margin-bottom: 20px" >STOCKS</h2>
             <div id="assets_stocks">
                 {% for stock in stocks %}
-                <div class="form-group col-md-12 card">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Stock Name</h5>
                     <input type="hidden" id="asset_stock_id" aria-describedby="asset_stock_id" name="asset_stock_id" value="{{ stock.id_asset|default:'' }}">
-                    <label for=""><b>Enter Stock Name</b></label>
-                    <input type="text" class="form-control" id="asset_stock" aria-describedby="asset_stock" name="asset_stock"
-                        placeholder="Ex. Amazon" value="{{ stock.name }}" >
-                    <br>
-                    <input type="number" class="form-control" id="asset_stock-extradata" aria-describedby="asset_stock-extradata" name="asset_stock-extradata"
-                        placeholder="Enter # of Shares" value="{{ stock.extra_field }}">
-                    <br>
-                    <input type="number" class="form-control" id="asset_stock-worth" aria-describedby="asset_stock-worth" name="asset_stock-worth"
-                        step=".01" placeholder="Enter Investment Amount" value="{{ stock.worth }}">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_stock" aria-describedby="asset_stock" name="asset_stock"
+                            placeholder="Ex. Amazon" value="{{ stock.name }}" >
+                        <br>
+                        <input type="number" class="form-control" id="asset_stock-extradata" aria-describedby="asset_stock-extradata" name="asset_stock-extradata"
+                            placeholder="Enter # of Shares" value="{{ stock.extra_field }}">
+                        <br>
+                        <input type="number" class="form-control" id="asset_stock-worth" aria-describedby="asset_stock-worth" name="asset_stock-worth"
+                            step=".01" placeholder="Enter Investment Amount" value="{{ stock.worth }}">
+                    </div>
                 </div>
                 {% endfor %}
             </div>
-            <button type="button" class="btn btn-info float-right" style="margin-top: -20px;" onclick="addNewElement('assets_stocks');">Add New Stock</button>
+            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_stocks');">Add New Stock</button>
             
             <br>
             <h2 class="ml-4" style="margin-bottom: 20px" >STARTUP INVESTMENTS</h2>
             <div id="assets_startup">
                 {% for startup in startups %}
-                <div class="form-group col-md-12 card">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Startup Name</h5>
                     <input type="hidden" id="asset_startup_id" aria-describedby="asset_startup_id" name="asset_startup_id" value="{{ startup.id_asset|default:'' }}">
-                    <label for=""><b>Enter Startup Name</b></label>
-                    <input type="text" class="form-control" id="asset_startup" aria-describedby="asset_startup" name="asset_startup"
-                        placeholder="Ex. Amazon" value="{{ startup.name }}" >
-                    <br>
-                    <input type="text" class="form-control" id="asset_startup-extradata" aria-describedby="asset_startup-extradata" name="asset_startup-extradata"
-                        placeholder="Enter Investment Platform" value="{{ bastartupnk.extra_field }}">
-                    <br>
-                    <input type="number" class="form-control" id="asset_startup-worth" aria-describedby="asset_startup-worth" name="asset_startup-worth"
-                        step=".01" placeholder="Enter Investment Amount" value="{{ startup.worth }}">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_startup" aria-describedby="asset_startup" name="asset_startup"
+                            placeholder="Ex. Amazon" value="{{ startup.name }}" >
+                        <br>
+                        <input type="text" class="form-control" id="asset_startup-extradata" aria-describedby="asset_startup-extradata" name="asset_startup-extradata"
+                            placeholder="Enter Investment Platform" value="{{ bastartupnk.extra_field }}">
+                        <br>
+                        <input type="number" class="form-control" id="asset_startup-worth" aria-describedby="asset_startup-worth" name="asset_startup-worth"
+                            step=".01" placeholder="Enter Investment Amount" value="{{ startup.worth }}">
+                    </div>
                 </div>
                 {% endfor %}
             </div>
-            <button type="button" class="btn btn-info float-right" style="margin-top: -20px;" onclick="addNewElement('assets_startup');">Add New Stock</button>
+            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_startup');">Add New Startup</button>
 
             <br>
             <h2 class="ml-4" style="margin-bottom: 20px" >GOLD/SILVER/JEWELRY</h2>
             <div id="assets_jewelry">
                 {% for jewelry in jewelries %}
-                <div class="form-group col-md-12 card">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Type of Physical Asset</h5>
                     <input type="hidden" id="asset_jewelry_id" aria-describedby="asset_jewelry_id" name="asset_jewelry_id" value="{{ jewelry.id_asset|default:'' }}">
-                    <label for=""><b>Enter Type of Physical Asset</b></label>
-                    <input type="text" class="form-control" id="asset_jewelry" aria-describedby="asset_jewelry" name="asset_jewelry"
-                        placeholder="Ex. Gold Bar" value="{{ jewelry.name }}" >
-                    <br>
-                    <input type="number" class="form-control" id="asset_jewelry-worth" aria-describedby="asset_jewelry-worth" name="asset_jewelry-worth"
-                        step=".01" placeholder="Enter Estimated Value" value="{{ jewelry.worth }}">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_jewelry" aria-describedby="asset_jewelry" name="asset_jewelry"
+                            placeholder="Ex. Gold Bar" value="{{ jewelry.name }}" >
+                        <br>
+                        <input type="number" class="form-control" id="asset_jewelry-worth" aria-describedby="asset_jewelry-worth" name="asset_jewelry-worth"
+                            step=".01" placeholder="Enter Estimated Value" value="{{ jewelry.worth }}">
+                    </div>
                 </div>
                 {% endfor %}
             </div>
-            <button type="button" class="btn btn-info float-right" style="margin-top: -20px;" onclick="addNewElement('assets_jewelry');">Add New Jewelry</button>
+            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_jewelry');">Add New Jewelry</button>
 
             <br>
             <h2 class="ml-4" style="margin-bottom: 20px" >CARS</h2>
             <div id="assets_car">
                 {% for car in cars %}
-                <div class="form-group col-md-12 card">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Car Make & Model</h5>
                     <input type="hidden" id="asset_car_id" aria-describedby="asset_car_id" name="asset_car_id" value="{{ car.id_asset|default:'' }}">
-                    <label for=""><b>Enter Car Make & Model</b></label>
-                    <input type="text" class="form-control" id="asset_car" aria-describedby="asset_car" name="asset_car"
-                        placeholder="Ex. Porsche Cayenne" value="{{ car.name }}" >
-                    <br>
-                    <input type="text" class="form-control" id="asset_car-extradata" aria-describedby="asset_car-extradata" name="asset_car-extradata"
-                        placeholder="Enter Year Model" value="{{ car.extra_field }}">
-                    <br>
-                    <input type="number" class="form-control" id="asset_car-worth" aria-describedby="asset_car-worth" name="asset_car-worth"
-                        step=".01" placeholder="Enter Investment Amount" value="{{ car.worth }}">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_car" aria-describedby="asset_car" name="asset_car"
+                            placeholder="Ex. Porsche Cayenne" value="{{ car.name }}" >
+                        <br>
+                        <input type="text" class="form-control" id="asset_car-extradata" aria-describedby="asset_car-extradata" name="asset_car-extradata"
+                            placeholder="Enter Year Model" value="{{ car.extra_field }}">
+                        <br>
+                        <input type="number" class="form-control" id="asset_car-worth" aria-describedby="asset_car-worth" name="asset_car-worth"
+                            step=".01" placeholder="Enter Investment Amount" value="{{ car.worth }}">
+                    </div>
                 </div>
                 {% endfor %}
             </div>
-            <button type="button" class="btn btn-info float-right" style="margin-top: -20px;" onclick="addNewElement('assets_car');">Add New Car</button>
+            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_car');">Add New Car</button>
             
-            <div class="form-group" style="margin-top: 50px;">
-                <button id="submit" type="submit" class="btn btn-primary">Calculate your Total Estate Net Worth</button>
+            <div class="container" style="text-align: center;">
+                <button id="submit" type="submit" class="btn btn-primary m-5">Calculate your Total Estate Net Worth</button>
             </div>
         </form>
-        <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
-            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Must have at least 1 DASH deposited in your CryptoShare Wallet for creating a Blockchain Will</small>
-        </div>
-
     </div>
     <script type="text/javascript">
         function googleTranslateElementInit() {
@@ -234,119 +249,137 @@
 
             if (container == "assets_bank"){
                 var new_asset_template = `
-                <div class="form-group col-md-12 card">
-                    <input type="hidden" id="asset_bank_id" aria-describedby="asset_bank_id" name="asset_bank_id" value="">
-                    <label for=""><b>Enter Bank Name</b></label>
-                    <input type="text" class="form-control" id="asset_bank" aria-describedby="asset_bank" name="asset_bank"
-                        placeholder="Ex. JP Morgan" value="" >
-                    <br>
-                    <input type="number" class="form-control" id="asset_bank-worth" aria-describedby="asset_bank-worth" name="asset_bank-worth"
-                        step=".01" placeholder="Bank Balance">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Bank Name</h5>
+                    <input type="hidden" id="asset_bank_id" aria-describedby="asset_bank_id" name="asset_bank_id">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_bank" aria-describedby="asset_bank" name="asset_bank"
+                        placeholder="Ex. JP Morgan">
+                        <br>
+                        <input type="number" class="form-control" id="asset_bank-worth" aria-describedby="asset_bank-worth" name="asset_bank-worth"
+                            step=".01" placeholder="Bank Balance">
+                    </div>
                 </div>
                 `
             }else if (container == "assets_real_estate"){
                 var new_asset_template = `
-                <div class="form-group col-md-12 card">
-                    <input type="hidden" id="asset_real_estate_id" aria-describedby="asset_real_estate_id" name="asset_real_estate_id" value="">
-                    <label for=""><b>Enter Full Address</b></label>
-                    <input type="text" class="form-control" id="asset_real-estate" aria-describedby="asset_real-estate" name="asset_real-estate"
-                        placeholder="Ex. 29 Baker Drive Miami, FL" value="" >
-                    <br>
-                    <input type="number" class="form-control" id="asset_real-estate-worth" aria-describedby="asset_real-estate-worth" name="asset_real-estate-worth"
-                        step=".01" placeholder="Enter Estimated Home Value">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Full Address</h5>
+                    <input type="hidden" id="asset_real_estate_id" aria-describedby="asset_real_estate_id" name="asset_real_estate_id">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_real-estate" aria-describedby="asset_real-estate" name="asset_real-estate"
+                        placeholder="Ex. 29 Baker Drive Miami, FL">
+                        <br>
+                        <input type="number" class="form-control" id="asset_real-estate-worth" aria-describedby="asset_real-estate-worth" name="asset_real-estate-worth"
+                            step=".01" placeholder="Enter Estimated Home Value">
+                    </div>
                 </div>
                 `
             }else if (container == "assets_insurance"){
                 var new_asset_template = `
-                <div class="form-group col-md-12 card">
-                    <input type="hidden" id="asset_insurance_id" aria-describedby="asset_insurance_id" name="asset_insurance_id" value="{{ insurance.id_asset|default:'' }}">
-                    <label for=""><b>Enter Insurance Policy Provider</b></label>
-                    <input type="text" class="form-control" id="asset_insurance" aria-describedby="asset_insurance" name="asset_insurance"
-                        placeholder="Ex. MetLife Colombia Seguros de vida" value="" >
-                    <br>
-                    <input type="number" class="form-control" id="asset_insurance-worth" aria-describedby="asset_insurance-worth" name="asset_insurance-worth"
-                        step=".01" placeholder="Enter Life Insurance Value">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Insurance Policy Provider</h5>
+                    <input type="hidden" id="asset_insurance_id" aria-describedby="asset_insurance_id" name="asset_insurance_id">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_insurance" aria-describedby="asset_insurance" name="asset_insurance"
+                            placeholder="Ex. MetLife Colombia Seguros de vida">
+                        <br>
+                        <input type="number" class="form-control" id="asset_insurance-worth" aria-describedby="asset_insurance-worth" name="asset_insurance-worth"
+                            step=".01" placeholder="Enter Life Insurance Value">
+                    </div>
                 </div>
                 `
             }else if (container == "assets_cryptocurrency"){
                 var new_asset_template = `
-                <div class="form-group col-md-12 card">
-                    <input type="hidden" id="asset_cryptocurrency_id" aria-describedby="asset_cryptocurrency_id" name="asset_cryptocurrency_id" value="{{ cryptocurrency.id_asset|default:'' }}">
-                    <label for=""><b>Enter Cryptocurrency Name</b></label>
-                    <input type="text" class="form-control" id="asset_cryptocurrency" aria-describedby="asset_cryptocurrency" name="asset_cryptocurrency"
-                        placeholder="Ex. Bitcoin" value="" >
-                    <br>
-                    <input type="number" class="form-control" id="asset_cryptocurrency-worth" aria-describedby="asset_cryptocurrency-worth" name="asset_cryptocurrency-worth"
-                        step=".01" placeholder="Enter cryptocurrency estimated holdings value">
-                </div> 
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Cryptocurrency Name</h5>
+                    <input type="hidden" id="asset_cryptocurrency_id" aria-describedby="asset_cryptocurrency_id" name="asset_cryptocurrency_id">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_cryptocurrency" aria-describedby="asset_cryptocurrency" name="asset_cryptocurrency"
+                            placeholder="Ex. Bitcoin">
+                        <br>
+                        <input type="number" class="form-control" id="asset_cryptocurrency-worth" aria-describedby="asset_cryptocurrency-worth" name="asset_cryptocurrency-worth"
+                            step=".01" placeholder="Enter cryptocurrency estimated holdings value">
+                    </div>
+                </div>
                 `
             }else if (container == "assets_nft"){
                 var new_asset_template = `
-                <div class="form-group col-md-12 card">
-                    <input type="hidden" id="asset_nft_id" aria-describedby="asset_nft_id" name="asset_nft_id" value="{{ nft.id_asset|default:'' }}">
-                    <label for=""><b>Enter NFT Name</b></label>
-                    <input type="text" class="form-control" id="asset_nft" aria-describedby="asset_nft" name="asset_nft"
-                        placeholder="Ex. Bored Ape Yacht Club" value="" >
-                    <br>
-                    <input type="number" class="form-control" id="asset_nft-worth" aria-describedby="asset_nft-worth" name="asset_nft-worth"
-                        step=".01" placeholder="Enter NFT Value">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter NFT Name</h5>
+                    <input type="hidden" id="asset_nft_id" aria-describedby="asset_nft_id" name="asset_nft_id">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_nft" aria-describedby="asset_nft" name="asset_nft"
+                            placeholder="Ex. Bored Ape Yacht Club">
+                        <br>
+                        <input type="number" class="form-control" id="asset_nft-worth" aria-describedby="asset_nft-worth" name="asset_nft-worth"
+                            step=".01" placeholder="Enter NFT Value">
+                    </div>
                 </div>
                 `
             }else if (container == "assets_stocks"){
                 var new_asset_template = `
-                <div class="form-group col-md-12 card">
-                    <input type="hidden" id="asset_stock_id" aria-describedby="asset_stock_id" name="asset_stock_id" value="{{ stock.id_asset|default:'' }}">
-                    <label for=""><b>Enter Stock Name</b></label>
-                    <input type="text" class="form-control" id="asset_stock" aria-describedby="asset_stock" name="asset_stock"
-                        placeholder="Ex. Amazon" value="" >
-                    <br>
-                    <input type="number" class="form-control" id="asset_stock-extradata" aria-describedby="asset_stock-extradata" name="asset_stock-extradata"
-                        placeholder="Enter # of Shares">
-                    <br>
-                    <input type="number" class="form-control" id="asset_stock-worth" aria-describedby="asset_stock-worth" name="asset_stock-worth"
-                        step=".01" placeholder="Enter Investment Amount">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Stock Name</h5>
+                    <input type="hidden" id="asset_stock_id" aria-describedby="asset_stock_id" name="asset_stock_id" value="">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_stock" aria-describedby="asset_stock" name="asset_stock"
+                            placeholder="Ex. Amazon">
+                        <br>
+                        <input type="number" class="form-control" id="asset_stock-extradata" aria-describedby="asset_stock-extradata" name="asset_stock-extradata"
+                            placeholder="Enter # of Shares">
+                        <br>
+                        <input type="number" class="form-control" id="asset_stock-worth" aria-describedby="asset_stock-worth" name="asset_stock-worth"
+                            step=".01" placeholder="Enter Investment Amount">
+                    </div>
                 </div>
                 `
             }else if (container == "assets_startup"){
                 var new_asset_template = `
-                <div class="form-group col-md-12 card">
-                    <input type="hidden" id="asset_startup_id" aria-describedby="asset_startup_id" name="asset_startup_id" value="{{ startup.id_asset|default:'' }}">
-                    <label for=""><b>Enter Startup Name</b></label>
-                    <input type="text" class="form-control" id="asset_startup" aria-describedby="asset_startup" name="asset_startup"
-                        placeholder="Ex. Amazon" value="" >
-                    <br>
-                    <input type="text" class="form-control" id="asset_startup-extradata" aria-describedby="asset_startup-extradata" name="asset_startup-extradata"
-                        placeholder="Enter Investment Platform">
-                    <br>
-                    <input type="number" class="form-control" id="asset_startup-worth" aria-describedby="asset_startup-worth" name="asset_startup-worth"
-                        step=".01" placeholder="Enter Investment Amount">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Startup Name</h5>
+                    <input type="hidden" id="asset_startup_id" aria-describedby="asset_startup_id" name="asset_startup_id">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_startup" aria-describedby="asset_startup" name="asset_startup"
+                            placeholder="Ex. Amazon">
+                        <br>
+                        <input type="text" class="form-control" id="asset_startup-extradata" aria-describedby="asset_startup-extradata" name="asset_startup-extradata"
+                            placeholder="Enter Investment Platform">
+                        <br>
+                        <input type="number" class="form-control" id="asset_startup-worth" aria-describedby="asset_startup-worth" name="asset_startup-worth"
+                            step=".01" placeholder="Enter Investment Amount">
+                    </div>
                 </div>
                 `
             }else if (container == "assets_jewelry"){
                 var new_asset_template = `
-                <div class="form-group col-md-12 card">
-                    <input type="hidden" id="asset_jewelry_id" aria-describedby="asset_jewelry_id" name="asset_jewelry_id" value="{{ jewelry.id_asset|default:'' }}">
-                    <label for=""><b>Enter Type of Physical Asset</b></label>
-                    <input type="text" class="form-control" id="asset_jewelry" aria-describedby="asset_jewelry" name="asset_jewelry"
-                        placeholder="Ex. Gold Bar" value="" >
-                    <br>
-                    <input type="number" class="form-control" id="asset_jewelry-worth" aria-describedby="asset_jewelry-worth" name="asset_jewelry-worth"
-                        step=".01" placeholder="Enter Estimated Value">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Type of Physical Asset</h5>
+                    <input type="hidden" id="asset_jewelry_id" aria-describedby="asset_jewelry_id" name="asset_jewelry_id">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_jewelry" aria-describedby="asset_jewelry" name="asset_jewelry"
+                            placeholder="Ex. Gold Bar">
+                        <br>
+                        <input type="number" class="form-control" id="asset_jewelry-worth" aria-describedby="asset_jewelry-worth" name="asset_jewelry-worth"
+                            step=".01" placeholder="Enter Estimated Value">
+                    </div>
                 </div>
                 `
             }else if (container == "assets_car"){
                 var new_asset_template = `
-                <div class="form-group col-md-12 card">
-                    <input type="hidden" id="asset_car_id" aria-describedby="asset_car_id" name="asset_car_id" value="{{ car.id_asset|default:'' }}">
-                    <label for=""><b>Enter Car Make & Model</b></label>
-                    <input type="text" class="form-control" id="asset_car" aria-describedby="asset_car" name="asset_car"
-                        placeholder="Ex. Porsche Cayenne" value="" >
-                    <br>
-                    <input type="text" class="form-control" id="asset_car-extradata" aria-describedby="asset_car-extradata" name="asset_car-extradata"
-                        placeholder="Enter Year Model">
-                    <br>
-                    <input type="number" class="form-control" id="asset_car-worth" aria-describedby="asset_car-worth" name="asset_car-worth"
-                        step=".01" placeholder="Enter Investment Amount">
+                <div class="card m-1">
+                    <h5 class="card-header">Enter Car Make & Model</h5>
+                    <input type="hidden" id="asset_car_id" aria-describedby="asset_car_id" name="asset_car_id">
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="asset_car" aria-describedby="asset_car" name="asset_car"
+                            placeholder="Ex. Porsche Cayenne">
+                        <br>
+                        <input type="text" class="form-control" id="asset_car-extradata" aria-describedby="asset_car-extradata" name="asset_car-extradata"
+                            placeholder="Enter Year Model">
+                        <br>
+                        <input type="number" class="form-control" id="asset_car-worth" aria-describedby="asset_car-worth" name="asset_car-worth"
+                            step=".01" placeholder="Enter Investment Amount">
+                    </div>
                 </div>
                 `
             }
