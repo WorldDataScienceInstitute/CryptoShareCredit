@@ -41,12 +41,14 @@ class IPFilterMiddleware:
         except KeyError:
             country_code = "US"
 
+        print("THIS IS THE COUNTRY CODE:", country_code)
+
         # PRODUCTION ENVIRONMENT ONLY
         # PRODUCTION ENVIRONMENT ONLY
         # PRODUCTION ENVIRONMENT ONLY
 
-        if country_code in banned_countries:
-            return HttpResponse(status=404)
+        # if country_code in banned_countries:
+        #     return HttpResponse(status=404)
 
         response = self.get_response(request)
 
