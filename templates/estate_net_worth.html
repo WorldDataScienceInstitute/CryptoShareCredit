@@ -4,6 +4,7 @@
 <!doctype html>
 <html lang="en">
 {% include 'header.html' %}
+
 <body>
     {% include 'atm_sidebar.html' %}
     {% if auth_level > 0 %}
@@ -11,34 +12,43 @@
     {% endif %}
     <div class="content-container">
         {% include 'messages.html' %}
-        <h2 class="ml-4">User Profile</h2>
+        <h2 class="ml-4">Net Worth</h2>
         <div class="text-center" style="margin-top: 5%;">
-            <img src="{% static '/images/logo.png' %}" class="rounded-circle border-primary"  style="height: 200px; width: auto;"" alt="...">
+            <img src="{% static '/images/logo.png' %}" class="rounded-circle border-primary"
+                style="height: 200px; width: auto;"" alt=" ...">
         </div>
-        
+
         <div class="text-center" style="margin-top: 5%;">
             <div class="row justify-content-md-center">
                 <div class="col-md-10">
-                    <div class="card" style="background-color: #227bff;">
-                        <div class="card-header text-white" style="background-color: #0f6fff;">
-                            <h3>Your Estate Net Worth</h3>
+                    <div class="card text-bg-primary">
+                        <div class="card-header">
+                            <h3>
+                                Your Estimated Net Worth
+                            </h3>
                         </div>
                         <div class="card-body">
-
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="username" name="username" placeholder="Please enter a new username" value="{{ net_worth|default:0 }}"  style="text-align: center;" required>
+                            <div class="card-text">
+                                <input type="text" class="form-control" id="username" name="username"
+                                    placeholder="Please enter a new username" value="{{ net_worth|default:0 }}"
+                                    style="text-align: center;" readonly required>
                             </div>
+                        </div>
+                        <div class="card-footer text-muted">
                             <a href="{% url 'atm_functions:EditEstateNetWorth' %}">
                                 <button type="button" class="btn btn-info">Edit your Estate Net Worth</button>
                             </a>
                         </div>
                     </div>
                 </div>
+                
             </div>
+
         </div>
 
+
     </div>
-    
+
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
@@ -49,8 +59,8 @@
     </script>
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
     </script>
-    
-    
+
+
     <script type="text/javascript">
         function triggerHtmlEvent(element, eventName) {
             var event;
@@ -64,7 +74,7 @@
                 element.fireEvent('on' + event.eventType, event);
             }
         }
-        
+
         $('.translation-links a').click(function (e) {
             e.preventDefault();
             var lang = $(this).data('lang');
