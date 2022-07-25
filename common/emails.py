@@ -36,7 +36,7 @@ def Card_Creation_Email(to_addr):
     msg.attach(part2)
 
     context = ssl.create_default_context()
-    s = smtplib.SMTP('smtp.domain.com',port)
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
     s.starttls(context=context)
     s.ehlo()
     s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
@@ -75,7 +75,7 @@ def Account_Creation_Email(to_addr):
     msg.attach(part2)
 
     context = ssl.create_default_context()
-    s = smtplib.SMTP('smtp.domain.com',port)
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
     s.starttls(context=context)
     s.ehlo()
     s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
@@ -117,7 +117,7 @@ def code_creation_email(to_addr, pin):
     msg.attach(part2)
 
     context = ssl.create_default_context()
-    s = smtplib.SMTP('smtp.domain.com',port)
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
     s.starttls(context=context)
     s.ehlo()
     s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
@@ -157,7 +157,7 @@ def pin_reset_email(to_addr, pin):
     msg.attach(part1)
 
     context = ssl.create_default_context()
-    s = smtplib.SMTP('smtp.domain.com',port)
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
     s.starttls(context=context)
     s.ehlo()
     s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
@@ -207,7 +207,7 @@ def sent_funds_email(sender_email, concept, tx_amount, tx_native_amount, tx_stat
     msg.attach(part1)
 
     context = ssl.create_default_context()
-    s = smtplib.SMTP('smtp.domain.com',port)
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
     s.starttls(context=context)
     s.ehlo()
     s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
@@ -259,7 +259,7 @@ def sent_funds_cryptoshare_wallet_email(sender_email, concept, currency, amount,
     msg.attach(part1)
 
     context = ssl.create_default_context()
-    s = smtplib.SMTP('smtp.domain.com',port)
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
     s.starttls(context=context)
     s.ehlo()
     s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
@@ -318,7 +318,7 @@ def deposit_funds_email(sender_email, transaction_id, blockchain, network ,tx_am
     msg.attach(part1)
 
     context = ssl.create_default_context()
-    s = smtplib.SMTP('smtp.domain.com',port)
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
     s.starttls(context=context)
     s.ehlo()
     s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
@@ -368,7 +368,7 @@ def revoked_address_email(sender_email, address, currency, blockchain):
     msg.attach(part1)
 
     context = ssl.create_default_context()
-    s = smtplib.SMTP('smtp.domain.com',port)
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
     s.starttls(context=context)
     s.ehlo()
     s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
@@ -440,7 +440,7 @@ def expired_transactionb_email(sender_email, email_type, id_b, payment_currency,
     msg.attach(part1)
 
     context = ssl.create_default_context()
-    s = smtplib.SMTP('smtp.domain.com',port)
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
     s.starttls(context=context)
     s.ehlo()
     s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
@@ -506,7 +506,7 @@ def inprogress_transactionb_email(user_email, id_b, transaction_id, currency_nam
     msg.attach(part1)
 
     context = ssl.create_default_context()
-    s = smtplib.SMTP('smtp.domain.com',port)
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
     s.starttls(context=context)
     s.ehlo()
     s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
@@ -531,7 +531,7 @@ def test_email(user_email,transaction_id, blockchain, network ,tx_amount, tx_cur
     msg.attach(part1)
 
     context = ssl.create_default_context()
-    s = smtplib.SMTP('smtp.domain.com',port)
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
     s.starttls(context=context)
     s.ehlo()
     s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
