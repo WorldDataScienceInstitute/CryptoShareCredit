@@ -18,7 +18,7 @@ from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, Business, WaitingList, UserAssets
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples
-from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email
+from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email, code_creation_email
 from common.cryptoapis import CryptoApis
 from common.cryptoapis_utils import CryptoApisUtils
 from common.simpleswap import SimpleSwap
@@ -1791,12 +1791,10 @@ def confirmed_token_transactions(request):
 
 
 @csrf_exempt
-def test_receiver(request, year = None):
+def test_receiver(request):
+    email = "albertonavarreteramirez@gmail.com"
 
-    print(year)
-    symbol = request.POST.get('symbol','')
-    save = request.GET.get('save_will','')
-    print(symbol)
-    print(save)
-    print("OK")
+    pin = "12345"
+    code_creation_email(to_addr=email, pin=pin)
+    
     return HttpResponse(status=200)
