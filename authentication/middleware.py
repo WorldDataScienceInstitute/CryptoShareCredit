@@ -39,7 +39,7 @@ class IPFilterMiddleware:
         try:
             country_code = request.META["HTTP_X_SUCURI_COUNTRY"]
         except KeyError:
-            country_code = "US"
+            country_code = "NONE"
 
         print("THIS IS THE COUNTRY CODE:", country_code)
 
