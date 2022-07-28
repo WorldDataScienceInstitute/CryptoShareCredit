@@ -1021,18 +1021,18 @@ def create_business(request):
         business_official_name = request.POST.get("business_name", None)
         business_system_name = business_official_name.lower()
         business_category = request.POST.get("business_category", None)
-        business_price = 1
+        business_price = 50      #PRICE IN CRYPTOSHARE CREDITS
 
         name_exists = Business.objects.filter(system_name=business_system_name)
         if name_exists:
             messages.info(request, "Business name already exists.")
             return redirect('atm_functions:CreateBusiness')
-        
-        currency_object = Cryptocurrency.objects.get(currency_name="Dash")
-        user_balance = Balance.objects.get(email=request.user, currency_name=currency_object)
+
+        digital_currency_object = DigitalCurrency.objects.get(symbol="CSC")
+        user_balance = Balance.objects.get(email = request.user, digital_currency_name = digital_currency_object)
 
         if user_balance.amount < business_price:
-            messages.info(request, "You do not have enough funds to create a blockchain will. Please deposit DASH to your wallet.")
+            messages.info(request, "You do not have enough funds to create a business. Please buy more CryptoShare Credits.")
             return redirect('atm_functions:Home')
         
         user_balance.amount -= Decimal(business_price)
