@@ -1086,13 +1086,13 @@ def search_business(request):
 def blockchain_wills(request):
 
     if request.method == "POST":
-        currency_object = Cryptocurrency.objects.get(currency_name="Dash")
-        user_balance = Balance.objects.get(email=request.user, currency_name=currency_object)
+        digital_currency_object = DigitalCurrency.objects.get(symbol="CSC")
+        user_balance = Balance.objects.get(email = request.user, digital_currency_name = digital_currency_object)
 
-        blockchain_will_price = 1
+        blockchain_will_price = 100      #PRICE IN CRYPTOSHARE CREDITS
 
         if user_balance.amount < blockchain_will_price:
-            messages.info(request, "You do not have enough funds to create a blockchain will. Please deposit DASH to your wallet.")
+            messages.info(request, "You do not have enough funds to create a business. Please buy more CryptoShare Credits.")
             return redirect('atm_functions:Home')
             
         user_balance.amount -= Decimal(blockchain_will_price)
@@ -1197,12 +1197,12 @@ def register_blockchain_will(request):
     save_will = request.GET.get('save_will','')
 
     if not save_will:
-        cryptoapis_client = CryptoApis()
-        transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet("dash", "mainnet", "Xh1daZF6rafvc2gieJXzhr71wQtzuvk6C3", "1", data=f"CryptoShare Blockchain Will - {blockchain_will.id_w}|{str(blockchain_will.email)}")
-        transaction_id = transaction_response["transactionRequestId"]
+        # cryptoapis_client = CryptoApis()
+        # transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet("dash", "mainnet", "Xh1daZF6rafvc2gieJXzhr71wQtzuvk6C3", "1", data=f"CryptoShare Blockchain Will - {blockchain_will.id_w}|{str(blockchain_will.email)}")
+        # transaction_id = transaction_response["transactionRequestId"]
 
         blockchain_will.status = "ACTIVE"
-        blockchain_will.transaction_id = transaction_id
+        blockchain_will.transaction_id = blockchain_will.id_w
         messages.info(request, "Blockchain Will successfully created.")
 
 
