@@ -15,21 +15,22 @@
         {% include 'a_sessiontimeout.html' %}
         <h2 class="ml-4 text-primary">Businesses</h2>
         <br>
-        <div class="btn-group container-fluid justify-content-center" style="margin-bottom: 20px;">
-            <h5 class="ml-4">
+        <div class="btn-toolbar justify-content-center"" role="toolbar">
+            <div class="btn-group m-2" role="group" aria-label="First button">
                 <a href="{% url 'atm_functions:CreateBusiness' %}">
                     <button type="button" class="btn btn-primary btn-lg">
                         Create Business
                     </button>
                 </a>
-            </h5>
-            <h5 class="ml-4">
+            </div>
+
+            <div class="btn-group m-2" role="group" aria-label="Second button">
                 <a href="{% url 'atm_functions:ManageBusinesses' %}">
                     <button type="button" class="btn btn-primary btn-lg">
                         Manage Business
                     </button>
                 </a>
-            </h5>
+            </div>
         </div>
 
         <form action="{% url 'atm_functions:SearchBusiness' %}" method="post">
@@ -63,7 +64,9 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary" >Search</button>
+            <div class="container justify-content-center" style="text-align:center">
+                <button type="submit" class="btn btn-primary m-2" >Search</button>
+            </div>
         </form>
         <br>
         <table class="table table-bordered table-striped">
