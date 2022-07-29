@@ -89,7 +89,8 @@ def email(request):
 
             Balance.objects.create(currency_type="DIGITAL", digital_currency_name=cryptoshare_credits, email = user, amount = 0)
 
-            code_creation_email(to_addr=email, pin=pin)
+            #SUSPENDED
+            # code_creation_email(to_addr=email, pin=pin)
             
             messages.success(request, mark_safe(
                 f"""A confirmation email has been sent to you from {settings.DEFAULT_FROM_EMAIL}.<br>

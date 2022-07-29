@@ -36,17 +36,17 @@ class IPFilterMiddleware:
         # PRODUCTION ENVIRONMENT ONLY
         # PRODUCTION ENVIRONMENT ONLY
         # PRODUCTION ENVIRONMENT ONLY
-        try:
-            country_code = request.META["HTTP_X_SUCURI_COUNTRY"]
-        except KeyError:
-            country_code = "US"
+        # try:
+        #     country_code = request.META["HTTP_X_SUCURI_COUNTRY"]
+        # except KeyError:
+        #     country_code = "US"
 
         # PRODUCTION ENVIRONMENT ONLY
         # PRODUCTION ENVIRONMENT ONLY
         # PRODUCTION ENVIRONMENT ONLY
 
-        if country_code in banned_countries:
-            return HttpResponse(status=404)
+        # if country_code in banned_countries:
+        #     return HttpResponse(status=404)
 
         response = self.get_response(request)
 
