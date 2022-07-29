@@ -12,7 +12,7 @@
     <div class="content-container">
         {% include 'messages.html' %}
         {% include 'a_sessiontimeout.html' %}
-        <h2 class="ml-4 text-primary">My Blockchain Wills</h2>
+        <h2 class="ml-4 text-primary">My Digital Wills</h2>
         <table class="table table-bordered table-striped">
             <thead>
               <tr>
@@ -74,12 +74,12 @@
             </tbody>
         </table>
         <br>
-        <h2 class="ml-4 text-primary">Create your Blockchain Will</h2>
+        <h2 class="ml-4 text-primary">Create your Digital Will</h2>
         <br>
         <form action="/atm/BlockchainWills/" method="post">
             {% csrf_token %}
             <div class="form-group">
-                <label for="currency_amount"><b>Blockchain Will Price: </b>  <em>In Cryptoshare Credits</em></label>
+                <label for="currency_amount"><b>Digital Will Price: </b>  <em>In Cryptoshare Credits</em></label>
                 <input type="number" class="form-control" id="will_price" aria-describedby="will_price" name="will_price"
                     step=".0001" value="100" required readonly>
             </div>
@@ -158,13 +158,9 @@
             <small id="addressRegisterHelp" class="form-text text-muted">We'll never share information with anyone else</small>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
-        <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
-            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Must have at least 1 DASH deposited in your CryptoShare Wallet for creating a Blockchain Will</small>
-        </div>
-
         
         <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
-            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Only the Last Blockchain Will be Used</small>
+            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Only the last Will will be Used</small>
         </div>
     </div>
     <script type="text/javascript">
