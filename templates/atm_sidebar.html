@@ -8,7 +8,7 @@
     <!--========== HEADER ==========-->
     <header class="header">
         <div class="header__container">
-            <img src="{% static '/images/logo.png' %}" alt="" class="header__img">
+            <img src="{% static '/images/logo.png' %}" alt="" class="header__img" onclick='location.href="{% url 'atm_functions:Home' %}"'>
 
             {% if request.user.is_authenticated %}
 
@@ -28,11 +28,11 @@
     <nav class="nav__container">
         <div>           
             <div class="nav__items nav__logo">
-                <a href="{% url 'atm_functions:Home' %}" class="sidebar-logo"><img src="{% static '/images/logo.png' %}"></a>
+                <!-- <a href="{% url 'atm_functions:Home' %}" class="sidebar-logo"><img src="{% static '/images/logo.png' %}"></a> -->
 
                 {% if request.user.is_authenticated %}
     
-                <span class="nav__logo-name" id="credit_grade" style="color: white;"><b>CREDIT GRADE: </b></span>
+                <span class="nav__logo-name mt-2" id="credit_grade" style="color: white;"><b>CREDIT GRADE: </b></span>
     
                 <span class="nav__name" ><a href="{% url 'atm_functions:BuyCredit' %}">(Improve Credit Grade)</a></span>
                 {% endif %}
@@ -52,7 +52,12 @@
                         <i class="nav__icon bx bxs-landmark" style="color: gold;"></i>
                         <span class="nav__name">BUY CREDIT</span>
                     </a>
-                    
+
+                    <a href="{% url 'atm_functions:Insurance' %}" class="nav__link">
+                        <i class="nav__icon bx bxs-lock-alt" style="color: gold;"></i>
+                        <span class="nav__name">INSURANCE</span>
+                    </a>
+
                     <a href="{% url 'atm_functions:Businesses' %}" class="nav__link">
                         <i class="nav__icon bx bxs-briefcase" style="color: gold;"></i>
                         <span class="nav__name">BUSINESSES</span>
