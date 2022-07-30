@@ -66,7 +66,7 @@ def profile(request):
         if action == "ChangeUsername":
             new_username = request.POST.get('username','').lower()
 
-            user.username = new_username
+            user.username = new_username.lower()
             user.save()
 
             messages.success(request, "Username changed successfully")
@@ -578,6 +578,16 @@ def edit_estate_net_worth(request):
     account.save()
 
     return redirect('atm_functions:EstateNetWorth')
+
+@login_required()
+def insurance(request):
+
+    return render(request, 'insurance.html')
+
+@login_required()
+def buy_security(request):
+
+    return render(request, 'buy_security.html')
 
 @login_required()
 def crypto_news(request):

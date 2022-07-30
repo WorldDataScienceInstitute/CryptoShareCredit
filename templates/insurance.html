@@ -1,0 +1,158 @@
+{% load static %}
+{% load tz %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+
+<body>
+    {% if iframe is None %}
+    {% include 'atm_sidebar.html' %}
+    {% endif %}
+    <div class="content-container">
+        {% include 'messages.html' %}
+        {% include 'a_sessiontimeout.html' %}
+        <h2 class="ml-4 text-primary">Insurance</h2>
+        <br>
+        <div class="btn-toolbar justify-content-center" role="toolbar">
+            <div class="btn-group m-2" role="group" aria-label="First button">
+                <a href="{% url 'atm_functions:BuySecurity' %}">
+                    <button type="button" class="btn btn-primary btn-lg">
+                        Buy Security
+                    </button>
+                </a>
+            </div>
+
+            <div class="btn-group m-2" role="group" aria-label="Second button">
+                <a href="#">
+                    <button type="button" class="btn btn-primary btn-lg" disabled>
+                        File a Claim
+                    </button>
+                </a>
+            </div>
+        </div>
+        <div class="accordion m-4" id="accordionExample">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Cryptoshare Security Subscription:
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <ul class="list-style">
+                        <li>This is Not Insurance</li>
+                        <li>Can Guarantee Cryptoshare Credits in case of a Hack or Fraud</li>
+                        <li>This is equivalent to a Protection Plan for your Wallets within Cryptoshare</li>
+                        <li>In Case of hack of Crypto, you will be compensated in Cryptoshare Credits</li>
+                        <li>1 Cryptoshare Credit can be calculated as 1 $USDC</li>
+                    </ul>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Eligibility:
+                </button>
+              </h2>
+              <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <li>Must have a Minimum FF Credit Grade</li>
+                    <li>Must go through KYC</li>
+                    <li>Must be a Citizen of approved Countries</li>
+                    <li>Must be a Member for at Least 60 Days</li>
+                    <li>We dont cover Phone theft or PC theft</li>
+                    <li>Must file your Security Claim within ninety 30 days of Incident</li>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  Important
+                </button>
+              </h2>
+              <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <p>
+                    Cryptoshare is backed by a CyberSecurity Insurance Policy, which covers a combination of events that protects our platform against losses from Theft, Ransomware, Fraud, and Security Breaches.
+                  </p>
+
+                  <p>
+                    We have decided to offer a higher level of Protection for our Cryptoshare Members with a Protection plan available for purchase with our "Cryptoshare Security Subscription". 
+                    It is not Insurance but it does provide an Higher Form of Protection on your Individual Cryptoshare Account.
+                  </p>
+
+                  <p>
+                    <strong>
+                        Our policy does not cover any losses resulting from unauthorized access to your personal Cryptoshare Account or loss of your login credentials. 
+                    </strong>
+                  </p>
+
+                  <p>
+                    As a Cryptoshare Users, it is your Liability and Responsibility to use a Strong Password. It is up to you to maintain control of all your login and security code credentials for Cryptoshare Account.
+                  </p>
+
+                  <p>
+                    Cryptoshare Credits and CryptoCurrency is not a legal tender. This means they are not backed by the Government in any Country. 
+                    Cryptoshare Credits and CryptoCurrencies are not insured or guaranteed by or subject to the protections of any Governing Body.
+                  </p>
+
+                  <p>
+                    To Further Protect our Cryptoshare members in this age of Hacking, Fraud, Ransomware, and Security Breaches we have created the <strong>"Cryptoshare Security Subscription"</strong>
+                  </p>
+
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+
+
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>
