@@ -1,0 +1,82 @@
+{% load static %}
+{% load tz %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+
+<body>
+    {% if iframe is None %}
+    {% include 'atm_sidebar.html' %}
+    {% endif %}
+    <div class="content-container">
+        {% include 'messages.html' %}
+        {% include 'a_sessiontimeout.html' %}
+        <h2 class="ml-4 text-primary">Businesses</h2>
+        <br>
+        <div class="btn-toolbar justify-content-center"" role="toolbar">
+            <div class="btn-group m-2" role="group" aria-label="First button">
+                <a href="{% url 'atm_functions:BuySecurity' %}">
+                    <button type="button" class="btn btn-primary btn-lg">
+                        Buy Security
+                    </button>
+                </a>
+            </div>
+
+            <div class="btn-group m-2" role="group" aria-label="Second button">
+                <a href="#">
+                    <button type="button" class="btn btn-primary btn-lg" disabled>
+                        File a Claim
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+
+
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>
