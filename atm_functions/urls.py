@@ -35,7 +35,7 @@ urlpatterns = [
      path("GenerateAddress/", views.generate_address, name="GenerateAddress"),
 
      path("Insurance/", views.insurance, name="Insurance"),
-     path("BuySecurity", views.buy_security, name="BuySecurity"),
+     path("BuySecurity/", views.buy_security, name="BuySecurity"),
 
      path("MyAddresses/", views.my_addresses, name="MyAddresses"),
      path("MyTransactions/", views.my_transactions, name="MyTransactions"),
