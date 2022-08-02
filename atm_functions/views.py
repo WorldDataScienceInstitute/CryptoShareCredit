@@ -928,8 +928,11 @@ def send_money_confirmation(request):
         # elif sending_currency in address_currencies:
             transaction_response = cryptoapis_client.generate_coins_transaction_from_address(sending_blockchain, "mainnet",sending_address_object.address ,recipient_address, amount)
         # print(request)
-        total_transaction_amount = transaction_response["totalTransactionAmount"]
-        # total_transaction_amount = transaction_response["recipients"][0]["amount"]
+        if sending_currency in wallet_currencies:
+            total_transaction_amount = transaction_response["totalTransactionAmount"]
+        else:
+            total_transaction_amount = transaction_response["recipients"][0]["amount"]
+            
         transaction_id = transaction_response["transactionRequestId"]
 
         balance_object.amount -= Decimal(total_transaction_amount)
