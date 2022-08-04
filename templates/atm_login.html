@@ -116,6 +116,10 @@
                 }
             });
         });
+        window.onload = function() {
+            $('#USWarning').modal('toggle');
+
+        }
     </script>
     
     <!-- <div class="hero" style="></div> -->
@@ -126,5 +130,25 @@
     <script src="{% static 'js/main.js' %}"></script>
     {% include 'footer.html' %}
 </body>
+
+<!-- Modal -->
+<div class="modal fade" id="USWarning" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">US CITIZENS ANOUNCEMENT</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <b><p>If you are a US Citizen, because of the New Federal Regulations.</p></b>
+            <p>You have 7 days to remove your Crypto from your Cryptoshare Crypto Wallet to avoid Loss or a Frozen Account. Now that are Beta Application Phase has ended, due to USA regulations all <b>US Citizens must remove their Crypto Immediately, and your Crypto Wallets and Account will be Deactivated (DEADLINE AUGUST 17, 2022).</b></p>
+            <p>Your account will be deleted after that day & you will have to create a New Account to use this platform.</p>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Accept</button>
+        </div>
+      </div>
+    </div>
+</div>
 {% include 'atm_footer.html' %}
 </html>

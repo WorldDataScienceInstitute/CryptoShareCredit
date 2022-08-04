@@ -80,7 +80,7 @@ class Balance(models.Model):
     currency_name = models.ForeignKey(Cryptocurrency, on_delete=models.SET_NULL, null=True)
     digital_currency_name = models.ForeignKey(DigitalCurrency, on_delete=models.SET_NULL, null=True)
     email = models.ForeignKey(User, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=15, decimal_places=8)
+    amount = models.DecimalField(max_digits=18, decimal_places=8)
 
 class BlockchainWill(models.Model):
     id_w = models.AutoField(primary_key=True)
