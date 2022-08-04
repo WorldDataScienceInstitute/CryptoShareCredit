@@ -11,7 +11,7 @@
         {% include 'messages.html' %}
         {% include 'a_sessiontimeout.html' %}
         <h3>Welcome back, {{ name }}!</h3>
-        <h2 class="text-center text-primary">STEPS TO BUILDING CRYPTO WEALTH</h2>
+        <h2 class="text-center text-primary">STEPS TO BUILDING CRYPTOSHARE WEALTH</h2>
         <div class="container col-12" style="padding: 0;">
             <ol class="list-group">
                 <li class="list-group-item">
@@ -23,46 +23,40 @@
                 <li class="list-group-item">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="cb2" onclick="setCheckbox(2);">
-                        <a href="{% url 'atm_functions:BuyCrypto' %}">Buy Crypto</a>
+                        <a href="{% url 'atm_functions:BuyCredit' %}">Buy Crypto$hare Credits & Credit Grade Increases</a>
                     </div>
                 </li>
                 <li class="list-group-item">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="cb3" onclick="setCheckbox(3);">
-                        Deposit into Crypto Savings Wallet & <a href="{% url 'atm_functions:CreditGrades' %}">Credit Grade</a> Increases
-                    </div>
-                </li>
-                <li class="list-group-item">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="cb4" onclick="setCheckbox(4);">
                         Create a Business Account, Buy, & Sell Services
                     </div>
                 </li>
                 <li class="list-group-item">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="cb5" onclick="setCheckbox(5);">
-                        Borrow & Lend Crypto
+                        <input class="form-check-input" type="checkbox" id="cb4" onclick="setCheckbox(4);">
+                        Borrow & Lend Cryptoshare Credits
                     </div>
                 </li>
                 <li class="list-group-item">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="cb6" onclick="setCheckbox(6);">
-                        Create a Crypto Will
+                        <input class="form-check-input" type="checkbox" id="cb5" onclick="setCheckbox(5);">
+                        Create a Digital Will
                     </div>
                 </li>
             </ol>
         </div>
         <br>
         <!-- <h5 class="ml-5">Information for account ending in {{ debit_last_four }}</h5> -->
-        <h2 class="text-center text-secondary" style="font-size: 25px;">Crypto$hare Digital Wallet</h2>
-        <h6 class="text-center text-secondary">These wallet is for digital currencies, including Criptoshare Credits, FIAT, and more.</h6>
+        <h2 class="text-center text-secondary" style="font-size: 25px;">Cryptoshare Credit Wallet</h2>
+        <h6 class="text-center text-secondary">This Wallet is only for CryptoShare Credits</h6>
 
         <div class="container table-responsive" style="padding: 0;">
             <table class="table crypto ">
                 <thead>
                     <tr>
                         <th class="td_symbol" scope="col">Symbol</th>
-                        <th class="td_currency" scope="col">Currency</th>
+                        <th class="td_currency" scope="col">Credit</th>
                         <th class="td-balance" scope="col">Balance</th>
                     </tr>
                 </thead>
@@ -71,7 +65,7 @@
                         <tr>
                             <td class="td_symbol">{{ currency.digital_currency_name.symbol }} </td>
                             <td class="td_currency">{{ currency.digital_currency_name.currency_name }} </td>
-                            <td class="td-balance">{{ currency.amount }} </td>
+                            <td class="td-balance">{{ currency.amount | floatformat:0 }} </td>
                         </tr>
                     {% endfor %}
                 </tbody>
