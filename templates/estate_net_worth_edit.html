@@ -19,7 +19,6 @@
         <form action="/atm/EditEstateNetWorth/" method="post">
             {% csrf_token %}
             <!-- Add button at top right part of card -->
-            <h2 class="ml-4" style="margin-bottom: 20px" >BANK ACCOUNTS</h2>
             <div id="assets_bank">
                 {% for bank in banks %}
                 <div class="card m-1">
@@ -35,11 +34,12 @@
                 </div>
                 {% endfor %}
             </div>
-            
-            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_bank');">Add new bank</button>
-            
+            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
+                <h4 class="ml-4 d-xl-inline-flex">BANK ACCOUNTS</h4>
+                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_bank');">Add new bank</button>
+        </div>
+
             <br>
-            <h2 class="ml-4" style="margin-bottom: 20px" >REAL ESTATE</h2>
             <div id="assets_real_estate">
                 {% for real_estate in real_estates %}
                 <div class="card m-1">
@@ -55,10 +55,13 @@
                 </div>
                 {% endfor %}
             </div>
-            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_real_estate');">Add Real Estate</button>
+            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
+                <h4 class="ml-4 d-xl-inline-flex">REAL ESTATE</h4>
+                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_real_estate');">Add Real Estate</button>
+            </div>
+            
 
             <br>
-            <h2 class="ml-4" style="margin-bottom: 20px" >INSURANCE</h2>
             <div id="assets_insurance">
                 {% for insurance in insurances %}
                 <div class="card m-1">
@@ -74,10 +77,12 @@
                 </div>
                 {% endfor %}
             </div>
-            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_insurance');">Add New Insurance</button>
+            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
+                <h4 class="ml-4 d-xl-inline-flex">INSURANCE</h4>
+                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_insurance');">Add New Insurance</button>
+            </div>
 
             <br>
-            <h2 class="ml-4" style="margin-bottom: 20px" >CRYPTO ASSETS (NOT DEPOSITED IN CRYPTOSHARE)</h2>
             <div id="assets_cryptocurrency">
                 {% for cryptocurrency in cryptocurrencies %}
                 <div class="card m-1">
@@ -94,10 +99,13 @@
                 {% endfor %}
 
             </div>
-            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_cryptocurrency');">Add New Cryptocurrency</button>
+            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
+                <h4 class="ml-4 d-xl-inline-flex">CRYPTO ASSETS <!--(NOT DEPOSITED IN CRYPTOSHARE)--></h4>
+                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_cryptocurrency');">Add New Cryptocurrency</button>
+            </div>
 
             <br>
-            <h2 class="ml-4" style="margin-bottom: 20px" >NFT ASSETS</h2>
+            
             <div id="assets_nft">
                 {% for nft in nfts %}
                 <div class="card m-1">
@@ -113,10 +121,12 @@
                 </div>
                 {% endfor %}
             </div>
-            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_nft');">Add New NFT</button>
+            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
+                <h4 class="ml-4 d-xl-inline-flex">NFT ASSETS</h4>
+                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_nft');">Add New NFT</button>
+            </div>
 
             <br>
-            <h2 class="ml-4" style="margin-bottom: 20px" >STOCKS</h2>
             <div id="assets_stocks">
                 {% for stock in stocks %}
                 <div class="card m-1">
@@ -135,10 +145,12 @@
                 </div>
                 {% endfor %}
             </div>
-            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_stocks');">Add New Stock</button>
+            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">            
+                <h4 class="ml-4 d-xl-inline-flex">STOCKS</h4>
+                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_stocks');">Add New Stock</button>
+            </div>
             
             <br>
-            <h2 class="ml-4" style="margin-bottom: 20px" >STARTUP INVESTMENTS</h2>
             <div id="assets_startup">
                 {% for startup in startups %}
                 <div class="card m-1">
@@ -157,10 +169,12 @@
                 </div>
                 {% endfor %}
             </div>
-            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_startup');">Add New Startup</button>
+            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
+                <h4 class="ml-4 d-xl-inline-flex">STARTUP INVESTMENTS</h4>
+                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_startup');">Add New Startup</button>
+            </div>
 
             <br>
-            <h2 class="ml-4" style="margin-bottom: 20px" >GOLD/SILVER/JEWELRY</h2>
             <div id="assets_jewelry">
                 {% for jewelry in jewelries %}
                 <div class="card m-1">
@@ -176,10 +190,13 @@
                 </div>
                 {% endfor %}
             </div>
-            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_jewelry');">Add New Jewelry</button>
+            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
+                <h4 class="ml-4 d-xl-inline-flex">GOLD/SILVER/JEWELRY</h4>
+                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_jewelry');">Add New Jewelry</button>
+            </div>
+            
 
             <br>
-            <h2 class="ml-4" style="margin-bottom: 20px" >CARS</h2>
             <div id="assets_car">
                 {% for car in cars %}
                 <div class="card m-1">
@@ -198,7 +215,10 @@
                 </div>
                 {% endfor %}
             </div>
-            <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_car');">Add New Car</button>
+            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
+                <h4 class="ml-4 d-xl-inline-flex">CARS</h4>
+                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_car');">Add New Car</button>
+            </div>
             
             <div class="container" style="text-align: center;">
                 <button id="submit" type="submit" class="btn btn-primary m-5">Calculate your Total Estate Net Worth</button>
