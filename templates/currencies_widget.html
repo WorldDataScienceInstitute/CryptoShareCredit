@@ -2,7 +2,9 @@
     <button id="button_widget" type="button" class="btn btn-primary btn-lg fixed-button" style="margin-left: 40%;" onclick="show_widget(); WidgetCurrencies();">
         <i class="fa-solid fa-wallet"></i>
     </button>
-    
+    <a href="{% url 'atm_functions:EstateNetWorth' %}" class="btn btn-primary btn-lg fixed-button">
+        <i class="fa-solid fa-chart-line"></i>
+    </a>
     <div id="balances_widget" class="container col-md-12 fixed-balances" style="display: none; margin-right: 60px; margin-top: 50px;">
         <div class="card" style="background-color: rgba(0, 112, 248, 0.827);" >
             <table class="table" id="table_widget">
