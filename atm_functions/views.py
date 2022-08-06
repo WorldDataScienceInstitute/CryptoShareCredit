@@ -1423,6 +1423,7 @@ def get_currencies_balance_widget(request):
     ]
     balances = Balance.objects.filter(email= user, currency_name__symbol__in = symbols).select_related('currency_name')
 
+    cryptoshare_credits_balance = Balance.objects.filter(email=user, digital_currency_name__symbol = "CSC").select_related("digital_currency_name")[0]
     response = {}
 
     for balance in balances:
@@ -1432,6 +1433,10 @@ def get_currencies_balance_widget(request):
         }
         response[balance.currency_name.symbol] = currency
     
+    response[cryptoshare_credits_balance.digital_currency_name.symbol] = {
+        "symbol": cryptoshare_credits_balance.digital_currency_name.symbol,
+        "balance": round(float(cryptoshare_credits_balance.amount), 0)
+    }
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 # @csrf_exempt

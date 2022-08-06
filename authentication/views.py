@@ -15,6 +15,8 @@ from coinbase.wallet.client import OAuthClient
 
 import os
 import stripe
+import random
+import string
 
 user_count, last_check = get_user_count()
 
@@ -55,6 +57,9 @@ def signing(request):
 
 
 def email(request):
+    def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+        return ''.join(random.choice(chars) for _ in range(size))
+
     """Page for the user to enter their email and phone number to begin registration"""
     context = {
         'user_count': user_count,
@@ -87,7 +92,18 @@ def email(request):
                 first_name=first_name, last_name=last_name
                 )
 
-            Account.objects.create(user=user, email=email, country=country, birthdate=birthdate, state=state)
+            system_username = id_generator(15)
+            while Account.objects.filter(system_username = system_username).exists():
+                system_username = id_generator(15)
+
+            Account.objects.create(
+                user = user, 
+                email = email, 
+                country = country,
+                birthdate = birthdate, 
+                state = state, 
+                system_username = system_username
+                )
 
             cryptoshare_credits = DigitalCurrency.objects.get(symbol="CSC")
 
