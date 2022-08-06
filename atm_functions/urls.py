@@ -28,9 +28,6 @@ urlpatterns = [
      path("CreditGrades/", views.credit_grades, name="CreditGrades"),
      path("CryptoShareWallet/", views.cryptoshare_wallet, name="CryptoShareWallet"),
 
-     path("StripeCheckout/", views.stripe_checkout, name="StripeCheckout"),
-     path("StripeCheckoutResult/", views.stripe_checkout_result, name="StripeCheckoutResult"),
-
      path("CryptoNews/", views.crypto_news, name="CryptoNews"),
 
      path("ConnectWallet/", views.connect_wallet, name="ConnectWallet"),
@@ -62,8 +59,6 @@ urlpatterns = [
      path("ConfirmationsCoinTransactions/", views.confirmations_coin_transactions, name="ConfirmationsCryptoTransactions"),
      path("ConfirmedCoinTransactions/", views.confirmed_coin_transactions, name="ConfirmedCoinTransactions"),
      path("ConfirmedTokenTransactions/", views.confirmed_token_transactions, name="ConfirmedTokenTransactions"),
-
-     path("StripeWebhook/", views.stripe_webhook, name="StripeWebhook"),
 
      path("DailyRoutine/", views.daily_routine, name="DailyRoutine"),
 
