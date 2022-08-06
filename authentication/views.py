@@ -3,7 +3,8 @@ from . import views
 from django.db.models import Q
 from django.contrib import auth
 from django.contrib.auth.models import User
-from atm_functions.models import Account, DigitalCurrency, Balance
+
+from atm_functions.models import Account, DigitalCurrency, Balance, StripeAccount
 from django.contrib import messages
 from django.conf import settings
 from django.utils.safestring import mark_safe
@@ -11,6 +12,8 @@ from common.utils import  get_user_count, generate_pin
 from common.emails import Account_Creation_Email, code_creation_email, pin_reset_email
 from traceback import print_exc
 from coinbase.wallet.client import OAuthClient
+
+import stripe
 
 user_count, last_check = get_user_count()
 
@@ -88,6 +91,23 @@ def email(request):
             cryptoshare_credits = DigitalCurrency.objects.get(symbol="CSC")
 
             Balance.objects.create(currency_type="DIGITAL", digital_currency_name=cryptoshare_credits, email = user, amount = 0)
+
+            stripe.api_key = "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"
+            first_name = "Alberto"
+            last_name = "Navarrete"
+
+
+            response = stripe.Customer.create(
+                description = f"CID-{user.id}",
+                email = user.email,
+                name = f"{user.first_name} {user.last_name}"
+            )
+
+            stripe_account = StripeAccount.objects.create(
+                user = user,
+                stripe_customer_id = response.id,
+                description = f"CID-{user.id}",
+            )
 
             #SUSPENDED
             # code_creation_email(to_addr=email, pin=pin)

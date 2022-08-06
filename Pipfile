@@ -27,6 +27,7 @@ redis = "*"
 moesifdjango = "*"
 pillow = "*"
 opencv-python-headless = "*"
+stripe = "*"
 
 [dev-packages]
 
