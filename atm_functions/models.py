@@ -34,7 +34,6 @@ class UserAssets(models.Model):
     extra_field = models.CharField(max_length=57, null=True)
 
 class Business(models.Model):
-    id_business = models.AutoField(primary_key=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     official_name = models.CharField(max_length=57)
     system_name = models.CharField(max_length=57)
