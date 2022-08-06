@@ -365,8 +365,8 @@ def stripe_checkout(request):
         return redirect("atm_functions:BuyCredit")
 
     user_stripe_account = StripeAccount.objects.get(user=request.user)
-    # customer_id = user_stripe_account.stripe_customer_id
-    customer_id = "cus_MBbhOsQob9vTIp"
+    customer_id = user_stripe_account.stripe_customer_id
+    # customer_id = "cus_MBbhOsQob9vTIp"
 
     stripe.api_key = os.environ['STRIPE_SECRET_KEY']
 
