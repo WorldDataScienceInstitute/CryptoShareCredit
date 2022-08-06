@@ -29,14 +29,14 @@
 
                                 <div class="form-group">
                                     <label for="username">Username</label>
-                                    <input type="text" class="form-control" id="username" name="username" placeholder="Please enter a new username" value="{{ user.username|default:'' }}" required>
+                                    <input type="text" class="form-control" id="username" name="username" placeholder="Please enter a new username" value="{{ user.system_username|default:'' }}" readonly required>
                                 </div>
                                 <small id="selfie_document_help" class="form-text text-white" style="text-align: left; padding: 5px; ">
                                     <b>
                                         *This is the username that you will use for making transactions inside the Crypto$hare ecosystem.
                                     </b>
                                 </small>
-                                <button type="submit" class="btn btn-info">Change Username</button>
+                                <button type="submit" class="btn btn-info" disabled>Change Username</button>
                             </form>
                         </div>
                     </div>

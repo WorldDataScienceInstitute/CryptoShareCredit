@@ -16,7 +16,7 @@ from django.templatetags.static import static
 from django.utils import formats
 from .models import User
 from decimal import Decimal
-from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, Business, WaitingList, UserAssets, StripeAccount, StripeTransaction
+from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, Business, WaitingList, UserAssets, StripeAccount, StripeTransaction, DynamicUsername
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples
 from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email, code_creation_email
@@ -1130,6 +1130,7 @@ def create_business(request):
 
     if request.method == "POST":
         business_official_name = request.POST.get("business_name", None)
+        business_username = request.POST.get("business_username", None)
         business_system_name = business_official_name.lower()
         business_category = request.POST.get("business_category", None)
         business_price = 50      #PRICE IN CRYPTOSHARE CREDITS
@@ -1151,6 +1152,12 @@ def create_business(request):
 
         new_business = Business(owner=request.user, official_name=business_official_name, system_name=business_system_name, category=business_category)
         new_business.save()
+
+        new_username = DynamicUsername.objects.create(
+            id_username = business_username,
+            username_type = "BUSINESS",
+            business_reference = new_business
+        )
 
         messages.info(request, "Business created successfully.")
         return redirect('atm_functions:Businesses')

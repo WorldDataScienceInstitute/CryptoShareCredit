@@ -17,7 +17,7 @@ class Account(models.Model):
     country = models.CharField(max_length=57, null=True)
     state = models.CharField(max_length=57, null=True)
     birthdate = models.DateField(null=True)
-    username = models.CharField(max_length=57, unique=True, null=True)
+    system_username = models.CharField(max_length=30, unique=True, null=True)
     net_worth = models.DecimalField(max_digits=20, decimal_places=2, default=0) 
 
 class StripeAccount(models.Model):
@@ -34,11 +34,19 @@ class UserAssets(models.Model):
     extra_field = models.CharField(max_length=57, null=True)
 
 class Business(models.Model):
+    id_business = models.AutoField(primary_key=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     official_name = models.CharField(max_length=57)
     system_name = models.CharField(max_length=57)
-    username = models.CharField(max_length=25, unique=True, null=True)
+    logo_url = models.CharField(max_length=255, null=True)
     category = models.CharField(max_length=30)
+    creation_datetime = models.DateTimeField(auto_now_add=True)
+
+class DynamicUsername(models.Model):
+    id_username = models.CharField(max_length=30, primary_key=True)
+    username_type = models.CharField(max_length=10, null=True) # USER or BUSINESS
+    user_reference = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    business_reference = models.ForeignKey(Business, on_delete=models.CASCADE, null=True)
 
 class WaitingList(models.Model):
     id_wl = models.AutoField(primary_key=True)
