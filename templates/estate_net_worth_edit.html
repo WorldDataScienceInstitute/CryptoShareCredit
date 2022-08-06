@@ -47,7 +47,18 @@
             </div>
           </div>
       <!-- Table for asset elements  -->
-      
+      <table class="table table-bordered" id="asset_data">
+        <thead>
+          <tr >
+           <th colspan="3"> <h3 class="text-center">Net Worth Calculations</h3></th>
+          </tr>
+          <tr>
+            <th scope="col">Category</th>
+            <th scope="col">Description</th>
+            <th scope="col">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
           <!-- <tr>
             <td>Mark</td>
             <td>Otto</td>
@@ -70,7 +81,7 @@
         <!-- Add button at top right part of card -->
         <div id="assets_bank">
           {% for bank in banks %}
-          <div class="card m-1">
+          <div class="card m-1 d-none">
             <h5 class="card-header">Enter Bank Name</h5>
             <input
               type="hidden"
@@ -123,7 +134,7 @@
         <br />
         <div id="assets_real_estate">
           {% for real_estate in real_estates %}
-          <div class="card m-1">
+          <div class="card m-1 d-none">
             <h5 class="card-header">Enter Full Address</h5>
             <input
               type="hidden"
@@ -176,7 +187,7 @@
         <br />
         <div id="assets_insurance">
           {% for insurance in insurances %}
-          <div class="card m-1">
+          <div class="card m-1 d-none">
             <h5 class="card-header">Enter Insurance Policy Provider</h5>
             <input
               type="hidden"
@@ -229,7 +240,7 @@
         <br />
         <div id="assets_cryptocurrency">
           {% for cryptocurrency in cryptocurrencies %}
-          <div class="card m-1">
+          <div class="card m-1 d-none">
             <h5 class="card-header">Enter Cryptocurrency Name</h5>
             <input
               type="hidden"
@@ -286,7 +297,7 @@
 
         <div id="assets_nft">
           {% for nft in nfts %}
-          <div class="card m-1">
+          <div class="card m-1 d-none">
             <h5 class="card-header">Enter NFT Name</h5>
             <input
               type="hidden"
@@ -339,7 +350,7 @@
         <br />
         <div id="assets_stocks">
           {% for stock in stocks %}
-          <div class="card m-1">
+          <div class="card m-1 d-none">
             <h5 class="card-header">Enter Stock Name</h5>
             <input
               type="hidden"
@@ -402,7 +413,7 @@
         <br />
         <div id="assets_startup">
           {% for startup in startups %}
-          <div class="card m-1">
+          <div class="card m-1 d-none">
             <h5 class="card-header">Enter Startup Name</h5>
             <input
               type="hidden"
@@ -465,7 +476,7 @@
         <br />
         <div id="assets_jewelry">
           {% for jewelry in jewelries %}
-          <div class="card m-1">
+          <div class="card m-1 d-none">
             <h5 class="card-header">Enter Type of Physical Asset</h5>
             <input
               type="hidden"
@@ -518,7 +529,7 @@
         <br />
         <div id="assets_car">
           {% for car in cars %}
-          <div class="card m-1">
+          <div class="card m-1 d-none">
             <h5 class="card-header">Enter Car Make & Model</h5>
             <input
               type="hidden"
@@ -646,7 +657,6 @@
         var modal_button = document.getElementById('modal_button');
         var num_stocks = document.getElementById('item_stock-extradata');
 
-        console.log(modal_button);
         label.innerHTML = label_text
         description.placeholder = descPh
         worth.placeholder = worthPh
@@ -678,23 +688,40 @@
         else {
             num_stocks.classList.add('d-none');
         }
+        
       }
 
       function addNewElement(/**container**/) {
-        var asset_container = document.getElementById(container)
+
+        var label = document.getElementById("form_edit_label");
+        var description = document.getElementById("item_description");
+        var worth = document.getElementById("item-worth");
+        var id = document.getElementById("item_id");
+        var extra_data = document.getElementById('item_stock-extradata');
+
+        var table =  document.getElementById('asset_data');
+        var rows = table.rows;
+        var row = table.insertRow(rows.length - 1);
+        var cell1 = row.insertCell(0);  
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
 
         var description_id = ''
         var worth_id = ''
         var id_id = ''
 
-        var container = document.getElementById('item_id').value
+        var container = document.getElementById('item_id').value;
+        var asset_container = document.getElementById(container);
 
         if (container == 'assets_bank') {
+            //set item category
+            cell1.innerHTML = "Bank Account";
+        //set ids based on the asset
           description_id = 'asset_bank'
           worth_id = 'asset_bank-worth'
           id_id = 'asset_bank_id'
           var new_asset_template = `
-                <div class="card m-1">
+                <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Bank Name</h5>
                     <input type="hidden" id="asset_bank_id" aria-describedby="asset_bank_id" name="asset_bank_id">
                     <div class="card-body">
@@ -706,7 +733,10 @@
                     </div>
                 </div>
                 `
-        } else if (container == 'asset_real_estate') {
+        } else if (container == 'assets_real_estate') {
+            //set item category
+            cell1.innerHTML = "Real Estate";
+        //set ids based on the asset
           description_id = 'asset_real_estate'
           worth_id = 'asset_real_estate-worth'
           id_id = 'asset_real_estate_id'
@@ -723,7 +753,10 @@
                     </div>
                 </div>
                 `
-        } else if (container == 'asset_insurance') {
+        } else if (container == 'assets_insurance') {
+             //set item category
+             cell1.innerHTML = "Insurance";
+        //set ids based on the asset
           description_id = 'asset_insurance'
           worth_id = 'asset_insurance-worth'
           id_id = 'asset_insurance_id'
@@ -741,7 +774,10 @@
                     </div>
                 </div>
                 `
-        } else if (container == 'asset_cryptocurrency') {
+        } else if (container == 'assets_cryptocurrency') {
+             //set item category
+             cell1.innerHTML = "CryptoCurrency";
+        //set ids based on the asset
           description_id = 'asset_cryptocurrency'
           worth_id = 'asset_cryptocurrency-worth'
           id_id = 'asset_cryptocurrency_id'
@@ -758,7 +794,10 @@
                     </div>
                 </div>
                 `
-        } else if (container == 'asset_nft') {
+        } else if (container == 'assets_nft') {
+             //set item category
+             cell1.innerHTML = "NFT Asset";
+        //set ids based on the asset
           description_id = 'asset_nft'
           worth_id = 'asset_nft-worth'
           id_id = 'asset_nft_id'
@@ -775,7 +814,10 @@
                     </div>
                 </div>
                 `
-        } else if (container == 'asset_stocks') {
+        } else if (container == 'assets_stocks') {
+             //set item category
+             cell1.innerHTML = "Stocks";
+        //set ids based on the asset
           description_id = 'asset_stocks'
           worth_id = 'asset_stocks-worth'
           id_id = 'asset_stocks_id'
@@ -795,7 +837,10 @@
                     </div>
                 </div>
                 `
-        } else if (container == 'asset_startup') {
+        } else if (container == 'assets_startup') {
+             //set item category
+             cell1.innerHTML = "Startup Asset";
+        //set ids based on the asset
           description_id = 'asset_startup'
           worth_id = 'asset_startup-worth'
           id_id = 'asset_startup_id'
@@ -815,7 +860,10 @@
                     </div>
                 </div>
                 `
-        } else if (container == 'asset_jewelry') {
+        } else if (container == 'assets_jewelry') {
+             //set item category
+             cell1.innerHTML = "Jewelry";
+        //set ids based on the asset
           description_id = 'asset_jewelry'
           worth_id = 'asset_jewelry-worth'
           id_id = 'asset_jewelry_id'
@@ -832,12 +880,15 @@
                     </div>
                 </div>
                 `
-        } else if (container == 'asset_car') {
+        } else if (container == 'assets_car') {
+             //set item category
+             cell1.innerHTML = "Car";
+        //set ids based on the asset
           description_id = 'asset_car'
           worth_id = 'asset_car-worth'
           id_id = 'asset_car_id'
           var new_asset_template = `
-                <div class="card m-1">
+                <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Car Make & Model</h5>
                     <input type="hidden" id="asset_car_id" aria-describedby="asset_car_id" name="asset_car_id">
                     <div class="card-body">
@@ -853,8 +904,37 @@
                 </div>
                 `
         }
+        //populating cells with data from modal 
+        cell2.innerHTML = description.value;
+        cell3.innerHTML = worth.value;
 
-        asset_container.innerHTML += new_asset_template
+        asset_container.innerHTML += new_asset_template;
+
+        //finding all hidding forms 
+        var descriptions = document.querySelectorAll(`#${description_id}`);
+        var ids = document.querySelectorAll(`#${id_id}`);
+        var worths = document.querySelectorAll(`#${worth_id}`);
+
+        //adding data to last hidden form for specific categories. 
+        if(container == 'assets_stocks')
+        {
+        var num_stocks = document.querySelectorAll("#asset_stock-extradata");
+        num_stocks[num_stocks.length -1].value = extra_data.value;
+        }else if(container == "assets_car"){
+        var num_stocks = document.querySelectorAll("#asset_car-extradata");
+        num_stocks[num_stocks.length -1].value = extra_data.value;
+        }
+        else if  (container == 'assets_startup')
+        {
+        var num_stocks = document.querySelectorAll("#asset_startup-extradata");
+        num_stocks[num_stocks.length -1].value = extra_data.value;
+        } 
+        //adding data to last hidden form for all categories. 
+        var len = descriptions.length - 1;
+        descriptions[len].value = description.value;
+        worths[len].value = worth.value;
+        // ids[len].value = id.value;
+        
       }
     </script>
 
