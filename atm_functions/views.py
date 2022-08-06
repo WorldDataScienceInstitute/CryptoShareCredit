@@ -1,4 +1,5 @@
 # from time import timezone
+from .currencies import FIAT_CURRENCIES
 from email import message
 from itertools import product
 from multiprocessing import context
@@ -459,7 +460,7 @@ def edit_estate_net_worth(request):
         startup = UserAssets.objects.filter(email=request.user, type="STARTUP_INVESTMENT")
         jewelry = UserAssets.objects.filter(email=request.user, type="JEWELRY")
         car = UserAssets.objects.filter(email=request.user, type="CAR")
-
+        
         context = {
             "banks": bank,
             "real_estates": real_estate,
@@ -469,7 +470,8 @@ def edit_estate_net_worth(request):
             "stocks": stock,
             "startups": startup,
             "jewelries": jewelry,
-            "cars": car
+            "cars": car,
+            "currencies":FIAT_CURRENCIES
         }
 
         return render(request, 'estate_net_worth_edit.html', context)        
