@@ -1,274 +1,699 @@
-{% load static %}
-{% static "images" as baseUrl %}
+{% load static %} {% static "images" as baseUrl %}
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-{% include 'header.html' %}
-<script src="https://app.simplefileupload.com/buckets/b658f0169bb34560f19fb46531211607.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<body>
-    {% if iframe is None %}
-    {% include 'atm_sidebar.html' %}
-    {% endif %}
+  {% include 'header.html' %}
+  <script src="https://app.simplefileupload.com/buckets/b658f0169bb34560f19fb46531211607.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <body>
+    {% if iframe is None %} {% include 'atm_sidebar.html' %} {% endif %}
     <div class="content-container">
-        <h2 class="ml-4 text-primary">Calculate your Total Estate Net Worth</h2>
-        <br>
-        <h2 class="ml-2">Please set all estimate values worth in a single currency</h2>
-        {% include 'messages.html' %}
-        {% include 'a_sessiontimeout.html' %}
-        <form action="/atm/EditEstateNetWorth/" method="post">
-            {% csrf_token %}
-            <!-- Add button at top right part of card -->
-            <div id="assets_bank">
-                {% for bank in banks %}
-                <div class="card m-1">
-                    <h5 class="card-header">Enter Bank Name</h5>
-                    <input type="hidden" id="asset_bank_id" aria-describedby="asset_bank_id" name="asset_bank_id" value="{{ bank.id_asset|default:'' }}">
-                    <div class="card-body">
-                        <input type="text" class="form-control" id="asset_bank" aria-describedby="asset_bank" name="asset_bank"
-                            placeholder="Ex. JP Morgan" value="{{ bank.name }}" >
-                        <br>
-                        <input type="number" class="form-control" id="asset_bank-worth" aria-describedby="asset_bank-worth" name="asset_bank-worth"
-                            step=".01" placeholder="Bank Balance" value="{{ bank.worth }}">
-                    </div>
+      <h2 class="ml-4 text-primary">Calculate your Total Estate Net Worth</h2>
+      <br />
+      <h2 class="ml-2">
+        Please set all estimate values worth in a single currency
+      </h2>
+        <!-- Modal for data input -->
+        <div class="modal fade" id="form_edit" tabindex="-1" aria-labelledby="form_edit_label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered"">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="form_edit_label">Enter Full Address</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                {% endfor %}
+                <div class="modal-body">
+                  <input type="hidden" id="item_id" aria-describedby="item_id" name="item_id" value="">
+                  <div class="card-body">
+                      <input type="text" class="form-control" id="item_description" aria-describedby="item_description" name="item_description"
+                          placeholder="Ex. 29 Baker Drive Miami, FL" value="" >
+                          
+                            <input
+                                type="number"
+                                class="form-control d-none mt-3"
+                                id="item_stock-extradata"
+                                aria-describedby="asset_stock-extradata"
+                                name="asset_stock-extradata"
+                                placeholder="Enter # of Shares"
+                                value=""
+                        />
+                      <input type="number" class="form-control mt-3" id="item-worth" aria-describedby="item-worth" name="item-worth"
+                          step=".01" placeholder="Enter Estimated Home Value" value="">
+                  </div>
+              </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeModal();">Close</button>
+                  <button id="modal_button" type="button" class="btn btn-info float-end m-2" data-bs-dismiss="modal" onclick="addNewElement();">Add Asset</button>      </div>
+              </div>
             </div>
-            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
-                <h4 class="ml-4 d-xl-inline-flex">BANK ACCOUNTS</h4>
-                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_bank');">Add new bank</button>
+          </div>
+      <!-- Table for asset elements  -->
+      
+          <!-- <tr>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <td>Jacob</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+          </tr> -->
+          <tr>
+            <td colspan="2">Total</td>
+            <!-- <td id="total"></td> -->
+          </tr>
+        </tbody> 
+      </table>
+      {% include 'messages.html' %} {% include 'a_sessiontimeout.html' %}
+      <form action="/atm/EditEstateNetWorth/" method="post">
+        {% csrf_token %}
+        <!-- Add button at top right part of card -->
+        <div id="assets_bank">
+          {% for bank in banks %}
+          <div class="card m-1">
+            <h5 class="card-header">Enter Bank Name</h5>
+            <input
+              type="hidden"
+              id="asset_bank_id"
+              aria-describedby="asset_bank_id"
+              name="asset_bank_id"
+              value="{{ bank.id_asset|default:'' }}"
+            />
+            <div class="card-body">
+              <input
+                type="text"
+                class="form-control"
+                id="asset_bank"
+                aria-describedby="asset_bank"
+                name="asset_bank"
+                placeholder="Ex. JP Morgan"
+                value="{{ bank.name }}"
+              />
+              <br />
+              <input
+                type="number"
+                class="form-control"
+                id="asset_bank-worth"
+                aria-describedby="asset_bank-worth"
+                name="asset_bank-worth"
+                step=".01"
+                placeholder="Bank Balance"
+                value="{{ bank.worth }}"
+              />
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div
+          class="justify-content-between align-content-center"
+          style="margin-bottom: 20px;"
+        >
+          <h4 class="ml-4 d-xl-inline-flex">BANK ACCOUNTS</h4>
+          <button
+            type="button"
+            class="btn btn-info float-end m-2"
+            data-bs-toggle="modal"
+            data-bs-target="#form_edit"
+            onclick="changeModalLabels('assets_bank','Enter Bank Name','Ex. JP Morgan','Bank Balance','Add New Bank');"
+          >
+            Add new bank
+          </button>
         </div>
 
-            <br>
-            <div id="assets_real_estate">
-                {% for real_estate in real_estates %}
-                <div class="card m-1">
-                    <h5 class="card-header">Enter Full Address</h5>
-                    <input type="hidden" id="asset_real_estate_id" aria-describedby="asset_real_estate_id" name="asset_real_estate_id" value="{{ real_estate.id_asset|default:'' }}">
-                    <div class="card-body">
-                        <input type="text" class="form-control" id="asset_real-estate" aria-describedby="asset_real-estate" name="asset_real-estate"
-                            placeholder="Ex. 29 Baker Drive Miami, FL" value="{{ real_estate.name }}" >
-                        <br>
-                        <input type="number" class="form-control" id="asset_real-estate-worth" aria-describedby="asset_real-estate-worth" name="asset_real-estate-worth"
-                            step=".01" placeholder="Enter Estimated Home Value" value="{{ real_estate.worth }}">
-                    </div>
-                </div>
-                {% endfor %}
+        <br />
+        <div id="assets_real_estate">
+          {% for real_estate in real_estates %}
+          <div class="card m-1">
+            <h5 class="card-header">Enter Full Address</h5>
+            <input
+              type="hidden"
+              id="asset_real_estate_id"
+              aria-describedby="asset_real_estate_id"
+              name="asset_real_estate_id"
+              value="{{ real_estate.id_asset|default:'' }}"
+            />
+            <div class="card-body">
+              <input
+                type="text"
+                class="form-control"
+                id="asset_real-estate"
+                aria-describedby="asset_real-estate"
+                name="asset_real-estate"
+                placeholder="Ex. 29 Baker Drive Miami, FL"
+                value="{{ real_estate.name }}"
+              />
+              <br />
+              <input
+                type="number"
+                class="form-control"
+                id="asset_real-estate-worth"
+                aria-describedby="asset_real-estate-worth"
+                name="asset_real-estate-worth"
+                step=".01"
+                placeholder="Enter Estimated Home Value"
+                value="{{ real_estate.worth }}"
+              />
             </div>
-            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
-                <h4 class="ml-4 d-xl-inline-flex">REAL ESTATE</h4>
-                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_real_estate');">Add Real Estate</button>
-            </div>
-            
+          </div>
+          {% endfor %}
+        </div>
+        <div
+          class="justify-content-between align-content-center"
+          style="margin-bottom: 20px;"
+        >
+          <h4 class="ml-4 d-xl-inline-flex">REAL ESTATE</h4>
+          <button
+            type="button"
+            class="btn btn-info float-end m-2"
+            data-bs-toggle="modal"
+            data-bs-target="#form_edit"
+            onclick="changeModalLabels('assets_real_estate','Enter Full Address','Ex. 29 Baker Drive Miami, FL','Enter Estimated Home Value','Add Real Estate');"
+          >
+            Add Real Estate
+          </button>
+        </div>
 
-            <br>
-            <div id="assets_insurance">
-                {% for insurance in insurances %}
-                <div class="card m-1">
-                    <h5 class="card-header">Enter Insurance Policy Provider</h5>
-                    <input type="hidden" id="asset_insurance_id" aria-describedby="asset_insurance_id" name="asset_insurance_id" value="{{ insurance.id_asset|default:'' }}">
-                    <div class="card-body">
-                        <input type="text" class="form-control" id="asset_insurance" aria-describedby="asset_insurance" name="asset_insurance"
-                            placeholder="Ex. MetLife Colombia Seguros de vida" value="{{ insurance.name }}" >
-                        <br>
-                        <input type="number" class="form-control" id="asset_insurance-worth" aria-describedby="asset_insurance-worth" name="asset_insurance-worth"
-                            step=".01" placeholder="Enter Life Insurance Value" value="{{ insurance.worth }}">
-                    </div>
-                </div>
-                {% endfor %}
+        <br />
+        <div id="assets_insurance">
+          {% for insurance in insurances %}
+          <div class="card m-1">
+            <h5 class="card-header">Enter Insurance Policy Provider</h5>
+            <input
+              type="hidden"
+              id="asset_insurance_id"
+              aria-describedby="asset_insurance_id"
+              name="asset_insurance_id"
+              value="{{ insurance.id_asset|default:'' }}"
+            />
+            <div class="card-body">
+              <input
+                type="text"
+                class="form-control"
+                id="asset_insurance"
+                aria-describedby="asset_insurance"
+                name="asset_insurance"
+                placeholder="Ex. MetLife Colombia Seguros de vida"
+                value="{{ insurance.name }}"
+              />
+              <br />
+              <input
+                type="number"
+                class="form-control"
+                id="asset_insurance-worth"
+                aria-describedby="asset_insurance-worth"
+                name="asset_insurance-worth"
+                step=".01"
+                placeholder="Enter Life Insurance Value"
+                value="{{ insurance.worth }}"
+              />
             </div>
-            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
-                <h4 class="ml-4 d-xl-inline-flex">INSURANCE</h4>
-                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_insurance');">Add New Insurance</button>
-            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div
+          class="justify-content-between align-content-center"
+          style="margin-bottom: 20px;"
+        >
+          <h4 class="ml-4 d-xl-inline-flex">INSURANCE</h4>
+          <button
+            type="button"
+            class="btn btn-info float-end m-2"
+            data-bs-toggle="modal"
+            data-bs-target="#form_edit"
+            onclick="changeModalLabels('assets_insurance','Enter Insurance Policy Provider','Ex. MetLife Colombia Seguros de vida','Enter Life Insurance Value','Add New Insurance');"
+          >
+            Add New Insurance
+          </button>
+        </div>
 
-            <br>
-            <div id="assets_cryptocurrency">
-                {% for cryptocurrency in cryptocurrencies %}
-                <div class="card m-1">
-                    <h5 class="card-header">Enter Cryptocurrency Name</h5>
-                    <input type="hidden" id="asset_cryptocurrency_id" aria-describedby="asset_cryptocurrency_id" name="asset_cryptocurrency_id" value="{{ cryptocurrency.id_asset|default:'' }}">
-                    <div class="card-body">
-                        <input type="text" class="form-control" id="asset_cryptocurrency" aria-describedby="asset_cryptocurrency" name="asset_cryptocurrency"
-                            placeholder="Ex. Bitcoin" value="{{ cryptocurrency.name }}" >
-                        <br>
-                        <input type="number" class="form-control" id="asset_cryptocurrency-worth" aria-describedby="asset_cryptocurrency-worth" name="asset_cryptocurrency-worth"
-                            step=".01" placeholder="Enter cryptocurrency estimated holdings value" value="{{ cryptocurrency.worth }}">
-                    </div>
-                </div>
-                {% endfor %}
+        <br />
+        <div id="assets_cryptocurrency">
+          {% for cryptocurrency in cryptocurrencies %}
+          <div class="card m-1">
+            <h5 class="card-header">Enter Cryptocurrency Name</h5>
+            <input
+              type="hidden"
+              id="asset_cryptocurrency_id"
+              aria-describedby="asset_cryptocurrency_id"
+              name="asset_cryptocurrency_id"
+              value="{{ cryptocurrency.id_asset|default:'' }}"
+            />
+            <div class="card-body">
+              <input
+                type="text"
+                class="form-control"
+                id="asset_cryptocurrency"
+                aria-describedby="asset_cryptocurrency"
+                name="asset_cryptocurrency"
+                placeholder="Ex. Bitcoin"
+                value="{{ cryptocurrency.name }}"
+              />
+              <br />
+              <input
+                type="number"
+                class="form-control"
+                id="asset_cryptocurrency-worth"
+                aria-describedby="asset_cryptocurrency-worth"
+                name="asset_cryptocurrency-worth"
+                step=".01"
+                placeholder="Enter cryptocurrency estimated holdings value"
+                value="{{ cryptocurrency.worth }}"
+              />
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div
+          class="justify-content-between align-content-center"
+          style="margin-bottom: 20px;"
+        >
+          <h4 class="ml-4 d-xl-inline-flex">
+            CRYPTO ASSETS
+            <!--(NOT DEPOSITED IN CRYPTOSHARE)-->
+          </h4>
+          <button
+            type="button"
+            class="btn btn-info float-end m-2"
+            data-bs-toggle="modal"
+            data-bs-target="#form_edit"
+            onclick="changeModalLabels('assets_cryptocurrency','Enter Cryptocurrency Name','Ex. Bitcoin','Enter cryptocurrency estimated holdings value','Add New Cryptocurrency');"
+          >
+            Add New Cryptocurrency
+          </button>
+        </div>
 
-            </div>
-            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
-                <h4 class="ml-4 d-xl-inline-flex">CRYPTO ASSETS <!--(NOT DEPOSITED IN CRYPTOSHARE)--></h4>
-                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_cryptocurrency');">Add New Cryptocurrency</button>
-            </div>
+        <br />
 
-            <br>
-            
-            <div id="assets_nft">
-                {% for nft in nfts %}
-                <div class="card m-1">
-                    <h5 class="card-header">Enter NFT Name</h5>
-                    <input type="hidden" id="asset_nft_id" aria-describedby="asset_nft_id" name="asset_nft_id" value="{{ nft.id_asset|default:'' }}">
-                    <div class="card-body">
-                        <input type="text" class="form-control" id="asset_nft" aria-describedby="asset_nft" name="asset_nft"
-                            placeholder="Ex. Bored Ape Yacht Club" value="{{ nft.name }}">
-                        <br>
-                        <input type="number" class="form-control" id="asset_nft-worth" aria-describedby="asset_nft-worth" name="asset_nft-worth"
-                            step=".01" placeholder="Enter NFT Value" value="{{ nft.worth }}">
-                    </div>
-                </div>
-                {% endfor %}
+        <div id="assets_nft">
+          {% for nft in nfts %}
+          <div class="card m-1">
+            <h5 class="card-header">Enter NFT Name</h5>
+            <input
+              type="hidden"
+              id="asset_nft_id"
+              aria-describedby="asset_nft_id"
+              name="asset_nft_id"
+              value="{{ nft.id_asset|default:'' }}"
+            />
+            <div class="card-body">
+              <input
+                type="text"
+                class="form-control"
+                id="asset_nft"
+                aria-describedby="asset_nft"
+                name="asset_nft"
+                placeholder="Ex. Bored Ape Yacht Club"
+                value="{{ nft.name }}"
+              />
+              <br />
+              <input
+                type="number"
+                class="form-control"
+                id="asset_nft-worth"
+                aria-describedby="asset_nft-worth"
+                name="asset_nft-worth"
+                step=".01"
+                placeholder="Enter NFT Value"
+                value="{{ nft.worth }}"
+              />
             </div>
-            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
-                <h4 class="ml-4 d-xl-inline-flex">NFT ASSETS</h4>
-                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_nft');">Add New NFT</button>
-            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div
+          class="justify-content-between align-content-center"
+          style="margin-bottom: 20px;"
+        >
+          <h4 class="ml-4 d-xl-inline-flex">NFT ASSETS</h4>
+          <button
+            type="button"
+            class="btn btn-info float-end m-2"
+            data-bs-toggle="modal"
+            data-bs-target="#form_edit"
+            onclick="changeModalLabels('assets_nft','Enter NFT Name','Ex. Bored Ape Yacht Club','Enter NFT Value','Add New NFT');"
+          >
+            Add New NFT
+          </button>
+        </div>
 
-            <br>
-            <div id="assets_stocks">
-                {% for stock in stocks %}
-                <div class="card m-1">
-                    <h5 class="card-header">Enter Stock Name</h5>
-                    <input type="hidden" id="asset_stock_id" aria-describedby="asset_stock_id" name="asset_stock_id" value="{{ stock.id_asset|default:'' }}">
-                    <div class="card-body">
-                        <input type="text" class="form-control" id="asset_stock" aria-describedby="asset_stock" name="asset_stock"
-                            placeholder="Ex. Amazon" value="{{ stock.name }}" >
-                        <br>
-                        <input type="number" class="form-control" id="asset_stock-extradata" aria-describedby="asset_stock-extradata" name="asset_stock-extradata"
-                            placeholder="Enter # of Shares" value="{{ stock.extra_field }}">
-                        <br>
-                        <input type="number" class="form-control" id="asset_stock-worth" aria-describedby="asset_stock-worth" name="asset_stock-worth"
-                            step=".01" placeholder="Enter Investment Amount" value="{{ stock.worth }}">
-                    </div>
-                </div>
-                {% endfor %}
+        <br />
+        <div id="assets_stocks">
+          {% for stock in stocks %}
+          <div class="card m-1">
+            <h5 class="card-header">Enter Stock Name</h5>
+            <input
+              type="hidden"
+              id="asset_stock_id"
+              aria-describedby="asset_stock_id"
+              name="asset_stock_id"
+              value="{{ stock.id_asset|default:'' }}"
+            />
+            <div class="card-body">
+              <input
+                type="text"
+                class="form-control"
+                id="asset_stock"
+                aria-describedby="asset_stock"
+                name="asset_stock"
+                placeholder="Ex. Amazon"
+                value="{{ stock.name }}"
+              />
+              <br />
+              <input
+                type="number"
+                class="form-control"
+                id="asset_stock-extradata"
+                aria-describedby="asset_stock-extradata"
+                name="asset_stock-extradata"
+                placeholder="Enter # of Shares"
+                value="{{ stock.extra_field }}"
+              />
+              <br />
+              <input
+                type="number"
+                class="form-control"
+                id="asset_stock-worth"
+                aria-describedby="asset_stock-worth"
+                name="asset_stock-worth"
+                step=".01"
+                placeholder="Enter Investment Amount"
+                value="{{ stock.worth }}"
+              />
             </div>
-            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">            
-                <h4 class="ml-4 d-xl-inline-flex">STOCKS</h4>
-                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_stocks');">Add New Stock</button>
-            </div>
-            
-            <br>
-            <div id="assets_startup">
-                {% for startup in startups %}
-                <div class="card m-1">
-                    <h5 class="card-header">Enter Startup Name</h5>
-                    <input type="hidden" id="asset_startup_id" aria-describedby="asset_startup_id" name="asset_startup_id" value="{{ startup.id_asset|default:'' }}">
-                    <div class="card-body">
-                        <input type="text" class="form-control" id="asset_startup" aria-describedby="asset_startup" name="asset_startup"
-                            placeholder="Ex. Amazon" value="{{ startup.name }}" >
-                        <br>
-                        <input type="text" class="form-control" id="asset_startup-extradata" aria-describedby="asset_startup-extradata" name="asset_startup-extradata"
-                            placeholder="Enter Investment Platform" value="{{ bastartupnk.extra_field }}">
-                        <br>
-                        <input type="number" class="form-control" id="asset_startup-worth" aria-describedby="asset_startup-worth" name="asset_startup-worth"
-                            step=".01" placeholder="Enter Investment Amount" value="{{ startup.worth }}">
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
-                <h4 class="ml-4 d-xl-inline-flex">STARTUP INVESTMENTS</h4>
-                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_startup');">Add New Startup</button>
-            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div
+          class="justify-content-between align-content-center"
+          style="margin-bottom: 20px;"
+        >
+          <h4 class="ml-4 d-xl-inline-flex">STOCKS</h4>
+          <button
+            type="button"
+            class="btn btn-info float-end m-2"
+            data-bs-toggle="modal"
+            data-bs-target="#form_edit"
+            onclick="changeModalLabels('assets_stocks','Enter Stock Name','Ex. Amazon','Enter Investment Amount','Add New Stock');"
+          >
+            Add New Stock
+          </button>
+        </div>
 
-            <br>
-            <div id="assets_jewelry">
-                {% for jewelry in jewelries %}
-                <div class="card m-1">
-                    <h5 class="card-header">Enter Type of Physical Asset</h5>
-                    <input type="hidden" id="asset_jewelry_id" aria-describedby="asset_jewelry_id" name="asset_jewelry_id" value="{{ jewelry.id_asset|default:'' }}">
-                    <div class="card-body">
-                        <input type="text" class="form-control" id="asset_jewelry" aria-describedby="asset_jewelry" name="asset_jewelry"
-                            placeholder="Ex. Gold Bar" value="{{ jewelry.name }}" >
-                        <br>
-                        <input type="number" class="form-control" id="asset_jewelry-worth" aria-describedby="asset_jewelry-worth" name="asset_jewelry-worth"
-                            step=".01" placeholder="Enter Estimated Value" value="{{ jewelry.worth }}">
-                    </div>
-                </div>
-                {% endfor %}
+        <br />
+        <div id="assets_startup">
+          {% for startup in startups %}
+          <div class="card m-1">
+            <h5 class="card-header">Enter Startup Name</h5>
+            <input
+              type="hidden"
+              id="asset_startup_id"
+              aria-describedby="asset_startup_id"
+              name="asset_startup_id"
+              value="{{ startup.id_asset|default:'' }}"
+            />
+            <div class="card-body">
+              <input
+                type="text"
+                class="form-control"
+                id="asset_startup"
+                aria-describedby="asset_startup"
+                name="asset_startup"
+                placeholder="Ex. Amazon"
+                value="{{ startup.name }}"
+              />
+              <br />
+              <input
+                type="text"
+                class="form-control"
+                id="asset_startup-extradata"
+                aria-describedby="asset_startup-extradata"
+                name="asset_startup-extradata"
+                placeholder="Enter Investment Platform"
+                value="{{ bastartupnk.extra_field }}"
+              />
+              <br />
+              <input
+                type="number"
+                class="form-control"
+                id="asset_startup-worth"
+                aria-describedby="asset_startup-worth"
+                name="asset_startup-worth"
+                step=".01"
+                placeholder="Enter Investment Amount"
+                value="{{ startup.worth }}"
+              />
             </div>
-            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
-                <h4 class="ml-4 d-xl-inline-flex">GOLD/SILVER/JEWELRY</h4>
-                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_jewelry');">Add New Jewelry</button>
-            </div>
-            
+          </div>
+          {% endfor %}
+        </div>
+        <div
+          class="justify-content-between align-content-center"
+          style="margin-bottom: 20px;"
+        >
+          <h4 class="ml-4 d-xl-inline-flex">STARTUP INVESTMENTS</h4>
+          <button
+            type="button"
+            class="btn btn-info float-end m-2"
+            data-bs-toggle="modal"
+            data-bs-target="#form_edit"
+            onclick="changeModalLabels('assets_startup','Enter Startup Name','Ex. Amazon','Enter Investment Amount','Add New Startup');"
+          >
+            Add New Startup
+          </button>
+        </div>
 
-            <br>
-            <div id="assets_car">
-                {% for car in cars %}
-                <div class="card m-1">
-                    <h5 class="card-header">Enter Car Make & Model</h5>
-                    <input type="hidden" id="asset_car_id" aria-describedby="asset_car_id" name="asset_car_id" value="{{ car.id_asset|default:'' }}">
-                    <div class="card-body">
-                        <input type="text" class="form-control" id="asset_car" aria-describedby="asset_car" name="asset_car"
-                            placeholder="Ex. Porsche Cayenne" value="{{ car.name }}" >
-                        <br>
-                        <input type="text" class="form-control" id="asset_car-extradata" aria-describedby="asset_car-extradata" name="asset_car-extradata"
-                            placeholder="Enter Year Model" value="{{ car.extra_field }}">
-                        <br>
-                        <input type="number" class="form-control" id="asset_car-worth" aria-describedby="asset_car-worth" name="asset_car-worth"
-                            step=".01" placeholder="Enter Investment Amount" value="{{ car.worth }}">
-                    </div>
-                </div>
-                {% endfor %}
+        <br />
+        <div id="assets_jewelry">
+          {% for jewelry in jewelries %}
+          <div class="card m-1">
+            <h5 class="card-header">Enter Type of Physical Asset</h5>
+            <input
+              type="hidden"
+              id="asset_jewelry_id"
+              aria-describedby="asset_jewelry_id"
+              name="asset_jewelry_id"
+              value="{{ jewelry.id_asset|default:'' }}"
+            />
+            <div class="card-body">
+              <input
+                type="text"
+                class="form-control"
+                id="asset_jewelry"
+                aria-describedby="asset_jewelry"
+                name="asset_jewelry"
+                placeholder="Ex. Gold Bar"
+                value="{{ jewelry.name }}"
+              />
+              <br />
+              <input
+                type="number"
+                class="form-control"
+                id="asset_jewelry-worth"
+                aria-describedby="asset_jewelry-worth"
+                name="asset_jewelry-worth"
+                step=".01"
+                placeholder="Enter Estimated Value"
+                value="{{ jewelry.worth }}"
+              />
             </div>
-            <div class="justify-content-between align-content-center" style="margin-bottom: 20px">
-                <h4 class="ml-4 d-xl-inline-flex">CARS</h4>
-                <button type="button" class="btn btn-info float-end m-2" onclick="addNewElement('assets_car');">Add New Car</button>
+          </div>
+          {% endfor %}
+        </div>
+        <div
+          class="justify-content-between align-content-center"
+          style="margin-bottom: 20px;"
+        >
+          <h4 class="ml-4 d-xl-inline-flex">GOLD/SILVER/JEWELRY</h4>
+          <button
+            type="button"
+            class="btn btn-info float-end m-2"
+            data-bs-toggle="modal"
+            data-bs-target="#form_edit"
+            onclick="changeModalLabels('assets_jewelry','Enter Type of Physical Asset','Ex. Gold Bar','Enter Estimated Value','Add New Jewelry');"
+          >
+            Add New Jewelry
+          </button>
+        </div>
+
+        <br />
+        <div id="assets_car">
+          {% for car in cars %}
+          <div class="card m-1">
+            <h5 class="card-header">Enter Car Make & Model</h5>
+            <input
+              type="hidden"
+              id="asset_car_id"
+              aria-describedby="asset_car_id"
+              name="asset_car_id"
+              value="{{ car.id_asset|default:'' }}"
+            />
+            <div class="card-body">
+              <input
+                type="text"
+                class="form-control"
+                id="asset_car"
+                aria-describedby="asset_car"
+                name="asset_car"
+                placeholder="Ex. Porsche Cayenne"
+                value="{{ car.name }}"
+              />
+              <br />
+              <input
+                type="text"
+                class="form-control"
+                id="asset_car-extradata"
+                aria-describedby="asset_car-extradata"
+                name="asset_car-extradata"
+                placeholder="Enter Year Model"
+                value="{{ car.extra_field }}"
+              />
+              <br />
+              <input
+                type="number"
+                class="form-control"
+                id="asset_car-worth"
+                aria-describedby="asset_car-worth"
+                name="asset_car-worth"
+                step=".01"
+                placeholder="Enter Investment Amount"
+                value="{{ car.worth }}"
+              />
             </div>
-            
-            <div class="container" style="text-align: center;">
-                <button id="submit" type="submit" class="btn btn-primary m-5">Calculate your Total Estate Net Worth</button>
-            </div>
-        </form>
+          </div>
+          {% endfor %}
+        </div>
+        <div
+          class="justify-content-between align-content-center"
+          style="margin-bottom: 20px;"
+        >
+          <h4 class="ml-4 d-xl-inline-flex">CARS</h4>
+          <button
+            type="button"
+            class="btn btn-info float-end m-2"
+            data-bs-toggle="modal"
+            data-bs-target="#form_edit"
+            onclick="changeModalLabels('assets_car','Enter Car Make & Model','Ex. Porsche Cayenne','Enter Investment Amount','Add New Car',);"
+          >
+            Add New Car
+          </button>
+        </div>
+
+        <div class="container" style="text-align: center;">
+          <button id="submit" type="submit" class="btn btn-primary m-5">
+            Calculate your Total Estate Net Worth
+          </button>
+        </div>
+      </form>
     </div>
     <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                autoDisplay: false
-            }, 'google_translate_element'); //remove the layout
-        }
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: 'en',
+            autoDisplay: false,
+          },
+          'google_translate_element',
+        ) //remove the layout
+      }
     </script>
-    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
-    </script>
-    
-    
+    <script
+      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+      type="text/javascript"
+    ></script>
+
     <script type="text/javascript">
-        function triggerHtmlEvent(element, eventName) {
-            var event;
-            if (document.createEvent) {
-                event = document.createEvent('HTMLEvents');
-                event.initEvent(eventName, true, true);
-                element.dispatchEvent(event);
-            } else {
-                event = document.createEventObject();
-                event.eventType = eventName;
-                element.fireEvent('on' + event.eventType, event);
-            }
+      function triggerHtmlEvent(element, eventName) {
+        var event
+        if (document.createEvent) {
+          event = document.createEvent('HTMLEvents')
+          event.initEvent(eventName, true, true)
+          element.dispatchEvent(event)
+        } else {
+          event = document.createEventObject()
+          event.eventType = eventName
+          element.fireEvent('on' + event.eventType, event)
         }
-        
-        $('.translation-links a').click(function (e) {
-            e.preventDefault();
-            var lang = $(this).data('lang');
-            $('#google_translate_element select option').each(function () {
-                if ($(this).text().indexOf(lang) > -1) {
-                    $(this).parent().val($(this).val());
-                    var container = document.getElementById('google_translate_element');
-                    var select = container.getElementsByTagName('select')[0];
-                    triggerHtmlEvent(select, 'change');
-                }
-            });
-        });
+      }
 
-        function addNewElement(container) {
-            var asset_container = document.getElementById(container);
+      $('.translation-links a').click(function (e) {
+        e.preventDefault()
+        var lang = $(this).data('lang')
+        $('#google_translate_element select option').each(function () {
+          if ($(this).text().indexOf(lang) > -1) {
+            $(this).parent().val($(this).val())
+            var container = document.getElementById('google_translate_element')
+            var select = container.getElementsByTagName('select')[0]
+            triggerHtmlEvent(select, 'change')
+          }
+        })
+      })
 
-            if (container == "assets_bank"){
-                var new_asset_template = `
+      function closeModal()
+      {
+        if(document.getElementById('item_id').value == 'asset_stocks')
+        {
+            var num_stocks = document.getElementById('item_stock-extradata');
+            num_stocks.classList.add('d-none');
+        }
+
+      }
+
+      function changeModalLabels(category, label_text, descPh, worthPh,button_text) {
+        var label = document.getElementById('form_edit_label')
+        var description = document.getElementById('item_description')
+        var worth = document.getElementById('item-worth')
+        var id = document.getElementById('item_id')
+        var modal_button = document.getElementById('modal_button');
+        var num_stocks = document.getElementById('item_stock-extradata');
+
+        console.log(modal_button);
+        label.innerHTML = label_text
+        description.placeholder = descPh
+        worth.placeholder = worthPh
+        id.value = category
+        modal_button.innerHTML = button_text;
+
+        description.value ="";
+        worth.value = "";
+    
+        if(category == 'assets_stocks')
+        {
+            num_stocks.classList.remove('d-none');
+            num_stocks.value ="";
+            num_stocks.type = "number";
+        }
+        else if(category == "assets_car"){
+            num_stocks.classList.remove('d-none');
+            num_stocks.placeholder = "Enter Year Model";
+            num_stocks.type = "text";
+            num_stocks.value ="";  
+        }
+        else if  (category == 'assets_startup')
+        {
+            num_stocks.classList.remove('d-none');
+            num_stocks.placeholder = "Enter Investment Platform";
+            num_stocks.type = "text";
+            num_stocks.value ="";
+        }
+        else {
+            num_stocks.classList.add('d-none');
+        }
+      }
+
+      function addNewElement(/**container**/) {
+        var asset_container = document.getElementById(container)
+
+        var description_id = ''
+        var worth_id = ''
+        var id_id = ''
+
+        var container = document.getElementById('item_id').value
+
+        if (container == 'assets_bank') {
+          description_id = 'asset_bank'
+          worth_id = 'asset_bank-worth'
+          id_id = 'asset_bank_id'
+          var new_asset_template = `
                 <div class="card m-1">
                     <h5 class="card-header">Enter Bank Name</h5>
                     <input type="hidden" id="asset_bank_id" aria-describedby="asset_bank_id" name="asset_bank_id">
@@ -281,8 +706,11 @@
                     </div>
                 </div>
                 `
-            }else if (container == "assets_real_estate"){
-                var new_asset_template = `
+        } else if (container == 'asset_real_estate') {
+          description_id = 'asset_real_estate'
+          worth_id = 'asset_real_estate-worth'
+          id_id = 'asset_real_estate_id'
+          var new_asset_template = `
                 <div class="card m-1">
                     <h5 class="card-header">Enter Full Address</h5>
                     <input type="hidden" id="asset_real_estate_id" aria-describedby="asset_real_estate_id" name="asset_real_estate_id">
@@ -295,8 +723,12 @@
                     </div>
                 </div>
                 `
-            }else if (container == "assets_insurance"){
-                var new_asset_template = `
+        } else if (container == 'asset_insurance') {
+          description_id = 'asset_insurance'
+          worth_id = 'asset_insurance-worth'
+          id_id = 'asset_insurance_id'
+
+          var new_asset_template = `
                 <div class="card m-1">
                     <h5 class="card-header">Enter Insurance Policy Provider</h5>
                     <input type="hidden" id="asset_insurance_id" aria-describedby="asset_insurance_id" name="asset_insurance_id">
@@ -309,8 +741,11 @@
                     </div>
                 </div>
                 `
-            }else if (container == "assets_cryptocurrency"){
-                var new_asset_template = `
+        } else if (container == 'asset_cryptocurrency') {
+          description_id = 'asset_cryptocurrency'
+          worth_id = 'asset_cryptocurrency-worth'
+          id_id = 'asset_cryptocurrency_id'
+          var new_asset_template = `
                 <div class="card m-1">
                     <h5 class="card-header">Enter Cryptocurrency Name</h5>
                     <input type="hidden" id="asset_cryptocurrency_id" aria-describedby="asset_cryptocurrency_id" name="asset_cryptocurrency_id">
@@ -323,8 +758,11 @@
                     </div>
                 </div>
                 `
-            }else if (container == "assets_nft"){
-                var new_asset_template = `
+        } else if (container == 'asset_nft') {
+          description_id = 'asset_nft'
+          worth_id = 'asset_nft-worth'
+          id_id = 'asset_nft_id'
+          var new_asset_template = `
                 <div class="card m-1">
                     <h5 class="card-header">Enter NFT Name</h5>
                     <input type="hidden" id="asset_nft_id" aria-describedby="asset_nft_id" name="asset_nft_id">
@@ -337,8 +775,11 @@
                     </div>
                 </div>
                 `
-            }else if (container == "assets_stocks"){
-                var new_asset_template = `
+        } else if (container == 'asset_stocks') {
+          description_id = 'asset_stocks'
+          worth_id = 'asset_stocks-worth'
+          id_id = 'asset_stocks_id'
+          var new_asset_template = `
                 <div class="card m-1">
                     <h5 class="card-header">Enter Stock Name</h5>
                     <input type="hidden" id="asset_stock_id" aria-describedby="asset_stock_id" name="asset_stock_id" value="">
@@ -354,8 +795,11 @@
                     </div>
                 </div>
                 `
-            }else if (container == "assets_startup"){
-                var new_asset_template = `
+        } else if (container == 'asset_startup') {
+          description_id = 'asset_startup'
+          worth_id = 'asset_startup-worth'
+          id_id = 'asset_startup_id'
+          var new_asset_template = `
                 <div class="card m-1">
                     <h5 class="card-header">Enter Startup Name</h5>
                     <input type="hidden" id="asset_startup_id" aria-describedby="asset_startup_id" name="asset_startup_id">
@@ -371,8 +815,11 @@
                     </div>
                 </div>
                 `
-            }else if (container == "assets_jewelry"){
-                var new_asset_template = `
+        } else if (container == 'asset_jewelry') {
+          description_id = 'asset_jewelry'
+          worth_id = 'asset_jewelry-worth'
+          id_id = 'asset_jewelry_id'
+          var new_asset_template = `
                 <div class="card m-1">
                     <h5 class="card-header">Enter Type of Physical Asset</h5>
                     <input type="hidden" id="asset_jewelry_id" aria-describedby="asset_jewelry_id" name="asset_jewelry_id">
@@ -385,8 +832,11 @@
                     </div>
                 </div>
                 `
-            }else if (container == "assets_car"){
-                var new_asset_template = `
+        } else if (container == 'asset_car') {
+          description_id = 'asset_car'
+          worth_id = 'asset_car-worth'
+          id_id = 'asset_car_id'
+          var new_asset_template = `
                 <div class="card m-1">
                     <h5 class="card-header">Enter Car Make & Model</h5>
                     <input type="hidden" id="asset_car_id" aria-describedby="asset_car_id" name="asset_car_id">
@@ -402,11 +852,10 @@
                     </div>
                 </div>
                 `
-            }
-
-
-            asset_container.innerHTML += new_asset_template;
         }
+
+        asset_container.innerHTML += new_asset_template
+      }
     </script>
 
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
@@ -414,5 +863,5 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.sticky.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
-</body>
+  </body>
 </html>
