@@ -1155,7 +1155,7 @@ def create_business(request):
 
         new_username = DynamicUsername.objects.create(
             id_username = business_username,
-            username_type = "USER",
+            username_type = "BUSINESS",
             business_reference = new_business
         )
 
