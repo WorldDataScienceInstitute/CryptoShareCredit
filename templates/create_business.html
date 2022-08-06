@@ -22,15 +22,21 @@
                     placeholder="Enter your new business name" required>
             </div>
             <div class="form-group col-md-12">
+                <label for="business_username"><b>New Business Username</b></label>
+                <input type="text" class="form-control" id="business_username" aria-describedby="business_username" name="business_username"
+                    placeholder="Enter your new business username" required>
+            </div>
+            <div class="form-group col-md-12">
                 <label for="business_category">Business Category:</label>
                 <select type="text" class="form-control" name="business_category" id="business_category" required>
                     <option disabled selected>Select category</option>
-                    <option value="Transportation">Transportation</option>
                     <option value="Marketing">Marketing</option>
-                    <option value="Food">Food</option>
-                    <option value="Entretainment">Entretainment</option>
-                    <option value="Rent/Mortgage">Rent/Mortgage</option>
-                    <option value="Services">Services</option>
+                    <option value="Entretainment">Entertainment</option>
+                    <option value="Digital_services">Digital Services</option>
+                    <option value="Digital_Products">Digital Products</option>
+                    <option value="Games">Games</option>
+                    <option value="Workshops">Workshops</option>
+                    <option value="Consultations">Consultations</option>
                 </select>
             </div>
             <div class="form-group col-md-12">
@@ -67,7 +73,7 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="cb_currency" name="cb_currency" required>
                     <label class="form-check-label" for="cb_currency">
-                        I Understand the only Currency I can accept is Cryptocurrency (not FIAT).
+                        I understand Cryptoshare Credits is NOT FIAT or Cryptocurrency.
                     </label>
                 </div>
             </div>
@@ -76,22 +82,6 @@
                     <input class="form-check-input" type="checkbox" value="" id="cb_business_pay" name="cb_business_pay" required>
                     <label class="form-check-label" for="cb_business_pay">
                         I Understand this Business Account allows People and other Businesses to pay me using my Business Name.
-                    </label>
-                </div>
-            </div>
-            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="cb_local_laws" name="cb_local_laws" required>
-                    <label class="form-check-label" for="cb_local_laws">
-                        I Understand any money I make should be reported on my Local Taxes.
-                    </label>
-                </div>
-            </div>
-            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="cb_blockchain" name="cb_blockchain" required>
-                    <label class="form-check-label" for="cb_blockchain">
-                        I Understand that Blockchain is Transparent, every transaction will be Recorded and Categorized for  Record Keeping.
                     </label>
                 </div>
             </div>
@@ -115,15 +105,7 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="cb_filling_cost" name="cb_filling_cost" required>
                     <label class="form-check-label" for="cb_filling_cost">
-                        I Understand their is a Blockchain Business Filing Cost (supports our Platform).
-                    </label>
-                </div>
-            </div>
-            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="cb_yearly_cost" name="cb_yearly_cost" required>
-                    <label class="form-check-label" for="cb_yearly_cost">
-                        I Understand the Filing Cost is due Every Year (365 days from your Creation Date).
+                        I Understand a Cryptoshare Business Filing Cost is due every year from Creation Date (supports our Platform).
                     </label>
                 </div>
             </div>
@@ -139,17 +121,29 @@
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="cb_business_laws" name="cb_business_laws" required>
                     <label class="form-check-label" for="cb_business_laws">
-                        I Affirm that I have Read all of the Blockchain Business Bylaws.
+                        I Affirm I have read and understand all Cryptoshare Business Bylaws.
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_cs_credits" name="cb_cs_credits" required>
+                    <label class="form-check-label" for="cb_cs_credits">
+                        I understand that I must have at least 50 Cryptoshare Credits to Create a Business.
+                    </label>
+                </div>
+            </div>
+            <div class="container-fluid" style="background-color: #e2ff9f81; padding: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="cb_name_change" name="cb_name_change" required>
+                    <label class="form-check-label" for="cb_name_change">
+                        I understand that the only way to change my name is 10 Cryptoshare Credits.
                     </label>
                 </div>
             </div>
             <small id="addressRegisterHelp" class="form-text text-muted">We'll never share information with anyone else</small>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
-        <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
-            <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">*Must have at least 1 DASH deposited in your CryptoShare Wallet for creating a Business</small>
-        </div>
-
     </div>
     <script type="text/javascript">
         function googleTranslateElementInit() {

@@ -13,6 +13,7 @@ from common.emails import Account_Creation_Email, code_creation_email, pin_reset
 from traceback import print_exc
 from coinbase.wallet.client import OAuthClient
 
+import os
 import stripe
 
 user_count, last_check = get_user_count()
@@ -92,9 +93,7 @@ def email(request):
 
             Balance.objects.create(currency_type="DIGITAL", digital_currency_name=cryptoshare_credits, email = user, amount = 0)
 
-            stripe.api_key = "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"
-            first_name = "Alberto"
-            last_name = "Navarrete"
+            stripe.api_key = os.environ['STRIPE_SECRET_KEY']
 
 
             response = stripe.Customer.create(
