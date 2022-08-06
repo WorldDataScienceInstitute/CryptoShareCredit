@@ -357,8 +357,8 @@ def stripe_checkout(request):
 
     selected_product = request.GET.get('product','')
 
-    if selected_product in test_products:
-        product = test_products[selected_product]
+    if selected_product in products:
+        product = products[selected_product]
         amount = products_amount[selected_product]
     else:
         messages.error(request, "Invalid product, please try again.", extra_tags='danger')
@@ -372,8 +372,8 @@ def stripe_checkout(request):
 
 
     session = stripe.checkout.Session.create(
-        success_url = "https://2256-2806-2f0-9020-41c3-889c-d1b9-cc48-6952.ngrok.io/atm/StripeCheckoutResult/?result=success&product=" + selected_product,
-        cancel_url = "https://2256-2806-2f0-9020-41c3-889c-d1b9-cc48-6952.ngrok.io/atm/StripeCheckoutResult/?result=cancel&product=" + selected_product,
+        success_url = "https://cryptoshareapp.com/atm/StripeCheckoutResult/?result=success&product=" + selected_product,
+        cancel_url = "https://cryptoshareapp.com/atm/StripeCheckoutResult/?result=cancel&product=" + selected_product,
         line_items = [
             {
             "price": product,
@@ -1512,7 +1512,8 @@ def stripe_webhook(request):
     payment_intent = response_body["data"]["object"]["id"]
     transaction_type = response_body['type']
 
-    stripe_customer_object = StripeAccount.objects.get(stripe_customer_id="cus_MBazDa7gq6ZfbH")
+    # stripe_customer_object = StripeAccount.objects.get(stripe_customer_id="cus_MBazDa7gq6ZfbH")
+    stripe_customer_object = StripeAccount.objects.get(stripe_customer_id=customer_id)
     stripe_transaction = StripeTransaction.objects.get(payment_intent=payment_intent)
 
     cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
