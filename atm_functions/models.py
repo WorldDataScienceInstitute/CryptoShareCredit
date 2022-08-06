@@ -20,6 +20,11 @@ class Account(models.Model):
     username = models.CharField(max_length=57, unique=True, null=True)
     net_worth = models.DecimalField(max_digits=20, decimal_places=2, default=0) 
 
+class StripeAccount(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    stripe_customer_id = models.CharField(max_length=20, null=False)
+    description = models.CharField(max_length=100, null=True)
+
 class UserAssets(models.Model):
     id_asset = models.AutoField(primary_key=True)
     email = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -109,6 +114,16 @@ class Beneficiary(models.Model):
     will_percentage = models.IntegerField(null=True)
     selfie_photo_url = models.CharField(max_length=255, null=True)      
     
+class StripeTransaction(models.Model):
+    id_transaction = models.AutoField(primary_key=True)
+    stripe_account = models.ForeignKey(StripeAccount, on_delete=models.CASCADE)
+    payment_intent = models.CharField(max_length=30, unique=True, null=False)
+    amount = models.DecimalField(max_digits=18, decimal_places=8)
+    transaction_type = models.CharField(max_length=15)
+    transaction_type_internal = models.CharField(max_length=30)
+    transaction_state = models.CharField(max_length=15)
+    creation_datetime = models.DateTimeField(auto_now_add=True)
+
 #Transaction for Deposits and Withdrawals CRYPTO
 class TransactionA(models.Model):
     id_a = models.AutoField(primary_key=True)

@@ -1,5 +1,6 @@
 # from time import timezone
 from email import message
+from itertools import product
 from multiprocessing import context
 from django.conf import settings as django_settings
 from django.contrib import messages
@@ -15,7 +16,7 @@ from django.templatetags.static import static
 from django.utils import formats
 from .models import User
 from decimal import Decimal
-from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, Business, WaitingList, UserAssets
+from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, Business, WaitingList, UserAssets, StripeAccount, StripeTransaction
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples
 from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email, code_creation_email
@@ -26,14 +27,13 @@ from common.simpleswap import SimpleSwap
 from google_currency import convert
 from coinbase.wallet.client import OAuthClient
 from coinbase.wallet.error import TwoFactorRequiredError
-from datetime import timedelta
-
-import hmac
 import hashlib
-
+import stripe
 import os
+
 import requests
 import json
+
 import cv2
 from PIL import Image
 
@@ -322,6 +322,104 @@ def buy_crypto_widget(request):
             }
 
     return render(request, 'buy_crypto_widget.html', context)
+
+@login_required()
+def stripe_checkout(request):
+    products = {
+        "CSC_50": "price_1LTEObD9Xw88IvYZXih30PQ7",
+        "CSC_100": "price_1LTEObD9Xw88IvYZ2ZEXtNv4",
+        "CSC_600": "price_1LTEObD9Xw88IvYZohyrJAv0",
+        "CSC_10-000": "price_1LTEObD9Xw88IvYZFlsOuvUG",
+        "CSC_60-000": "price_1LTEObD9Xw88IvYZKII7Utwo",
+        "CSC_100-000": "price_1LTEObD9Xw88IvYZUJulNN0V",
+        "CSC_600-000": "price_1LTEObD9Xw88IvYZKwCFMtpu",
+    }
+
+    products_amount = {
+        "CSC_50": 50,
+        "CSC_100": 100,
+        "CSC_600": 600,
+        "CSC_10-000": 10000,
+        "CSC_60-000": 60000,
+        "CSC_100-000": 100000,
+        "CSC_600-000": 600000,
+    }
+
+    test_products = {
+        "CSC_50": "price_1LR4IbD9Xw88IvYZrogp5Vrf",
+        "CSC_100": "price_1LTEVdD9Xw88IvYZluunChSz",
+        "CSC_600": "price_1LTEXMD9Xw88IvYZoCJMup5S",
+        "CSC_10-000": "price_1LTHXzD9Xw88IvYZWxIqfrZc",
+        "CSC_60-000": "price_1LTHYUD9Xw88IvYZkbhaPeOU",
+        "CSC_100-000": "price_1LTHYID9Xw88IvYZNbrEnHnq",
+        "CSC_600-000": "price_1LTHYmD9Xw88IvYZ2R1QiPkt",
+    }
+
+    selected_product = request.GET.get('product','')
+
+    if selected_product in products:
+        product = products[selected_product]
+        amount = products_amount[selected_product]
+    else:
+        messages.error(request, "Invalid product, please try again.", extra_tags='danger')
+        return redirect("atm_functions:BuyCredit")
+
+    user_stripe_account = StripeAccount.objects.get(user=request.user)
+    # customer_id = user_stripe_account.stripe_customer_id
+    customer_id = "cus_MBbhOsQob9vTIp"
+
+    stripe.api_key = os.environ['STRIPE_SECRET_KEY']
+
+
+    session = stripe.checkout.Session.create(
+        success_url = "https://cryptoshareapp.com/atm/StripeCheckoutResult/?result=success&product=" + selected_product,
+        cancel_url = "https://cryptoshareapp.com/atm/StripeCheckoutResult/?result=cancel&product=" + selected_product,
+        line_items = [
+            {
+            "price": product,
+            "quantity": 1,
+            },
+        ],
+        mode = "payment",
+        customer = customer_id
+    )
+
+    payment_intent = session.payment_intent
+
+    stripe_transaction = StripeTransaction.objects.create(
+        stripe_account = user_stripe_account,
+        payment_intent = payment_intent,
+        amount = amount,
+        transaction_type = "BUY",
+        transaction_type_internal = "payment_intent.processing",
+        transaction_state = "IN PROGRESS")
+
+    return redirect(session.url)
+
+def stripe_checkout_result(request):
+    result = request.GET.get('result','')
+    product = request.GET.get('product','')
+
+    products_amount = {
+        "CSC_50": 50,
+        "CSC_100": 100,
+        "CSC_600": 600,
+        "CSC_10-000": 10000,
+        "CSC_60-000": 60000,
+        "CSC_100-000": 100000,
+        "CSC_600-000": 600000,
+    }
+
+    if result == "success":
+        messages.success(request, f"Processing payment of {products_amount[product]} CryptoShare Credits", extra_tags='success')
+        return redirect("atm_functions:Home")
+    elif result == "cancel":
+        messages.error(request, "Payment cancelled!", extra_tags='danger')
+        return redirect("atm_functions:Home")
+    else:
+        return redirect("atm_functions:Home")
+
+
 
 @login_required
 def estate_net_worth(request):
@@ -1403,6 +1501,36 @@ def register_waitlist_email(request):
     return redirect ('authentication:Email')
 
 @csrf_exempt
+def stripe_webhook(request):
+    response_body = json.loads(request.body)
+
+    if response_body['type'] != "payment_intent.succeeded":
+        return HttpResponse(status=200)
+
+    customer_id = response_body["data"]["object"]["customer"]
+    bought_amount = response_body["data"]["object"]["amount"]
+    payment_intent = response_body["data"]["object"]["id"]
+    transaction_type = response_body['type']
+
+    # stripe_customer_object = StripeAccount.objects.get(stripe_customer_id="cus_MBazDa7gq6ZfbH")
+    stripe_customer_object = StripeAccount.objects.get(stripe_customer_id=customer_id)
+    stripe_transaction = StripeTransaction.objects.get(payment_intent=payment_intent)
+
+    cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
+
+    user_balance = Balance.objects.get(email=stripe_customer_object.user, digital_currency_name=cryptoshare_credits_object)
+    user_balance.amount += stripe_transaction.amount
+    user_balance.save()
+
+    stripe_transaction.transaction_state = "COMPLETED"
+    stripe_transaction.transaction_type_internal = transaction_type
+    stripe_transaction.save()
+
+    # MISSING TO SEND EMAIL TO USER
+
+    return HttpResponse(status=200)
+
+@csrf_exempt
 def update_exchange_rates(request):
     if request.method == "POST":
         return HttpResponse(status=400)
@@ -1805,9 +1933,20 @@ def confirmed_token_transactions(request):
 
 @csrf_exempt
 def test_receiver(request):
-    email = "albertonavarreteramirez@gmail.com"
 
-    pin = "12345"
-    code_creation_email(to_addr=email, pin=pin)
+
+    stripe.api_key = os.environ['STRIPE_SECRET_KEY']
+    first_name = "Alberto"
+    last_name = "Navarrete"
+
+
+    response = stripe.Customer.create(
+        description = "Test customer alberto",
+        email = "albertonavarreteramirez@gmail.com",
+        name = f"{first_name} {last_name}"
+    )
+
+    print(response)
+
     
     return HttpResponse(status=200)
