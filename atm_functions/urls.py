@@ -1,3 +1,6 @@
+from django.urls import path
+from . import views
+
 app_name = "atm_functions"
 urlpatterns = [
      path("", views.home, name="Home"),
