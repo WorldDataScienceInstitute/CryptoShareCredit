@@ -904,16 +904,6 @@
                 </div>
                 `
         }
-        //populating cells with data from modal 
-        cell2.innerHTML = description.value;
-        cell3.innerHTML = worth.value;
-
-        asset_container.innerHTML += new_asset_template;
-
-        //finding all hidding forms 
-        var descriptions = document.querySelectorAll(`#${description_id}`);
-        var ids = document.querySelectorAll(`#${id_id}`);
-        var worths = document.querySelectorAll(`#${worth_id}`);
 
         //adding data to last hidden form for specific categories. 
         if(container == 'assets_stocks')
