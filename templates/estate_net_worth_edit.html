@@ -65,30 +65,85 @@
            <th colspan="3"> <h3 class="text-center">Net Worth Calculations</h3></th>
           </tr>
           <tr>
+            <td>Item ID</td>
             <th scope="col">Category</th>
             <th scope="col">Description</th>
-            <th scope="col">Amount</th>
+            <th scope="col">Worth</th>
           </tr>
         </thead>
         <tbody>
             {% for bank in banks %}
             <tr>
+              <td>{{ bank.id_asset|default:'' }}</td>
               <td>Bank Account </td>
               <td>{{ bank.name }}</td>
               <td>{{ bank.worth }}</td>
             </tr>
             {% endfor %}
-          <!-- <tr>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr> -->
-          
+            {% for real_estate in real_estates %}
+            <tr>
+              <td>{{ real_estate.id_asset|default:'' }}</td>
+              <td>Real Estate Asset </td>
+              <td>{{ real_estate.name }}</td>
+              <td>{{ real_estate.worth }}</td>
+            </tr>
+            {% endfor %}
+            {% for insurance in insurances %}
+              <tr>
+                <td>{{ insurance.id_asset|default:'' }}</td>
+                <td>Insurance Policy </td>
+                <td>{{ insurance.name }}</td>
+                <td>{{ insurance.worth }}</td>
+              </tr>
+            {% endfor %}
+            {% for cryptocurrency in cryptocurrencies %}
+              <tr>
+                <td>{{ cryptocurrency.id_asset|default:'' }}</td>
+                <td>Crypto Currency</td>
+                <td>{{ cryptocurrency.name }}</td>
+                <td>{{ cryptocurrency.worth }}</td>
+              </tr>
+            {% endfor %}
+            {% for nft in nfts  %}
+              <tr>
+                <td>{{ nft.id_asset|default:'' }}</td>
+                <td>NFT Assets</td>
+                <td>{{ nft.name }}</td>
+                <td>{{ nft.worth }}</td>
+              </tr>
+            {% endfor %}
+            {% for stock in stocks %}
+              <tr>
+                <td>{{ stock.id_asset|default:'' }}</td>
+                <td>Stock</td>
+                <td>{{ stock.name }}</td>
+                <td>{{ stock.worth }}</td>
+              </tr>
+            {% endfor %}
+            {% for startup in startups %}
+            <tr>
+              <td>{{ startup.id_asset|default:'' }}</td>
+              <td>Startup</td>
+              <td>{{ startup.name }}</td>
+              <td>{{ startup.worth }}</td>
+            </tr>
+            {% endfor %}
+            {% for jewelry in jewelries %}
+              <tr>
+                <td>{{ jewelry.id_asset|default:'' }}</td>
+                <td>Jewelry</td>
+                <td>{{ jewelry.name }}</td>
+                <td>{{ jewelry.worth }}</td>
+              </tr>
+            {% endfor %}
+            {% for car in cars %}
+              <tr>
+                <td>{{ car.id_asset|default:'' }}</td>
+                <td>Car</td>
+                <td>{{ car.name }}</td>
+                <td>{{ car.worth }}</td>
+              </tr>
+            {% endfor %}
         </tbody> 
       </table>
       {% include 'messages.html' %} {% include 'a_sessiontimeout.html' %}
@@ -456,7 +511,7 @@
                 aria-describedby="asset_startup-extradata"
                 name="asset_startup-extradata"
                 placeholder="Enter Investment Platform"
-                value="{{ bastartupnk.extra_field }}"
+                value="{{ startup.extra_field }}"
               />
               <br />
               <input
