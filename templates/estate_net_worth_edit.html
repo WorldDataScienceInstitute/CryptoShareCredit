@@ -71,6 +71,13 @@
           </tr>
         </thead>
         <tbody>
+            {% for bank in banks %}
+            <tr>
+              <td>Bank Account </td>
+              <td>{{ bank.name }}</td>
+              <td>{{ bank.worth }}</td>
+            </tr>
+            {% endfor %}
           <!-- <tr>
             <td>Mark</td>
             <td>Otto</td>
@@ -81,10 +88,7 @@
             <td>Thornton</td>
             <td>@fat</td>
           </tr> -->
-          <tr>
-            <td colspan="2">Total</td>
-            <!-- <td id="total"></td> -->
-          </tr>
+          
         </tbody> 
       </table>
       {% include 'messages.html' %} {% include 'a_sessiontimeout.html' %}
