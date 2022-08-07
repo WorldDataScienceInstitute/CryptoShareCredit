@@ -460,7 +460,9 @@ def edit_estate_net_worth(request):
         startup = UserAssets.objects.filter(email=request.user, type="STARTUP_INVESTMENT")
         jewelry = UserAssets.objects.filter(email=request.user, type="JEWELRY")
         car = UserAssets.objects.filter(email=request.user, type="CAR")
-        
+        #net worth information
+        user_data = Account.objects.get(user=request.user)
+
         context = {
             "banks": bank,
             "real_estates": real_estate,
@@ -471,7 +473,8 @@ def edit_estate_net_worth(request):
             "startups": startup,
             "jewelries": jewelry,
             "cars": car,
-            "currencies":FIAT_CURRENCIES
+            "currencies":FIAT_CURRENCIES,
+            "net_worth": user_data.net_worth
         }
 
         return render(request, 'estate_net_worth_edit.html', context)        
