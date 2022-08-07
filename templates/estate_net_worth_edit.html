@@ -12,7 +12,10 @@
     
     {% endif %}
     <div class="content-container">
-      <h2 class="ml-4 text-primary">Calculate your Total Estate Net Worth</h2>
+        <div class="justify-content-between align-content-center">
+            <h2 class="ml-4 text-primary d-inline-flex">Calculate your Total Estate Net Worth</h2>
+            <h4 class="d-inline-flex float-end text-bg-primary text-light p-3">Net Worth : {{ net_worth|default:0 }}</h4>
+        </div>
       <br />
       <h2 class="ml-2">
         Please set all estimate values worth in a single currency
@@ -58,14 +61,46 @@
               </div>
             </div>
           </div>
+          <!--Modal for updates -->
+          <!-- <div class="modal fade" id="form_edit_update" tabindex="-1" aria-labelledby="form_edit_label_update" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered"">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="form_edit_label_update">Enter Full Address</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <input type="hidden" id="item_id_update" aria-describedby="item_id_update" name="item_id" value="">
+                  <div class="card-body">
+                      <input type="text" class="form-control" id="item_description_update" aria-describedby="item_description_update" name="item_description_update"
+                          placeholder="Ex. 29 Baker Drive Miami, FL" value="" >
+                          
+                            <input
+                                type="number"
+                                class="form-control d-none mt-3"
+                                id="item_stock-extradata_update"
+                                aria-describedby="asset_stock-extradata"
+                                name="asset_stock-extradata"
+                                placeholder="Enter # of Shares"
+                                value=""
+                        />
+                      <input type="number" class="form-control mt-3" id="item-worth_update" aria-describedby="item-worth_update" name="item-worth"
+                          step=".01" placeholder="Enter Estimated Home Value" value="">
+                  </div>
+              </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="">Close</button>
+                  <button id="modal_button_update" type="button" class="btn btn-info float-end m-2" data-bs-dismiss="modal" onclick="updateData();">Add Asset</button>      </div>
+              </div>
+            </div>
+          </div> -->
       <!-- Table for asset elements  -->
-      <table class="table table-bordered" id="asset_data">
+      <table class="table table-bordered table-hover" id="asset_data">
         <thead>
           <tr >
            <th colspan="3"> <h3 class="text-center">Net Worth Calculations</h3></th>
           </tr>
           <tr>
-            <td>Item ID</td>
             <th scope="col">Category</th>
             <th scope="col">Description</th>
             <th scope="col">Worth</th>
@@ -73,74 +108,66 @@
         </thead>
         <tbody>
             {% for bank in banks %}
-            <tr>
-              <td>{{ bank.id_asset|default:'' }}</td>
+            <tr id="bank_asset" data-bs-toggle="modal"
+            data-bs-target="#form_edit_update">
               <td>Bank Account </td>
               <td>{{ bank.name }}</td>
               <td>{{ bank.worth }}</td>
             </tr>
             {% endfor %}
             {% for real_estate in real_estates %}
-            <tr>
-              <td>{{ real_estate.id_asset|default:'' }}</td>
+            <tr id="real_estate_asset" data-bs-toggle="modal" data-bs-target="#form_edit_update">
               <td>Real Estate Asset </td>
               <td>{{ real_estate.name }}</td>
               <td>{{ real_estate.worth }}</td>
             </tr>
             {% endfor %}
             {% for insurance in insurances %}
-              <tr>
-                <td>{{ insurance.id_asset|default:'' }}</td>
+              <tr id="insurance_asset" data-bs-toggle="modal" data-bs-target="#form_edit_update">
                 <td>Insurance Policy </td>
                 <td>{{ insurance.name }}</td>
                 <td>{{ insurance.worth }}</td>
               </tr>
             {% endfor %}
             {% for cryptocurrency in cryptocurrencies %}
-              <tr>
-                <td>{{ cryptocurrency.id_asset|default:'' }}</td>
+              <tr id="cryptocurrency_asset" data-bs-toggle="modal" data-bs-target="#form_edit_update">
                 <td>Crypto Currency</td>
                 <td>{{ cryptocurrency.name }}</td>
                 <td>{{ cryptocurrency.worth }}</td>
               </tr>
             {% endfor %}
             {% for nft in nfts  %}
-              <tr>
-                <td>{{ nft.id_asset|default:'' }}</td>
+              <tr id="nft_asset" data-bs-toggle="modal" data-bs-target="#form_edit_update">
                 <td>NFT Assets</td>
                 <td>{{ nft.name }}</td>
                 <td>{{ nft.worth }}</td>
               </tr>
             {% endfor %}
             {% for stock in stocks %}
-              <tr>
-                <td>{{ stock.id_asset|default:'' }}</td>
+              <tr id="stock_asset" data-bs-toggle="modal" data-bs-target="#form_edit_update">
                 <td>Stock</td>
-                <td>{{ stock.name }}</td>
+                <td>{{ stock.name }} <br><span>{{ stock.extra_field }}</span></td>
                 <td>{{ stock.worth }}</td>
               </tr>
             {% endfor %}
             {% for startup in startups %}
-            <tr>
-              <td>{{ startup.id_asset|default:'' }}</td>
+            <tr id="startup_asset" data-bs-toggle="modal" data-bs-target="#form_edit_update">
               <td>Startup</td>
-              <td>{{ startup.name }}</td>
+              <td>{{ startup.name }}<br><span>{{ startup.extra_field }}</span></td>
               <td>{{ startup.worth }}</td>
             </tr>
             {% endfor %}
             {% for jewelry in jewelries %}
-              <tr>
-                <td>{{ jewelry.id_asset|default:'' }}</td>
+              <tr id="jewelry_asset" data-bs-toggle="modal" data-bs-target="#form_edit_update">
                 <td>Jewelry</td>
                 <td>{{ jewelry.name }}</td>
                 <td>{{ jewelry.worth }}</td>
               </tr>
             {% endfor %}
             {% for car in cars %}
-              <tr>
-                <td>{{ car.id_asset|default:'' }}</td>
+              <tr id="car_asset" data-bs-toggle="modal" data-bs-target="#form_edit_update">
                 <td>Car</td>
-                <td>{{ car.name }}</td>
+                <td>{{ car.name }} <br><span>{{ car.extra_field }}</span></td>
                 <td>{{ car.worth }}</td>
               </tr>
             {% endfor %}
@@ -152,7 +179,7 @@
         <!-- Add button at top right part of card -->
         <div id="assets_bank">
           {% for bank in banks %}
-          <div class="card m-1 d-none">
+          <div class="card m-1">
             <h5 class="card-header">Enter Bank Name</h5>
             <input
               type="hidden"
@@ -205,7 +232,7 @@
         <br />
         <div id="assets_real_estate">
           {% for real_estate in real_estates %}
-          <div class="card m-1 d-none">
+          <div class="card m-1">
             <h5 class="card-header">Enter Full Address</h5>
             <input
               type="hidden"
@@ -258,7 +285,7 @@
         <br />
         <div id="assets_insurance">
           {% for insurance in insurances %}
-          <div class="card m-1 d-none">
+          <div class="card m-1">
             <h5 class="card-header">Enter Insurance Policy Provider</h5>
             <input
               type="hidden"
@@ -311,7 +338,7 @@
         <br />
         <div id="assets_cryptocurrency">
           {% for cryptocurrency in cryptocurrencies %}
-          <div class="card m-1 d-none">
+          <div class="card m-1">
             <h5 class="card-header">Enter Cryptocurrency Name</h5>
             <input
               type="hidden"
@@ -368,7 +395,7 @@
 
         <div id="assets_nft">
           {% for nft in nfts %}
-          <div class="card m-1 d-none">
+          <div class="card m-1">
             <h5 class="card-header">Enter NFT Name</h5>
             <input
               type="hidden"
@@ -421,7 +448,7 @@
         <br />
         <div id="assets_stocks">
           {% for stock in stocks %}
-          <div class="card m-1 d-none">
+          <div class="card m-1">
             <h5 class="card-header">Enter Stock Name</h5>
             <input
               type="hidden"
@@ -484,7 +511,7 @@
         <br />
         <div id="assets_startup">
           {% for startup in startups %}
-          <div class="card m-1 d-none">
+          <div class="card m-1">
             <h5 class="card-header">Enter Startup Name</h5>
             <input
               type="hidden"
@@ -547,7 +574,7 @@
         <br />
         <div id="assets_jewelry">
           {% for jewelry in jewelries %}
-          <div class="card m-1 d-none">
+          <div class="card m-1">
             <h5 class="card-header">Enter Type of Physical Asset</h5>
             <input
               type="hidden"
@@ -600,7 +627,7 @@
         <br />
         <div id="assets_car">
           {% for car in cars %}
-          <div class="card m-1 d-none">
+          <div class="card m-1">
             <h5 class="card-header">Enter Car Make & Model</h5>
             <input
               type="hidden"
@@ -772,7 +799,7 @@
 
         var table =  document.getElementById('asset_data');
         var rows = table.rows;
-        var row = table.insertRow(rows.length - 1);
+        var row = table.insertRow(rows.length);
         var cell1 = row.insertCell(0);  
         var cell2 = row.insertCell(1);
         var cell3 = row.insertCell(2);
@@ -787,12 +814,13 @@
         if (container == 'assets_bank') {
             //set item category
             cell1.innerHTML = "Bank Account";
+            row.setAttribute("onClick","rowClicked('this.id');");
         //set ids based on the asset
           description_id = 'asset_bank'
           worth_id = 'asset_bank-worth'
           id_id = 'asset_bank_id'
           var new_asset_template = `
-                <div class="card m-1 d-none">
+                <div class="card m-1">
                     <h5 class="card-header">Enter Bank Name</h5>
                     <input type="hidden" id="asset_bank_id" aria-describedby="asset_bank_id" name="asset_bank_id">
                     <div class="card-body">
@@ -806,6 +834,7 @@
                 `
         } else if (container == 'assets_real_estate') {
             //set item category
+            row.setAttribute("onClick","rowClicked('assets_real_estate');");
             cell1.innerHTML = "Real Estate";
         //set ids based on the asset
           description_id = 'asset_real_estate'
@@ -827,6 +856,7 @@
         } else if (container == 'assets_insurance') {
              //set item category
              cell1.innerHTML = "Insurance";
+             row.setAttribute("onClick","rowClicked('assets_insurance');");
         //set ids based on the asset
           description_id = 'asset_insurance'
           worth_id = 'asset_insurance-worth'
@@ -848,6 +878,7 @@
         } else if (container == 'assets_cryptocurrency') {
              //set item category
              cell1.innerHTML = "CryptoCurrency";
+             row.setAttribute("onClick","rowClicked('assets_cryptocurrency');");
         //set ids based on the asset
           description_id = 'asset_cryptocurrency'
           worth_id = 'asset_cryptocurrency-worth'
@@ -868,6 +899,7 @@
         } else if (container == 'assets_nft') {
              //set item category
              cell1.innerHTML = "NFT Asset";
+             row.setAttribute("onClick","rowClicked('assets_nft');");
         //set ids based on the asset
           description_id = 'asset_nft'
           worth_id = 'asset_nft-worth'
@@ -888,6 +920,7 @@
         } else if (container == 'assets_stocks') {
              //set item category
              cell1.innerHTML = "Stocks";
+             row.setAttribute("onClick","rowClicked('assets_stocks');");
         //set ids based on the asset
           description_id = 'asset_stocks'
           worth_id = 'asset_stocks-worth'
@@ -911,6 +944,7 @@
         } else if (container == 'assets_startup') {
              //set item category
              cell1.innerHTML = "Startup Asset";
+             row.setAttribute("onClick","rowClicked('assets_bank');");
         //set ids based on the asset
           description_id = 'asset_startup'
           worth_id = 'asset_startup-worth'
@@ -934,6 +968,7 @@
         } else if (container == 'assets_jewelry') {
              //set item category
              cell1.innerHTML = "Jewelry";
+             row.setAttribute("onClick","rowClicked('assets_jewelry');");
         //set ids based on the asset
           description_id = 'asset_jewelry'
           worth_id = 'asset_jewelry-worth'
@@ -954,12 +989,13 @@
         } else if (container == 'assets_car') {
              //set item category
              cell1.innerHTML = "Car";
+             row.setAttribute("onClick","rowClicked('assets_car');");
         //set ids based on the asset
           description_id = 'asset_car'
           worth_id = 'asset_car-worth'
           id_id = 'asset_car_id'
           var new_asset_template = `
-                <div class="card m-1 d-none">
+                <div class="card m-1">
                     <h5 class="card-header">Enter Car Make & Model</h5>
                     <input type="hidden" id="asset_car_id" aria-describedby="asset_car_id" name="asset_car_id">
                     <div class="card-body">
@@ -978,7 +1014,10 @@
         //populating cells with data from modal 
         cell2.innerHTML = description.value;
         cell3.innerHTML = worth.value;
-
+        //id="real_estate_asset" data-bs-toggle="modal" data-bs-target="#form_edit_update"
+        row.setAttribute("data-bs-toggle","modal");
+        row.setAttribute("data-bs-target","#form_edit_update");
+        
         asset_container.innerHTML += new_asset_template;
 
         //finding all hidding forms 
@@ -991,14 +1030,17 @@
         {
         var num_stocks = document.querySelectorAll("#asset_stock-extradata");
         num_stocks[num_stocks.length -1].value = extra_data.value;
+        cell2.innerHTML += "<br>"+extra_data.value;
         }else if(container == "assets_car"){
         var num_stocks = document.querySelectorAll("#asset_car-extradata");
         num_stocks[num_stocks.length -1].value = extra_data.value;
+        cell2.innerHTML += "<br>"+extra_data.value;
         }
         else if  (container == 'assets_startup')
         {
         var num_stocks = document.querySelectorAll("#asset_startup-extradata");
         num_stocks[num_stocks.length -1].value = extra_data.value;
+        cell2.innerHTML += "<br>"+extra_data.value;
         } 
         //adding data to last hidden form for all categories. 
         var len = descriptions.length - 1;
@@ -1006,6 +1048,53 @@
         worths[len].value = worth.value;
         // ids[len].value = id.value;
         
+      }
+
+      function rowClicked(container)
+      {
+         console.log(container);
+         var label = document.getElementById('form_edit_label_update')
+        var description = document.getElementById('item_description_update')
+        var worth = document.getElementById('item-worth_update')
+        var id = document.getElementById('item_id_update')
+        var modal_button = document.getElementById('modal_button_update');
+        var num_stocks = document.getElementById('item_stock-extradata_update');
+
+        label.innerHTML = "Update"
+        description.placeholder = "Description"
+        worth.placeholder = "worth"
+        id.value = "id"
+        modal_button.innerHTML = "Update Item";
+
+        description.value ="";
+        worth.value = "";
+    
+        if(container == 'assets_stocks')
+        {
+            num_stocks.classList.remove('d-none');
+            num_stocks.value ="";
+            num_stocks.type = "number";
+        }
+        else if(container == "assets_car"){
+            num_stocks.classList.remove('d-none');
+            num_stocks.placeholder = "Enter Year Model";
+            num_stocks.type = "text";
+            num_stocks.value ="";  
+        }
+        else if  (container == 'assets_startup')
+        {
+            num_stocks.classList.remove('d-none');
+            num_stocks.placeholder = "Enter Investment Platform";
+            num_stocks.type = "text";
+            num_stocks.value ="";
+        }
+        else {
+            num_stocks.classList.add('d-none');
+        }
+      }
+      function rowUpdate()
+      {
+
       }
     </script>
 
