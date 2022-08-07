@@ -20,10 +20,10 @@
       <h2 class="ml-2">
         Please set all estimate values worth in a single currency
       </h2>
-      <select class="form-select mb-3 mt-3 form-control" aria-label="Default select example">
-        <option selected>Choose Currency</option>
+      <select id="currency" class="form-select mb-3 mt-3 form-control" onchange="onItemSelected()">
+        <option selected>Choose a Currency </option>
         {% for currency in currencies %}
-            <option value="3">
+            <option value="{{currency}}">
                 <span>{{currency}}</span>
             </option>
         {% endfor %}
@@ -767,6 +767,31 @@
           }
         })
       })
+
+      function saveInSession (key,item)
+      {
+        sessionStorage.setItem(key,item);
+      }
+      function getSessionItem(key)
+      {
+        return sessionStorage.getItem(key);
+      }
+      function onItemSelected ()
+      {
+        var currencies_selector = document.getElementById("currency");
+        var selectedValue = currencies_selector.options[currencies_selector.selectedIndex].value;
+        saveInSession('currency',selectedValue);
+      }
+      function loadCurrency() {    
+        let element = document.getElementById('currency');
+        
+        if(getSessionItem('currency'))
+        {
+            element.value = getSessionItem('currency');
+        }
+    }
+    //load currency on page load 
+    loadCurrency();
 
       function closeModal()
       {
