@@ -51,6 +51,7 @@
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeModal();">Close</button>
                   <button id="modal_button" type="button" class="btn btn-info float-end m-2" data-bs-dismiss="modal" onclick="addNewElement();">Add Asset</button>      </div>
               </div>
+              </div>
             </div>
           </div>
           <!--Modal for updates -->
@@ -85,12 +86,13 @@
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="">Close</button>
                   <button id="modal_button_update" type="button" class="btn btn-info float-end m-2" data-bs-dismiss="modal" onclick="updateData();">Update Asset</button>      </div>
               </div>
+              </div>
             </div>
           </div>
       <!-- Table for asset elements  -->
       
       {% include 'messages.html' %} {% include 'a_sessiontimeout.html' %}
-      <form action="/atm/EditEstateNetWorth/" method="post">
+      <form id="asset_form" action="/atm/EditEstateNetWorth/" method="post">
         {% csrf_token %}
         <!-- Add button at top right part of card -->
         <div class="justify-content-between">
@@ -157,7 +159,7 @@
               {% for stock in stocks %}
                 <tr id="asset_stock" data-bs-toggle="modal" data-bs-target="#form_edit_update" onclick="rowClicked(this,'Enter Stock Name');" data-row-id="{{ stock.id_asset|default:'' }}">
                   <td>Stock</td>
-                  <td>{{ stock.name }} <br><span>{{ stock.extra_field }}</span></td>
+                  <td><span>{{ stock.extra_field }}</span><br>{{ stock.name }}</td>
                   <td>{{ stock.worth }}</td>
                 </tr>
               {% endfor %}
@@ -775,6 +777,14 @@
         })
       })
 
+      //submit form on change effected
+      function onFormSubmitted()
+      {
+        var submit = document.getElementById("submit");
+        submit.click();
+        // form.submit();
+      }
+
       //update networth value
       function updateNetworthValue(amount)
       {
@@ -784,7 +794,7 @@
         var new_sum = amount + current_value;
         console.log(`Current value${new_sum}`);
         localStorage.setItem("net_worth",new_sum);
-        if(amount > 0)
+        if(amount >= 0)
         {
           updateNetworthText();  
         }
@@ -928,9 +938,9 @@
             row.setAttribute("onClick","rowClicked('assets_real_estate');");
             cell1.innerHTML = "Real Estate";
         //set ids based on the asset
-          description_id = 'asset_real_estate'
-          worth_id = 'asset_real_estate-worth'
-          id_id = 'asset_real_estate_id'
+          description_id = 'asset_real-estate'
+          worth_id = 'asset_real-estate-worth'
+          id_id = 'asset_real-estate_id'
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Full Address</h5>
@@ -1013,9 +1023,9 @@
              cell1.innerHTML = "Stocks";
              row.setAttribute("onClick","rowClicked('assets_stocks');");
         //set ids based on the asset
-          description_id = 'asset_stocks'
-          worth_id = 'asset_stocks-worth'
-          id_id = 'asset_stocks_id'
+          description_id = 'asset_stock'
+          worth_id = 'asset_stock-worth'
+          id_id = 'asset_stock_id'
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Stock Name</h5>
@@ -1124,8 +1134,8 @@
         var len = descriptions.length - 1;
         descriptions[len].value = description.value;
         worths[len].value = worth.value;
-
-        // ids[len].value = id.value;
+        // trigger form submit event 
+        onFormSubmitted();
         
       }
 
@@ -1224,7 +1234,7 @@
         {
           extra_data.value = extra_data_modal.value;
         }
-    
+        onFormSubmitted();
         
       }
     </script>
