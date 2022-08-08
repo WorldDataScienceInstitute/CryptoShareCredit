@@ -164,17 +164,28 @@ class TransactionB(models.Model):
     start_datetime = models.DateTimeField(null=True)
     end_datetime = models.DateTimeField(null=True)
 
-#Transaction for swapping CRYPTO
+#Transaction for Deposits and Withdrawals DIGITAL CURRENCIES
 class TransactionC(models.Model):
-    id_c = models.AutoField(primary_key=True)
-    transaction_id = models.CharField(max_length=38, unique=True)
+    id_a = models.AutoField(primary_key=True)
+    sender_user = models.ForeignKey(User, related_name = "sender_user", on_delete=models.CASCADE)
+    receiver_user = models.ForeignKey(User, related_name = "receiver_user", on_delete=models.CASCADE)
+    digital_currency_name = models.ForeignKey(DigitalCurrency, on_delete=models.DO_NOTHING)
+    transaction_type = models.CharField(max_length=15)
+    state = models.CharField(max_length=15)
+    amount = models.DecimalField(max_digits=18, decimal_places=8)
     creation_datetime = models.DateTimeField(auto_now_add=True)
-    email = models.ForeignKey(User, on_delete=models.CASCADE)
-    crypto_id_from = models.CharField(max_length=10)
-    crypto_id_to = models.CharField(max_length=10)
-    address_destination = models.CharField(max_length=100)
-    address_destination_ed = models.CharField(max_length=30, null=True)
-    address_refund = models.CharField(max_length=100)
-    address_refund_ed = models.CharField(max_length=30, null=True)
-    amount = models.DecimalField(max_digits=15, decimal_places=8)
-    amount_estimated = models.DecimalField(max_digits=15, decimal_places=8)
+
+# #Transaction for swapping CRYPTO
+# class TransactionC(models.Model):
+#     id_c = models.AutoField(primary_key=True)
+#     transaction_id = models.CharField(max_length=38, unique=True)
+#     creation_datetime = models.DateTimeField(auto_now_add=True)
+#     email = models.ForeignKey(User, on_delete=models.CASCADE)
+#     crypto_id_from = models.CharField(max_length=10)
+#     crypto_id_to = models.CharField(max_length=10)
+#     address_destination = models.CharField(max_length=100)
+#     address_destination_ed = models.CharField(max_length=30, null=True)
+#     address_refund = models.CharField(max_length=100)
+#     address_refund_ed = models.CharField(max_length=30, null=True)
+#     amount = models.DecimalField(max_digits=15, decimal_places=8)
+#     amount_estimated = models.DecimalField(max_digits=15, decimal_places=8)
