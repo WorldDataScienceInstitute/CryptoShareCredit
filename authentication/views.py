@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.contrib import auth
 from django.contrib.auth.models import User
 
-from atm_functions.models import Account, DigitalCurrency, Balance, StripeAccount
+from atm_functions.models import Account, DigitalCurrency, Balance, StripeAccount, DynamicUsername
 from django.contrib import messages
 from django.conf import settings
 from django.utils.safestring import mark_safe
@@ -104,6 +104,12 @@ def email(request):
                 state = state, 
                 system_username = system_username
                 )
+            
+            new_username = DynamicUsername.objects.create(
+                id_username = system_username,
+                username_type = "USER",
+                business_reference = user
+            )
 
             cryptoshare_credits = DigitalCurrency.objects.get(symbol="CSC")
 

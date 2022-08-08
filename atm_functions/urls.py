@@ -49,6 +49,7 @@ urlpatterns = [
      
      path("SendCoinbaseWallet/", views.send_coinbase_wallet, name="SendCoinbaseWallet"),
      path("SendCryptoShareWallet/", views.send_cryptoshare_wallet, name="SendCryptoShareWallet"),
+     path("SendCryptoShareCredits/", views.send_cryptoshare_credits, name="SendCryptoShareCredits"),
      path("SendMoneyConfirmation/", views.send_money_confirmation, name="SendMoneyConfirmation"),
      path("TransferMoney/", views.transfer_money, name="TransferMoney"),
 

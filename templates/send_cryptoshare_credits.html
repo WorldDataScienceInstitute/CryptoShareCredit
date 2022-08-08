@@ -7,30 +7,38 @@
 
 <body>
     {% include 'atm_sidebar.html' %}
-    <div class="container" style="margin-top: 5%;">
+    <div class="content-container" style="margin-top: 5%;">
         {% include 'messages.html' %}
-        <div style="text-align:center" class="ml-4 mt-4" style="width:30%;min-width:400px;">
+        <div class="container" style="text-align:center" style="width:30%;min-width:400px;">
             <form action="/atm/SendMoneyConfirmation/?wallet=credits" method="post">
                 {% csrf_token %}
+
                 <div class="mb-3">
-                    <label for="sendingAccount"><b>Your Account (You are the Sender)</b></label>
+                    <label for="sendingAccount">
+                        <b>Your Account</b>
+                    </label>
                     <select class="form-select" id="sendingAccount" aria-describedby="sendingAccount" name="sendingAccount">
                         <option disabled>Select Account</option >
                         {% for balance in balances %}
-                        <option value="{{ balance.currency_name.currency_name }}|{{ balance.currency_name.blockchain }}|{{ balance.amount|floatformat:4 }}">{{ balance.currency_name.symbol }} : {{ balance.currency_name.currency_name }} || Balance : {{ balance.amount|floatformat:4 }}</option>
+                        <option value="{{ balance.digital_currency_name.currency_name }}|{{ balance.amount|floatformat:0 }}">{{ balance.digital_currency_name.symbol }} : {{ balance.digital_currency_name.currency_name }} || Balance : {{ balance.amount|floatformat:0 }}</option>
                         {% endfor %}
                     </select>
                 </div>
+
                 <div class="mb-3">
-                    <label for="sendingAmount"><b>Amount to send</b></label>
+                    <label for="sendingAmount">
+                        <b>Amount to send</b>
+                    </label>
                     <input type="number" class="form-control" id="sendingAmount" aria-describedby="sendingAmount" name="sendingAmount"
                         step=".000001" placeholder="Amount you want to send">
                     <button type="button" class="btn btn-primary mt-2" onclick="setMaxAmount();">MAX AMOUNT</button>
                 </div>
                 <div class="mb-3">
-                    <label for="recipientUser"><b>Receiver Account</b></label>
+                    <label for="recipientUser">
+                        <b>Please Enter Receiver Username</b>
+                    </label>
                     <input type="text" class="form-control" id="recipientUser" aria-describedby="recipientUser" name="recipientUser"
-                        placeholder="Insert the Public Address of Receiver">
+                        placeholder="Please enter the recipient username">
                 </div>
                 <button style="margin-left:auto; margin-right:auto;" type="submit" class="btn btn-primary">Submit</button>
             </form>
@@ -41,7 +49,7 @@
         //Get balance amount from sendingAccount and make it max value
         function setMaxAmount(){
             var sendingAccount = document.getElementById("sendingAccount");
-            var balance = sendingAccount.options[sendingAccount.selectedIndex].value.split("|")[2];
+            var balance = sendingAccount.options[sendingAccount.selectedIndex].value.split("|")[1];
             document.getElementById("sendingAmount").max = balance;
             document.getElementById("sendingAmount").value = balance;
         }
