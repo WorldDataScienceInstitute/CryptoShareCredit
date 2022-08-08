@@ -680,7 +680,7 @@ def edit_estate_net_worth(request):
     account.net_worth = net_worth
     account.save()
 
-    return redirect('atm_functions:EstateNetWorth')
+    return redirect('atm_functions:EditEstateNetWorth')
 
 @login_required()
 def insurance(request):
