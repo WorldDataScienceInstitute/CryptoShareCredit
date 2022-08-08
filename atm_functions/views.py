@@ -858,10 +858,25 @@ def send_cryptoshare_wallet(request):
 
     # messages.info(request, "XRP, Ethereum, and ERC-20 tokens are currently not supported for sending funds.")
 
-    balances = Balance.objects.filter(email=request.user)
+    balances = Balance.objects.filter(email=request.user, currency_name__isnull=False)
     context['balances'] = balances
     
     return render(request,'send_cryptoshare_wallet.html', context)
+
+@login_required()
+def send_cryptoshare_credits(request):
+    context = {}
+
+    cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
+
+    balance = Balance.objects.filter(
+        email = request.user,
+        digital_currency_name = cryptoshare_credits_object
+    )
+
+    context['balances'] = balance
+
+    return render(request,'send_cryptoshare_credits.html', context)
 
 @login_required()
 def send_coinbase_wallet(request):
@@ -1000,8 +1015,8 @@ def send_money_confirmation(request):
         #     # messages.info(request, "XRP and Ethereum are currently not supported for sending funds.")
         #     return redirect('atm_functions:SendCryptoShareWallet')
 
-
-        amount = form_response["sendingAmount"]
+        pre_amount = form_response["sendingAmount"]
+        amount = str(float(form_response["sendingAmount"]) * 0.99)
         recipient_address = form_response["recipientUser"]
 
         currency_object = Cryptocurrency.objects.get(currency_name=sending_currency)
@@ -1033,7 +1048,7 @@ def send_money_confirmation(request):
             
         transaction_id = transaction_response["transactionRequestId"]
 
-        balance_object.amount -= Decimal(total_transaction_amount)
+        balance_object.amount -= Decimal(pre_amount)
         balance_object.save()
 
         transaction_a = TransactionA(transaction_id=transaction_id, email=request.user, address=sending_address_object, currency_name=currency_object, transaction_type="WITHDRAWAL", state="PENDING", amount=amount, internal_state="WAITING_FOR_APPROVAL")
@@ -1046,8 +1061,67 @@ def send_money_confirmation(request):
         messages.success(request, "Your withdrawal request has been created")
 
         return redirect('atm_functions:CheckCredit')
+    elif wallet_confirmation == "credits":
+        # sending_account = form_response["sendingAccount"].split("|")
+        amount = float(form_response["sendingAmount"])
+        recipient_username = form_response["recipientUser"]
+        cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
+
+        sender_account = Account.objects.get(
+            user = request.user
+            )
+
+
+        if DynamicUsername.objects.filter(id_username = recipient_username).exists():
+            recipient_username_object = DynamicUsername.objects.get(id_username = recipient_username)
+        else:
+            messages.warning(request, "Invalid username. Please try again.")
+            return redirect('atm_functions:SendCryptoShareCredits')
+        
+        if recipient_username_object.username_type == "BUSINESS":
+            business = recipient_username_object.business_reference
+            recipient_user = business.owner
+        elif recipient_username_object.username_type == "USER":
+            recipient_user = recipient_username_object.user_reference
+        
+        if recipient_user == request.user:
+            messages.info(request, "You can't send credits to yourself.")
+            return redirect('atm_functions:SendCryptoShareCredits')
+
+        sender_balance = Balance.objects.get(
+            email=request.user, 
+            digital_currency_name = cryptoshare_credits_object
+            )
+
+        if sender_balance.amount < amount:
+            messages.warning(request, "Insufficient funds.")
+            return redirect('atm_functions:SendCryptoShareCredits')
+
+        receiver_balance = Balance.objects.get(
+            email=recipient_user, 
+            digital_currency_name = cryptoshare_credits_object
+            )
+
+        sender_balance.amount -= Decimal(amount)
+        sender_balance.save()
+        receiver_balance.amount += Decimal(amount)
+        receiver_balance.save()
+
+        TransactionC.objects.create(
+            sender_user = request.user,
+            receiver_user = recipient_user,
+            digital_currency_name = cryptoshare_credits_object,
+            transaction_type = "TRANSFER",
+            state = "COMPLETED",
+            amount = amount
+        )
+
+        messages.success(request, "Your transfer has been completed.")
+        
+        return redirect('atm_functions:Home')
+
     else:
-        return redirect('atm_functions:TransferMoney')
+        return redirect('atm_functions:Home')
 
 @login_required()
 def my_addresses(request):
