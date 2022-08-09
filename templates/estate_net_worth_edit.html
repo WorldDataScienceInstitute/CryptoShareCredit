@@ -832,12 +832,6 @@
 
       function closeModal()
       {
-        // if(document.getElementById('item_id').value == 'asset_stocks')
-        // {
-        //     var num_stocks = document.getElementById('item_stock-extradata');
-        //     num_stocks.classList.add('d-none');
-        // }
-
       }
 
       function changeModalLabels(category, label_text, descPh, worthPh,button_text) {
@@ -904,10 +898,6 @@
             return;
         }
 
-        // var description_id = ''
-        // var worth_id = ''
-        // var id_id = ''
-
         var container = document.getElementById('item_id').value;
         var asset_container = document.getElementById(container);
         updateNetworthValue(parseFloat(worth_modal.value));
@@ -919,10 +909,7 @@
               rowClicked(row,'Enter Bank Name');
             }
             row.setAttribute("id","asset_bank");
-        //set ids based on the asset
-          // description_id = 'asset_bank'
-          // worth_id = 'asset_bank-worth'
-          // id_id = 'asset_bank_id'
+
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Bank Name</h5>
@@ -944,10 +931,7 @@
             }
             row.setAttribute("id","asset_real-estate");
             cell1.innerHTML = "Real Estate";
-        //set ids based on the asset
-          // description_id = 'asset_real-estate'
-          // worth_id = 'asset_real-estate-worth'
-          // id_id = 'asset_real-estate_id'
+
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Full Address</h5>
@@ -969,10 +953,6 @@
              {
               rowClicked(row,"Enter Insurance Policy Provider");
              }
-        //set ids based on the asset
-          // description_id = 'asset_insurance'
-          // worth_id = 'asset_insurance-worth'
-          // id_id = 'asset_insurance_id'
 
           var new_asset_template = `
                 <div class="card m-1 d-none">
@@ -995,10 +975,7 @@
              {
                 rowClicked(row,"Enter Cryptocurrency Name");
              }
-        //set ids based on the asset
-          // description_id = 'asset_cryptocurrency'
-          // worth_id = 'asset_cryptocurrency-worth'
-          // id_id = 'asset_cryptocurrency_id'
+
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Cryptocurrency Name</h5>
@@ -1019,10 +996,7 @@
              row.onclick = function(){
               rowClicked(row,"Enter NFT Name");
              }
-        //set ids based on the asset
-          // description_id = 'asset_nft'
-          // worth_id = 'asset_nft-worth'
-          // id_id = 'asset_nft_id'
+
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter NFT Name</h5>
@@ -1043,10 +1017,7 @@
              row.onclick = function () {
               rowClicked(row,"Enter Stock Name");
              }
-        //set ids based on the asset
-          // description_id = 'asset_stock'
-          // worth_id = 'asset_stock-worth'
-          // id_id = 'asset_stock_id'
+
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Stock Name</h5>
@@ -1070,10 +1041,7 @@
              row.onclick = function () {
               rowClicked(row,"Enter Startup Name");
              }
-        //set ids based on the asset
-          // description_id = 'asset_startup'
-          // worth_id = 'asset_startup-worth'
-          // id_id = 'asset_startup_id'
+
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Startup Name</h5>
@@ -1097,10 +1065,7 @@
              row.onclick = function () {
               rowClicked(row,"Enter Type of Physical Asset");
              }
-        //set ids based on the asset
-          // description_id = 'asset_jewelry'
-          // worth_id = 'asset_jewelry-worth'
-          // id_id = 'asset_jewelry_id'
+
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Type of Physical Asset</h5>
@@ -1122,10 +1087,7 @@
              {
               rowClicked(row,"Enter Car Make & Model");
              }
-        //set ids based on the asset
-          // description_id = 'asset_car'
-          // worth_id = 'asset_car-worth'
-          // id_id = 'asset_car_id'
+     
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Car Make & Model</h5> 
@@ -1151,35 +1113,7 @@
         row.setAttribute("data-row-id",row_id);
         row.setAttribute("data-bs-toggle","modal");
         row.setAttribute("data-bs-target","#form_edit_update");
-        
-        //adding data to last hidden form for specific categories. 
-        // var descriptions = document.querySelectorAll(`input#${description_id}`);
-        // var worths = document.querySelectorAll(`input#${worth_id}`);
-        // var ids = document.querySelectorAll(`input#${id_id}`);
-
-        // if(container == 'assets_stocks')
-        // {
-        // var extra_data = document.querySelectorAll("#asset_stock-extradata");
-        // extra_data[extra_data.length -1].value = extra_data_modal.value;
-        // cell2.innerHTML += "<br>"+extra_data_modal.value;
-        // }else if(container == "assets_car"){
-        // var extra_data = document.querySelectorAll("#asset_car-extradata");
-        // extra_data[extra_data.length -1].value = extra_data_modal.value;
-        // cell2.innerHTML += "<br>"+extra_data_modal.value;
-        // }
-        // else if  (container == 'assets_startup')
-        // {
-        // var extra_data = document.querySelectorAll("#asset_startup-extradata");
-        // console.log(extra_data.length);
-        // extra_data[extra_data.length -1].value = extra_data_modal.value;
-        // cell2.innerHTML += "<br>"+extra_data_modal.value;
-        // } 
-        //adding data to last hidden form for all categories. 
-        // var len = descriptions.length - 1;
-        // descriptions[len].value = description.value;
-        // worths[len].value = worth.value;
-        
-      
+  
         // trigger form submit event 
         onFormSubmitted();
         
