@@ -860,6 +860,7 @@
         if(category == 'assets_stocks')
         {
             num_stocks.classList.remove('d-none');
+            num_stocks.placeholder = "Enter # of Shares";
             num_stocks.value ="";
             num_stocks.type = "number";
         }
@@ -885,12 +886,10 @@
       function addNewElement(/**container**/) {
 
         var label = document.getElementById("form_edit_label");
-        var description = document.getElementById("item_description");
-        var worth = document.getElementById("item-worth");
-        var id = document.getElementById("item_id");
-        var extra_data = document.getElementById('item_stock-extradata');
-        var net_worth = document.getElementById("net_worth");
-        var net_worth_value = parseFloat("{{ net_worth|default:0 }}");
+        var description_modal = document.getElementById("item_description");
+        var worth_modal = document.getElementById("item-worth");
+        var id_modal = document.getElementById("item_id");
+        var extra_data_modal = document.getElementById('item_stock-extradata');
 
         var table =  document.getElementById('asset_data');
         var rows = table.rows;
@@ -900,56 +899,64 @@
         var cell2 = row.insertCell(1);
         var cell3 = row.insertCell(2);
 
-        if(!description.value && !worth.value)
+        if(!description_modal.value && !worth_modal.value)
         {
             return;
         }
 
-        var description_id = ''
-        var worth_id = ''
-        var id_id = ''
+        // var description_id = ''
+        // var worth_id = ''
+        // var id_id = ''
 
         var container = document.getElementById('item_id').value;
         var asset_container = document.getElementById(container);
+        updateNetworthValue(parseFloat(worth_modal.value));
 
         if (container == 'assets_bank') {
             //set item category
             cell1.innerHTML = "Bank Account";
-            row.setAttribute("onClick","rowClicked(this);");
+            row.onclick = function () {
+              rowClicked(row,'Enter Bank Name');
+            }
+            row.setAttribute("id","asset_bank");
         //set ids based on the asset
-          description_id = 'asset_bank'
-          worth_id = 'asset_bank-worth'
-          id_id = 'asset_bank_id'
+          // description_id = 'asset_bank'
+          // worth_id = 'asset_bank-worth'
+          // id_id = 'asset_bank_id'
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Bank Name</h5>
-                    <input data-row-id='${row_id}' type="hidden" id="asset_bank_id" aria-describedby="asset_bank_id" name="asset_bank_id">
+                    <input data-row-id='${row_id}' value='${id_modal.value}' type="hidden" id="asset_bank_id" aria-describedby="asset_bank_id" name="asset_bank_id">
                     <div class="card-body">
-                        <input data-row-id='${row_id}' type="text" class="form-control" id="asset_bank" aria-describedby="asset_bank" name="asset_bank"
+                        <input data-row-id='${row_id}' value='${description_modal.value}' type="text" class="form-control" id="asset_bank" aria-describedby="asset_bank" name="asset_bank"
                         placeholder="Ex. JP Morgan">
                         <br>
-                        <input data-row-id='${row_id}' type="number" class="form-control" id="asset_bank-worth" aria-describedby="asset_bank-worth" name="asset_bank-worth"
+                        <input data-row-id='${row_id}' value='${worth_modal.value}' type="number" class="form-control" id="asset_bank-worth" aria-describedby="asset_bank-worth" name="asset_bank-worth"
                             step=".01" placeholder="Bank Balance">
                     </div>
                 </div>
                 `
         } else if (container == 'assets_real_estate') {
             //set item category
-            row.setAttribute("onClick","rowClicked('assets_real_estate');");
+            row.onclick = function ()
+            {
+              rowClicked(row,"Enter Insurance Policy Provider");
+            }
+            row.setAttribute("id","asset_real-estate");
             cell1.innerHTML = "Real Estate";
         //set ids based on the asset
-          description_id = 'asset_real-estate'
-          worth_id = 'asset_real-estate-worth'
-          id_id = 'asset_real-estate_id'
+          // description_id = 'asset_real-estate'
+          // worth_id = 'asset_real-estate-worth'
+          // id_id = 'asset_real-estate_id'
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Full Address</h5>
-                    <input data-row-id='${row_id}' type="hidden" id="asset_real_estate_id" aria-describedby="asset_real_estate_id" name="asset_real_estate_id">
+                    <input data-row-id='${row_id}' value='${id_modal.value}' type="hidden" id="asset_real_estate_id" aria-describedby="asset_real_estate_id" name="asset_real_estate_id">
                     <div class="card-body">
-                        <input data-row-id='${row_id}' type="text" class="form-control" id="asset_real-estate" aria-describedby="asset_real-estate" name="asset_real-estate"
+                        <input data-row-id='${row_id}' value='${description_modal.value}' type="text" class="form-control" id="asset_real-estate" aria-describedby="asset_real-estate" name="asset_real-estate"
                         placeholder="Ex. 29 Baker Drive Miami, FL">
                         <br>
-                        <input data-row-id='${row_id}' type="number" class="form-control" id="asset_real-estate-worth" aria-describedby="asset_real-estate-worth" name="asset_real-estate-worth"
+                        <input data-row-id='${row_id}' value='${worth_modal.value}' type="number" class="form-control" id="asset_real-estate-worth" aria-describedby="asset_real-estate-worth" name="asset_real-estate-worth"
                             step=".01" placeholder="Enter Estimated Home Value">
                     </div>
                 </div>
@@ -957,21 +964,25 @@
         } else if (container == 'assets_insurance') {
              //set item category
              cell1.innerHTML = "Insurance";
-             row.setAttribute("onClick","rowClicked('assets_insurance');");
+             row.setAttribute("id","asset_insurance");
+             row.onclick = function ()
+             {
+              rowClicked(row,"Enter Insurance Policy Provider");
+             }
         //set ids based on the asset
-          description_id = 'asset_insurance'
-          worth_id = 'asset_insurance-worth'
-          id_id = 'asset_insurance_id'
+          // description_id = 'asset_insurance'
+          // worth_id = 'asset_insurance-worth'
+          // id_id = 'asset_insurance_id'
 
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Insurance Policy Provider</h5>
-                    <input data-row-id='${row_id}' type="hidden" id="asset_insurance_id" aria-describedby="asset_insurance_id" name="asset_insurance_id">
+                    <input data-row-id='${row_id}' value='${id_modal.value}' type="hidden" id="asset_insurance_id" aria-describedby="asset_insurance_id" name="asset_insurance_id">
                     <div class="card-body">
-                        <input data-row-id='${row_id}' type="text" class="form-control" id="asset_insurance" aria-describedby="asset_insurance" name="asset_insurance"
+                        <input data-row-id='${row_id}' value='${description_modal.value}' type="text" class="form-control" id="asset_insurance" aria-describedby="asset_insurance" name="asset_insurance"
                             placeholder="Ex. MetLife Colombia Seguros de vida">
                         <br>
-                        <input data-row-id='${row_id}' type="number" class="form-control" id="asset_insurance-worth" aria-describedby="asset_insurance-worth" name="asset_insurance-worth"
+                        <input data-row-id='${row_id}' value='${worth_modal.value}' type="number" class="form-control" id="asset_insurance-worth" aria-describedby="asset_insurance-worth" name="asset_insurance-worth"
                             step=".01" placeholder="Enter Life Insurance Value">
                     </div>
                 </div>
@@ -979,20 +990,24 @@
         } else if (container == 'assets_cryptocurrency') {
              //set item category
              cell1.innerHTML = "CryptoCurrency";
-             row.setAttribute("onClick","rowClicked('assets_cryptocurrency');");
+             row.setAttribute("id", "asset_cryptocurrency");
+             row.onclick = function ()
+             {
+                rowClicked(row,"Enter Cryptocurrency Name");
+             }
         //set ids based on the asset
-          description_id = 'asset_cryptocurrency'
-          worth_id = 'asset_cryptocurrency-worth'
-          id_id = 'asset_cryptocurrency_id'
+          // description_id = 'asset_cryptocurrency'
+          // worth_id = 'asset_cryptocurrency-worth'
+          // id_id = 'asset_cryptocurrency_id'
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Cryptocurrency Name</h5>
-                    <input data-row-id='${row_id}' type="hidden" id="asset_cryptocurrency_id" aria-describedby="asset_cryptocurrency_id" name="asset_cryptocurrency_id">
+                    <input data-row-id='${row_id}' value='${id_modal.value}' type="hidden" id="asset_cryptocurrency_id" aria-describedby="asset_cryptocurrency_id" name="asset_cryptocurrency_id">
                     <div class="card-body">
-                        <input data-row-id='${row_id}' type="text" class="form-control" id="asset_cryptocurrency" aria-describedby="asset_cryptocurrency" name="asset_cryptocurrency"
+                        <input data-row-id='${row_id}' value='${description_modal.value}' type="text" class="form-control" id="asset_cryptocurrency" aria-describedby="asset_cryptocurrency" name="asset_cryptocurrency"
                             placeholder="Ex. Bitcoin">
                         <br>
-                        <input data-row-id='${row_id}' type="number" class="form-control" id="asset_cryptocurrency-worth" aria-describedby="asset_cryptocurrency-worth" name="asset_cryptocurrency-worth"
+                        <input data-row-id='${row_id}' value='${worth_modal.value}' type="number" class="form-control" id="asset_cryptocurrency-worth" aria-describedby="asset_cryptocurrency-worth" name="asset_cryptocurrency-worth"
                             step=".01" placeholder="Enter cryptocurrency estimated holdings value">
                     </div>
                 </div>
@@ -1000,44 +1015,50 @@
         } else if (container == 'assets_nft') {
              //set item category
              cell1.innerHTML = "NFT Asset";
-             row.setAttribute("onClick","rowClicked('assets_nft');");
+             row.setAttribute("id", "asset_nft");
+             row.onclick = function(){
+              rowClicked(row,"Enter NFT Name");
+             }
         //set ids based on the asset
-          description_id = 'asset_nft'
-          worth_id = 'asset_nft-worth'
-          id_id = 'asset_nft_id'
+          // description_id = 'asset_nft'
+          // worth_id = 'asset_nft-worth'
+          // id_id = 'asset_nft_id'
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter NFT Name</h5>
-                    <input data-row-id='${row_id}' type="hidden" id="asset_nft_id" aria-describedby="asset_nft_id" name="asset_nft_id">
+                    <input data-row-id='${row_id}' value='${id_modal.value}' type="hidden" id="asset_nft_id" aria-describedby="asset_nft_id" name="asset_nft_id">
                     <div class="card-body">
-                        <input data-row-id='${row_id}' type="text" class="form-control" id="asset_nft" aria-describedby="asset_nft" name="asset_nft"
+                        <input data-row-id='${row_id}' value='${description_modal.value}' type="text" class="form-control" id="asset_nft" aria-describedby="asset_nft" name="asset_nft"
                             placeholder="Ex. Bored Ape Yacht Club">
                         <br>
-                        <input data-row-id='${row_id}' type="number" class="form-control" id="asset_nft-worth" aria-describedby="asset_nft-worth" name="asset_nft-worth"
+                        <input data-row-id='${row_id}' value='${worth_modal.value}' type="number" class="form-control" id="asset_nft-worth" aria-describedby="asset_nft-worth" name="asset_nft-worth"
                             step=".01" placeholder="Enter NFT Value">
                     </div>
                 </div>
                 `
         } else if (container == 'assets_stocks') {
              //set item category
-             cell1.innerHTML = "Stocks";
-             row.setAttribute("onClick","rowClicked('assets_stocks');");
+             cell1.innerHTML = "Stock";
+             row.setAttribute("id", "asset_stock");
+             row.onclick = function () {
+              rowClicked(row,"Enter Stock Name");
+             }
         //set ids based on the asset
-          description_id = 'asset_stock'
-          worth_id = 'asset_stock-worth'
-          id_id = 'asset_stock_id'
+          // description_id = 'asset_stock'
+          // worth_id = 'asset_stock-worth'
+          // id_id = 'asset_stock_id'
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Stock Name</h5>
-                    <input data-row-id='${row_id}' type="hidden" id="asset_stock_id" aria-describedby="asset_stock_id" name="asset_stock_id" value="">
+                    <input data-row-id='${row_id}' value='${id_modal.value}' type="hidden" id="asset_stock_id" aria-describedby="asset_stock_id" name="asset_stock_id" value="">
                     <div class="card-body">
-                        <input data-row-id='${row_id}' type="text" class="form-control" id="asset_stock" aria-describedby="asset_stock" name="asset_stock"
+                        <input data-row-id='${row_id}' value='${description_modal.value}' type="text" class="form-control" id="asset_stock" aria-describedby="asset_stock" name="asset_stock"
                             placeholder="Ex. Amazon">
                         <br>
-                        <input data-row-id='${row_id}' type="number" class="form-control" id="asset_stock-extradata" aria-describedby="asset_stock-extradata" name="asset_stock-extradata"
+                        <input data-row-id='${row_id}' value='${extra_data_modal.value}' type="number" class="form-control" id="asset_stock-extradata" aria-describedby="asset_stock-extradata" name="asset_stock-extradata"
                             placeholder="Enter # of Shares">
                         <br>
-                        <input data-row-id='${row_id}' type="number" class="form-control" id="asset_stock-worth" aria-describedby="asset_stock-worth" name="asset_stock-worth"
+                        <input data-row-id='${row_id}' value='${worth_modal.value}' type="number" class="form-control" id="asset_stock-worth" aria-describedby="asset_stock-worth" name="asset_stock-worth"
                             step=".01" placeholder="Enter Investment Amount">
                     </div>
                 </div>
@@ -1045,23 +1066,26 @@
         } else if (container == 'assets_startup') {
              //set item category
              cell1.innerHTML = "Startup Asset";
-             row.setAttribute("onClick","rowClicked('assets_bank');");
+             row.setAttribute("id","asset_startup");
+             row.onclick = function () {
+              rowClicked(row,"Enter Startup Name");
+             }
         //set ids based on the asset
-          description_id = 'asset_startup'
-          worth_id = 'asset_startup-worth'
-          id_id = 'asset_startup_id'
+          // description_id = 'asset_startup'
+          // worth_id = 'asset_startup-worth'
+          // id_id = 'asset_startup_id'
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Startup Name</h5>
-                    <input data-row-id='${row_id}' type="hidden" id="asset_startup_id" aria-describedby="asset_startup_id" name="asset_startup_id">
+                    <input data-row-id='${row_id}' value='${id_modal.value}' type="hidden" id="asset_startup_id" aria-describedby="asset_startup_id" name="asset_startup_id">
                     <div class="card-body">
-                        <input data-row-id='${row_id}' type="text" class="form-control" id="asset_startup" aria-describedby="asset_startup" name="asset_startup"
+                        <input data-row-id='${row_id}' value='${description_modal.value}' type="text" class="form-control" id="asset_startup" aria-describedby="asset_startup" name="asset_startup"
                             placeholder="Ex. Amazon">
                         <br>
-                        <input data-row-id='${row_id}' type="text" class="form-control" id="asset_startup-extradata" aria-describedby="asset_startup-extradata" name="asset_startup-extradata"
+                        <input data-row-id='${row_id}' value='${extra_data_modal.value}' type="text" class="form-control" id="asset_startup-extradata" aria-describedby="asset_startup-extradata" name="asset_startup-extradata"
                             placeholder="Enter Investment Platform">
                         <br>
-                        <input data-row-id='${row_id}' type="number" class="form-control" id="asset_startup-worth" aria-describedby="asset_startup-worth" name="asset_startup-worth"
+                        <input data-row-id='${row_id}' value='${worth_modal.value}' type="number" class="form-control" id="asset_startup-worth" aria-describedby="asset_startup-worth" name="asset_startup-worth"
                             step=".01" placeholder="Enter Investment Amount">
                     </div>
                 </div>
@@ -1069,20 +1093,23 @@
         } else if (container == 'assets_jewelry') {
              //set item category
              cell1.innerHTML = "Jewelry";
-             row.setAttribute("onClick","rowClicked('assets_jewelry');");
+             row.setAttribute("id","asset_jewelry");
+             row.onclick = function () {
+              rowClicked(row,"Enter Type of Physical Asset");
+             }
         //set ids based on the asset
-          description_id = 'asset_jewelry'
-          worth_id = 'asset_jewelry-worth'
-          id_id = 'asset_jewelry_id'
+          // description_id = 'asset_jewelry'
+          // worth_id = 'asset_jewelry-worth'
+          // id_id = 'asset_jewelry_id'
           var new_asset_template = `
                 <div class="card m-1 d-none">
                     <h5 class="card-header">Enter Type of Physical Asset</h5>
-                    <input data-row-id='${row_id}' type="hidden" id="asset_jewelry_id" aria-describedby="asset_jewelry_id" name="asset_jewelry_id">
+                    <input data-row-id='${row_id}' value='${id_modal.value}' type="hidden" id="asset_jewelry_id" aria-describedby="asset_jewelry_id" name="asset_jewelry_id">
                     <div class="card-body">
-                        <input data-row-id='${row_id}' type="text" class="form-control" id="asset_jewelry" aria-describedby="asset_jewelry" name="asset_jewelry"
+                        <input data-row-id='${row_id}' value='${description_modal.value}' type="text" class="form-control" id="asset_jewelry" aria-describedby="asset_jewelry" name="asset_jewelry"
                             placeholder="Ex. Gold Bar">
                         <br>
-                        <input data-row-id='${row_id}' type="number" class="form-control" id="asset_jewelry-worth" aria-describedby="asset_jewelry-worth" name="asset_jewelry-worth"
+                        <input data-row-id='${row_id}' value='${worth_modal.value}' type="number" class="form-control" id="asset_jewelry-worth" aria-describedby="asset_jewelry-worth" name="asset_jewelry-worth"
                             step=".01" placeholder="Enter Estimated Value">
                     </div>
                 </div>
@@ -1090,50 +1117,69 @@
         } else if (container == 'assets_car') {
              //set item category
              cell1.innerHTML = "Car";
-             row.setAttribute("onClick","rowClicked('assets_car');");
+             row.setAttribute("id","asset_car");
+             row.onclick = function () 
+             {
+              rowClicked(row,"Enter Car Make & Model");
+             }
         //set ids based on the asset
-          description_id = 'asset_car'
-          worth_id = 'asset_car-worth'
-          id_id = 'asset_car_id'
+          // description_id = 'asset_car'
+          // worth_id = 'asset_car-worth'
+          // id_id = 'asset_car_id'
           var new_asset_template = `
                 <div class="card m-1 d-none">
-                    <h5 class="card-header">Enter Car Make & Model</h5>
-                    <input data-row-id='${row_id}' type="hidden" id="asset_car_id" aria-describedby="asset_car_id" name="asset_car_id">
+                    <h5 class="card-header">Enter Car Make & Model</h5> 
+                    <input data-row-id='${row_id}' value='${id_modal.value}' type="hidden" id="asset_car_id" aria-describedby="asset_car_id" name="asset_car_id">
                     <div class="card-body">
-                        <input data-row-id='${row_id}' type="text" class="form-control" id="asset_car" aria-describedby="asset_car" name="asset_car"
+                        <input data-row-id='${row_id}' value='${description_modal.value}' type="text" class="form-control" id="asset_car" aria-describedby="asset_car" name="asset_car"
                             placeholder="Ex. Porsche Cayenne">
                         <br>
-                        <input data-row-id='${row_id}' type="text" class="form-control" id="asset_car-extradata" aria-describedby="asset_car-extradata" name="asset_car-extradata"
+                        <input data-row-id='${row_id}' value='${extra_data_modal.value}' type="text" class="form-control" id="asset_car-extradata" aria-describedby="asset_car-extradata" name="asset_car-extradata"
                             placeholder="Enter Year Model">
                         <br>
-                        <input data-row-id='${row_id}' type="number" class="form-control" id="asset_car-worth" aria-describedby="asset_car-worth" name="asset_car-worth"
+                        <input data-row-id='${row_id}' value='${worth_modal.value}' type="number" class="form-control" id="asset_car-worth" aria-describedby="asset_car-worth" name="asset_car-worth"
                             step=".01" placeholder="Enter Investment Amount">
                     </div>
                 </div>
                 `
         }
 
+        asset_container.innerHTML += new_asset_template;
+        cell2.innerHTML = description_modal.value;
+        cell3.innerHTML = worth_modal.value;
+        //set custom attributes for new row
+        row.setAttribute("data-row-id",row_id);
+        row.setAttribute("data-bs-toggle","modal");
+        row.setAttribute("data-bs-target","#form_edit_update");
+        
         //adding data to last hidden form for specific categories. 
-        if(container == 'assets_stocks')
-        {
-        var num_stocks = document.querySelectorAll("#asset_stock-extradata");
-        num_stocks[num_stocks.length -1].value = extra_data.value;
-        cell2.innerHTML += "<br>"+extra_data.value;
-        }else if(container == "assets_car"){
-        var num_stocks = document.querySelectorAll("#asset_car-extradata");
-        num_stocks[num_stocks.length -1].value = extra_data.value;
-        cell2.innerHTML += "<br>"+extra_data.value;
-        }
-        else if  (container == 'assets_startup')
-        {
-        var num_stocks = document.querySelectorAll("#asset_startup-extradata");
-        num_stocks[num_stocks.length -1].value = extra_data.value;
-        cell2.innerHTML += "<br>"+extra_data.value;
-        } 
+        // var descriptions = document.querySelectorAll(`input#${description_id}`);
+        // var worths = document.querySelectorAll(`input#${worth_id}`);
+        // var ids = document.querySelectorAll(`input#${id_id}`);
+
+        // if(container == 'assets_stocks')
+        // {
+        // var extra_data = document.querySelectorAll("#asset_stock-extradata");
+        // extra_data[extra_data.length -1].value = extra_data_modal.value;
+        // cell2.innerHTML += "<br>"+extra_data_modal.value;
+        // }else if(container == "assets_car"){
+        // var extra_data = document.querySelectorAll("#asset_car-extradata");
+        // extra_data[extra_data.length -1].value = extra_data_modal.value;
+        // cell2.innerHTML += "<br>"+extra_data_modal.value;
+        // }
+        // else if  (container == 'assets_startup')
+        // {
+        // var extra_data = document.querySelectorAll("#asset_startup-extradata");
+        // console.log(extra_data.length);
+        // extra_data[extra_data.length -1].value = extra_data_modal.value;
+        // cell2.innerHTML += "<br>"+extra_data_modal.value;
+        // } 
         //adding data to last hidden form for all categories. 
-        var len = descriptions.length - 1;
-        descriptions[len].value = description.value;
-        worths[len].value = worth.value;
+        // var len = descriptions.length - 1;
+        // descriptions[len].value = description.value;
+        // worths[len].value = worth.value;
+        
+      
         // trigger form submit event 
         onFormSubmitted();
         
@@ -1141,6 +1187,7 @@
 
       function rowClicked(container,label_text)
       {
+        console.log(container);
         // var data_row = document.querySelector("tr[data-row-id]#bank_asset");
         var row_id = container.getAttribute("data-row-id");
         // console.log(data_row);
@@ -1164,9 +1211,8 @@
         worth_modal.value = worth.value;
         name_modal.value = container.id;
         id_modal.value = row_id;
-        updateNetworthValue(-1*parseFloat(worth.value));
 
-        console.log("id .value"+id_modal.value);
+        console.log("id .value"+description.value);
     
         if(container == 'assets_stocks')
         {
@@ -1215,6 +1261,7 @@
             return;
         }
         
+        updateNetworthValue(-1*parseFloat(worth.value));
         description.value = description_modal.value;
         worth.value = worth_modal.value;
         table_row.cells[1].innerHTML = description_modal.value;
