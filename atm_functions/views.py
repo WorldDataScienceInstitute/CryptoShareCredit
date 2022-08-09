@@ -18,12 +18,11 @@ from .models import User
 from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, Business, WaitingList, UserAssets, StripeAccount, StripeTransaction, DynamicUsername
 # from common.utils import currency_list
-from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples
+from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples,FIAT_CURRENCIES
 from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email, code_creation_email
 from common.cryptoapis import CryptoApis
 from common.cryptoapis_utils import CryptoApisUtils
 from common.simpleswap import SimpleSwap
-from common.utils import FIAT_CURRENCIES
 # from common.aptopayments import AptoPayments
 from google_currency import convert
 from coinbase.wallet.client import OAuthClient
