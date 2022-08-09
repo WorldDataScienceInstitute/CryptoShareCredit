@@ -19,7 +19,7 @@ from .models import User
 from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, Business, WaitingList, UserAssets, StripeAccount, StripeTransaction, DynamicUsername
 # from common.utils import currency_list
-from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples
+from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples,FIAT_CURRENCIES
 from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email, code_creation_email
 from common.cryptoapis import CryptoApis
 from common.cryptoapis_utils import CryptoApisUtils
@@ -54,10 +54,16 @@ def profile(request):
     countries = countries_tuples
 
     if request.method == "GET":
+        
+        usernames = []
+
+        if DynamicUsername.objects.filter(business_reference__owner = request.user).exists():
+            usernames = DynamicUsername.objects.filter(business_reference__owner = request.user)
 
         context = {
             "user": user,
-            "countries": countries
+            "countries": countries,
+            "usernames": usernames
         }
         return render(request, "atm_user_profile.html", context)
     
@@ -1069,7 +1075,7 @@ def send_money_confirmation(request):
     elif wallet_confirmation == "credits":
         # sending_account = form_response["sendingAccount"].split("|")
         amount = float(form_response["sendingAmount"])
-        recipient_username = form_response["recipientUser"]
+        recipient_username = form_response["recipientUser"].lower().replace(" ", "")
         cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
 
         sender_account = Account.objects.get(
@@ -1209,10 +1215,17 @@ def create_business(request):
 
     if request.method == "POST":
         business_official_name = request.POST.get("business_name", None)
-        business_username = request.POST.get("business_username", None)
+        business_username = request.POST.get("business_username", None).lower()
         business_system_name = business_official_name.lower()
         business_category = request.POST.get("business_category", None)
         business_price = 50      #PRICE IN CRYPTOSHARE CREDITS
+
+        business_username = business_username.replace(" ", "")
+
+        if DynamicUsername.objects.filter(id_username=business_username).exists():
+            messages.warning(request, "Username already exists.")
+
+            return redirect('atm_functions:CreateBusiness')
 
         name_exists = Business.objects.filter(system_name=business_system_name)
         if name_exists:
@@ -1657,16 +1670,19 @@ def update_exchange_rates(request):
     # url = f"https://api.coingecko.com/api/v3/simple/price?ids={ids}&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
 
     response = requests.get(url).json()
-
+    
     for currency in currencies:
         if currency.symbol == "TEST" or currency.currency_name == "ethereum_ropsten":
             continue
+        
+        try:
+            coingecko_id = querystring_options[currency.symbol]
 
-        coingecko_id = querystring_options[currency.symbol]
-
-        exchange_rate = response[coingecko_id]["usd"]
-        currency.exchange_rate = exchange_rate
-        currency.save()
+            exchange_rate = response[coingecko_id]["usd"]
+            currency.exchange_rate = exchange_rate
+            currency.save()
+        except:
+            print(f"{coingecko_id} not found in coingecko")
     
     return HttpResponse(status=200)
 

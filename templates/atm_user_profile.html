@@ -16,81 +16,85 @@
             <img src="{% static '/images/logo.png' %}" class="rounded-circle border-primary"  style="height: 200px; width: auto;"" alt="...">
         </div>
         
-        <div class="text-center" style="margin-top: 5%;">
-            <div class="row justify-content-md-center">
-                <div class="col-md-6">
-                    <div class="card" style="background-color: #227bff;">
-                        <div class="card-header text-white" style="background-color: #0f6fff;">
-                            <h3>Crypto$hare Username</h3>
-                        </div>
-                        <div class="card-body">
-                            <form action="{% url 'atm_functions:Profile' %}?action=ChangeUsername" method="post">
-                                {% csrf_token %}
 
-                                <div class="form-group">
-                                    <label for="username">Username</label>
-                                    <input type="text" class="form-control" id="username" name="username" placeholder="Please enter a new username" value="{{ user.system_username|default:'' }}" readonly required>
-                                </div>
-                                <small id="selfie_document_help" class="form-text text-white" style="text-align: left; padding: 5px; ">
-                                    <b>
-                                        *This is the username that you will use for making transactions inside the Crypto$hare ecosystem.
-                                    </b>
-                                </small>
-                                <button type="submit" class="btn btn-info" disabled>Change Username</button>
-                            </form>
+        <div class="container text-center">
+
+            <div class="card text-white bg-primary m-3">
+                <h3 class="card-header">Crypto$hare Usernames</h3>
+                <div class="card-body">
+
+                    <h5 class="card-title m-2">Personal Username</h5>
+                    <div class="form-group">
+                        <div class="list-group">                            
+                            <button type="button" class="list-group-item list-group-item-action" onclick="$('#ClipboardAlert').toast('show'); navigator.clipboard.writeText('{{ user.system_username }}');">
+                                {{ user.system_username }}
+                            </button>
                         </div>
                     </div>
 
-                    <div class="card" style="background-color: #227bff;">
-                        <div class="card-header text-white" style="background-color: #0f6fff;">
-                            <h3>Personal Information</h3>
+                    <h5 class="card-title m-2">Business Usernames</h5>
+                    <div class="form-group">
+                        <div class="list-group">
+                            {% for username in usernames %}
+                                <button type="button" class="list-group-item list-group-item-action" onclick="$('#ClipboardAlert').toast('show'); navigator.clipboard.writeText('{{ username.id_username }}');">
+                                    {{ username.id_username }}
+                                </button>
+                            {% endfor %}
                         </div>
-                        <div class="card-body">
-                            <form action="{% url 'atm_functions:Profile' %}?action=UpdateProfileInfo" method="post">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <label for="first_name">First Name</label>
-                                    <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.user.first_name }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="last_name">Last Name</label>
-                                    <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.user.last_name }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" value="{{ user.user.email }}" readonly disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="country">Country</label>
-                                    <select type="text" class="form-control" name="country" id="country" required>
-                                        <!-- If user.country is none, put select country -->
-                                        {% if user.user.country is none %}
-                                            <option value="" disabled selected>Select Country</option>
-                                        {% endif %}
-                                        {% for country in countries %}
-                                        <option value="{{ country.0 }}" {% if user.country == country.0 %}selected{% endif %}>{{ country.1 }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                {% if user.state is not none %}
-                                <div class="form-group">
-                                    <label for="state">State</label>
-                                    <input type="text" class="form-control" id="state" name="state" value="{{ user.state }}" required>
-                                </div>
+                    </div>
+
+                    <p class="card-text">
+                        You can use this usernames for receiving payments.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card text-white bg-primary m-3">
+                <h3 class="card-header">Personal Information</h3>
+                <div class="card-body">
+                    <form action="{% url 'atm_functions:Profile' %}?action=UpdateProfileInfo" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="first_name">First Name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.user.first_name }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.user.last_name }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.user.email }}" readonly disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <select type="text" class="form-control" name="country" id="country" required>
+                                <!-- If user.country is none, put select country -->
+                                {% if user.user.country is none %}
+                                    <option value="" disabled selected>Select Country</option>
                                 {% endif %}
-                                <div class="form-group">
-                                    <label for="birthdate">Birthdate</label>
-                                    <input type="date" class="form-control" id="birthdate" name="birthdate" value="{{ user.birthdate|date:'Y-m-d'|default:'' }}" onkeydown="event.preventDefault()" required>
-                                </div>
-                                <!-- 
-                                    Country
-                                    State (if applicable)
-                                    Birthdate
-                                -->
-                                <button type="submit" class="btn btn-info">Change Info</button>
-                            </form>
+                                {% for country in countries %}
+                                <option value="{{ country.0 }}" {% if user.country == country.0 %}selected{% endif %}>{{ country.1 }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
-                    </div>
+                        {% if user.state is not none %}
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" class="form-control" id="state" name="state" value="{{ user.state }}" required>
+                        </div>
+                        {% endif %}
+                        <div class="form-group">
+                            <label for="birthdate">Birthdate</label>
+                            <input type="date" class="form-control" id="birthdate" name="birthdate" value="{{ user.birthdate|date:'Y-m-d'|default:'' }}" onkeydown="event.preventDefault()" required>
+                        </div>
+                        <!-- 
+                            Country
+                            State (if applicable)
+                            Birthdate
+                        -->
+                        <button type="submit" class="btn btn-info m-4">Change Info</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -142,5 +146,16 @@
     <script src="{% static 'js/jquery.sticky.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
 </body>
-
+<div class="position-fixed top-0 end-0" style="z-index: 10000">
+    <div id="ClipboardAlert" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Copied to clipboard</strong>
+            <small>Now</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            The username has been copied to your clipboard.
+        </div>
+    </div>
+</div>
 </html>
