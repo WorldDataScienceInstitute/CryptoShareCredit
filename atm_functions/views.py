@@ -1665,17 +1665,19 @@ def update_exchange_rates(request):
     # url = f"https://api.coingecko.com/api/v3/simple/price?ids={ids}&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
 
     response = requests.get(url).json()
-    print(response)
-
+    
     for currency in currencies:
         if currency.symbol == "TEST" or currency.currency_name == "ethereum_ropsten":
             continue
+        
+        try:
+            coingecko_id = querystring_options[currency.symbol]
 
-        coingecko_id = querystring_options[currency.symbol]
-
-        exchange_rate = response[coingecko_id]["usd"]
-        currency.exchange_rate = exchange_rate
-        currency.save()
+            exchange_rate = response[coingecko_id]["usd"]
+            currency.exchange_rate = exchange_rate
+            currency.save()
+        except:
+            print(f"{coingecko_id} not found in coingecko")
     
     return HttpResponse(status=200)
 
