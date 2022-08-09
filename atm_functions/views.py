@@ -1,5 +1,4 @@
 # from time import timezone
-from common.utils import FIAT_CURRENCIES
 from email import message
 from itertools import product
 from multiprocessing import context
@@ -24,6 +23,7 @@ from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email,
 from common.cryptoapis import CryptoApis
 from common.cryptoapis_utils import CryptoApisUtils
 from common.simpleswap import SimpleSwap
+from common.utils import FIAT_CURRENCIES
 # from common.aptopayments import AptoPayments
 from google_currency import convert
 from coinbase.wallet.client import OAuthClient
