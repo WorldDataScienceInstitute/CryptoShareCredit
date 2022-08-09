@@ -18,7 +18,7 @@ from .models import User
 from decimal import Decimal
 from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, Business, WaitingList, UserAssets, StripeAccount, StripeTransaction, DynamicUsername
 # from common.utils import currency_list
-from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples
+from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples,FIAT_CURRENCIES
 from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email, code_creation_email
 from common.cryptoapis import CryptoApis
 from common.cryptoapis_utils import CryptoApisUtils
@@ -465,6 +465,8 @@ def edit_estate_net_worth(request):
         startup = UserAssets.objects.filter(email=request.user, type="STARTUP_INVESTMENT")
         jewelry = UserAssets.objects.filter(email=request.user, type="JEWELRY")
         car = UserAssets.objects.filter(email=request.user, type="CAR")
+        #net worth information
+        user_data = Account.objects.get(user=request.user)
 
         context = {
             "banks": bank,
@@ -475,7 +477,9 @@ def edit_estate_net_worth(request):
             "stocks": stock,
             "startups": startup,
             "jewelries": jewelry,
-            "cars": car
+            "cars": car,
+            "currencies":FIAT_CURRENCIES,
+            "net_worth": user_data.net_worth
         }
 
         return render(request, 'estate_net_worth_edit.html', context)        
@@ -681,7 +685,7 @@ def edit_estate_net_worth(request):
     account.net_worth = net_worth
     account.save()
 
-    return redirect('atm_functions:EstateNetWorth')
+    return redirect('atm_functions:EditEstateNetWorth')
 
 @login_required()
 def insurance(request):
