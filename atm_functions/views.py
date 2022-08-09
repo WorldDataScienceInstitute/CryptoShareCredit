@@ -53,10 +53,16 @@ def profile(request):
     countries = countries_tuples
 
     if request.method == "GET":
+        
+        usernames = []
+
+        if DynamicUsername.objects.filter(business_reference__owner = request.user).exists():
+            usernames = DynamicUsername.objects.filter(business_reference__owner = request.user)
 
         context = {
             "user": user,
-            "countries": countries
+            "countries": countries,
+            "usernames": usernames
         }
         return render(request, "atm_user_profile.html", context)
     
@@ -1064,7 +1070,7 @@ def send_money_confirmation(request):
     elif wallet_confirmation == "credits":
         # sending_account = form_response["sendingAccount"].split("|")
         amount = float(form_response["sendingAmount"])
-        recipient_username = form_response["recipientUser"]
+        recipient_username = form_response["recipientUser"].lower().replace(" ", "")
         cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
 
         sender_account = Account.objects.get(
@@ -1204,10 +1210,17 @@ def create_business(request):
 
     if request.method == "POST":
         business_official_name = request.POST.get("business_name", None)
-        business_username = request.POST.get("business_username", None)
+        business_username = request.POST.get("business_username", None).lower()
         business_system_name = business_official_name.lower()
         business_category = request.POST.get("business_category", None)
         business_price = 50      #PRICE IN CRYPTOSHARE CREDITS
+
+        business_username = business_username.replace(" ", "")
+
+        if DynamicUsername.objects.filter(id_username=business_username).exists():
+            messages.warning(request, "Username already exists.")
+
+            return redirect('atm_functions:CreateBusiness')
 
         name_exists = Business.objects.filter(system_name=business_system_name)
         if name_exists:
