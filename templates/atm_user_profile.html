@@ -29,6 +29,8 @@
                             <button type="button" class="list-group-item list-group-item-action" onclick="$('#ClipboardAlert').toast('show'); navigator.clipboard.writeText('{{ user.system_username }}');">
                                 {{ user.system_username }}
                             </button>
+
+
                         </div>
                     </div>
 
@@ -159,3 +161,34 @@
     </div>
 </div>
 </html>
+
+<!-- Modal -->
+<div class="modal fade" id="BuyUsername" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">BUY NEW USERNAME</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Buying and modifying personalized username has a cost of:</p>
+                <p class="text-info" style="text-align: center;">
+                    <b>
+                        10 Cryptoshare Credits
+                    </b>
+                </p>
+                <div class="mb-3">
+                    <p style="text-align: center;">Please enter your new username</p>
+                    <input type="email" class="form-control text-center" id="exampleFormControlInput1"
+                        placeholder="name@example.com">
+                </div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="NeverShowAgain"
+                    onclick="checkUsernameAvailability()">Never show again</button>
+            </div>
+        </div>
+    </div>
+</div>
