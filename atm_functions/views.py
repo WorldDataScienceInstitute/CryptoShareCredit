@@ -1,5 +1,4 @@
 # from time import timezone
-from common.utils import FIAT_CURRENCIES
 from email import message
 from itertools import product
 from multiprocessing import context
