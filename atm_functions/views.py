@@ -1396,7 +1396,8 @@ def register_blockchain_will(request):
     grantor_id_document_url = request.POST.get("grantor_id_document", None)
 
     blockchain_will.full_legal_name = grantor_fullname
-    blockchain_will.birthdate = grantor_birthdate
+    if grantor_birthdate:
+        blockchain_will.birthdate = grantor_birthdate
     blockchain_will.birth_country = grantor_country
     blockchain_will.associated_email1 = grantor_email_1
     blockchain_will.associated_email2 = grantor_email_2
