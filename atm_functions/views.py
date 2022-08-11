@@ -69,11 +69,34 @@ def profile(request):
     elif request.method == "POST":
         action = request.GET.get('action','')
 
-        if action == "ChangeUsername":
-            new_username = request.POST.get('username','').lower()
+        if action == "BuyUsername":
+            USERNAME_PRICE = 10
 
-            user.username = new_username.lower()
+            cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
+
+            user_balance = Balance.objects.get(email=request.user, digital_currency_name=cryptoshare_credits_object)
+
+            if user_balance.amount < USERNAME_PRICE:
+                messages.warning(request, "You need at least 10 CryptoShare Credits to buy a username")
+                return redirect("atm_functions:Profile")
+
+            new_username = request.POST.get('newUsername','').lower().replace(" ", "")
+
+            if DynamicUsername.objects.filter(id_username = new_username).exists():
+                messages.warning(request, "Username already exists")
+                return redirect("atm_functions:Profile")
+            
+            previous_username = DynamicUsername.objects.get(user_reference = request.user, username_type = "USER")
+            previous_username.delete()
+
+            previous_username.id_username = new_username
+            previous_username.save()
+
+            user.system_username = new_username
             user.save()
+
+            user_balance.amount -= Decimal(USERNAME_PRICE)
+            user_balance.save()
 
             messages.success(request, "Username changed successfully")
             return redirect('atm_functions:Profile')
@@ -1214,7 +1237,7 @@ def create_business(request):
 
     if request.method == "POST":
         business_official_name = request.POST.get("business_name", None)
-        business_username = request.POST.get("business_username", None).lower()
+        business_username = request.POST.get("business_username", None).lower().replace(" ", "")
         business_system_name = business_official_name.lower()
         business_category = request.POST.get("business_category", None)
         business_price = 50      #PRICE IN CRYPTOSHARE CREDITS
