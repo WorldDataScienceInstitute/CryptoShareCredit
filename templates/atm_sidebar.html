@@ -43,10 +43,25 @@
                 <div class="nav__items">
                     <h3 class="nav__subtitle">Services</h3>
 
-                    <a href="{% url 'atm_functions:Home' %}" class="nav__link">
-                        <i class="nav__icon bx bxs-home" style="color: gold;"></i>
-                        <span class="nav__name">HOME / WALLETS</span>
-                    </a>
+                    <div class="nav__dropdown nav__link2">
+                        <a class="nav__link">
+                            <i class="nav__icon bx bxs-home" style="color: gold;"></i>
+                            <span class="nav__name">HOME / WALLETS</span>
+                            <i class='bx bx-chevron-down nav__icon nav__dropdown-icon'></i>
+                        </a>
+                        <div class="nav__dropdown-collapse">
+                            <div class="nav__dropdown-content" style="padding-left:15px ;">
+                                <a href="{% url 'atm_functions:Home' %}" class="nav__link">
+                                    <i class="nav__icon bx bxs-home" style="color: gold;"></i>
+                                    <span class="nav__name">HOME / WALLETS</span>
+                                </a>
+                                <a href="{% url 'atm_functions:MyTransactions' %}" class="nav__link">
+                                    <i class="nav__icon bx bxs-book" style="color: gold;"></i>
+                                    <span class="nav__name">TRANSACTIONS</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>   
 
                     <a href="{% url 'atm_functions:CreditGrades' %}" class="nav__link">
                         <i class="nav__icon bx bxs-landmark" style="color: gold;"></i>
@@ -108,11 +123,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <a href="{% url 'atm_functions:MyTransactions' %}" class="nav__link">
-                        <i class="nav__icon bx bxs-book" style="color: gold;"></i>
-                        <span class="nav__name">MY TRANSACTIONS</span>
-                    </a>
 
                     <div class="nav__dropdown nav__link2">
                         <a href="#" class="nav__link">
