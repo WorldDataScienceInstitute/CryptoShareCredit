@@ -503,6 +503,23 @@
         }
       })
     })
+    $('#asset_form').submit(function(event){
+        event.preventDefault();
+        console.log(event.target);
+
+        var form = $(this);
+        var actionUrl = form.attr('action');
+
+    $.ajax({
+      type: "POST",
+      url: actionUrl,
+      data: form.serialize(),
+      success: function(response)
+      {
+        console.log("Ok done");
+      }
+   });
+    });
 
     //submit form on change effected
     function onFormSubmitted() {
@@ -820,6 +837,7 @@
       }
 
       asset_container.innerHTML += new_asset_template;
+      onFormSubmitted();
       cell2.innerHTML = description_modal.value;
       cell3.innerHTML = worth_modal.value;
       //set custom attributes for new row
@@ -828,7 +846,6 @@
       row.setAttribute("data-bs-target", "#form_edit_update");
 
       // trigger form submit event 
-      onFormSubmitted();
 
     }
 
@@ -904,6 +921,9 @@
       }
 
       updateNetworthValue(-1 * parseFloat(worth.value));
+
+      onFormSubmitted();
+
       description.value = description_modal.value;
       worth.value = worth_modal.value;
       table_row.cells[1].innerHTML = description_modal.value;
@@ -921,7 +941,6 @@
       else if (id_name == 'asset_startup') {
         extra_data.value = extra_data_modal.value;
       }
-      onFormSubmitted();
 
     }
   </script>

@@ -707,7 +707,8 @@ def edit_estate_net_worth(request):
     account = Account.objects.get(user=request.user)
     account.net_worth = net_worth
     account.save()
-
+    print(request.headers['content_type'])
+    
     return redirect('atm_functions:EditEstateNetWorth')
 
 @login_required()
