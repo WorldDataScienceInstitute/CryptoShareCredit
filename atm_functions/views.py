@@ -1381,7 +1381,7 @@ def register_blockchain_will(request):
         context = {
             "blockchain_will": blockchain_will,
             "beneficiary": beneficiary,
-            "beneficiary_relationships": ["Wife", "Child", "Friend", "Other"],
+            "beneficiary_relationships": ["Wife", "Husband", "Life Partner", "Child", "Friend", "Other"],
             "countries": countries
         }
         return render(request, 'blockchain_will_edit.html', context)
