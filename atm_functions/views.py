@@ -2065,18 +2065,7 @@ def confirmed_token_transactions(request):
 def test_receiver(request):
 
 
-    stripe.api_key = os.environ['STRIPE_SECRET_KEY']
-    first_name = "Alberto"
-    last_name = "Navarrete"
-
-
-    response = stripe.Customer.create(
-        description = "Test customer alberto",
-        email = "albertonavarreteramirez@gmail.com",
-        name = f"{first_name} {last_name}"
-    )
-
-    print(response)
+    test_email("albertonavarreteramirez@gmail.com")
 
     
     return HttpResponse(status=200)
