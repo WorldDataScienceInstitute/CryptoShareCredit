@@ -514,7 +514,7 @@ def inprogress_transactionb_email(user_email, id_b, transaction_id, currency_nam
     s.quit()
     return
 
-def test_email(user_email,transaction_id, blockchain, network ,tx_amount, tx_currency, tx_address, creation_date):
+def test_email(user_email):
     port = settings.EMAIL_PORT
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "Crypto$hare in progress loan"
@@ -524,7 +524,7 @@ def test_email(user_email,transaction_id, blockchain, network ,tx_amount, tx_cur
 
 
 
-    html = send_funds_template(transaction_id, blockchain, network ,tx_amount, tx_currency, tx_address, creation_date)
+    html = "<b> Test 2</b>"
 
     part1 = MIMEText(html, 'html')
 
