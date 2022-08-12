@@ -130,8 +130,7 @@ def email(request):
                 description = f"CID-{user.id}",
             )
 
-            #SUSPENDED
-            # code_creation_email(to_addr=email, pin=pin)
+            code_creation_email(to_addr=email, pin=pin)
             
             messages.success(request, mark_safe(
                 f"""A confirmation email has been sent to you from {settings.DEFAULT_FROM_EMAIL}.<br>
