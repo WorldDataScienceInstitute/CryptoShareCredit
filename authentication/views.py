@@ -4,10 +4,11 @@ from django.db.models import Q
 from django.contrib import auth
 from django.contrib.auth.models import User
 
-from atm_functions.models import Account, DigitalCurrency, Balance, StripeAccount, DynamicUsername
+from atm_functions.models import Account, DigitalCurrency, Balance, StripeAccount, DynamicUsername, Referal
 from django.contrib import messages
 from django.conf import settings
 from django.utils.safestring import mark_safe
+from decimal import Decimal
 from common.utils import  get_user_count, generate_pin
 from common.emails import Account_Creation_Email, code_creation_email, pin_reset_email
 from traceback import print_exc
@@ -77,6 +78,7 @@ def email(request):
             country = request.POST.get('country')
             state = request.POST.get('usa_states', None)
             birthdate = request.POST.get('birthdate')
+            referal_code = request.POST.get('referal_code', None)
             
             if country is None:
                 messages.info(request, "Please select a country")
@@ -136,6 +138,25 @@ def email(request):
                 f"""A confirmation email has been sent to you from {settings.DEFAULT_FROM_EMAIL}.<br>
                 If you do not receive it within a few minutes, check your spam/junk folder.""")
                 )
+
+            if referal_code:
+                REFERRING_BONUS = 10
+                
+                if DynamicUsername.objects.filter(id_username = referal_code, username_type ="USER").exists():
+                    referring_user = DynamicUsername.objects.get(id_username = referal_code, username_type ="USER").user_reference
+
+                    Referal.objects.create(
+                        referal_code = referal_code,
+                        user_referring = referring_user,
+                        user_referred = user
+                    )
+
+                    referring_user_balance = Balance.objects.get(email = referring_user, currency_type = "DIGITAL", digital_currency_name = cryptoshare_credits)
+                    referring_user_balance.amount += Decimal(REFERRING_BONUS)
+                    referring_user_balance.save()
+                    
+
+
             # return redirect('authentication:Home')
             return redirect('atm_functions:Home')
     else:
