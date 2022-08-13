@@ -132,6 +132,12 @@ class StripeTransaction(models.Model):
     transaction_state = models.CharField(max_length=15)
     creation_datetime = models.DateTimeField(auto_now_add=True)
 
+class Referal(models.Model):
+    id_referal = models.AutoField(primary_key=True)
+    referral_code = models.CharField(max_length=30, unique=True, null=False)
+    user_referring = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_referring')
+    user_referred = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_referred')
+
 #Transaction for Deposits and Withdrawals CRYPTO
 class TransactionA(models.Model):
     id_a = models.AutoField(primary_key=True)
