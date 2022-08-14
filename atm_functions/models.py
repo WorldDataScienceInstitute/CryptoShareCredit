@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from businesses.models import Business as B2
+from businesses.models import Business
 from django.utils import timezone
 from datetime import datetime, timedelta
 
@@ -32,20 +32,11 @@ class UserAssets(models.Model):
     worth = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     extra_field = models.CharField(max_length=57, null=True)
 
-class Business(models.Model):
-    id_business = models.AutoField(primary_key=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    official_name = models.CharField(max_length=57)
-    system_name = models.CharField(max_length=57)
-    logo_url = models.CharField(max_length=255, null=True)
-    category = models.CharField(max_length=30)
-    creation_datetime = models.DateTimeField(auto_now_add=True)
-
 class DynamicUsername(models.Model):
     id_username = models.CharField(max_length=30, primary_key=True)
     username_type = models.CharField(max_length=10, null=True) # USER or BUSINESS
     user_reference = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    business_reference = models.ForeignKey(B2, on_delete=models.CASCADE, null=True, related_name='user_owner_business')
+    business_reference = models.ForeignKey(Business, on_delete=models.CASCADE, null=True, related_name='user_owner_business')
 
 class WaitingList(models.Model):
     id_wl = models.AutoField(primary_key=True)
