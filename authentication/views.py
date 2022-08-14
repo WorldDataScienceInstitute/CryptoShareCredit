@@ -58,7 +58,7 @@ def signing(request):
 
 
 def email(request):
-    def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+    def id_generator(size=6, chars=string.ascii_lowercase + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
 
     """Page for the user to enter their email and phone number to begin registration"""
@@ -104,7 +104,7 @@ def email(request):
                 country = country,
                 birthdate = birthdate, 
                 state = state, 
-                system_username = system_username
+                system_username = system_username.upper()
                 )
             
             new_username = DynamicUsername.objects.create(
