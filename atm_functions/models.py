@@ -1,6 +1,6 @@
-from symtable import Symbol
 from django.db import models
 from django.contrib.auth.models import User
+from businesses.models import Business as B2
 from django.utils import timezone
 from datetime import datetime, timedelta
 
@@ -45,7 +45,7 @@ class DynamicUsername(models.Model):
     id_username = models.CharField(max_length=30, primary_key=True)
     username_type = models.CharField(max_length=10, null=True) # USER or BUSINESS
     user_reference = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    business_reference = models.ForeignKey(Business, on_delete=models.CASCADE, null=True)
+    business_reference = models.ForeignKey(B2, on_delete=models.CASCADE, null=True, related_name='user_owner_business')
 
 class WaitingList(models.Model):
     id_wl = models.AutoField(primary_key=True)
