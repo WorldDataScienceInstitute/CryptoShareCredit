@@ -1,0 +1,83 @@
+body::-webkit-scrollbar {
+    width: 0 !important 
+}
+
+#homeVideo {
+    /* opacity: 0.7; */
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    height: 100vh;
+    z-index: -100;
+}
+@font-face {
+    font-family: ethno;
+    src: local('ethno'), 
+        url("../fonts/ethnocentricrg/ethnocentricrg.a3b1643f5b47.otf") format('opentype');
+}
+.btn-grad {
+    font-family: ethno;
+    background: linear-gradient(to right, #ce2bff 0%, #006efe  51%, #4dcfff  80%);
+    text-align: center;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;   
+    text-align: center;         
+    box-shadow: 0 0 20px #eee;
+    border-radius: 50px;
+    display: block;
+}
+.btn-grad:hover {
+    background-position: right center; /* change the direction of the change here */
+    color: #fff;
+    text-decoration: none;
+}
+.text-grad {
+    font-family: ethno;
+    background: linear-gradient(to right, #e285fe 45%, #4dcfff  48%, #3a8cf6  83%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 4.0vh;
+}
+.text-grad2 {
+    font-family: ethno;
+    color: white;        
+    text-shadow: 6px 6px 10px black;
+    -webkit-background-clip: text;
+    font-size: 3.0vh;
+}
+.vertical-center{
+    top: 50%;
+    margin-top: 10%;
+}
+.site-logo {
+    top: 0;
+    left: 0;
+    width: 30%;
+    height: auto;
+    opacity: 0.8;
+    filter: drop-shadow(10px 3px 8px #e285fe);
+}
+.site-logo:hover{
+    filter: drop-shadow(0 6px 16px #e285fe);
+}
+
+.banq-members{
+    /* position: fixed; */
+    bottom: 0;
+    margin-top: 0%;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.banq-members2{
+    font-size: 2.5vh;
+    bottom: 0;
+}
