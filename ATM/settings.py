@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1he#65^9)$u1rfq++qax+q8te-!*54ia93itmz0al!fipu7&+_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('testing', False)
 
 ALLOWED_HOSTS = []
 
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'atm_functions',
     'authentication',
+    'businesses'
 ]
 
 MIDDLEWARE = [
@@ -139,7 +140,8 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_STORAGE = ('whitenoise.storage.CompressedManifestStaticFilesStorage')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+WHITENOISE_AUTOREFRESH = True
 
 # Session settings
 # https://docs.djangoproject.com/en/3.2/ref/settings/#sessions
@@ -192,4 +194,4 @@ MOESIF_MIDDLEWARE = {
 
 # DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-django_heroku.settings(locals())
+django_heroku.settings(locals(), staticfiles=False)

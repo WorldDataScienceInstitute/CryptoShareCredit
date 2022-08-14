@@ -1,7 +1,4 @@
 # from time import timezone
-from email import message
-from itertools import product
-from multiprocessing import context
 from django.conf import settings as django_settings
 from django.contrib import messages
 from django.urls import reverse
@@ -16,9 +13,10 @@ from django.templatetags.static import static
 from django.utils import formats
 from .models import User
 from decimal import Decimal
-from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, Business, WaitingList, UserAssets, StripeAccount, StripeTransaction, DynamicUsername
+from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, WaitingList, UserAssets, StripeAccount, StripeTransaction, DynamicUsername
+from businesses.models import Business
 # from common.utils import currency_list
-from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples,FIAT_CURRENCIES
+from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples, FIAT_CURRENCIES
 from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email, code_creation_email
 from common.cryptoapis import CryptoApis
 from common.cryptoapis_utils import CryptoApisUtils
