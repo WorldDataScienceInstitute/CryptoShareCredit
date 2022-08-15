@@ -14,7 +14,7 @@
         {% include 'a_sessiontimeout.html' %}
         <h2 class="ml-4 text-primary">Create Business</h2>
         <br>
-        <form action="/atm/CreateBusiness/" method="post">
+        <form action="{% url 'businesses:Create' %}" method="post">
             {% csrf_token %}
             <div class="form-group col-md-12">
                 <label for="business_name"><b>New Business Name</b></label>
