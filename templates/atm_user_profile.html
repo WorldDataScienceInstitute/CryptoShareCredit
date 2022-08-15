@@ -24,6 +24,7 @@
                 <div class="card-body">
 
                     <h5 class="card-title m-2">Personal Username</h5>
+                    <i class="fa-solid fa-circle-question" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover focus" title="Referral Code" data-bs-content="You can use your username as a Referral Code and get 10 CryptoShare Credits for each user that signs up!"></i>
                     <div class="form-group">
                         <div class="list-group">                            
                             <button type="button" class="list-group-item list-group-item-action" onclick="$('#ClipboardAlert').toast('show'); navigator.clipboard.writeText('{{ user.system_username }}');">
@@ -143,10 +144,12 @@
             });
         });
     </script>
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+
+    <script>
+        $(document).ready(function(){
+            $('[data-bs-toggle="popover"]').popover();
+        });
+    </script>
     <script src="{% static 'js/main.js' %}"></script>
 </body>
 <div class="position-fixed top-0 end-0" style="z-index: 10000">
