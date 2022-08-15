@@ -6,12 +6,6 @@ urlpatterns = [
      path("", views.home, name="Home"),
      path("ApproveWallet/", views.approve_wallet, name="ApproveWallet"),
 
-     path("Businesses/", views.businesses, name="Businesses"),
-     path("CreateBusiness/", views.create_business, name="CreateBusiness"),
-     path("ManageBusinesses/", views.manage_businesses, name="ManageBusinesses"),
-     path("EditBusiness/", views.edit_business, name="EditBusiness"),
-     path("SearchBusiness/", views.search_business, name="SearchBusiness"),
-
      path("EstateNetWorth/", views.estate_net_worth, name="EstateNetWorth"),
      path("EditEstateNetWorth/", views.edit_estate_net_worth, name="EditEstateNetWorth"),
 
