@@ -89,17 +89,21 @@ def manage_businesses(request):
 @login_required()
 def search_business(request):
 
-    search_option = request.POST.get("SearchOption", None)
-    search_value = request.POST.get("SearchValue", None)
+    if request.method == "GET":
+        businesses = Business.objects.all()
 
-    if search_option == "StartsWith":
-        businesses = Business.objects.filter(system_name__startswith=search_value.lower())
+    if request.method == "POST":                
+        search_option = request.POST.get("SearchOption", None)
+        search_value = request.POST.get("SearchValue", None)
 
-    elif search_option == "Contains":
-        businesses = Business.objects.filter(system_name__contains=search_value.lower())
+        if search_option == "StartsWith":
+            businesses = Business.objects.filter(system_name__startswith=search_value.lower())
 
-    elif search_option == "ExactMatch":
-        businesses = Business.objects.filter(system_name=search_value.lower())
+        elif search_option == "Contains":
+            businesses = Business.objects.filter(system_name__contains=search_value.lower())
+
+        elif search_option == "ExactMatch":
+            businesses = Business.objects.filter(system_name=search_value.lower())
 
     context = {
         "businesses": businesses
