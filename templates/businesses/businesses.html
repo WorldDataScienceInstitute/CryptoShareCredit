@@ -17,7 +17,7 @@
         <br>
         <div class="btn-toolbar justify-content-center"" role="toolbar">
             <div class="btn-group m-2" role="group" aria-label="First button">
-                <a href="{% url 'atm_functions:CreateBusiness' %}">
+                <a href="{% url 'businesses:Create' %}">
                     <button type="button" class="btn btn-primary btn-lg">
                         Create Business
                     </button>
@@ -25,7 +25,7 @@
             </div>
 
             <div class="btn-group m-2" role="group" aria-label="Second button">
-                <a href="{% url 'atm_functions:ManageBusinesses' %}">
+                <a href="{% url 'businesses:Manage' %}">
                     <button type="button" class="btn btn-primary btn-lg">
                         Manage Business
                     </button>
@@ -33,7 +33,7 @@
             </div>
         </div>
 
-        <form action="{% url 'atm_functions:SearchBusiness' %}" method="post">
+        <form action="{% url 'businesses:Search' %}" method="post">
             {% csrf_token %}
             <div class="btn-group container-fluid justify-content-center">
                 <div style="text-align:center" class="form-row align-items-center">
