@@ -1,0 +1,195 @@
+{% load static %}
+{% load tz %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+
+<body>
+    {% if iframe is None %}
+    {% include 'businesses/businesses_sidebar.html' %}
+    {% endif %}
+    <div class="content-container">
+        {% include 'messages.html' %}
+        {% include 'a_sessiontimeout.html' %}
+        <h2 class="ml-4 text-primary">Edit Business</h2>
+        <br>
+        <div class="container my-4">
+            {% include 'messages.html' %}
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-4 row">
+                    <label for="business_name" class="col-sm-2 col-form-label">Business Name</label>
+                    <div class="col-sm-10">
+                      <input type="text" readonly class="form-control" id="business_name" value="{{ business.official_name }}">
+                    </div>
+                </div>
+
+                <div class="mb-4 row">
+                    <label for="business_owner" class="col-sm-2 col-form-label">Business Owner</label>
+                    <div class="col-sm-10">
+                      <input type="text" readonly class="form-control" id="business_owner" value="{{ business.owner }}">
+                    </div>
+                </div>
+
+                <div class="mb-4 row">
+                    <label for="business_category" class="col-sm-2 col-form-label">Business Category</label>
+                    <div class="col-sm-10">
+                        <select type="text" class="form-control" name="business_category" id="business_category" required>
+                            <option disabled selected>Select category</option>
+                            <option value="Marketing" {% if business.category == 'Marketing' %} selected {% endif %}>Marketing</option>
+                            <option value="Entretainment" {% if business.category == 'Entretainment' %} selected {% endif %}>Entertainment</option>
+                            <option value="Digital Services" {% if business.category == 'Digital Services' %} selected {% endif %}>Digital Services</option>
+                            <option value="Digital Products" {% if business.category == 'Digital Products' %} selected {% endif %}>Digital Products</option>
+                            <option value="Games" {% if business.category == 'Games' %} selected {% endif %}>Games</option>
+                            <option value="Workshops" {% if business.category == 'Workshops' %} selected {% endif %}>Workshops</option>
+                            <option value="Consultations" {% if business.category == 'Consultations' %} selected {% endif %}>Consultations</option>
+                        </select>
+                    </div>
+                </div>
+                <h4>Selfie Photo</h4>
+            <div class="form-group">
+                <input type="hidden" data-tag="{{ blockchain_will.email }}" data-preview="true" data-maxFileSize="1" data-accepted="image/*" name="grantor_selfie_photo" id="grantor_selfie_photo" class="simple-file-upload" value="{{ blockchain_will.selfie_photo_url|default:''}}">
+            </div>
+
+                <div class="mb-4 row">
+                    <label for="business_creation-date" class="col-sm-2 col-form-label">Creation Date</label>
+                    <div class="col-sm-10">
+                      <input type="text" readonly class="form-control" id="business_creation-date" value="{{ business.creation_datetime }} UTC">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fname">First name:</label>
+                    <input type="text" class="form-control" name="fname" id="fname" required maxlength="30">
+                </div>
+                <div class="mb-3">
+                    <label for="lname">Last name:</label>
+                    <input type="text" class="form-control" name="lname" id="lname" required maxlength="30">
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="pin">Create 6 Digit PIN Code:</label>
+                        <input type="password" onpaste="return false;"
+                            onkeypress="return ((event.charCode <= 57 && event.charCode >= 48) || (event.charCode ==0 && event.charCode !=8))"
+                            class="form-control" name="pin" id="pin" required pattern="[0-9]{6}" maxlength="6"
+                            minlength="6">
+                    </div>
+                    <div class="col">
+                        <label for="conf_pin">Confirm 6 Digit PIN Code:</label>
+                        <input type="password" onpaste="return false;"
+                            onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
+                            class="form-control" name="conf_pin" id="conf_pin" required pattern="[0-9]{6}" maxlength="6"
+                            minlength="6">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="birthdate">Birthdate:</label>
+                    <input onclick="dateController();" type="date" class="form-control" name="birthdate" id="birthdate"
+                        max="" required>
+                </div>
+                <div class="container" id="toggle-pin">
+                    <div class="row justify-content-md-center">
+                        <label for="ShowPin">Show PIN:</label>
+                        <div class="col-md-auto">
+                            <input type="checkbox" style="width: 40px; height: 40px; " onclick="togglePINVis()">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row col-12">
+                    <div id='pin_match'></div>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="confirm_terms" name="confirm_terms"
+                        required>
+                    <label class="form-check-label" for="confirm_terms">
+                        <em>I accept the 1% Commission for my Banq Membership on all transactions</em>
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="confirm_terms3" name="confirm_terms3"
+                        required>
+                    <label class="form-check-label" for="confirm_terms3">
+                        <em>I attest that I am 18 years old and Agree to the
+                            <a href="https://www.docdroid.net/d7k8f79/cryptoshare-banq-terms-and-conditionsdocx-pdf"
+                                target="_blank">Terms & Conditions</a>
+                            ,
+                            <a href="https://www.docdroid.net/ynfsjx0/cryptoshare-banq-sample-privacy-policy-pdf"
+                                target="_blank">Privacy Policy</a>
+                            ,
+                            <a href="https://www.docdroid.com/UA2G6nK/restricted-jurisidiction-policy-pdf"
+                                target="_blank">Restricted Jurisdiction Policy</a>
+                            , & AML Program.
+                        </em>
+                    </label>
+                </div>
+
+                <div class="form-row">
+                    <!-- Referral Code Feature not added yet!-->
+                    <div class="form-group col-12">
+                        <label for="referal_code">Enter Referral code:</label>
+                        <input type="text" class="form-control" name="referal_code" id="referal_code"
+                            placeholder="Referral code" maxlength="30">
+                    </div>
+                </div>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button type="submit" class="btn btn-primary" id="submit" disabled>Submit</button>
+                    <button class="btn btn-primary" type="button" onclick='location.href="{% url ' authentication:Home'
+                        %}"'>
+                        Back
+                    </button>
+                </div>
+            </form>
+            <br>
+        </div>
+    </div>
+    </div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+
+
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

@@ -28,8 +28,11 @@
                         <th scope="row" style="text-align: center;">{{ business.official_name }} </th>
                         <td style="text-align: center;">{{ business.category }} </td>
                         <td style="text-align: center;">
-                            <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="button"
-                            id="button_details" disabled>Full Details</button>
+                            <a href="{% url 'businesses:Edit' %}?id={{ business.id_business }}">
+                                <button type="button" class="btn btn-primary">
+                                    Edit Business
+                                </button>
+                            </a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -38,7 +41,7 @@
                         <th scope="row" style="text-align: center;" colspan="2">No Businesses</th>
                         <td style="text-align: center;">
                                 <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
-                                id="button-beneficiaries" disabled>Full Details</button>
+                                id="button-beneficiaries" disabled>Edit Business</button>
                         </td>
                     </tr>
                 {% endif %}

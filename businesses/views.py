@@ -73,7 +73,21 @@ def create_business(request):
 @login_required()
 def edit_business(request):
 
-    return render(request, 'businesses/businesses.html')
+    business_id = request.GET.get("id", None)
+
+    if not business_id:
+        return redirect('businesses:Manage')
+
+    if request.method == "GET":
+        business = Business.objects.get(id_business=business_id)
+
+        context = {
+            'business': business
+        }
+
+        return render(request, 'businesses/edit_businesses.html', context)
+
+    return render(request, 'businesses/edit_businesses.html')
 
 
 @login_required()
