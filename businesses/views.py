@@ -73,7 +73,42 @@ def create_business(request):
 @login_required()
 def edit_business(request):
 
-    return render(request, 'businesses/businesses.html')
+    business_id = request.GET.get("id", None)
+
+    if not business_id:
+        return redirect('businesses:Manage')
+
+    if not Business.objects.filter(id_business=business_id).exists():
+        return redirect('businesses:Manage')
+
+    business = Business.objects.get(id_business=business_id)
+
+    if request.method == "GET":
+
+        if business.system_name:
+            business.system_name = business.system_name.replace(" ", "-")
+
+        context = {
+            'business': business
+        }
+
+        return render(request, 'businesses/edit_businesses.html', context)
+    
+    if request.method == "POST":
+        
+        business_id = int(request.POST.get("business_id", None))
+        business_category = request.POST.get("business_category", None)
+        business_logo_url = request.POST.get("business_logo", None)
+
+        business = Business.objects.get(id_business=business_id)
+        business.category = business_category
+        business.logo_url = business_logo_url
+        business.save()
+
+        messages.info(request, "Business updated successfully.")
+        return redirect('businesses:Manage')
+
+    return render(request, 'businesses/edit_businesses.html')
 
 
 @login_required()

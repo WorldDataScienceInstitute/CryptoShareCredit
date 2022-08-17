@@ -18,6 +18,7 @@
             <thead>
               <tr>
                 <th scope="col" style="text-align: center;">Name</th>
+                <th scope="col" style="text-align: center;">Logo</th>
                 <th scope="col" style="text-align: center;">Category</th>
                 <th scope="col" style="text-align: center;">Details</th>
             </tr>
@@ -25,11 +26,15 @@
             <tbody>
                 {% for business in businesses %}
                     <tr>
-                        <th scope="row" style="text-align: center;">{{ business.official_name }} </th>
-                        <td style="text-align: center;">{{ business.category }} </td>
-                        <td style="text-align: center;">
-                            <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="button"
-                            id="button_details" disabled>Full Details</button>
+                        <th class="align-middle" scope="row" style="text-align: center;">{{ business.official_name }} </th>
+                        <th class="align-middle" scope="row" style="text-align: center;"><img src="{{ business.logo_url }}?w=70" class="img-thumbnail"></th>
+                        <td class="align-middle" style="text-align: center;">{{ business.category }} </td>
+                        <td class="align-middle" style="text-align: center;">
+                            <a href="{% url 'businesses:Edit' %}?id={{ business.id_business }}">
+                                <button type="button" class="btn btn-primary">
+                                    Edit Business
+                                </button>
+                            </a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -38,7 +43,7 @@
                         <th scope="row" style="text-align: center;" colspan="2">No Businesses</th>
                         <td style="text-align: center;">
                                 <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
-                                id="button-beneficiaries" disabled>Full Details</button>
+                                id="button-beneficiaries" disabled>Edit Business</button>
                         </td>
                     </tr>
                 {% endif %}
