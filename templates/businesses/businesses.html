@@ -70,46 +70,48 @@
         </form>
         <br>
         <h1 class="text-center">CryptoShare Business Directory</h1>
-        <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th scope="col" style="text-align: center;"></th>
-                <th scope="col" style="text-align: center;">Name</th>
-                <th scope="col" style="text-align: center;">Category</th>
-                <th scope="col" style="text-align: center;">Creation Date</th>
-                <th scope="col" style="text-align: center;">Details</th>
-            </tr>
-            </thead>
-            <tbody>
-                {% for business in businesses %}
-                    <tr>
-                        <th class="align-middle" scope="row" style="text-align: center;">
-                            {% if business.logo_url %}
-                            <img src="{{ business.logo_url|default:'' }}?w=50" class="img-thumbnail">
-                            {% else %}
-                            <span class="badge bg-light text-dark">NO LOGO</span>
-                            {% endif %}
-                        </th>
-                        <th class="align-middle" scope="row" style="text-align: center;">{{ business.official_name }} </th>
-                        <td class="align-middle" style="text-align: center;">{{ business.category }} </td>
-                        <td class="align-middle" style="text-align: center;">{{ business.creation_datetime }} UTC</td>
-                        <td class="align-middle" style="text-align: center;">
-                            <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="button"
-                            id="button_details" disabled>Full Details</button>
-                        </td>
-                    </tr>
-                {% endfor %}
-                {% if not businesses %}
-                    <tr>
-                        <th scope="row" style="text-align: center;" colspan="2">No Businesses</th>
-                        <td style="text-align: center;">
-                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
-                                id="button-beneficiaries" disabled>Full Details</button>
-                        </td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table>
+        <div class="container table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th scope="col" style="text-align: center;"></th>
+                    <th scope="col" style="text-align: center;">Name</th>
+                    <th scope="col" style="text-align: center;">Category</th>
+                    <th scope="col" style="text-align: center;">Creation Date</th>
+                    <th scope="col" style="text-align: center;">Details</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for business in businesses %}
+                        <tr>
+                            <th class="align-middle" scope="row" style="text-align: center;">
+                                {% if business.logo_url %}
+                                <img src="{{ business.logo_url|default:'' }}?w=50" class="img-thumbnail">
+                                {% else %}
+                                <span class="badge bg-light text-dark">NO LOGO</span>
+                                {% endif %}
+                            </th>
+                            <th class="align-middle" scope="row" style="text-align: center;">{{ business.official_name }} </th>
+                            <td class="align-middle" style="text-align: center;">{{ business.category }} </td>
+                            <td class="align-middle" style="text-align: center;">{{ business.creation_datetime }} UTC</td>
+                            <td class="align-middle" style="text-align: center;">
+                                <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="button"
+                                id="button_details" disabled>Full Details</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    {% if not businesses %}
+                        <tr>
+                            <th scope="row" style="text-align: center;" colspan="2">No Businesses</th>
+                            <td style="text-align: center;">
+                                    <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
+                                    id="button-beneficiaries" disabled>Full Details</button>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
     </div>
     <script type="text/javascript">
         function googleTranslateElementInit() {

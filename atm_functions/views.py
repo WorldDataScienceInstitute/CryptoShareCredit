@@ -13,7 +13,7 @@ from django.templatetags.static import static
 from django.utils import formats
 from .models import User
 from decimal import Decimal
-from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, TransactionC, WaitingList, UserAssets, StripeAccount, StripeTransaction, DynamicUsername
+from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, WaitingList, UserAssets, StripeAccount, StripeTransaction, DynamicUsername, CreditsTransaction, Contact
 from businesses.models import Business
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples, FIAT_CURRENCIES
@@ -119,7 +119,65 @@ def profile(request):
             messages.success(request, "Profile information updated successfully")
             return redirect('atm_functions:Profile')    
         
+@login_required()
+def contacts(request):
+    contacts = Contact.objects.filter(
+        user = request.user
+        )
 
+    context = {
+        "contacts": contacts
+    }
+
+    return render(request, "atm_functions/contacts/contacts.html", context)
+
+@login_required()
+def create_contact(request):
+    
+    if request.method == "GET":
+        return render(request, "atm_functions/contacts/create_contact.html")
+
+    if request.method == "POST":
+        contact_name = request.POST.get('contact_name','')
+        contact_username = request.POST.get('contact_username','').lower().replace(" ", "")
+
+        if Contact.objects.filter(user = request.user, username = contact_username).exists():
+            messages.warning(request, "Contact with that username already exists")
+            return redirect("atm_functions:Contacts")
+        
+        if not DynamicUsername.objects.filter(id_username = contact_username, username_type = "USER").exists():
+            messages.warning(request, "Invalid username, please try a different one")
+            return redirect("atm_functions:Contacts")
+        
+        new_contact_user = DynamicUsername.objects.get(id_username = contact_username, username_type = "USER").user_reference
+        Contact.objects.create(
+            user = request.user,
+            name = contact_name,
+            username = contact_username,
+            user_reference = new_contact_user
+        )
+
+        messages.success(request, "Contact created successfully")
+        return redirect("atm_functions:Contacts")
+
+    return render(request, "atm_functions/contacts/create_contact.html")
+
+@login_required()
+def delete_contact(request):
+    if request.method == "GET":
+        return redirect("atm_functions:Contacts")
+
+    contact_id = request.GET.get('id','')
+
+    if not Contact.objects.filter(id = contact_id).exists():
+        messages.success(request, "An error occurred, please try again")
+
+        return redirect("atm_functions:Contacts")
+    
+    contact = Contact.objects.get(id = contact_id)
+    contact.delete()
+    
+    return redirect("atm_functions:Contacts")
 
 
 # @login_required(login_url='authentication:Login')
@@ -132,7 +190,9 @@ def credit_grades(request):
 @login_required()
 def check_balance(request):
 
-    u = User.objects.get(pk=request.user.pk)
+    u = User.objects.get(
+        pk = request.user.pk
+        )
     # get first name
     name = u.first_name
 
@@ -898,6 +958,15 @@ def send_cryptoshare_wallet(request):
 def send_cryptoshare_credits(request):
     context = {}
 
+    contacts = Contact.objects.filter(
+        user = request.user
+        )
+
+    historical_transactions = CreditsTransaction.objects.filter(
+        Q(sender_user = request.user) |
+        Q(receiver_user = request.user)
+        ).order_by("-creation_datetime")
+
     cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
 
     balance = Balance.objects.filter(
@@ -906,6 +975,8 @@ def send_cryptoshare_credits(request):
     )
 
     context['balances'] = balance
+    context['historical_transactions'] = historical_transactions
+    context['contacts'] = contacts
 
     return render(request,'send_cryptoshare_credits.html', context)
 
@@ -1092,12 +1163,25 @@ def send_money_confirmation(request):
         messages.success(request, "Your withdrawal request has been created")
 
         return redirect('atm_functions:CheckCredit')
+
     elif wallet_confirmation == "credits":
         # sending_account = form_response["sendingAccount"].split("|")
         amount = float(form_response["sendingAmount"])
-        recipient_username = form_response["recipientUser"].lower().replace(" ", "")
+        receiverForm = request.POST.get('receiverForm')
+
+        if receiverForm == "username":
+            recipient_username = form_response["recipient_user"].lower().replace(" ", "")
+        elif receiverForm == "contact":
+            recipient_contact_id = form_response["user_contact"]
+            recipient_user_object = Contact.objects.get(id=recipient_contact_id).user_reference
+
+            recipient_username = DynamicUsername.objects.get(
+                user_reference = recipient_user_object
+                ).id_username
+
         cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
 
+        #MISSING BUSINESS SENDING CREDITS IMPLEMENTATION
         sender_account = Account.objects.get(
             user = request.user
             )
@@ -1138,14 +1222,17 @@ def send_money_confirmation(request):
         receiver_balance.amount += Decimal(amount)
         receiver_balance.save()
 
-        TransactionC.objects.create(
+        CreditsTransaction.objects.create(
             sender_user = request.user,
+            sender_username = sender_account.system_username,
             receiver_user = recipient_user,
+            receiver_username = recipient_username,
             digital_currency_name = cryptoshare_credits_object,
             transaction_type = "TRANSFER",
             state = "COMPLETED",
             amount = amount
         )
+
 
         messages.success(request, "Your transfer has been completed.")
         
