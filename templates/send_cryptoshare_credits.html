@@ -30,7 +30,7 @@
                         <b>Amount to send</b>
                     </label>
                     <input type="number" class="form-control" id="sendingAmount" aria-describedby="sendingAmount" name="sendingAmount"
-                        step=".000001" placeholder="Amount you want to send">
+                        step=".000001" placeholder="Amount you want to send" required>
                     <button type="button" class="btn btn-primary mt-2" onclick="setMaxAmount();">MAX AMOUNT</button>
                 </div>
                 
@@ -40,13 +40,13 @@
                         <b>Please choose a receiver option</b>
                     </label>
                     <div class="form-check col-md-2">
-                        <input class="form-check-input" type="radio" name="receiverForm" id="receiverForm" value="username" onclick="changeReceiverForm('receiver_contact', 'receiver_username')">
+                        <input class="form-check-input" type="radio" name="receiverForm" id="receiverForm" value="username" onclick="changeReceiverForm('receiver_contact', 'receiver_username')" required>
                         <label class="form-check-label" for="receiverForm">
                           Username
                         </label>
                       </div>
                       <div class="form-check col-md-2">
-                        <input class="form-check-input" type="radio" name="receiverForm" id="receiverForm2" value="contact" onclick="changeReceiverForm('receiver_username', 'receiver_contact')">
+                        <input class="form-check-input" type="radio" name="receiverForm" id="receiverForm2" value="contact" onclick="changeReceiverForm('receiver_username', 'receiver_contact')" required>
                         <label class="form-check-label" for="receiverForm2">
                           Contacts
                         </label>
@@ -58,19 +58,19 @@
                 </label>
                 
                 <div id="receiver_username" class="mb-3" style="display: none;">
-                    <input type="text" class="form-control" id="recipient_user" aria-describedby="recipient_user" name="recipient_user" placeholder="Please enter the recipient username">
+                    <input type="text" class="form-control" id="recipient_user" aria-describedby="recipient_user" name="recipient_user" placeholder="Please enter the recipient username" onchange="document.getElementById('submit_button').removeAttribute('disabled', '')">
                 </div>
 
                 <div id="receiver_contact" class="mb-3" style="display: none;">
                     <label for="user_contact" class="col-sm-2 col-form-label">Contact list</label>
-                    <select class="form-select" name="user_contact" id="user_contact">
+                    <select class="form-select" name="user_contact" id="user_contact" onchange="document.getElementById('submit_button').removeAttribute('disabled', '')">
                         <option disabled selected>Select contact</option>
                         {% for contact in contacts %}
-                        <option value="{{ contact.id }}">{{ contact.username }}</option>
+                        <option value="{{ contact.id }}">{{ contact.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <button style="margin-left:auto; margin-right:auto;" type="submit" class="btn btn-primary">Submit</button>
+                <button id="submit_button" style="margin-left:auto; margin-right:auto;" type="submit" class="btn btn-primary" disabled>Submit</button>
             </form>
         </div>
 
@@ -184,6 +184,7 @@
                 contactInput.removeAttribute("required", "")
             }
 
+            document.getElementById('submit_button').setAttribute('disabled', '')
 
         }
     </script>
