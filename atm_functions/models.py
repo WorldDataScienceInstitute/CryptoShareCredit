@@ -7,6 +7,10 @@ from datetime import datetime, timedelta
 # Create your models here.
 
 
+# <--------------- ACCOUNT OBJECTS ----------------->
+# <--------------- ACCOUNT OBJECTS ----------------->
+# <--------------- ACCOUNT OBJECTS ----------------->
+
 class Account(models.Model):
     # extension of default user table
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
@@ -32,6 +36,18 @@ class UserAssets(models.Model):
     worth = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     extra_field = models.CharField(max_length=57, null=True)
 
+class Contact(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=30)
+    username = models.CharField(max_length=30, null=True)
+    user_reference = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contact_user', null=True)
+
+# <--------------- ACCOUNT OBJECTS ----------------->
+# <--------------- ACCOUNT OBJECTS ----------------->
+# <--------------- ACCOUNT OBJECTS ----------------->
+
+
+
 class DynamicUsername(models.Model):
     id_username = models.CharField(max_length=30, primary_key=True)
     username_type = models.CharField(max_length=10, null=True) # USER or BUSINESS
@@ -47,6 +63,13 @@ class History(models.Model):
     Amount = models.BigIntegerField()
     Date = models.DateTimeField()
 
+
+# <--------------- CURRENCIES ----------------->
+# <--------------- CURRENCIES ----------------->
+# <--------------- CURRENCIES ----------------->
+
+
+# <--------------- DIGITAL CURRENCIES ----------------->
 class DigitalCurrency(models.Model):
     id_currency = models.AutoField(primary_key=True)
     currency_name = models.CharField(max_length=50)
@@ -72,6 +95,18 @@ class Currency(models.Model):
     digital_currency =  models.ForeignKey(DigitalCurrency, on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(default=True)
 
+
+# <--------------- CURRENCIES ----------------->
+# <--------------- CURRENCIES ----------------->
+# <--------------- CURRENCIES ----------------->
+
+
+
+
+# <--------------- FINANCE ----------------->
+# <--------------- FINANCE ----------------->
+# <--------------- FINANCE ----------------->
+
 class Address(models.Model):
     address = models.CharField(max_length=100, primary_key=True)
     email = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -84,6 +119,15 @@ class Balance(models.Model):
     digital_currency_name = models.ForeignKey(DigitalCurrency, on_delete=models.SET_NULL, null=True)
     email = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=18, decimal_places=8)
+
+# <--------------- FINANCE ----------------->
+# <--------------- FINANCE ----------------->
+# <--------------- FINANCE ----------------->
+
+
+# <--------------- WILLS ----------------->
+# <--------------- WILLS ----------------->
+# <--------------- WILLS ----------------->
 
 class BlockchainWill(models.Model):
     id_w = models.AutoField(primary_key=True)
@@ -110,7 +154,11 @@ class Beneficiary(models.Model):
     associated_email1 = models.CharField(max_length=40, null=True)
     associated_email2 = models.CharField(max_length=40, null=True)
     will_percentage = models.IntegerField(null=True)
-    selfie_photo_url = models.CharField(max_length=255, null=True)      
+    selfie_photo_url = models.CharField(max_length=255, null=True)
+
+# <--------------- WILLS ----------------->
+# <--------------- WILLS ----------------->
+# <--------------- WILLS -----------------> 
     
 class StripeTransaction(models.Model):
     id_transaction = models.AutoField(primary_key=True)
@@ -120,6 +168,18 @@ class StripeTransaction(models.Model):
     transaction_type = models.CharField(max_length=15)
     transaction_type_internal = models.CharField(max_length=30)
     transaction_state = models.CharField(max_length=15)
+    creation_datetime = models.DateTimeField(auto_now_add=True)
+
+class CreditsTransaction(models.Model):
+    id_a = models.AutoField(primary_key=True)
+    sender_user = models.ForeignKey(User, related_name = "new_sender_user", on_delete=models.CASCADE)
+    sender_username = models.CharField(max_length=30, null=True)
+    receiver_user = models.ForeignKey(User, related_name = "new_receiver_user", on_delete=models.CASCADE)
+    receiver_username = models.CharField(max_length=30, null=True)
+    digital_currency_name = models.ForeignKey(DigitalCurrency, on_delete=models.DO_NOTHING)
+    transaction_type = models.CharField(max_length=15)
+    state = models.CharField(max_length=15)
+    amount = models.DecimalField(max_digits=18, decimal_places=8)
     creation_datetime = models.DateTimeField(auto_now_add=True)
 
 class Referal(models.Model):
