@@ -955,6 +955,12 @@ def send_cryptoshare_wallet(request):
     return render(request,'send_cryptoshare_wallet.html', context)
 
 @login_required()
+def transfer_credits(request):
+    context = {}
+
+    return render(request,'atm_functions/payments/cryptoshare_credits_selection.html', context)
+
+@login_required()
 def send_cryptoshare_credits(request):
     context = {}
 

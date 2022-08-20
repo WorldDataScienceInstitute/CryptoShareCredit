@@ -50,6 +50,7 @@ urlpatterns = [
      path("SendCryptoShareCredits/", views.send_cryptoshare_credits, name="SendCryptoShareCredits"),
      path("SendMoneyConfirmation/", views.send_money_confirmation, name="SendMoneyConfirmation"),
      path("TransferMoney/", views.transfer_money, name="TransferMoney"),
+     path("TransferCredits/", views.transfer_credits, name="TransferCredits"),
 
      #API ENDPOINTS
      path("SimpleSwapAPI/", views.simpleswap_api, name="SimpleSwapAPI"),

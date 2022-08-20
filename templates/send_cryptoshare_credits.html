@@ -20,7 +20,7 @@
                     <select class="form-select" id="sendingAccount" aria-describedby="sendingAccount" name="sendingAccount">
                         <option disabled>Select Account</option >
                         {% for balance in balances %}
-                        <option value="{{ balance.digital_currency_name.currency_name }}|{{ balance.amount|floatformat:0 }}">{{ balance.digital_currency_name.symbol }} : {{ balance.digital_currency_name.currency_name }} || Balance : {{ balance.amount|floatformat:0 }}</option>
+                        <option value="{{ balance.digital_currency_name.currency_name }}|{{ balance.amount|floatformat:0 }}">{{ balance.digital_currency_name.symbol }} || Balance : {{ balance.amount|floatformat:0 }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -106,7 +106,7 @@
 
 
                             
-                            <td>{{ transaction.amount }}</td>
+                            <td>{{ transaction.amount|floatformat:0 }}</td>
                             <td>{{ transaction.creation_datetime }} UTC</td>
 
                         </tr>
