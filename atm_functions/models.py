@@ -160,7 +160,7 @@ class Beneficiary(models.Model):
 # <--------------- WILLS ----------------->
 # <--------------- WILLS -----------------> 
     
-class StripeTransaction(models.Model):
+class TransactionStripe(models.Model):
     id_transaction = models.AutoField(primary_key=True)
     stripe_account = models.ForeignKey(StripeAccount, on_delete=models.CASCADE)
     payment_intent = models.CharField(max_length=30, unique=True, null=False)

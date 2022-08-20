@@ -13,7 +13,7 @@ from django.templatetags.static import static
 from django.utils import formats
 from .models import User
 from decimal import Decimal
-from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, WaitingList, UserAssets, StripeAccount, StripeTransaction, DynamicUsername, CreditsTransaction, Contact
+from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, WaitingList, UserAssets, StripeAccount, TransactionStripe, DynamicUsername, CreditsTransaction, Contact
 from businesses.models import Business
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples, FIAT_CURRENCIES
@@ -473,7 +473,7 @@ def stripe_checkout(request):
 
     payment_intent = session.payment_intent
 
-    stripe_transaction = StripeTransaction.objects.create(
+    stripe_transaction = TransactionStripe.objects.create(
         stripe_account = user_stripe_account,
         payment_intent = payment_intent,
         amount = amount,
@@ -1631,7 +1631,7 @@ def stripe_webhook(request):
 
     # stripe_customer_object = StripeAccount.objects.get(stripe_customer_id="cus_MBazDa7gq6ZfbH")
     stripe_customer_object = StripeAccount.objects.get(stripe_customer_id=customer_id)
-    stripe_transaction = StripeTransaction.objects.get(payment_intent=payment_intent)
+    stripe_transaction = TransactionStripe.objects.get(payment_intent=payment_intent)
 
     cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
 
