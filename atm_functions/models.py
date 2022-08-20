@@ -170,7 +170,7 @@ class TransactionStripe(models.Model):
     transaction_state = models.CharField(max_length=15)
     creation_datetime = models.DateTimeField(auto_now_add=True)
 
-class CreditsTransaction(models.Model):
+class TransactionCredits(models.Model):
     id_a = models.AutoField(primary_key=True)
     sender_user = models.ForeignKey(User, related_name = "new_sender_user", on_delete=models.CASCADE)
     sender_username = models.CharField(max_length=30, null=True)
@@ -178,9 +178,8 @@ class CreditsTransaction(models.Model):
     receiver_username = models.CharField(max_length=30, null=True)
     digital_currency_name = models.ForeignKey(DigitalCurrency, on_delete=models.DO_NOTHING)
     transaction_type = models.CharField(max_length=15)
-    state = models.CharField(max_length=15)
+    transaction_state = models.CharField(max_length=15)
     amount = models.DecimalField(max_digits=18, decimal_places=8)
-    transaction_state = models.CharField(max_length=15, null=True)
     creation_datetime = models.DateTimeField(auto_now_add=True)
 
 class Referal(models.Model):

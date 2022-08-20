@@ -13,7 +13,7 @@ from django.templatetags.static import static
 from django.utils import formats
 from .models import User
 from decimal import Decimal
-from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, WaitingList, UserAssets, StripeAccount, TransactionStripe, DynamicUsername, CreditsTransaction, Contact
+from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, WaitingList, UserAssets, StripeAccount, TransactionStripe, DynamicUsername, TransactionCredits, Contact
 from businesses.models import Business
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples, FIAT_CURRENCIES
@@ -962,7 +962,7 @@ def send_cryptoshare_credits(request):
         user = request.user
         )
 
-    historical_transactions = CreditsTransaction.objects.filter(
+    historical_transactions = TransactionCredits.objects.filter(
         Q(sender_user = request.user) |
         Q(receiver_user = request.user)
         ).order_by("-creation_datetime")
@@ -1222,14 +1222,14 @@ def send_money_confirmation(request):
         receiver_balance.amount += Decimal(amount)
         receiver_balance.save()
 
-        CreditsTransaction.objects.create(
+        TransactionCredits.objects.create(
             sender_user = request.user,
             sender_username = sender_account.system_username,
             receiver_user = recipient_user,
             receiver_username = recipient_username,
             digital_currency_name = cryptoshare_credits_object,
             transaction_type = "TRANSFER",
-            state = "COMPLETED",
+            transaction_state = "COMPLETED",
             amount = amount
         )
 
