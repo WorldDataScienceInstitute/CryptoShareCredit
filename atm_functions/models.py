@@ -180,6 +180,7 @@ class CreditsTransaction(models.Model):
     transaction_type = models.CharField(max_length=15)
     state = models.CharField(max_length=15)
     amount = models.DecimalField(max_digits=18, decimal_places=8)
+    transaction_state = models.CharField(max_length=15, null=True)
     creation_datetime = models.DateTimeField(auto_now_add=True)
 
 class Referal(models.Model):
@@ -219,17 +220,6 @@ class TransactionB(models.Model):
     creation_datetime = models.DateTimeField(auto_now_add=True)
     start_datetime = models.DateTimeField(null=True)
     end_datetime = models.DateTimeField(null=True)
-
-#Transaction for Deposits and Withdrawals DIGITAL CURRENCIES
-class TransactionC(models.Model):
-    id_a = models.AutoField(primary_key=True)
-    sender_user = models.ForeignKey(User, related_name = "sender_user", on_delete=models.CASCADE)
-    receiver_user = models.ForeignKey(User, related_name = "receiver_user", on_delete=models.CASCADE)
-    digital_currency_name = models.ForeignKey(DigitalCurrency, on_delete=models.DO_NOTHING)
-    transaction_type = models.CharField(max_length=15)
-    state = models.CharField(max_length=15)
-    amount = models.DecimalField(max_digits=18, decimal_places=8)
-    creation_datetime = models.DateTimeField(auto_now_add=True)
 
 # #Transaction for swapping CRYPTO
 # class TransactionC(models.Model):
