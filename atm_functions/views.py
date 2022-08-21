@@ -17,7 +17,7 @@ from atm_functions.models import Account, Address, Balance, Cryptocurrency, Digi
 from businesses.models import Business
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples, FIAT_CURRENCIES
-from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email, code_creation_email
+from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email, payment_request
 from common.cryptoapis import CryptoApis
 from common.cryptoapis_utils import CryptoApisUtils
 from common.simpleswap import SimpleSwap
@@ -955,6 +955,19 @@ def send_cryptoshare_wallet(request):
     return render(request,'send_cryptoshare_wallet.html', context)
 
 @login_required()
+def transfer_credits(request):
+    context = {}
+
+    historical_transactions = TransactionCredits.objects.filter(
+        Q(sender_user = request.user, transaction_type = "REQUEST", transaction_state = "PENDING") |
+        Q(receiver_user = request.user, transaction_type = "REQUEST", transaction_state = "PENDING")
+        ).order_by("-creation_datetime")
+
+    context["historical_transactions"] = historical_transactions
+
+    return render(request,'atm_functions/payments/cryptoshare_credits_selection.html', context)
+
+@login_required()
 def send_cryptoshare_credits(request):
     context = {}
 
@@ -963,8 +976,8 @@ def send_cryptoshare_credits(request):
         )
 
     historical_transactions = TransactionCredits.objects.filter(
-        Q(sender_user = request.user) |
-        Q(receiver_user = request.user)
+        Q(sender_user = request.user, transaction_type = "TRANSFER") |
+        Q(receiver_user = request.user, transaction_type = "TRANSFER")
         ).order_by("-creation_datetime")
 
     cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
@@ -979,6 +992,169 @@ def send_cryptoshare_credits(request):
     context['contacts'] = contacts
 
     return render(request,'send_cryptoshare_credits.html', context)
+
+@login_required()
+def request_cryptoshare_credits(request):
+    context = {}
+
+    if request.method == "GET":
+
+        contacts = Contact.objects.filter(
+            user = request.user
+            )
+        
+        context['contacts'] = contacts
+
+        return render(request,'atm_functions/payments/request_cryptoshare_credits.html', context)
+    
+    elif request.method == "POST":
+        form_response = request.POST
+
+        action = request.GET.get("action", "")
+
+        
+        if action == "request":
+
+            receiverForm = form_response["receiverForm"]
+
+            amount = form_response["request_amount"]
+            note = form_response.get("note", None)
+            
+            cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
+
+            #MISSING BUSINESS SENDING CREDITS IMPLEMENTATION
+            receiver_account = Account.objects.get(
+                user = request.user
+            )
+
+            if receiverForm == "username":
+                payer_username = form_response["payer_user"].lower().replace(" ", "")
+
+            elif receiverForm == "contact":
+                payer_contact_id = form_response["user_contact"]
+                payer_user_object = Contact.objects.get(
+                    id = payer_contact_id
+                    ).user_reference
+
+                payer_username = DynamicUsername.objects.get(
+                    user_reference = payer_user_object
+                    ).id_username
+
+            if DynamicUsername.objects.filter(id_username = payer_username).exists():
+                payer_username_object = DynamicUsername.objects.get(id_username = payer_username)
+            else:
+                messages.warning(request, "Invalid username. Please try again.")
+                return redirect('atm_functions:SendCryptoShareCredits')
+            
+            if payer_username_object.username_type == "BUSINESS":
+                business = payer_username_object.business_reference
+                payer_user = business.owner
+            elif payer_username_object.username_type == "USER":
+                payer_user = payer_username_object.user_reference
+            
+            if payer_user == request.user:
+                messages.info(request, "You can't request credits to yourself.")
+                return redirect('atm_functions:RequestCryptoShareCredits')
+                
+            TransactionCredits.objects.create(
+                sender_user = payer_user,
+                sender_username = payer_username,
+                receiver_user = request.user,
+                receiver_username = receiver_account.system_username,
+                digital_currency_name = cryptoshare_credits_object,
+                transaction_type = "REQUEST",
+                transaction_state = "PENDING",
+                amount = amount,
+                note = note
+            )
+
+            payment_request(str(payer_user))
+
+        elif action == "cancel":
+
+            transaction_id = request.GET.get("id", "")
+            
+            if not TransactionCredits.objects.filter(id_transaction = transaction_id).exists():
+                messages.warning(request, "Invalid transaction. Please try again.")
+                return redirect('atm_functions:TransferCredits')
+
+            transaction = TransactionCredits.objects.get(id_transaction = transaction_id)
+
+            if transaction.receiver_user != request.user:
+                messages.warning(request, "You can't do this!")
+                return redirect('atm_functions:TransferCredits')
+            
+            transaction.transaction_state = "CANCELLED"
+            transaction.save()
+
+            messages.info(request, "Transaction cancelled.")
+            return redirect('atm_functions:TransferCredits')
+
+        elif action == "deny":
+
+            transaction_id = request.GET.get("id", None)
+
+            if not TransactionCredits.objects.filter(id_transaction = transaction_id).exists():
+                messages.warning(request, "Invalid transaction. Please try again.")
+                return redirect('atm_functions:TransferCredits')
+
+            transaction = TransactionCredits.objects.get(id_transaction = transaction_id)
+
+            if transaction.sender_user != request.user:
+                messages.warning(request, "You can't do this!")
+                return redirect('atm_functions:TransferCredits')
+            
+            transaction.transaction_state = "DENIED"
+            transaction.save()
+
+            messages.info(request, "Transaction denied.")
+
+            return redirect('atm_functions:TransferCredits')
+
+        elif action == "accept":
+
+            transaction_id = request.GET.get("id", None)
+
+            if not TransactionCredits.objects.filter(id_transaction = transaction_id).exists():
+                messages.warning(request, "Invalid transaction. Please try again.")
+                return redirect('atm_functions:TransferCredits')
+            
+            transaction = TransactionCredits.objects.get(id_transaction = transaction_id)
+
+            if transaction.sender_user != request.user:
+                messages.warning(request, "You can't do this!")
+                return redirect('atm_functions:TransferCredits')
+            
+            cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
+
+            transaction.transaction_state = "COMPLETED"
+
+            sender_balance = Balance.objects.get(
+                email = transaction.sender_user,
+                digital_currency_name = cryptoshare_credits_object
+            )
+
+            receiver_balance = Balance.objects.get(
+                email = transaction.receiver_user,
+                digital_currency_name = cryptoshare_credits_object
+            )
+
+            sender_balance.amount -= transaction.amount
+            receiver_balance.amount += transaction.amount
+            sender_balance.save()
+            receiver_balance.save()
+            transaction.save()
+
+            messages.info(request, "Transaction completed.")
+
+            return redirect('atm_functions:TransferCredits')
+        
+        return render(request,'atm_functions/payments/request_cryptoshare_credits.html', context)
+
+
+
+
+    return render(request,'atm_functions/payments/request_cryptoshare_credits.html', context)
 
 @login_required()
 def send_coinbase_wallet(request):
