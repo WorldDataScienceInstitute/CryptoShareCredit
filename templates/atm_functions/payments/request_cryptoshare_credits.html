@@ -10,58 +10,44 @@
     <div class="content-container" style="margin-top: 5%;">
         {% include 'messages.html' %}
         <div class="container" style="text-align:center" style="width:30%;min-width:400px;">
-            <form action="/atm/SendMoneyConfirmation/?wallet=credits" method="post">
+            <form action="{% url 'atm_functions:RequestCryptoShareCredits' %}?action=request" method="post">
                 {% csrf_token %}
-
                 <div class="mb-3">
-                    <label for="sendingAccount">
-                        <b>Your Account</b>
+                    <label for="request_amount">
+                        <b>Amount to request</b>
                     </label>
-                    <select class="form-select" id="sendingAccount" aria-describedby="sendingAccount" name="sendingAccount">
-                        <option disabled>Select Account</option >
-                        {% for balance in balances %}
-                        <option value="{{ balance.digital_currency_name.currency_name }}|{{ balance.amount|floatformat:0 }}">{{ balance.digital_currency_name.symbol }} || Balance : {{ balance.amount|floatformat:0 }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label for="sendingAmount">
-                        <b>Amount to send</b>
-                    </label>
-                    <input type="number" class="form-control" id="sendingAmount" aria-describedby="sendingAmount" name="sendingAmount"
-                        step=".000001" placeholder="Amount you want to send" required>
-                    <button type="button" class="btn btn-primary mt-2" onclick="setMaxAmount();">MAX AMOUNT</button>
+                    <input type="number" class="form-control" id="request_amount" aria-describedby="request_amount" name="request_amount"
+                        step=".000001" placeholder="Amount you want to request" required>
                 </div>
                 
 
                 <div class="row g-4 justify-content-center m-4">
                     <label for="receiverForm">
-                        <b>Please choose a receiver option</b>
+                        <b>Please choose an option</b>
                     </label>
                     <div class="form-check col-md-2">
-                        <input class="form-check-input" type="radio" name="receiverForm" id="receiverForm" value="username" onclick="changeReceiverForm('receiver_contact', 'receiver_username')" required>
+                        <input class="form-check-input" type="radio" name="receiverForm" id="receiverForm" value="username" onclick="changeReceiverForm('payer_contact', 'payer_username')" required>
                         <label class="form-check-label" for="receiverForm">
                           Username
                         </label>
                       </div>
                       <div class="form-check col-md-2">
-                        <input class="form-check-input" type="radio" name="receiverForm" id="receiverForm2" value="contact" onclick="changeReceiverForm('receiver_username', 'receiver_contact')" required>
+                        <input class="form-check-input" type="radio" name="receiverForm" id="receiverForm2" value="contact" onclick="changeReceiverForm('payer_username', 'payer_contact')" required>
                         <label class="form-check-label" for="receiverForm2">
                           Contacts
                         </label>
                       </div>
                 </div>
 
-                <label for="recipientUser">
-                    <b>Please Enter Receiver Username</b>
+                <label for="payerUser">
+                    <b>Please Enter the payer Username</b>
                 </label>
                 
-                <div id="receiver_username" class="mb-3" style="display: none;">
-                    <input type="text" class="form-control" id="recipient_user" aria-describedby="recipient_user" name="recipient_user" placeholder="Please enter the recipient username" onchange="document.getElementById('submit_button').removeAttribute('disabled', '')">
+                <div id="payer_username" class="mb-3" style="display: none;">
+                    <input type="text" class="form-control" id="payer_user" aria-describedby="payer_user" name="payer_user" placeholder="Please enter the recipient username" onchange="document.getElementById('submit_button').removeAttribute('disabled', '')">
                 </div>
 
-                <div id="receiver_contact" class="mb-3" style="display: none;">
+                <div id="payer_contact" class="mb-3" style="display: none;">
                     <label for="user_contact" class="col-sm-2 col-form-label">Contact list</label>
                     <select class="form-select" name="user_contact" id="user_contact" onchange="document.getElementById('submit_button').removeAttribute('disabled', '')">
                         <option disabled selected>Select contact</option>
@@ -71,7 +57,7 @@
                     </select>
                 </div>
                 <div class="d-grid gap-2 col-6 mx-auto">
-                    <button id="submit_button" type="submit" class="btn btn-primary" disabled>Send Credits</button>
+                    <button id="submit_button" type="submit" class="btn btn-primary" disabled>Request Credits</button>
                 </div>
                 <!-- <button id="submit_button" style="margin-left:auto; margin-right:auto;" type="submit" class="btn btn-primary" disabled>Submit</button> -->
             </form>
@@ -115,19 +101,6 @@
             </table>
         </div>
     </div>
-
-    <script type="text/javascript">
-        //Get balance amount from sendingAccount and make it max value
-        function setMaxAmount(){
-            var sendingAccount = document.getElementById("sendingAccount");
-            var balance = sendingAccount.options[sendingAccount.selectedIndex].value.split("|")[1];
-            document.getElementById("sendingAmount").max = balance;
-            document.getElementById("sendingAmount").value = balance;
-        }
-
-
-    </script>
-
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({

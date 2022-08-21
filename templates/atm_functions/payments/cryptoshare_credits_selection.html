@@ -1,0 +1,137 @@
+{% load static %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+
+<body>
+    {% include 'atm_sidebar.html' %}
+    {% include 'messages.html' %}
+    {% if auth_level > 0 %}
+    {% include 'a_sessiontimeout.html' %}
+    {% endif %}
+    <div class="content-container">
+        <h2 class="ml-4" style="text-align:center;">CryptoShare Payments</h2>
+        <br>
+        <h3 class="ml-4" style="text-align:center;">Choose a transaction:</h3>
+        <br>
+        <div class="m-4 d-grid gap-2 d-md-block mx-auto" style="text-align: center;">
+            <a class="btn btn-primary btn-lg m-2" href="{% url 'atm_functions:SendCryptoShareCredits' %}"
+                role="button">MAKE A PAYMENT</a>
+            <a class="btn btn-primary btn-lg m-2 disabled" href="{% url 'atm_functions:RequestCryptoShareCredits' %}" role="button">REQUEST A PAYMENT</a>
+        </div>
+
+        <h2 class="text-center text-secondary" style="font-size: 25px;">Pending Payments</h2>
+        <div class="container table-responsive" style="padding: 0;">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center" scope="col">Type</th>
+                        <th class="text-center" scope="col">From / To</th>
+                        <th class="text-center" scope="col">Amount</th>
+                        <th class="text-center" scope="col">Date</th>
+                        <th class="text-center" scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in historical_transactions %}
+                        <tr class="text-center">
+                            <td>
+                                <span class="badge bg-warning text-dark">{{ transaction.transaction_type }}</span>
+                            </td>
+                            
+                            {% if transaction.sender_user == request.user %}
+                            <td>
+                                <span class="badge bg-info text-dark">{{ transaction.receiver_username }}</span>
+                            </td>
+                            {% elif transaction.receiver_user == request.user %}
+                            <td>
+                                <span class="badge bg-info text-dark">{{ transaction.sender_username }}</span>
+                            </td>
+                            {% endif %}
+  
+                            <td>{{ transaction.amount|floatformat:0 }}</td>
+                            <td>{{ transaction.creation_datetime }} UTC</td>
+
+                            <td style="text-align: center;">
+                                {% if transaction.sender_user == request.user %}
+                                <form action="{% url 'atm_functions:RequestCryptoShareCredits' %}?action=accept&id={{ transaction.id_transaction }}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn btn-success m-2" type="submit" >
+                                        ACCEPT
+                                    </button>
+                                </form>
+                                <form action="{% url 'atm_functions:RequestCryptoShareCredits' %}?action=deny&id={{ transaction.id_transaction }}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn btn-danger m-2" type="submit" >
+                                        DENY
+                                    </button>
+                                </form>
+                                {% elif transaction.receiver_user == request.user %}
+                                <form action="{% url 'atm_functions:RequestCryptoShareCredits' %}?action=cancel&id={{ transaction.id_transaction }}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn btn-danger m-2" type="submit" >
+                                        CANCEL
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+
+
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+
+
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+{% include 'atm_footer.html' %}
+
+</html>
