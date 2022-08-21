@@ -514,7 +514,15 @@ def inprogress_transactionb_email(user_email, id_b, transaction_id, currency_nam
     s.quit()
     return
 
-def payment_request(sender_email):
+def payment_request_notification(sender_email, notification_type = "CREATED"):
+
+    notification_types = {
+        "CREATED": "created",
+        "PAYED": "payed",
+        "CANCELLED": "cancelled",
+        "DENIED": "denied",
+    }
+
     port = settings.EMAIL_PORT
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "Crypto$hare payment request"
@@ -522,6 +530,8 @@ def payment_request(sender_email):
     msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
     msg['To'] = sender_email
     
+
+
     html = f"""
     <html>
     <head></head>
@@ -529,7 +539,7 @@ def payment_request(sender_email):
         
         <p>¡Hi there!</p>
 
-        <p>You are receiving this email because you have received a new payment request in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+        <p>You are receiving this email because a payment request has been {notification_types[notification_type]} in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
 
         <p>
             For further details please visit Cryptoshare or <a href="http://www.cryptoshareapp.com/atm/TransferCredits/">CLICK THIS LINK</a>
@@ -552,6 +562,7 @@ def payment_request(sender_email):
     s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
     s.quit()
     return
+
 
 def test_email(user_email):
     port = settings.EMAIL_PORT

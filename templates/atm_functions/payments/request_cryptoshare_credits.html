@@ -16,40 +16,45 @@
                     <label for="request_amount">
                         <b>Amount to request</b>
                     </label>
-                    <input type="number" class="form-control" id="request_amount" aria-describedby="request_amount" name="request_amount"
-                        step=".000001" placeholder="Amount you want to request" required>
+                    <input type="number" class="form-control" id="request_amount" aria-describedby="request_amount"
+                        name="request_amount" step=".000001" placeholder="Amount you want to request" required>
                 </div>
-                
+
 
                 <div class="row g-4 justify-content-center m-4">
                     <label for="receiverForm">
                         <b>Please choose an option</b>
                     </label>
                     <div class="form-check col-md-2">
-                        <input class="form-check-input" type="radio" name="receiverForm" id="receiverForm" value="username" onclick="changeReceiverForm('payer_contact', 'payer_username')" required>
+                        <input class="form-check-input" type="radio" name="receiverForm" id="receiverForm"
+                            value="username" onclick="changeReceiverForm('payer_contact', 'payer_username')" required>
                         <label class="form-check-label" for="receiverForm">
-                          Username
+                            Username
                         </label>
-                      </div>
-                      <div class="form-check col-md-2">
-                        <input class="form-check-input" type="radio" name="receiverForm" id="receiverForm2" value="contact" onclick="changeReceiverForm('payer_username', 'payer_contact')" required>
+                    </div>
+                    <div class="form-check col-md-2">
+                        <input class="form-check-input" type="radio" name="receiverForm" id="receiverForm2"
+                            value="contact" onclick="changeReceiverForm('payer_username', 'payer_contact')" required>
                         <label class="form-check-label" for="receiverForm2">
-                          Contacts
+                            Contacts
                         </label>
-                      </div>
+                    </div>
                 </div>
 
                 <label for="payerUser">
                     <b>Please Enter the payer Username</b>
                 </label>
-                
+
                 <div id="payer_username" class="mb-3" style="display: none;">
-                    <input type="text" class="form-control" id="payer_user" aria-describedby="payer_user" name="payer_user" placeholder="Please enter the recipient username" onchange="document.getElementById('submit_button').removeAttribute('disabled', '')">
+                    <input type="text" class="form-control" id="payer_user" aria-describedby="payer_user"
+                        name="payer_user" placeholder="Please enter the recipient username"
+                        oninput="document.getElementById('submit_button').removeAttribute('disabled', '')">
                 </div>
 
                 <div id="payer_contact" class="mb-3" style="display: none;">
                     <label for="user_contact" class="col-sm-2 col-form-label">Contact list</label>
-                    <select class="form-select" name="user_contact" id="user_contact" onchange="document.getElementById('submit_button').removeAttribute('disabled', '')">
+                    <select class="form-select" name="user_contact" id="user_contact"
+                        onchange="document.getElementById('submit_button').removeAttribute('disabled', '')">
                         <option disabled selected>Select contact</option>
                         {% for contact in contacts %}
                         <option value="{{ contact.id }}">{{ contact.name }}</option>
@@ -72,30 +77,48 @@
                         <th class="text-center" scope="col">From / To</th>
                         <th class="text-center" scope="col">Amount</th>
                         <th class="text-center" scope="col">Date</th>
-
+                        <th class="text-center" scope="col">State</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for transaction in historical_transactions %}
-                        <tr class="text-center">
-                            {% if transaction.sender_user == request.user %}
-                            <td>
-                                <span class="badge bg-danger">SENT</span>
-                            </td>
-                            <td>{{ transaction.receiver_username }}</td>
-                            {% else %}
-                            <td>
-                                <span class="badge bg-success">RECEIVED</span>
-                            </td>
-                            <td>{{ transaction.sender_username }}</td>
-                            {% endif %}
+                    <tr class="text-center">
+                        <td>
+                            <span class="badge bg-warning text-dark">{{ transaction.transaction_type }}</span>
+                        </td>
 
+                        {% if transaction.sender_user == request.user %}
+                        <td>
+                            <span class="badge bg-info text-dark">{{ transaction.receiver_username }}</span>
+                        </td>
+                        {% elif transaction.receiver_user == request.user %}
+                        <td>
+                            <span class="badge bg-info text-dark">{{ transaction.sender_username }}</span>
+                        </td>
+                        {% endif %}
 
-                            
-                            <td>{{ transaction.amount|floatformat:0 }}</td>
-                            <td>{{ transaction.creation_datetime }} UTC</td>
+                        <td>{{ transaction.amount|floatformat:0 }}</td>
+                        <td>{{ transaction.creation_datetime }} UTC</td>
 
-                        </tr>
+                        {% if transaction.transaction_state == "CANCELLED" %}
+                        <td>
+                            <span class="badge bg-secondary">{{ transaction.transaction_state }}</span>
+                        </td>
+                        {% elif transaction.transaction_state == "DENIED" %}
+                        <td>
+                            <span class="badge bg-danger">{{ transaction.transaction_state }}</span>
+                        </td>
+                        {% elif transaction.transaction_state == "COMPLETED" %}
+                        <td>
+                            <span class="badge bg-success">{{ transaction.transaction_state }}</span>
+                        </td>
+                        {% elif transaction.transaction_state == "PENDING" %}
+                        <td>
+                            <span class="badge bg-warning">{{ transaction.transaction_state }}</span>
+                        </td>
+                        {% endif %}
+
+                    </tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -140,22 +163,22 @@
             });
         });
 
-        function changeReceiverForm(hideForm, showForm){
+        function changeReceiverForm(hideForm, showForm) {
             var hideElement = document.getElementById(hideForm);
             var showElement = document.getElementById(showForm);
 
             hideElement.style.display = "none";
             showElement.style.display = "block";
-            
+
             var contactInput = document.getElementById("user_contact");
             var usernameInput = document.getElementById("recipient_user");
 
-            if (showForm == "receiver_contact"){
+            if (showForm == "receiver_contact") {
                 contactInput.setAttribute("required", "")
                 usernameInput.removeAttribute("required", "")
             }
 
-            if (showForm == "receiver_username"){
+            if (showForm == "receiver_username") {
                 usernameInput.setAttribute("required", "")
                 contactInput.removeAttribute("required", "")
             }
@@ -176,4 +199,5 @@
     <script src="{% static 'js/main.js' %}"></script>
 </body>
 {% include 'atm_footer.html' %}
+
 </html>

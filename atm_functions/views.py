@@ -17,7 +17,7 @@ from atm_functions.models import Account, Address, Balance, Cryptocurrency, Digi
 from businesses.models import Business
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples, FIAT_CURRENCIES
-from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email, payment_request
+from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email, payment_request_notification
 from common.cryptoapis import CryptoApis
 from common.cryptoapis_utils import CryptoApisUtils
 from common.simpleswap import SimpleSwap
@@ -978,7 +978,7 @@ def send_cryptoshare_credits(request):
     historical_transactions = TransactionCredits.objects.filter(
         Q(sender_user = request.user, transaction_type = "TRANSFER") |
         Q(receiver_user = request.user, transaction_type = "TRANSFER")
-        ).order_by("-creation_datetime")
+    ).order_by("-creation_datetime")
 
     cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
 
@@ -1003,7 +1003,14 @@ def request_cryptoshare_credits(request):
             user = request.user
             )
         
+        historical_transactions = TransactionCredits.objects.filter(
+            Q(sender_user = request.user, transaction_type = "REQUEST") |
+            Q(receiver_user = request.user, transaction_type = "REQUEST")
+        ).order_by("-creation_datetime")
+        
         context['contacts'] = contacts
+        context['historical_transactions'] = historical_transactions
+
 
         return render(request,'atm_functions/payments/request_cryptoshare_credits.html', context)
     
@@ -1068,7 +1075,10 @@ def request_cryptoshare_credits(request):
                 note = note
             )
 
-            payment_request(str(payer_user))
+            payment_request_notification(
+                str(payer_user), 
+                notification_type = "CREATED"
+                )
 
         elif action == "cancel":
 
@@ -1086,6 +1096,11 @@ def request_cryptoshare_credits(request):
             
             transaction.transaction_state = "CANCELLED"
             transaction.save()
+
+            payment_request_notification(
+                str(transaction.sender_user), 
+                notification_type = "CANCELLED"
+            )
 
             messages.info(request, "Transaction cancelled.")
             return redirect('atm_functions:TransferCredits')
@@ -1106,6 +1121,11 @@ def request_cryptoshare_credits(request):
             
             transaction.transaction_state = "DENIED"
             transaction.save()
+
+            payment_request_notification(
+                str(transaction.receiver_user), 
+                notification_type = "DENIED"
+            )
 
             messages.info(request, "Transaction denied.")
 
@@ -1145,16 +1165,16 @@ def request_cryptoshare_credits(request):
             receiver_balance.save()
             transaction.save()
 
+            payment_request_notification(
+                str(transaction.receiver_user), 
+                notification_type = "PAYED"
+            )
+
             messages.info(request, "Transaction completed.")
 
-            return redirect('atm_functions:TransferCredits')
-        
-        return render(request,'atm_functions/payments/request_cryptoshare_credits.html', context)
+        return redirect('atm_functions:TransferCredits')
 
-
-
-
-    return render(request,'atm_functions/payments/request_cryptoshare_credits.html', context)
+    return redirect('atm_functions:RequestCryptoShareCredits')
 
 @login_required()
 def send_coinbase_wallet(request):
