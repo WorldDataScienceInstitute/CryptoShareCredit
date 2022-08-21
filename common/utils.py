@@ -6,7 +6,7 @@ import time
 import pytz as pytz
 from dateutil.tz import tzlocal
 from dotenv import load_dotenv
-from atm_functions.models import Account, Balance
+from atm_functions.models import Account, Balance, DigitalCurrency
 from atm_functions.models import User
 from .cryptoapis import CryptoApis
 import random
@@ -81,6 +81,11 @@ def calculate_credit_grade(user):
 
         currency_usd_balance = balance.amount * currency.exchange_rate
         total_usd_balance += currency_usd_balance
+
+    cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
+    credits_balance = Balance.objects.get(email = user.user, digital_currency_name = cryptoshare_credits_object)
+
+    total_usd_balance += credits_balance.amount * cryptoshare_credits_object.exchange_rate
 
     credit_grades = {
                     "FFF": {

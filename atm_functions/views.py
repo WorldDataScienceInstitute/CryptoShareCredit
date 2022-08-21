@@ -1147,7 +1147,6 @@ def request_cryptoshare_credits(request):
             
             cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
 
-            transaction.transaction_state = "COMPLETED"
 
             sender_balance = Balance.objects.get(
                 email = transaction.sender_user,
@@ -1159,6 +1158,12 @@ def request_cryptoshare_credits(request):
                 digital_currency_name = cryptoshare_credits_object
             )
 
+            if sender_balance.balance < transaction.amount:
+                messages.warning(request, "Insufficient funds. Please buy more credits.")
+                return redirect('atm_functions:Home')
+
+            transaction.transaction_state = "COMPLETED"
+
             sender_balance.amount -= transaction.amount
             receiver_balance.amount += transaction.amount
             sender_balance.save()
@@ -1169,6 +1174,9 @@ def request_cryptoshare_credits(request):
                 str(transaction.receiver_user), 
                 notification_type = "PAYED"
             )
+
+            calculate_credit_grade(transaction.sender_user)
+            calculate_credit_grade(transaction.receiver_user)
 
             messages.info(request, "Transaction completed.")
 
@@ -1429,6 +1437,8 @@ def send_money_confirmation(request):
             amount = amount
         )
 
+        calculate_credit_grade(request.user)
+        calculate_credit_grade(recipient_user)
 
         messages.success(request, "Your transfer has been completed.")
         
@@ -1840,6 +1850,9 @@ def stripe_webhook(request):
     stripe_transaction.save()
 
     # MISSING TO SEND EMAIL TO USER
+
+    calculate_credit_grade(stripe_customer_object.user)
+
 
     return HttpResponse(status=200)
 
