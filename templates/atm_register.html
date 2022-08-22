@@ -384,13 +384,17 @@
                             </label>
                         </div>
                         
-                        <div class="form-row">
-                            <!-- Referral Code Feature not added yet!--> 
-                            <div class="form-group col-12">
-                                <label for="referal_code">Enter Referral code:</label>
-                                <input type="text" class="form-control" name="referal_code" id="referal_code" placeholder="Referral code" maxlength="30">
-                            </div>
+                        <div class="mb-3">
+                            <label for="referral_code">Enter Referral code:</label>
+                            <input type="text" class="form-control" name="referral_code" id="referral_code" placeholder="Referral code" maxlength="30">
                         </div>
+
+                        <div class="mb-3">
+                            <label for="promo_code">Enter Promo code:</label>
+                            <input type="text" class="form-control" name="promo_code" id="promo_code" placeholder="Promotion code" maxlength="30">
+                        </div>
+
+
                         <div class="d-grid gap-2 col-6 mx-auto">
                             <button type="submit" class="btn btn-primary" id="submit" disabled>Submit</button>
                             <button class="btn btn-primary" type="button" onclick='location.href="{% url 'authentication:Home' %}"'>
