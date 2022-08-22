@@ -73,7 +73,7 @@
                 </tbody>
             </table>
         </div>
-
+        {% if request.session.country_code != "US" %}
         <h2 class="text-center text-secondary" style="font-size: 25px;">Crypto$hare Pay Wallet</h2>
         <h6 class="text-center text-secondary">These wallets are used to pay for everyday expenses because of transaction speed. XRP and Dash have the fastest transaction speeds. The Crypto in these wallets will not be counted in Credit Grade.</h6>
 
@@ -178,7 +178,10 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+        {% endif %}
     </div>
+    {% if request.session.country_code != "US" %}
     <div class="container table-responsive">
         <table class="table crypto">
             <thead>
@@ -200,6 +203,7 @@
 
         </table>
     </div>
+    {% endif %}
     <style>
         table.crypto{
             table-layout:fixed;

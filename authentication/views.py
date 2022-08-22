@@ -278,6 +278,7 @@ def login(request):
         username = request.POST.get('username').lower()
         password = request.POST.get('pin')
         user = auth.authenticate(username=username, password=password)
+        # print(user)
         if user is not None:
             auth.login(request, user)
             messages.success(request, "You have been signed in.")
@@ -287,6 +288,11 @@ def login(request):
             request.session['refresh_token'] = None
             
             next_url = request.GET.get('next', "atm_functions:Home")
+
+            user_object = User.objects.get(username=username)
+            user_account = Account.objects.get(user = user_object)
+
+            request.session['country_code'] = user_account.country
 
             return redirect(next_url)
 

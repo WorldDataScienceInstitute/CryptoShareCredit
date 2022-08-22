@@ -116,10 +116,12 @@
 
                         <div class="nav__dropdown-collapse">
                             <div class="nav__dropdown-content">
+                                {% if request.session.country_code != "US" %}
                                 <a href="{% url 'atm_functions:TransferMoney' %}" class="nav__link">
                                     <i class="nav__icon bx bxl-bitcoin" style="color: gold;"></i>
                                     <span class="nav__name">CRYPTO</span>
                                 </a>
+                                {% endif %}
                                 <a href="{% url 'atm_functions:TransferCredits' %}" class="nav__link">
                                     <i class="nav__icon bx bxs-coin-stack" style="color: gold;"></i>
                                     <span class="nav__name">CS CREDITS</span>
