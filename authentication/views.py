@@ -78,7 +78,8 @@ def email(request):
             country = request.POST.get('country')
             state = request.POST.get('usa_states', None)
             birthdate = request.POST.get('birthdate')
-            referal_code = request.POST.get('referal_code', None)
+            referral_code = request.POST.get('referral_code', None)
+            promo_code = request.POST.get('promo_code', None)
             
             if country is None:
                 messages.info(request, "Please select a country")
@@ -87,6 +88,14 @@ def email(request):
             if country == "US":
                 if state is None:
                     messages.info(request, "Please select a US state")
+                    return render(request, 'atm_register.html', context)
+
+            if promo_code:
+                promo_codes = {
+                    "CSC60": 60,
+                }
+                if promo_code not in promo_codes:
+                    messages.info(request, "Invalid promo code")
                     return render(request, 'atm_register.html', context)
                 
             user = User.objects.create_user(
@@ -110,12 +119,12 @@ def email(request):
             new_username = DynamicUsername.objects.create(
                 id_username = system_username,
                 username_type = "USER",
-                business_reference = user
+                user_reference = user
             )
 
             cryptoshare_credits = DigitalCurrency.objects.get(symbol="CSC")
 
-            Balance.objects.create(currency_type="DIGITAL", digital_currency_name=cryptoshare_credits, email = user, amount = 0)
+            new_user_csc_balance = Balance.objects.create(currency_type="DIGITAL", digital_currency_name=cryptoshare_credits, email = user, amount = 0)
 
             stripe.api_key = os.environ['STRIPE_SECRET_KEY']
 
@@ -139,14 +148,14 @@ def email(request):
                 If you do not receive it within a few minutes, check your spam/junk folder.""")
                 )
 
-            if referal_code:
+            if referral_code:
                 REFERRING_BONUS = 10
                 
-                if DynamicUsername.objects.filter(id_username = referal_code, username_type ="USER").exists():
-                    referring_user = DynamicUsername.objects.get(id_username = referal_code, username_type ="USER").user_reference
+                if DynamicUsername.objects.filter(id_username = referral_code, username_type ="USER").exists():
+                    referring_user = DynamicUsername.objects.get(id_username = referral_code, username_type ="USER").user_reference
 
                     Referal.objects.create(
-                        referal_code = referal_code,
+                        referral_code = referral_code,
                         user_referring = referring_user,
                         user_referred = user
                     )
@@ -154,8 +163,14 @@ def email(request):
                     referring_user_balance = Balance.objects.get(email = referring_user, currency_type = "DIGITAL", digital_currency_name = cryptoshare_credits)
                     referring_user_balance.amount += Decimal(REFERRING_BONUS)
                     referring_user_balance.save()
-                    
 
+                    new_user_csc_balance.amount += Decimal(REFERRING_BONUS)
+                    new_user_csc_balance.save()
+
+            
+            if promo_code:
+                new_user_csc_balance.amount += promo_codes[promo_code]
+                new_user_csc_balance.save()
 
             # return redirect('authentication:Home')
             return redirect('atm_functions:Home')
