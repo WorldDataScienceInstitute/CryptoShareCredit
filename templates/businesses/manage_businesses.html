@@ -28,7 +28,13 @@
                     {% for business in businesses %}
                         <tr>
                             <th class="align-middle" scope="row" style="text-align: center;">{{ business.official_name }} </th>
-                            <th class="align-middle" scope="row" style="text-align: center;"><img src="{{ business.logo_url }}?w=70" class="img-thumbnail"></th>
+                            <th class="align-middle" scope="row" style="text-align: center;">
+                            {% if business.logo_url %}
+                                <img src="{{ business.logo_url }}?w=70" class="img-thumbnail">
+                            {% else %}
+                                <span class="badge bg-light text-dark">NO LOGO</span>
+                            {% endif %}
+                            </th>
                             <td class="align-middle" style="text-align: center;">{{ business.category }} </td>
                             <td class="align-middle" style="text-align: center;">
                                 <a href="{% url 'businesses:Edit' %}?id={{ business.id_business }}">
