@@ -17,7 +17,7 @@ from atm_functions.models import Account, Address, Balance, Cryptocurrency, Digi
 from businesses.models import Business
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples, FIAT_CURRENCIES
-from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email, payment_request_notification
+from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email, payment_request_notification, transfer_sent_cryptoshare_credits_notification, transfer_received_cryptoshare_credits_notification
 from common.cryptoapis import CryptoApis
 from common.cryptoapis_utils import CryptoApisUtils
 from common.simpleswap import SimpleSwap
@@ -1426,7 +1426,7 @@ def send_money_confirmation(request):
         receiver_balance.amount += Decimal(amount)
         receiver_balance.save()
 
-        TransactionCredits.objects.create(
+        transaction = TransactionCredits.objects.create(
             sender_user = request.user,
             sender_username = sender_account.system_username,
             receiver_user = recipient_user,
@@ -1439,6 +1439,20 @@ def send_money_confirmation(request):
 
         calculate_credit_grade(request.user)
         calculate_credit_grade(recipient_user)
+
+        transfer_sent_cryptoshare_credits_notification(
+            str(request.user), 
+            recipient_username, 
+            amount, 
+            transaction.creation_datetime.date()
+        )
+
+        transfer_received_cryptoshare_credits_notification(
+            str(recipient_user), 
+            sender_account.system_username, 
+            amount, 
+            transaction.creation_datetime.date()
+        )
 
         messages.success(request, "Your transfer has been completed.")
         

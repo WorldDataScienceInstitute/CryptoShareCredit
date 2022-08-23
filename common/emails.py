@@ -563,6 +563,99 @@ def payment_request_notification(sender_email, notification_type = "CREATED"):
     s.quit()
     return
 
+def transfer_sent_cryptoshare_credits_notification(sender_email, receiver, amount, date):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare credits transfer"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = sender_email
+    
+
+
+    html = f"""
+    <html>
+    <head></head>
+        <body>
+        
+        <p>¡Hi there!</p>
+
+        <p>You are receiving this email because a credits transfer was succesfully done in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+
+        <p>Credits sent: {amount} </p>
+
+        <p>Username sent to: {receiver} </p>
+        
+        <p>Date: {date} </p>
+
+        <p>
+            For further details please visit Cryptoshare or <a href="http://www.cryptoshareapp.com/atm/SendCryptoShareCredits/">CLICK THIS LINK</a>
+        </p>
+
+        <p>If you think this is an error, please contact support</p>
+        </body>
+    </html>
+    """
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
+    s.quit()
+    return
+
+def transfer_received_cryptoshare_credits_notification(sender_email, sender, amount, date):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare credits transfer"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = sender_email
+    
+
+
+    html = f"""
+    <html>
+    <head></head>
+        <body>
+        
+        <p>¡Hi there!</p>
+
+        <p>You are receiving this email because you have received a credits transfer in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+
+        <p>Credits sent: {amount} </p>
+
+        <p>Username who sends it: {sender} </p>
+        
+        <p>Date: {date} </p>
+
+        <p>
+            For further details please visit Cryptoshare or <a href="http://www.cryptoshareapp.com/atm/SendCryptoShareCredits/">CLICK THIS LINK</a>
+        </p>
+
+        <p>If you think this is an error, please contact support</p>
+        </body>
+    </html>
+    """
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
+    s.quit()
+    return
 
 def test_email(user_email):
     port = settings.EMAIL_PORT
