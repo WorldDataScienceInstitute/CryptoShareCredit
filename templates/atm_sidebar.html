@@ -3,6 +3,7 @@
 {% if name is not None %}
 {% include 'a_sessiontimeout.html' %}
 {% endif %}
+{% include 'includes/notifications_sidebar.html' %}
         <!--========== BOX ICONS ==========-->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <!--========== HEADER ==========-->
@@ -14,7 +15,6 @@
 
             {% include 'currencies_widget.html' %}
             {% endif %}
-
 
             <div class="header__toggle">
                 <i class='bx bx-menu' id="header-toggle" style="color: white;"></i>
@@ -36,6 +36,11 @@
     
                 <span class="nav__name" ><a href="{% url 'atm_functions:BuyCredit' %}">(Improve Credit Grade)</a></span>
                 {% endif %}
+
+                <a class="btn btn-primary nav__name" data-bs-toggle="offcanvas" href="#offcanvasRight" role="button" aria-controls="offcanvasRight">
+                    <i class='bx bxs-bell' style="color: gold;"></i>
+                </a>
+
 
             </div>
 
@@ -177,6 +182,7 @@
         // }
         if ({{ request.user.is_authenticated|yesno:"true,false" }}){
             GetCreditGrade();
+            GetNotifications();
         }
     }
 

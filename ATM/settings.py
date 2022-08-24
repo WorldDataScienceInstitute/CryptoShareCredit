@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'atm_functions',
     'authentication',
-    'businesses'
+    'businesses',
+    'webhooks'
 ]
 
 MIDDLEWARE = [
