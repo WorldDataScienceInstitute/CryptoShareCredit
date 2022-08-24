@@ -42,6 +42,15 @@ class Contact(models.Model):
     username = models.CharField(max_length=30, null=True)
     user_reference = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contact_user', null=True)
 
+class Notification(models.Model):
+    id_notification = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    notification_lob = models.CharField(max_length=20, null=True)
+    notification_type = models.CharField(max_length=20, null=True)
+    notification_state = models.CharField(max_length=15)
+    description = models.CharField(max_length=255, null=True)
+    creation_datetime = models.DateTimeField(auto_now_add=True)
+
 # <--------------- ACCOUNT OBJECTS ----------------->
 # <--------------- ACCOUNT OBJECTS ----------------->
 # <--------------- ACCOUNT OBJECTS ----------------->

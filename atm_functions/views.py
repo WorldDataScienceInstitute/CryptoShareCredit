@@ -13,7 +13,7 @@ from django.templatetags.static import static
 from django.utils import formats
 from .models import User
 from decimal import Decimal
-from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, WaitingList, UserAssets, StripeAccount, TransactionStripe, DynamicUsername, TransactionCredits, Contact
+from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, WaitingList, UserAssets, StripeAccount, TransactionStripe, DynamicUsername, TransactionCredits, Contact, Notification
 from businesses.models import Business
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples, FIAT_CURRENCIES
@@ -1454,6 +1454,22 @@ def send_money_confirmation(request):
             transaction.creation_datetime.date()
         )
 
+        Notification.objects.create(
+            user = request.user,
+            notification_lob = "PAYMENTS",
+            notification_type = "TRANSFER",
+            notification_state = "STANDBY",
+            description = f"You just transfered {amount} CSC to {recipient_username}"
+        )
+
+        Notification.objects.create(
+            user = recipient_user,
+            notification_lob = "PAYMENTS",
+            notification_type = "TRANSFER",
+            notification_state = "STANDBY",
+            description = f"You just received {amount} CSC from {sender_account.system_username}"
+        )
+
         messages.success(request, "Your transfer has been completed.")
         
         return redirect('atm_functions:Home')
@@ -1473,6 +1489,7 @@ def my_addresses(request):
             'addresses': addresses
             }
     return render(request, 'my_addresses.html', context)
+
 
 @login_required()
 def my_transactions(request):
@@ -1727,7 +1744,7 @@ def certificate_blockchain_will(request, id = None):
     except FileNotFoundError:
         raise Http404()
    
-
+@login_required()
 def get_credit_grade(request):
     user = Account.objects.get(user = request.user)
 
