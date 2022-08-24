@@ -1080,6 +1080,14 @@ def request_cryptoshare_credits(request):
                 notification_type = "CREATED"
                 )
 
+            Notification.objects.create(
+                user = payer_user,
+                notification_lob = "PAYMENTS",
+                notification_type = "REQUEST",
+                notification_state = "PENDING",
+                description = f"You just got requested {amount} CSC from {receiver_account.system_username}."
+            )
+
         elif action == "cancel":
 
             transaction_id = request.GET.get("id", "")
@@ -1100,6 +1108,14 @@ def request_cryptoshare_credits(request):
             payment_request_notification(
                 str(transaction.sender_user), 
                 notification_type = "CANCELLED"
+            )
+
+            Notification.objects.create(
+                user = transaction.sender_user,
+                notification_lob = "PAYMENTS",
+                notification_type = "REQUEST",
+                notification_state = "STANDBY",
+                description = f"A payment request from {transaction.receiver_username} was cancelled."
             )
 
             messages.info(request, "Transaction cancelled.")
@@ -1125,6 +1141,14 @@ def request_cryptoshare_credits(request):
             payment_request_notification(
                 str(transaction.receiver_user), 
                 notification_type = "DENIED"
+            )
+
+            Notification.objects.create(
+                user = transaction.receiver_user,
+                notification_lob = "PAYMENTS",
+                notification_type = "REQUEST",
+                notification_state = "STANDBY",
+                description = f"Your payment request made to {transaction.sender_username} was denied."
             )
 
             messages.info(request, "Transaction denied.")
@@ -1158,7 +1182,7 @@ def request_cryptoshare_credits(request):
                 digital_currency_name = cryptoshare_credits_object
             )
 
-            if sender_balance.balance < transaction.amount:
+            if sender_balance.amount < transaction.amount:
                 messages.warning(request, "Insufficient funds. Please buy more credits.")
                 return redirect('atm_functions:Home')
 
@@ -1166,6 +1190,7 @@ def request_cryptoshare_credits(request):
 
             sender_balance.amount -= transaction.amount
             receiver_balance.amount += transaction.amount
+
             sender_balance.save()
             receiver_balance.save()
             transaction.save()
@@ -1173,6 +1198,14 @@ def request_cryptoshare_credits(request):
             payment_request_notification(
                 str(transaction.receiver_user), 
                 notification_type = "PAYED"
+            )
+
+            Notification.objects.create(
+                user = transaction.receiver_user,
+                notification_lob = "PAYMENTS",
+                notification_type = "REQUEST",
+                notification_state = "STANDBY",
+                description = f"Your payment request made to {transaction.sender_username} was accepted."
             )
 
             calculate_credit_grade(transaction.sender_user)

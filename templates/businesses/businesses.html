@@ -7,9 +7,7 @@
 {% include 'header.html' %}
 
 <body>
-    {% if iframe is None %}
     {% include 'businesses/businesses_sidebar.html' %}
-    {% endif %}
     <div class="content-container">
         {% include 'messages.html' %}
         {% include 'a_sessiontimeout.html' %}
@@ -152,11 +150,6 @@
             });
         });
     </script>
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/jquery.sticky.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
 </body>
 
 </html>

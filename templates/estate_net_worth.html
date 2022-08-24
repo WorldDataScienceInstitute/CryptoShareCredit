@@ -7,9 +7,7 @@
 
 <body>
     {% include 'atm_sidebar.html' %}
-    {% if auth_level > 0 %}
-    {% include 'a_sessiontimeout.html' %}
-    {% endif %}
+
     <div class="content-container">
         {% include 'messages.html' %}
         <h2 class="ml-4">Net Worth</h2>

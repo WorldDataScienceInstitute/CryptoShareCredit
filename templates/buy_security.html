@@ -7,12 +7,11 @@
 {% include 'header.html' %}
 
 <body>
-    {% if iframe is None %}
     {% include 'atm_sidebar.html' %}
-    {% endif %}
+
     <div class="content-container">
         {% include 'messages.html' %}
-        {% include 'a_sessiontimeout.html' %}
+
         <h2 class="ml-4 text-primary">Buy Security</h2>
         <br>
         <h4 class="m-3">

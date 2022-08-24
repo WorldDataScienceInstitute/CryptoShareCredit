@@ -1,9 +1,11 @@
 {% load static %}
 {% static "images" as baseUrl %}
-{% if name is not None %}
+{% if request.user.is_authenticated %}
 {% include 'a_sessiontimeout.html' %}
 {% include 'includes/notifications_sidebar.html' %}
 {% endif %}
+
+{% include 'includes/notifications_sidebar.html' %}
         <!--========== BOX ICONS ==========-->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <!--========== HEADER ==========-->
@@ -36,6 +38,10 @@
                 <span class="nav__logo-name mt-2" id="credit_grade" style="color: white;"><b>CREDIT GRADE: </b></span>
     
                 <span class="nav__name" ><a href="{% url 'atm_functions:BuyCredit' %}">(Improve Credit Grade)</a></span>
+
+                <a class="btn btn-primary nav__name" data-bs-toggle="offcanvas" href="#offcanvasRight" role="button" aria-controls="offcanvasRight">
+                    <i class='bx bxs-bell' style="color: gold;"></i>
+                </a>
                 {% endif %}
 
             </div>
@@ -96,6 +102,7 @@
         // }
         if ({{ request.user.is_authenticated|yesno:"true,false" }}){
             GetCreditGrade();
+            GetNotifications();
         }
     }
 

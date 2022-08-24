@@ -7,11 +7,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <body>
-  {% if iframe is None %}
-
   {% include 'atm_sidebar.html' %}
-
-  {% endif %}
+  {% include 'messages.html' %}
+  
   <div class="content-container">
     <div class="justify-content-between align-content-center">
       <h2 class="ml-4 text-primary d-inline-flex">Calculate your Total Estate Net Worth</h2>
@@ -89,7 +87,6 @@
   </div>
   <!-- Table for asset elements  -->
 
-  {% include 'messages.html' %} {% include 'a_sessiontimeout.html' %}
   <form id="asset_form" action="/atm/EditEstateNetWorth/" method="post">
     {% csrf_token %}
     <!-- Add button at top right part of card -->
