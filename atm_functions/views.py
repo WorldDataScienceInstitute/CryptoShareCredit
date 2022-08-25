@@ -371,8 +371,8 @@ def stripe_checkout(request):
 
 
     session = stripe.checkout.Session.create(
-        success_url = "https://cryptoshareapp.com/atm/StripeCheckoutResult/?result=success&product=" + selected_product,
-        cancel_url = "https://cryptoshareapp.com/atm/StripeCheckoutResult/?result=cancel&product=" + selected_product,
+        success_url = "https://www.cryptoshareapp.com/atm/StripeCheckoutResult/?result=success&product=" + selected_product,
+        cancel_url = "https://www.cryptoshareapp.com/atm/StripeCheckoutResult/?result=cancel&product=" + selected_product,
         line_items = [
             {
             "price": product,
