@@ -53,15 +53,17 @@
                         </a>
 
                         <div class="nav__dropdown-collapse">
-                            <div class="nav__dropdown-content" style="padding-left:15px ;">
+                            <div class="nav__dropdown-content" style="padding-left: 15px; margin-right: 15px ;">
                                 <a href="{% url 'atm_functions:Home' %}" class="nav__link">
                                     <i class="nav__icon bx bxs-home" style="color: gold;"></i>
                                     <span class="nav__name">HOME / WALLETS</span>
                                 </a>
-                                <a href="{% url 'atm_functions:MyTransactions' %}" class="nav__link">
-                                    <i class="nav__icon bx bxs-book" style="color: gold;"></i>
-                                    <span class="nav__name">TRANSACTIONS</span>
+                                {% if request.session.country_code != "US" %}
+                                <a href="{% url 'atm_functions:CryptoShareWallet' %}" class="nav__link">
+                                    <i class="nav__icon bx bx-bitcoin" style="color: gold;"></i>
+                                    <span class="nav__name">CRYPTO WALLET</span>
                                 </a>
+                                {% endif %}
                                 <a href="{% url 'atm_functions:Contacts' %}" class="nav__link">
                                     <i class="nav__icon bx bxs-contact" style="color: gold;"></i>
                                     <span class="nav__name">CONTACTS</span>
@@ -74,6 +76,33 @@
                         <i class="nav__icon bx bxs-landmark" style="color: gold;"></i>
                         <span class="nav__name">BUY CREDIT</span>
                     </a>
+
+                    <div class="nav__dropdown nav__link2">
+                        <a class="nav__link">
+                            <i class="nav__icon bx bxs-paper-plane" style="color: gold;"></i>
+                            <span class="nav__name">PAYMENTS</span>
+                            <i class='bx bx-chevron-down nav__icon nav__dropdown-icon'></i>
+                        </a>
+
+                        <div class="nav__dropdown-collapse">
+                            <div class="nav__dropdown-content">
+                                {% if request.session.country_code != "US" %}
+                                <a href="{% url 'atm_functions:TransferMoney' %}" class="nav__link">
+                                    <i class="nav__icon bx bxl-bitcoin" style="color: gold;"></i>
+                                    <span class="nav__name">CRYPTO</span>
+                                </a>
+                                <a href="{% url 'atm_functions:MyTransactions' %}" class="nav__link">
+                                    <i class="nav__icon bx bxs-book" style="color: gold;"></i>
+                                    <span class="nav__name">TRANSACTIONS</span>
+                                </a>
+                                {% endif %}
+                                <a href="{% url 'atm_functions:TransferCredits' %}" class="nav__link">
+                                    <i class="nav__icon bx bxs-coin-stack" style="color: gold;"></i>
+                                    <span class="nav__name">CS CREDITS</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
 
                     <a href="{% url 'atm_functions:Insurance' %}" class="nav__link">
                         <i class="nav__icon bx bxs-lock-alt" style="color: gold;"></i>
@@ -110,28 +139,6 @@
                         <i class="nav__icon fa-solid fa-chart-line" style="color: gold;"></i>
                         <span class="nav__name">NET WORTH</span>
                     </a>
-                    <div class="nav__dropdown nav__link2">
-                        <a class="nav__link">
-                            <i class="nav__icon bx bxs-paper-plane" style="color: gold;"></i>
-                            <span class="nav__name">PAYMENTS</span>
-                            <i class='bx bx-chevron-down nav__icon nav__dropdown-icon'></i>
-                        </a>
-
-                        <div class="nav__dropdown-collapse">
-                            <div class="nav__dropdown-content">
-                                {% if request.session.country_code != "US" %}
-                                <a href="{% url 'atm_functions:TransferMoney' %}" class="nav__link">
-                                    <i class="nav__icon bx bxl-bitcoin" style="color: gold;"></i>
-                                    <span class="nav__name">CRYPTO</span>
-                                </a>
-                                {% endif %}
-                                <a href="{% url 'atm_functions:TransferCredits' %}" class="nav__link">
-                                    <i class="nav__icon bx bxs-coin-stack" style="color: gold;"></i>
-                                    <span class="nav__name">CS CREDITS</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="nav__dropdown nav__link2">
                         <a href="#" class="nav__link">

@@ -4,90 +4,147 @@
 <!doctype html>
 <html lang="en">
 {% include 'header.html' %}
+<script type="text/javascript" src="{% static 'qrcodejs/qrcode.js' %}"></script>
 <body>
     {% include 'atm_sidebar.html' %}
     <div class="content-container">
-        <h2 class="ml-4 text-primary">CryptoShare Addresses</h2>
+        {% include 'messages.html' %}
+        <h2 class="ml-4 text-primary">CryptoShare Wallet</h2>
         <br>
         <h2 class="text-muted" style="font-size: 15px; text-align: center;">Improve your Credit Grade by depositing Crypto in your Cryptoshare Wallet using the Blockchain Credit System.<a href="{% url 'atm_functions:CreditGrades' %}"> (More info)</a></h3>
         <br>
-        {% include 'messages.html' %}
-        {% include 'a_sessiontimeout.html' %}
-            {% if request.session.wallet_conn %}
-            <h1> Coinbase Wallet usage is currently in progress, not available for the moment</h1>
-            {% endif %}
-            <h2 class="ml-4 text-secondary" style="font-size: 25px;">Crypto$hare Pay Wallet</h2>
-            <table class="table">
-                <caption style="caption-side: top; text-align: center;">These are Cryptos that are fast and are accepted by Businesses around the world for  Shopping, Paying Bills, and Entertainment.</caption>
+        {% if request.session.country_code != "US" %}
+        <h2 class="text-center text-secondary" style="font-size: 25px;">Crypto$hare Pay Wallet</h2>
+        <h6 class="text-center text-secondary">These wallets are used to pay for everyday expenses because of transaction speed. XRP and Dash have the fastest transaction speeds. The Crypto in these wallets will not be counted in Credit Grade.</h6>
+
+        <div class="container table-responsive" style="padding: 0;">
+            <table class="table crypto ">
                 <thead>
-                  <tr>
-                    <th scope="col">Symbol</th>
-                    <th scope="col">Currency</th>
-                    <th scope="col">CryptoShare Wallet Address</th>
-                </tr>
+                    <tr>
+                        <th class="td_symbol" scope="col">Symbol</th>
+                        <th class="td_currency" scope="col">Currency</th>
+                        <th class="td-balance" scope="col">Balance</th>
+                        <th class="td-address" scope="col">CryptoShare Wallet Address</th>
+                        <th class="td-address" scope="col">QR Code</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    {% for address in payments_addresses %}
+                    {% for currency in payments_currencies %}
                         <tr>
-                            <td>{{ address.currency_name.symbol }} </td>
-                            <td>{{ address.currency_name.currency_name }} </td>
-                            <td>{{ address.address }} </td>
+                            <td class="td_symbol">{{ currency.symbol }} </td>
+                            <td class="td_currency">{{ currency.currency_name }} </td>
+                            <td class="td-balance">{{ currency.balance }} </td>
+                        {% if not currency.has_address %}
+                                <!-- <td><a class="btn btn-primary" href="/atm/GenerateAddress/?blockchain={{ currency.blockchain }}&network=mainnet&currency={{ currency.currency_name }}">Create Pay Address</a></td> -->
+                            <td class="align-middle" style="text-align: center;">
+                                <button class="btn btn-primary" type="button" onclick='location.href="/atm/GenerateAddress/?blockchain={{ currency.blockchain }}&network=mainnet&currency={{ currency.currency_name }}"'>
+                                    Create Pay Address
+                                </button>
+                            </td>
+                        {% else %}
+                            <td class="td-address" ><input class="form-control" type="text" style="text-align: center;" value="{{ currency.address }}" readonly onclick="$('#ClipboardAddress').toast('show'); navigator.clipboard.writeText(this.value);"></td>
+                            <td class="td-address">
+                                <div id="qrcode_{{ currency.symbol }}" class="btn btn-info" onclick="makeCode('qrcode_{{ currency.symbol }}' ,'{{ currency.address }}');">Show QR Code</div>
+                            </td>
+                        {% endif %}
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <h2 class="ml-4 text-secondary" style="font-size: 25px;">Crypto$hare Savings Wallet</h2>
-            <table class="table">
-                <caption style="caption-side: top; text-align: center;">The Crypto stored here is counted towards your Credit Grade</caption>
+        </div>
+
+        <h2 class="text-center text-secondary" style="font-size: 25px;">Crypto$hare Savings Wallet</h2>
+        <h6 class="text-center text-secondary">The Cryptocurrency in your Savings Wallet will not be counted in <a href="{% url 'atm_functions:CreditGrades' %}">Credit Grade</a></h6>
+        <div class="container table-responsive" style="padding: 0;">
+            <table class="table crypto">
                 <thead>
-                  <tr>
-                    <th scope="col">Symbol</th>
-                    <th scope="col">Currency</th>
-                    <th scope="col">CryptoShare Wallet Address</th>
-                </tr>
+                    <tr>
+                        <th class="td_symbol" scope="col">Symbol</th>
+                        <th class="td_currency" scope="col">Currency</th>
+                        <th class="td-balance" scope="col">Balance</th>
+                        <th class="td-address" scope="col">CryptoShare Wallet Address</th>
+                        <th class="td-address" scope="col">QR Code</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    {% for address in savings_addresses %}
-                        <tr>
-                            <td>{{ address.currency_name.symbol }} </td>
-                            <td>{{ address.currency_name.currency_name }} </td>
-                            <td>{{ address.address }} </td>
-                        </tr>
-                    {% endfor %}
+                    <!-- BITCOIN -->
+                    <!-- BITCOIN -->
+                    <tr>
+                        <td class="td_symbol">BTC </td>
+                        <td class="td_currency">Bitcoin </td>
+                        <td class="td-balance">{{ static_currencies.BTC.balance }} </td>
+                    {% if not static_currencies.BTC.has_address %}
+                        <td class="align-middle" style="text-align: center;">
+                            <button class="btn btn-primary" type="button" onclick='location.href="/atm/GenerateAddress/?blockchain={{ static_currencies.BTC.blockchain }}&network=mainnet&currency={{ static_currencies.BTC.currency_name }}"'>
+                                Create Savings Address
+                            </button>
+                        </td>
+                    {% else %}
+                        <td class="td-address"><input class="form-control" type="text" style="text-align: center;" value="{{ static_currencies.BTC.address }}" readonly onclick="$('#ClipboardAddress').toast('show'); navigator.clipboard.writeText(this.value);"></td>                        
+                        <td class="td-address">
+                            <div id="qrcode_BTC" class="btn btn-info" onclick="makeCode('qrcode_BTC' ,'{{ static_currencies.BTC.address }}');">Show QR Code</div>
+                        </td>
+                    {% endif %}
+                    </tr>
+                    <!-- BITCOIN -->
+                    <!-- BITCOIN -->
+
+                    <!-- ETHEREUM -->
+                    <!-- ETHEREUM -->
+                    <tr>
+                        <td class="td_symbol">ETH </td>
+                        <td class="td_currency">Ethereum </td>
+                        <td class="td-balance">{{ static_currencies.ETH.balance }} </td>
+                    {% if not static_currencies.ETH.has_address %}
+                        <td class="align-middle" style="text-align: center;">
+                            <button class="btn btn-primary" type="button" onclick='location.href="/atm/GenerateAddress/?blockchain={{ static_currencies.ETH.blockchain }}&network=mainnet&currency={{ static_currencies.ETH.currency_name }}"'>
+                                Create Savings Address
+                            </button>
+                        </td>
+                    {% else %}
+                        <td class="td-address"><input class="form-control" type="text" style="text-align: center;" value="{{ static_currencies.ETH.address }}" readonly onclick="$('#ClipboardAddress').toast('show'); navigator.clipboard.writeText(this.value);"></td>
+                        <td class="td-address">
+                            <div id="qrcode_ETH" class="btn btn-info" onclick="makeCode('qrcode_ETH' ,'{{ static_currencies.ETH.address }}');">Show QR Code</div>
+                        </td>
+                    {% endif %}
+                    </tr>
+                    <!-- ETHEREUM -->
+                    <!-- ETHEREUM -->
+
+                    <tr>
+                        <td colspan="5" style="text-align: center;">
+                            (The ERC-20 Coins Below can be transferred to this Ethereum Wallet)
+                        </td>
+                    </tr>
                 </tbody>
             </table>
-            <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ERC-20" style="margin-bottom: 20px;">ERC-20 Supported Tokens</button> -->
-            
-            <div class="container-fluid" style="background-color: #bebebe81; padding: 1%;">
-                <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px;">We do not support wrapped coins anchored from another blockchain, transferring these type Cryptos will result in permanently lost Crypto.</small>
-                <small id="addressRegisterHelp" class="form-text text-muted" style="color: white; text-align: center; padding: 5px; border-style: dotted none none none; border-width: 1px; ">By Creating a CryptoShare Banq Wallet you accept the 1% Commission for your Banq Membership on all deposits made into your Wallet. All Commission goes to Research & Development of the Platform.</small>
-            </div>
+        </div>
+        {% endif %}
     </div>
-    <div class="content-container">
-        <table class="table">
+    {% if request.session.country_code != "US" %}
+    <div class="container table-responsive">
+        <table class="table crypto">
             <thead>
-              <tr>
-                <th scope="col" style="text-align: center;">Symbol</th>
-                <th scope="col" style="text-align: center;">Currency</th>
-                <th scope="col" style="text-align: center;">Address Type</th>
-                <th scope="col" style="text-align: center;">Generate</th>
-            </tr>
+                <tr>
+                    <th class="td_symbol" scope="col">Symbol</th>
+                    <th class="td_currency" scope="col">Currency</th>
+                    <th class="td-balance" scope="col">Balance</th>
+                </tr>
             </thead>
             <tbody>
-                {% for address in address_confirmations %}
-                    {% if not address.has_address %}
-                        <tr>
-                            <td style="text-align: center;">{{ address.symbol }} </td>
-                            <td style="text-align: center;">{{ address.currency_name }} </td>
-                            <td style="text-align: center;">{{ address.type }} </td>
-                            <td style="text-align: center; width: auto;"><a class="btn btn-primary" style="max-width: 300px;" href="/atm/GenerateAddress/?blockchain={{ address.blockchain }}&network=mainnet&currency={{ address.currency_name }}">Generate Deposit Address</a></td>
-                        </tr>
-                    {% endif %}
-
+                {% for currency in erc20_tokens %}
+                    <tr>
+                        <td class="td_symbol">{{ currency.symbol }} </td>
+                        <td class="td_currency">{{ currency.currency_name }} <span style="display: block;">(ERC-20)</span></td>
+                        <td class="td-balance">{{ currency.balance }} </td>
+                    </tr>
                 {% endfor %}
             </tbody>
+
         </table>
     </div>
+    {% endif %}
+
     
     <script type="text/javascript">
         function googleTranslateElementInit() {
@@ -142,9 +199,24 @@
             }
             if ({{ request.user.is_authenticated|yesno:"true,false" }}){
                 GetCreditGrade();
+                GetNotifications();
             }
         }
     </script>
+    <script type="text/javascript">
+    
+    
+        function makeCode (elementId ,address) {		
+            divButton = document.getElementById(elementId);
+            divButton.innerHTML = "";
+            divButton.onclick = "";
+            var qrcode = new QRCode(document.getElementById(elementId), {
+                width : 100,
+                height : 100
+            });
+            qrcode.makeCode(address);
+        }
+    </script> 
 
 
 </body>
