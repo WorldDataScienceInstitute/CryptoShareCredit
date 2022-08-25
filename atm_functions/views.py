@@ -107,7 +107,9 @@ def profile(request):
 
             user.first_name = new_first_name
             user.last_name = new_last_name
-            user.country = new_country
+            if request.session['country_code'] == "US":
+                user.country = new_country
+                
             user.birthdate = new_birthdate
 
             if new_country == "US":
@@ -207,7 +209,9 @@ def check_balance(request):
 
 @login_required()
 def cryptoshare_wallet(request):
-    
+    if request.session['country_code'] == "US":
+        return redirect("atm_functions:Home")
+
     u = User.objects.get(
         pk = request.user.pk
         )
@@ -1438,8 +1442,9 @@ def my_addresses(request):
 
 @login_required()
 def my_transactions(request):
-    if not request.user.is_authenticated:
-        return redirect('authentication:Home')
+    if request.session['country_code'] == "US":
+        return redirect("atm_functions:Home")
+
     auth_confirmation = True
     
     #Deposit Transactions

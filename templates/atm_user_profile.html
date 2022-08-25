@@ -72,7 +72,7 @@
                         </div>
                         <div class="form-group">
                             <label for="country">Country</label>
-                            <select type="text" class="form-control" name="country" id="country" required>
+                                <select type="text" class="form-control" name="country" id="country" required {% if request.session.country_code == "US" %} readonly disabled {% endif %}>
                                 <!-- If user.country is none, put select country -->
                                 {% if user.user.country is none %}
                                     <option value="" disabled selected>Select Country</option>
