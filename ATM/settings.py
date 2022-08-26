@@ -43,11 +43,8 @@ INSTALLED_APPS = [
     'atm_functions',
     'authentication',
     'businesses',
-<<<<<<< HEAD
     'webhooks'
-=======
     'marketplace',
->>>>>>> 14e559e (Started marketplace app)
 ]
 
 MIDDLEWARE = [
