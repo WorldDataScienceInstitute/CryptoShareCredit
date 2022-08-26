@@ -107,7 +107,9 @@ def profile(request):
 
             user.first_name = new_first_name
             user.last_name = new_last_name
-            user.country = new_country
+            if request.session['country_code'] == "US":
+                user.country = new_country
+                
             user.birthdate = new_birthdate
 
             if new_country == "US":
@@ -198,6 +200,24 @@ def check_balance(request):
 
     digital_balances = Balance.objects.filter(email=request.user, currency_type="DIGITAL").select_related("digital_currency_name")
 
+    context = {
+        "name": name,
+        "digital_balances": digital_balances,
+    }
+
+    return render(request, 'check_balance.html', context)
+
+@login_required()
+def cryptoshare_wallet(request):
+    if request.session['country_code'] == "US":
+        return redirect("atm_functions:Home")
+
+    u = User.objects.get(
+        pk = request.user.pk
+        )
+    # get first name
+    name = u.first_name
+
     excluding_currencies = ["TEST_COIN","ethereum_ropsten"]
     available_crypto_currencies = Cryptocurrency.objects.all().exclude(currency_name__in=excluding_currencies).values()
     crypto_addresses = Address.objects.filter(email=request.user).exclude(currency_name__in=excluding_currencies).select_related("currency_name")
@@ -244,117 +264,13 @@ def check_balance(request):
 
     context = {
         "name": name,
-        "digital_balances": digital_balances,
         # "savings_currencies": savings_currencies,
         "payments_currencies": payments_currencies,
         "erc20_tokens": erc20_tokens,
         "static_currencies": static_currencies
     }
 
-    return render(request, 'check_balance.html', context)
-
-@login_required()
-def cryptoshare_wallet(request):
-    if not request.user.is_authenticated:
-        return redirect('authentication:Home')
-
-    context = {
-        "address_confirmations": [
-                                {
-                                    "currency_name": "Litecoin",
-                                    "blockchain": "litecoin",
-                                    "symbol": "LTC",
-                                    "type": "PAYMENTS",
-                                    "has_address": False
-                                },
-                                {
-                                    "currency_name": "Bitcoin Cash",
-                                    "blockchain": "bitcoin-cash",
-                                    "symbol": "BCH",
-                                    "type": "PAYMENTS",
-                                    "has_address": False
-                                },
-                                {
-                                    "currency_name": "Dash",
-                                    "blockchain": "dash",
-                                    "symbol": "DASH",
-                                    "type": "PAYMENTS",
-                                    "has_address": False
-                                },
-                                {
-                                    "currency_name": "Zcash",
-                                    "blockchain": "zcash",
-                                    "symbol": "ZEC",
-                                    "type": "PAYMENTS",
-                                    "has_address": False
-                                },
-                                {
-                                    "currency_name": "XRP",
-                                    "blockchain": "xrp",
-                                    "symbol": "XRP",
-                                    "type": "PAYMENTS",
-                                    "has_address": False
-                                },
-                                {
-                                    "currency_name": "Bitcoin",
-                                    "blockchain": "bitcoin",
-                                    "symbol": "BTC",
-                                    "type": "SAVINGS",
-                                    "has_address": False
-                                },
-                                {
-                                    "currency_name": "Dogecoin",
-                                    "blockchain": "dogecoin",
-                                    "symbol": "DOGE",
-                                    "type": "PAYMENTS",
-                                    "has_address": False
-                                },
-                                {
-                                    "currency_name": "Ethereum",
-                                    "blockchain": "ethereum",
-                                    "symbol": "ETH",
-                                    "type": "SAVINGS",
-                                    "has_address": False
-                                }
-                                ],
-        "savings_addresses": [],
-        "payments_addresses": []
-    }
-
-    currencies_addresses = Address.objects.filter(email=request.user).select_related("currency_name")
-
-    for address in currencies_addresses:
-        #Changing address blockchain for displaying in frontend
-        if address.currency_name.currency_name == "Litecoin":
-            context["address_confirmations"][0]["has_address"] = True
-
-        elif address.currency_name.currency_name == "Bitcoin Cash":
-            context["address_confirmations"][1]["has_address"] = True
-
-        elif address.currency_name.currency_name == "Dash":
-            context["address_confirmations"][2]["has_address"] = True
-        
-        elif address.currency_name.currency_name == "Zcash":
-            context["address_confirmations"][3]["has_address"] = True
-        
-        elif address.currency_name.currency_name == "XRP":
-            context["address_confirmations"][4]["has_address"] = True
-
-        elif address.currency_name.currency_name == "Bitcoin":
-            context["address_confirmations"][5]["has_address"] = True
-
-        elif address.currency_name.currency_name == "Dogecoin":
-            context["address_confirmations"][6]["has_address"] = True
-
-        elif address.currency_name.currency_name == "Ethereum":
-            context["address_confirmations"][7]["has_address"] = True
-
-        if address.currency_name.currency_type == "SAVINGS":
-            context["savings_addresses"].append(address)
-        elif address.currency_name.currency_type == "PAYMENTS":
-            context["payments_addresses"].append(address)
-
-    # context["addresses"] = currencies_addresses
+    
 
     return render(request, 'cryptoshare_wallet.html', context)
 
@@ -459,8 +375,8 @@ def stripe_checkout(request):
 
 
     session = stripe.checkout.Session.create(
-        success_url = "https://cryptoshareapp.com/atm/StripeCheckoutResult/?result=success&product=" + selected_product,
-        cancel_url = "https://cryptoshareapp.com/atm/StripeCheckoutResult/?result=cancel&product=" + selected_product,
+        success_url = "https://www.cryptoshareapp.com/atm/StripeCheckoutResult/?result=success&product=" + selected_product,
+        cancel_url = "https://www.cryptoshareapp.com/atm/StripeCheckoutResult/?result=cancel&product=" + selected_product,
         line_items = [
             {
             "price": product,
@@ -1526,8 +1442,9 @@ def my_addresses(request):
 
 @login_required()
 def my_transactions(request):
-    if not request.user.is_authenticated:
-        return redirect('authentication:Home')
+    if request.session['country_code'] == "US":
+        return redirect("atm_functions:Home")
+
     auth_confirmation = True
     
     #Deposit Transactions
@@ -1555,7 +1472,7 @@ def generate_address(request):
 
     if not blockchain or not network or not currency:
         messages.info(request, "Invalid option, please try again.")
-        return redirect('atm_functions:Home')
+        return redirect('atm_functions:CryptoShareWallet')
     
     #Check if there is already a balance with that currency name for that email
     balance_exists = Balance.objects.filter(email=email_object, currency_name=currency_object)
@@ -1568,11 +1485,11 @@ def generate_address(request):
     address, error = cryptoapis_utils.generate_address(request.user, currency_object, register_function = True)
     if error is not None:
         messages.info(request, error)
-        return redirect('atm_functions:Home')
+        return redirect('atm_functions:CryptoShareWallet')
     
     messages.info(request, "Address generated successfully.")
 
-    return redirect('atm_functions:Home')
+    return redirect('atm_functions:CryptoShareWallet')
 
 @login_required()
 def blockchain_wills(request):
