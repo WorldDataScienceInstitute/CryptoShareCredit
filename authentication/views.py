@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from decimal import Decimal
-from common.utils import  get_user_count, generate_pin
+from common.utils import  get_user_count, generate_pin, countries_tuples
 from common.emails import Account_Creation_Email, code_creation_email, pin_reset_email
 from traceback import print_exc
 from coinbase.wallet.client import OAuthClient
@@ -89,6 +89,9 @@ def email(request):
                 if state is None:
                     messages.info(request, "Please select a US state")
                     return render(request, 'atm_register.html', context)
+
+            if "US" in country:
+                country = "US"
 
             if promo_code:
                 promo_codes = {
@@ -175,6 +178,9 @@ def email(request):
             # return redirect('authentication:Home')
             return redirect('atm_functions:Home')
     else:
+        countries = countries_tuples
+
+        context["countries"] = countries
         # return render(request, 'email.html', context)
         return render(request, 'atm_register.html', context)
 
