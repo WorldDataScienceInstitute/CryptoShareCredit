@@ -1,4 +1,6 @@
+from math import prod
 from multiprocessing import context
+from unicodedata import category
 from django.conf import settings as django_settings
 from django.contrib import messages
 from django.urls import reverse
@@ -8,6 +10,7 @@ from django.http import Http404
 
 from .models import Business
 from atm_functions.models import Balance, DigitalCurrency, DynamicUsername
+from marketplace.models import Product, DigitalService
 
 from decimal import Decimal
 
@@ -136,11 +139,6 @@ def manage_business(request, id_business = None):
 
     return render(request, 'businesses/manage_business.html', context)
 
-
-
-
-
-
 @login_required()
 def search_business(request):
 
@@ -165,6 +163,55 @@ def search_business(request):
     }
 
     return render(request, 'businesses/search_businesses.html', context)
+
+
+@login_required()
+def create_product(request, id_business = None):
+
+    if not Business.objects.filter(id_business = id_business).exists():
+        raise Http404()
+
+    context = {}
+
+    business = Business.objects.get(id_business = id_business)
+
+    if request.method == "GET":
+
+        context["business"] = business
+
+        return render(request, 'businesses/products/create_product.html', context)
+
+    elif request.method == "POST":                  
+        product_name = request.POST.get("product_name", None)
+        product_photo_url = request.POST.get("product_photo", None)
+        product_price = request.POST.get("product_price", None)
+        product_description = request.POST.get("product_description", None)
+        product_extra = request.POST.get("product_extra", None)
+
+        if business.system_category == "DIGITAL_SERVICES":
+
+            product_video_url = request.POST.get("product_video", None)
+            product_calendar_url = request.POST.get("product_calendar", None)
+
+            new_digital_service = DigitalService.objects.create(
+                name = product_name,
+                price = product_price,
+                photo_url = product_photo_url,
+                description = product_description,
+                video_url = product_video_url,
+                calendar_url = product_calendar_url,
+                extra_url = product_extra
+            )
+
+            new_product = Product.objects.create(
+                business = business,
+                category = business.system_category,
+                digital_service_reference = new_digital_service
+            )
+        
+        messages.success(request, "Product created successfully.")
+
+        return redirect('businesses:ManageBusiness', id_business=business.id_business)
 
 def test(request):
     raise Http404()

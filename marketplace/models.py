@@ -11,11 +11,14 @@ class DigitalService(models.Model):
     price = models.DecimalField(max_digits=18, decimal_places=8)
     photo_url = models.CharField(max_length=255, null=True)      
     description = models.CharField(max_length=250, null=True)
+    video_url = models.CharField(max_length=255, null=True)
+    calendar_url = models.CharField(max_length=255, null=True)
+    extra_url = models.CharField(max_length=255, null=True)
 
 
 class Product(models.Model):
     id_product = models.AutoField(primary_key=True)
     business = models.ForeignKey(Business, on_delete = models.CASCADE)
     category = models.CharField(max_length=30)
-    
+
     digital_service_reference = models.ForeignKey(DigitalService, on_delete = models.CASCADE, null = True)

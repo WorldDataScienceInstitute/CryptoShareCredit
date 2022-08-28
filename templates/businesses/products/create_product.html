@@ -1,0 +1,144 @@
+{% load static %}
+{% load tz %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+<script src="https://app.simplefileupload.com/buckets/b658f0169bb34560f19fb46531211607.js"></script>
+
+<body>
+    {% include 'businesses/businesses_sidebar.html' %}
+
+    <div class="content-container">
+        {% include 'messages.html' %}
+
+        <h2 class="ml-4 text-primary">Create Product</h2>
+        <br>
+        <div class="container my-4">
+            {% include 'messages.html' %}
+            <form action="{% url 'businesses:CreateProduct' id_business=business.id_business %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" readonly id="business_id" name="business_id" value="{{ business.id_business }}">
+                <div class="mb-4 row">
+                    <label for="product_name" class="col-sm-2 col-form-label">Product Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="product_name" name="product_name" required>
+                    </div>
+                </div>
+
+                <div class="mb-4 row">
+                    <label for="business_name" class="col-sm-2 col-form-label">Business Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" readonly class="form-control" id="business_name" name="business_name"
+                            value="{{ business.official_name}}">
+                    </div>
+                </div>
+
+                <div class="mb-4 row">
+                    <label for="business_category" class="col-sm-2 col-form-label">Business Category</label>
+                    <div class="col-sm-10">
+                        <input type="text" readonly class="form-control" id="business_category" name="business_category"
+                            value="{{ business.category }}">
+                    </div>
+                </div>
+
+                <div class="mb-4 row">
+                    <label for="product_photo" class="col-sm-2 col-form-label">Product Photo</label>
+                    <div class="col-sm-10">
+                        <input type="hidden" data-tag="{{ business.owner }}_{{ business.system_name }}"
+                            data-preview="true" data-maxFileSize="1" data-accepted="image/*" name="product_photo"
+                            id="product_photo" class="simple-file-upload">
+                    </div>
+                </div>
+
+                <div class="mb-4 row">
+                    <label for="product_price" class="col-sm-2 col-form-label">Product Price</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" id="product_price" name="product_price" step=".01" placeholder="In CryptoShare Credits | Ex: 10" required>
+                    </div>
+                </div>
+
+                <div class="mb-4 row">
+                    <label for="product_description" class="col-sm-2 col-form-label">Product Description</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="product_description" name="product_description" rows="3" maxlength="250" placeholder="Max 250 chars." required></textarea>
+                    </div>
+                </div>
+
+                {% if business.system_category == "DIGITAL_SERVICES" %}
+                
+                <div class="mb-4 row">
+                    <label for="product_video" class="col-sm-2 col-form-label">Video Description</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="product_video" name="product_video" placeholder="Ex: Youtube URL" required>
+                    </div>
+                </div>
+
+                <div class="mb-4 row">
+                    <label for="product_calendar" class="col-sm-2 col-form-label">Calendar URL</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="product_calendar" name="product_calendar" placeholder="Ex: Calendly, Google Calendar, or YoucanBookme" required>
+                    </div>
+                </div>
+                
+                <div class="mb-4 row">
+                    <label for="product_extra" class="col-sm-2 col-form-label">Extra Details URL</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="product_extra" name="product_extra" placeholder="Ex: Any additional link.">
+                    </div>
+                </div>
+
+                {% endif %}
+
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button type="submit" class="btn btn-primary" id="submit">Create Product</button>
+                </div>
+            </form>
+            <br>
+        </div>
+    </div>
+    </div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+
+
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -10,4 +10,7 @@ urlpatterns = [
     path("manage/<int:id_business>/", views.manage_business, name="ManageBusiness"),
     path("edit/", views.edit_business, name="Edit"),
     path("search/", views.search_business, name="Search"),
+
+    path("create/product/<int:id_business>/", views.create_product, name="CreateProduct"),
+
 ]

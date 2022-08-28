@@ -15,10 +15,10 @@
         <br>
         <div class="row row-cols-1 row-cols-md-5 g-4">
             {% for product in products %}
-            {% if product.category == "CONSULTATIONS" %}
+            {% if product.category == "DIGITAL_SERVICES" %}
             <div class="col">
                 <div class="card text-center">
-                    <img src="{{ product.digital_service_reference.photo_url }}" class="card-img-top">
+                    <img src="{{ product.digital_service_reference.photo_url }}" class="card-img-top d-block mx-auto" style="width: auto; height: 200px;">
                     <div class="card-body">
                         <h5 class="card-title">{{ product.digital_service_reference.name }}</h5>
                         <div class="d-grid gap-lg-4 d-md-block">

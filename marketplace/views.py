@@ -17,9 +17,7 @@ def marketplace(request):
 
     products = Product.objects.all().select_related("digital_service_reference")
 
-    print(products)
-
-    for p in products: print(p.__dict__)
+    # for p in products: print(p.__dict__)
 
     context["products"] = products
 
@@ -38,9 +36,8 @@ def product_info(request, id_product = None):
         # product_info.object_reference = product_info.consultations_reference
         product_info.object_reference = product_info.digital_service_reference
 
-    elif product_info.category == "DIGITAL_SERVICE":
+    elif product_info.category == "DIGITAL_SERVICES":
         product_info.object_reference = product_info.digital_service_reference
-
 
     context["product"] = product_info
     return render(request, 'marketplace/product_info.html', context)
