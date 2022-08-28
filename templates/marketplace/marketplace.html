@@ -1,0 +1,75 @@
+{% load static %}
+{% load tz %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+
+<body>
+    {% include 'marketplace/marketplace_sidebar.html' %}
+    <div class="content-container">
+        {% include 'messages.html' %}
+        {% include 'a_sessiontimeout.html' %}
+        <h2 class="ml-4 text-primary">Marketplace</h2>
+        <br>
+        <div class="row row-cols-1 row-cols-md-5 g-4">
+            {% for product in products %}
+            {% if product.category == "CONSULTATIONS" %}
+            <div class="col">
+                <div class="card text-center">
+                    <img src="{{ product.digital_service_reference.photo_url }}" class="card-img-top">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.digital_service_reference.name }}</h5>
+                        <div class="d-grid gap-lg-4 d-md-block">
+                            <a class="btn btn-primary m-2" href="{% url 'marketplace:Product' id_product=product.id_product %}" role="button">Buy</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+
+
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

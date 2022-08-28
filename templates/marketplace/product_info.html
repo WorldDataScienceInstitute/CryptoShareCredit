@@ -1,0 +1,107 @@
+{% load static %}
+{% load tz %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+
+<body>
+    {% include 'marketplace/marketplace_sidebar.html' %}
+    <div class="content-container">
+        {% include 'messages.html' %}
+        {% include 'a_sessiontimeout.html' %}
+        <br>
+        <div class="container">
+            <div class="row gy-5">
+                <div class="col-md-9">
+                    <div class="m-1 p-2 text-center">
+                        <h4>
+                            {{ product.object_reference.name }}
+                        </h4>
+                    </div>
+                    <img src="https://www.insureon.com/-/jssmedia/industry-and-professions/imagery/information-technology/it-consultants/illustration_it-consultant.png?h=300&iar=0&w=456&rev=7926494d0e0b4a9eba4b385b0c4e9ac0"
+                            class="d-block w-auto mx-auto" alt="...">
+                </div>
+                <!-- <div class="col-md-3 border border-info bg-light" style="border-radius: 5%;"> -->
+                <div class="card col-md-3 border border-info bg-light text-center" style="border-radius: 5%;">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <u>
+                                {{ product.business.official_name }}
+                            </u>
+                        </h6>
+                        <h5 class="card-title">
+                            {{ product.object_reference.price }}
+                        </h5>
+
+                        <p class="card-text">
+                            {{ product.object_reference.description }}
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="#" class="btn btn-primary disabled">Buy</a>
+                    </div>
+                </div>
+<!-- 
+                    <div class="m-1 p-2 text-center">
+                        <h6>
+                            {{ product.object_reference.price }}
+                        </h6>
+                    </div>
+                    <div class="m-1 p-2 text-start">
+                        {{ product.object_reference.description }}
+                    </div>
+                    <div class="col d-flex justify-content-center align-items-end">
+                        <button class="btn btn-primary" type="button">
+                          Bottom Center
+                        </button>
+                    </div> -->
+
+                <!-- </div> -->
+    
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+
+
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -11,4 +11,5 @@ class Business(models.Model):
     system_name = models.CharField(max_length=57)
     logo_url = models.CharField(max_length=255, null=True)
     category = models.CharField(max_length=30)
+    system_category = models.CharField(max_length=30, null=True)
     creation_datetime = models.DateTimeField(auto_now_add=True)

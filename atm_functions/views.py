@@ -176,7 +176,7 @@ def delete_contact(request):
 
         return redirect("atm_functions:Contacts")
     
-    contact = Contact.objects.get(id = contact_id)
+    contact = Contact.objects.get(id = contact_id).select_related
     contact.delete()
     
     return redirect("atm_functions:Contacts")
