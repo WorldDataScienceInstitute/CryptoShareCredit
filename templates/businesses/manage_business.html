@@ -1,0 +1,105 @@
+{% load static %}
+{% load tz %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+<body>
+    {% include 'businesses/businesses_sidebar.html' %}
+
+    <div class="content-container">
+        {% include 'messages.html' %}
+
+        <h2 class="text-primary text-center">{{ business.official_name }}</h2>
+        <br>
+
+        <div class="container mb-4">
+            <div class="row gy-5">
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <a class="btn btn-primary" href="{% url 'businesses:Edit' %}?id={{ business.id_business }}" role="button">
+                        Edit Business
+                    </a>
+                    <!-- <button class="btn btn-primary" type="button">2</button> -->
+                </div>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <a class="btn btn-primary disabled" href="{% url 'businesses:Edit' %}?id={{ business.id_business }}" role="button">
+                        Add Product
+                    </a>
+                    <!-- <button class="btn btn-primary" type="button">4</button> -->
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="card col-md-12 border border-info bg-light text-center" style="border-radius: 5%;">
+                <img src="{{ business.logo_url }}"
+                    class="d-block mx-auto" style="width: auto; height: 300px;" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ business.official_name }}
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        <u>
+                            {{ business.creation_datetime }}
+                        </u>
+                    </h6>
+                    
+    
+                    <p class="card-text">
+                        <b>OWNER:</b> {{ business.owner.get_full_name }}
+                    </p>
+
+                    <p class="card-text">
+                        <b>CATEGORY:</b> {{ business.category }}
+                    </p>
+                </div>
+            </div>
+        </div>        
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+    
+    
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+        
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

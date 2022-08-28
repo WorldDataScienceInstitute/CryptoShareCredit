@@ -1,3 +1,4 @@
+from multiprocessing import context
 from django.conf import settings as django_settings
 from django.contrib import messages
 from django.urls import reverse
@@ -120,6 +121,25 @@ def manage_businesses(request):
     }
 
     return render(request, 'businesses/manage_businesses.html', context)
+
+@login_required()
+def manage_business(request, id_business = None):
+
+    if not Business.objects.filter(id_business = id_business).exists():
+        raise Http404()
+
+    context = {}
+
+    business = Business.objects.get(id_business = id_business)
+
+    context["business"] = business
+
+    return render(request, 'businesses/manage_business.html', context)
+
+
+
+
+
 
 @login_required()
 def search_business(request):

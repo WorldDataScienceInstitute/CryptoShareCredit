@@ -36,9 +36,10 @@
                             </th>
                             <td class="align-middle" style="text-align: center;">{{ business.category }} </td>
                             <td class="align-middle" style="text-align: center;">
-                                <a href="{% url 'businesses:Edit' %}?id={{ business.id_business }}">
+                                <a href="{% url 'businesses:ManageBusiness' id_business=business.id_business %}">
+                                <!-- <a href="{% url 'businesses:Edit' %}?id={{ business.id_business }}"> -->
                                     <button type="button" class="btn btn-primary">
-                                        Edit Business
+                                        Manage Business
                                     </button>
                                 </a>
                             </td>

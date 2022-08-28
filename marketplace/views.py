@@ -43,4 +43,4 @@ def product_info(request, id_product = None):
 
 
     context["product"] = product_info
-    return render(request, "marketplace/product_info.html", context)
+    return render(request, 'marketplace/product_info.html', context)
