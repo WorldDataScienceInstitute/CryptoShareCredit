@@ -1,6 +1,3 @@
-from math import prod
-from multiprocessing import context
-from unicodedata import category
 from django.conf import settings as django_settings
 from django.contrib import messages
 from django.urls import reverse
