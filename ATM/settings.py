@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'atm_functions',
     'authentication',
     'businesses',
-    'webhooks'
+    'webhooks',
+    'marketplace',
 ]
 
 MIDDLEWARE = [

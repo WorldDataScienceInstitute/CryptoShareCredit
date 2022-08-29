@@ -22,5 +22,6 @@ urlpatterns = [
     path('atm/', include('atm_functions.urls', namespace='atm_functions')),
     path('businesses/', include('businesses.urls', namespace='businesses')),
     path('webhooks/', include('webhooks.urls', namespace='webhooks')),
+    path('marketplace/', include('marketplace.urls', namespace='marketplace')),
     # path('admin/', admin.site.urls),
 ]
