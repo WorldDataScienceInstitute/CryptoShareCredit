@@ -12,5 +12,7 @@ urlpatterns = [
     path("search/", views.search_business, name="Search"),
 
     path("create/product/<int:id_business>/", views.create_product, name="CreateProduct"),
+    path("delete/product/<int:id_business>/<int:id_product>/", views.delete_product, name="DeleteProduct"),
+    path("manage/product/<int:id_business>/", views.manage_products, name="ManageProduct"),
 
 ]

@@ -18,7 +18,13 @@
             {% if product.category == "DIGITAL_SERVICES" %}
             <div class="col">
                 <div class="card text-center">
+                    {% if product.digital_service_reference.photo_url %}
                     <img src="{{ product.digital_service_reference.photo_url }}" class="card-img-top d-block mx-auto" style="width: auto; height: 200px;">
+                    {% else %}
+                    <div style="width: auto; height: 200px;">
+                        <span class="badge bg-secondary align-middle">NO IMAGE</span>
+                    </div>
+                    {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ product.digital_service_reference.name }}</h5>
                         <div class="d-grid gap-lg-4 d-md-block">

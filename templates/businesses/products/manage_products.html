@@ -1,0 +1,100 @@
+{% load static %}
+{% load tz %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+<body>
+    {% include 'businesses/businesses_sidebar.html' %}
+
+    <div class="content-container">
+        {% include 'messages.html' %}
+
+        <h2 class="ml-4 text-primary">{{ business.official_name }} products</h2>
+        <br>
+        <div class="container table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th scope="col" style="text-align: center;">Name</th>
+                    <th scope="col" style="text-align: center;">Logo</th>
+                    <th scope="col" style="text-align: center;">Price</th>
+                    <th scope="col" style="text-align: center;">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr>
+                            {% if product.category == "DIGITAL_SERVICES" %}
+                            <th class="align-middle" scope="row" style="text-align: center;">{{ product.digital_service_reference.name }} </th>
+                            
+                            <th class="align-middle" scope="row" style="text-align: center;">
+                            {% if product.digital_service_reference.photo_url %}
+                                <img src="{{ product.digital_service_reference.photo_url }}?w=70" class="img-thumbnail">
+                            {% else %}
+                                <span class="badge bg-light text-dark">NO PHOTO</span>
+                            {% endif %}
+                            </th>
+                            <td class="align-middle" style="text-align: center;">{{ product.digital_service_reference.price | floatformat:2 }} </td>
+                            <td class="align-middle" style="text-align: center;">
+                                <a class="btn btn-danger btn-lg m-2" href="{% url 'businesses:DeleteProduct' id_business=business.id_business id_product=product.id_product %}" role="button">DELETE</a>
+                            </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    {% if not products %}
+                        <tr>
+                            <th scope="row" style="text-align: center;" colspan="4">No products</th>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+    
+    
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+        
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

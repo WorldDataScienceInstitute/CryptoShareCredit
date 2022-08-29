@@ -20,8 +20,11 @@
                             {{ product.object_reference.name }}
                         </h4>
                     </div>
-                    <img src="https://www.insureon.com/-/jssmedia/industry-and-professions/imagery/information-technology/it-consultants/illustration_it-consultant.png?h=300&iar=0&w=456&rev=7926494d0e0b4a9eba4b385b0c4e9ac0"
+                    {% if product.object_reference.photo_url %}
+                    <img src="{{ product.object_reference.photo_url }}"
                             class="d-block w-auto mx-auto" alt="...">
+                    {% endif %}
+
                 </div>
                 <!-- <div class="col-md-3 border border-info bg-light" style="border-radius: 5%;"> -->
                 <div class="card col-md-3 border border-info bg-light text-center" style="border-radius: 5%;">

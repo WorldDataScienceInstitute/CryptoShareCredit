@@ -128,7 +128,7 @@ def manage_businesses(request):
 @login_required()
 def manage_business(request, id_business = None):
 
-    if not Business.objects.filter(id_business = id_business).exists():
+    if not Business.objects.filter(id_business = id_business, owner = request.user).exists():
         raise Http404()
 
     context = {}
@@ -168,7 +168,7 @@ def search_business(request):
 @login_required()
 def create_product(request, id_business = None):
 
-    if not Business.objects.filter(id_business = id_business).exists():
+    if not Business.objects.filter(id_business = id_business, owner = request.user).exists():
         raise Http404()
 
     context = {}
@@ -212,6 +212,43 @@ def create_product(request, id_business = None):
         messages.success(request, "Product created successfully.")
 
         return redirect('businesses:ManageBusiness', id_business=business.id_business)
+
+@login_required()
+def delete_product(request, id_business = None, id_product = None):
+    if not Product.objects.filter(id_product = id_product, business__owner = request.user).exists():
+        messages.error(request, "You can't do that!", extra_tags='danger')
+
+        return redirect('businesses:ManageProduct')
+
+
+    product = Product.objects.get(id_product = id_product, business__owner = request.user)
+
+    if product.category == "DIGITAL_SERVICES":
+        inner_product = product.digital_service_reference
+
+    product.delete()
+
+    messages.success(request, "Product deleted successfully.")
+
+    return redirect('businesses:ManageProduct', id_business=id_business)
+
+@login_required()
+def manage_products(request, id_business = None):
+    if not Business.objects.filter(id_business = id_business, owner = request.user).exists():
+        raise Http404()
+
+    context = {}
+
+    business = Business.objects.get(id_business = id_business)
+
+    if request.method == "GET":
+
+        products = Product.objects.filter(business = business)
+
+    context["business"] = business
+    context["products"] = products
+
+    return render(request, 'businesses/products/manage_products.html', context)
 
 def test(request):
     raise Http404()
