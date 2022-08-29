@@ -11,7 +11,7 @@
     <div class="content-container">
         {% include 'messages.html' %}
 
-        <h2 class="ml-4 text-primary">My Businesses</h2>
+        <h2 class="ml-4 text-primary">{{ business.official_name }} products</h2>
         <br>
         <div class="container table-responsive">
             <table class="table table-bordered table-striped">
@@ -19,39 +19,33 @@
                 <tr>
                     <th scope="col" style="text-align: center;">Name</th>
                     <th scope="col" style="text-align: center;">Logo</th>
-                    <th scope="col" style="text-align: center;">Category</th>
-                    <th scope="col" style="text-align: center;">Details</th>
+                    <th scope="col" style="text-align: center;">Price</th>
+                    <th scope="col" style="text-align: center;">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                    {% for business in businesses %}
+                    {% for product in products %}
                         <tr>
-                            <th class="align-middle" scope="row" style="text-align: center;">{{ business.official_name }} </th>
+                            {% if product.category == "DIGITAL_SERVICES" %}
+                            <th class="align-middle" scope="row" style="text-align: center;">{{ product.digital_service_reference.name }} </th>
+                            
                             <th class="align-middle" scope="row" style="text-align: center;">
-                            {% if business.logo_url %}
-                                <img src="{{ business.logo_url }}?w=70" class="img-thumbnail">
+                            {% if product.digital_service_reference.photo_url %}
+                                <img src="{{ product.digital_service_reference.photo_url }}?w=70" class="img-thumbnail">
                             {% else %}
-                                <span class="badge bg-light text-dark">NO LOGO</span>
+                                <span class="badge bg-light text-dark">NO PHOTO</span>
                             {% endif %}
                             </th>
-                            <td class="align-middle" style="text-align: center;">{{ business.category }} </td>
+                            <td class="align-middle" style="text-align: center;">{{ product.digital_service_reference.price | floatformat:2 }} </td>
                             <td class="align-middle" style="text-align: center;">
-                                <a href="{% url 'businesses:ManageBusiness' id_business=business.id_business %}">
-                                <!-- <a href="{% url 'businesses:Edit' %}?id={{ business.id_business }}"> -->
-                                    <button type="button" class="btn btn-primary">
-                                        Manage Business
-                                    </button>
-                                </a>
+                                <a class="btn btn-danger btn-lg m-2" href="{% url 'businesses:DeleteProduct' id_business=business.id_business id_product=product.id_product %}" role="button">DELETE</a>
                             </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
-                    {% if not businesses %}
+                    {% if not products %}
                         <tr>
-                            <th scope="row" style="text-align: center;" colspan="2">No Businesses</th>
-                            <td style="text-align: center;">
-                                    <button style=text-align:center class="btn btn-outline-primary bg-primary text-light" type="submit"
-                                    id="button-beneficiaries" disabled>Edit Business</button>
-                            </td>
+                            <th scope="row" style="text-align: center;" colspan="4">No products</th>
                         </tr>
                     {% endif %}
                 </tbody>
