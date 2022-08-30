@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.contrib import auth
 from django.contrib.auth.models import User
 
-from atm_functions.models import Account, DigitalCurrency, Balance, StripeAccount, DynamicUsername, Referal
+from atm_functions.models import Account, DigitalCurrency, Balance, StripeAccount, DynamicUsername, Referral
 from django.contrib import messages
 from django.conf import settings
 from django.utils.safestring import mark_safe
@@ -157,7 +157,7 @@ def email(request):
                 if DynamicUsername.objects.filter(id_username = referral_code, username_type ="USER").exists():
                     referring_user = DynamicUsername.objects.get(id_username = referral_code, username_type ="USER").user_reference
 
-                    Referal.objects.create(
+                    Referral.objects.create(
                         referral_code = referral_code,
                         user_referring = referring_user,
                         user_referred = user

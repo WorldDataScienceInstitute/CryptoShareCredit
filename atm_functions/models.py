@@ -192,7 +192,7 @@ class TransactionCredits(models.Model):
     note = models.CharField(max_length=100, null=True)
     creation_datetime = models.DateTimeField(auto_now_add=True)
 
-class Referal(models.Model):
+class Referral(models.Model):
     id_referal = models.AutoField(primary_key=True)
     referral_code = models.CharField(max_length=30, unique=True, null=False)
     user_referring = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_referring')
