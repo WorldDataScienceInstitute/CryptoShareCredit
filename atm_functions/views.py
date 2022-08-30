@@ -181,6 +181,11 @@ def delete_contact(request):
     
     return redirect("atm_functions:Contacts")
 
+@login_required()
+def referrals(request):
+    pass
+    # referred_users = 
+
 
 # @login_required(login_url='authentication:Login')
 @login_required()
