@@ -183,6 +183,8 @@ def delete_contact(request):
 
 @login_required()
 def referrals(request):
+
+    return render(request, "atm_functions/referrals/user/referrals.html")
     pass
     # referred_users = 
 
