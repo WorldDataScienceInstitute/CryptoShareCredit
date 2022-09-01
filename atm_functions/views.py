@@ -13,7 +13,7 @@ from django.templatetags.static import static
 from django.utils import formats
 from .models import User
 from decimal import Decimal
-from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, WaitingList, UserAssets, StripeAccount, TransactionStripe, DynamicUsername, TransactionCredits, Contact, Notification
+from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, WaitingList, UserAssets, StripeAccount, TransactionStripe, DynamicUsername, TransactionCredits, Contact, Notification, Insurance
 from businesses.models import Business
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples, FIAT_CURRENCIES
@@ -686,13 +686,93 @@ def edit_estate_net_worth(request):
 
 @login_required()
 def insurance(request):
+    if Insurance.objects.filter(user=request.user).exists():
+        messages.warning(request, 'You already have an insurance policy, buying a new one will cancel your current one.')
 
     return render(request, 'insurance.html')
 
 @login_required()
 def buy_security(request):
 
+    if Insurance.objects.filter(user=request.user).exists():
+        messages.warning(request, 'You already have an insurance policy, buying a new one will cancel your current one.')
+
     return render(request, 'buy_security.html')
+
+@login_required()
+def buy_protection_plan(request, selected_plan = None):
+
+    # if request.method == "GET":
+    #     return redirect('atm_functions:BuySecurity')
+
+    PLANS = {
+        "PLAN_A": {
+            "CREDITS": 599,
+            "PRICE": 12
+        },
+        "PLAN_B": {
+            "CREDITS": 999,
+            "PRICE": 18
+        },
+        "PLAN_C": {
+            "CREDITS": 9999,
+            "PRICE": 24
+        },
+        "PLAN_D": {
+            "CREDITS": 59999,
+            "PRICE": 30
+        },
+        "PLAN_E": {
+            "CREDITS": 99999,
+            "PRICE": 36
+        },
+        "PLAN_F": {
+            "CREDITS": 599999,
+            "PRICE": 42
+        },
+        "PLAN_G": {
+            "CREDITS": 999999,
+            "PRICE": 48
+        },
+        "PLAN_H": {
+            "CREDITS": 9999999,
+            "PRICE": 54
+        },
+        "PLAN_I": {
+            "CREDITS": 10000000,
+            "PRICE": 60
+        },
+    }
+
+    if selected_plan in PLANS:
+        selected_plan_name = selected_plan
+        selected_plan = PLANS[selected_plan]
+    else:
+        messages.error(request, "Invalid plan selected.", extra_tags='danger')
+        return redirect('atm_functions:BuySecurity')
+    
+    cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
+    credits_balance = Balance.objects.get(
+        email = request.user,
+        digital_currency_name = cryptoshare_credits_object
+    )
+
+    if credits_balance.amount < selected_plan["PRICE"]:
+        messages.warning(request, "You do not have enough credits to purchase this plan.")
+        return redirect('atm_functions:BuySecurity')
+    
+    credits_balance.amount -= Decimal(selected_plan["PRICE"])
+    credits_balance.save()
+
+    Insurance.objects.create(
+        user = request.user,
+        plan = selected_plan_name,
+        amount = selected_plan["CREDITS"]
+    )
+
+    messages.success(request, "You have successfully purchased a protection plan.")
+
+    return redirect('atm_functions:Home')
 
 @login_required()
 def crypto_news(request):
