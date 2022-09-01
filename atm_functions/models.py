@@ -168,6 +168,24 @@ class Beneficiary(models.Model):
 # <--------------- WILLS ----------------->
 # <--------------- WILLS ----------------->
 # <--------------- WILLS -----------------> 
+
+# <--------------- INSURANCE ----------------->
+# <--------------- INSURANCE ----------------->
+# <--------------- INSURANCE ----------------->
+
+class Insurance(models.Model):
+    id_insurance = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    plan = models.CharField(max_length=10)
+    amount = models.DecimalField(max_digits=18, decimal_places=8)
+    creation_datetime = models.DateTimeField(auto_now_add=True)
+
+
+# <--------------- INSURANCE ----------------->
+# <--------------- INSURANCE ----------------->
+# <--------------- INSURANCE ----------------->
+
+
     
 class TransactionStripe(models.Model):
     id_transaction = models.AutoField(primary_key=True)
