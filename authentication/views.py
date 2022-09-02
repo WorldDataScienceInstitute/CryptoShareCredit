@@ -159,6 +159,7 @@ def email(request):
 
                     Referral.objects.create(
                         referral_code = referral_code,
+                        credits = REFERRING_BONUS,
                         user_referring = referring_user,
                         user_referred = user
                     )

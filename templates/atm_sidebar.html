@@ -157,6 +157,12 @@
                                     <i class="nav__icon bx bxs-user-voice" style="color: gold;"></i>
                                     <span class="nav__name">REFERRALS</span>
                                 </a>
+                                {% if request.user.is_staff %}
+                                <a href="{% url 'atm_functions:ReferralsAdmin' %}" class="nav__link">
+                                    <i class="nav__icon bx bxs-user-voice" style="color: gold;"></i>
+                                    <span class="nav__name">ADM REFERRALS</span>
+                                </a>
+                                {% endif %}
                                 <a href="{% url 'atm_functions:Settings' %}" class="nav__link">
                                     <i class="nav__icon bx bxs-cog" style="color: gold;"></i>
                                     <span class="nav__name">SETTINGS</span>

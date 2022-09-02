@@ -12,43 +12,35 @@
     {% endif %}
     <div class="content-container">
         {% include 'messages.html' %}
-        <h2 class="ml-4">Referrals</h2>
-
-        <div class="row text-center m-4">
-            <div class="col-md-6  my-auto">
-                <p class="fs-3">Referral Code</p>
-            </div>
-            <div class="col-md-6 text-center my-auto">
-                <div class="card text-white bg-primary mb-3 mx-auto" style="max-width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ username }}</h5>
-                    </div>
-                </div>
-            </div>
+        <h2 class="ml-4">Admin Referrals</h2>
+        
+        <div class="container table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <!-- <th scope="col">#</th> -->
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col"># of Referrals</th>
+                        <th scope="col">Credits Earned</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for referral in refferals_query %}
+                    <tr>
+                        <!-- <th scope="row">1</th> -->
+                        <td>{{ referral.user_referring__first_name }}</td>
+                        <td>{{ referral.user_referring__email }}</td>
+                        <td>{{ referral.total_reffered }}</td>
+                        <td>{{ referral.total_credits | floatformat:0 }}</td>
+                    </tr>
+                    {% endfor %}
+    
+                    
+                </tbody>
+            </table>
         </div>
 
-        <div class="row text-center">
-            <div class="col-sm-6 mb-1">
-                <div class="card w-75 mx-auto">
-                    <br>
-                    <img src="{% static '/images/atm_functions/referrals/user/referrals.png' %}" class="card-img-top" alt="Referrals Image">
-                    <div class="card-body">
-                        <h5 class="card-title">Number of Referrals</h5>
-                        <p class="card-text">{{ number_of_referrals | floatformat:0 }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 mb-1">
-                <div class="card w-75 mx-auto">
-                    <br>
-                    <img src="{% static '/images/atm_functions/referrals/user/credits.png' %}" class="card-img-top" alt="Credits Image">
-                    <div class="card-body">
-                        <h5 class="card-title">Accumulated Credits</h5>
-                        <p class="card-text">{{ accumulated_credits | floatformat:0 }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
 

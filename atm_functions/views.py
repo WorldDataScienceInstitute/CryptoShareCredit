@@ -1,4 +1,5 @@
 # from time import timezone
+from typing import Counter
 from django.conf import settings as django_settings
 from django.contrib import messages
 from django.urls import reverse
@@ -6,14 +7,15 @@ from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse, HttpResponseRedirect, FileResponse, Http404
 from django.utils import timezone
-from django.db.models import Q
+from django.db.models import Q, Sum, Count
 from django.templatetags.static import static
 from django.utils import formats
 from .models import User
 from decimal import Decimal
-from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, WaitingList, UserAssets, StripeAccount, TransactionStripe, DynamicUsername, TransactionCredits, Contact, Notification, Insurance
+from atm_functions.models import Account, Address, Balance, Cryptocurrency, DigitalCurrency, BlockchainWill, Beneficiary, TransactionA, TransactionB, WaitingList, UserAssets, StripeAccount, TransactionStripe, DynamicUsername, TransactionCredits, Contact, Notification, Insurance, Referral
 from businesses.models import Business
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples, FIAT_CURRENCIES
@@ -183,9 +185,41 @@ def delete_contact(request):
 
 @login_required()
 def referrals(request):
+    context = {}
 
-    return render(request, "atm_functions/referrals/user/referrals.html")
-    pass
+    user_account = Account.objects.get(user = request.user)
+
+    number_of_referrals = Referral.objects.filter(user_referring = request.user).count()
+    accumulated_credits = Referral.objects.filter(user_referring = request.user).aggregate(Sum('credits'))['credits__sum']
+
+    if accumulated_credits == None:
+        accumulated_credits = 0
+
+    username = user_account.system_username
+
+
+    context["number_of_referrals"] = number_of_referrals
+    context["accumulated_credits"] = accumulated_credits
+    context["username"] = username
+
+    return render(request, "atm_functions/referrals/user/referrals.html", context)
+
+@login_required()
+@user_passes_test(lambda u: u.is_staff)
+def referrals_admin(request):
+    context = {}
+
+    referrals = Referral.objects.all()
+
+    refferals_query = Referral.objects.values("user_referring__first_name","user_referring__email").annotate(total_reffered = Count("user_referred"), total_credits = Sum("credits"))
+
+    context["referrals"] = referrals
+    context["refferals_query"] = refferals_query
+
+    for q in refferals_query:
+        print(type(q))
+    # print(type(refferals_query))
+    return render(request, "atm_functions/referrals/admin/referrals.html", context)
     # referred_users = 
 
 
