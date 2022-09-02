@@ -1,5 +1,4 @@
 # from time import timezone
-from typing import Counter
 from django.conf import settings as django_settings
 from django.contrib import messages
 from django.urls import reverse
