@@ -212,9 +212,11 @@ class TransactionCredits(models.Model):
 
 class Referral(models.Model):
     id_referal = models.AutoField(primary_key=True)
-    referral_code = models.CharField(max_length=30, unique=True, null=False)
+    referral_code = models.CharField(max_length=30, null=False)
+    credits = models.DecimalField(max_digits=18, decimal_places=8, default = 10)
     user_referring = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_referring')
     user_referred = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_referred')
+    creation_datetime = models.DateTimeField(auto_now_add=True)
 
 #Transaction for Deposits and Withdrawals CRYPTO
 class TransactionA(models.Model):

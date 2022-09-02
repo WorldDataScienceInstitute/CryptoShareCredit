@@ -10,6 +10,9 @@ urlpatterns = [
      path("Contacts/Create", views.create_contact, name="CreateContact"),
      path("Contacts/Delete", views.delete_contact, name="DeleteContact"),
 
+     path("Referrals/", views.referrals, name="Referrals"),
+     path("ReferralsAdmin/", views.referrals_admin, name="ReferralsAdmin"),
+
      path("EstateNetWorth/", views.estate_net_worth, name="EstateNetWorth"),
      path("EditEstateNetWorth/", views.edit_estate_net_worth, name="EditEstateNetWorth"),
 
