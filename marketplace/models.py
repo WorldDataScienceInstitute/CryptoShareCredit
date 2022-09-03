@@ -15,10 +15,17 @@ class DigitalService(models.Model):
     calendar_url = models.CharField(max_length=255, null=True)
     extra_url = models.CharField(max_length=255, null=True)
 
-
 class Product(models.Model):
     id_product = models.AutoField(primary_key=True)
     business = models.ForeignKey(Business, on_delete = models.CASCADE)
     category = models.CharField(max_length=30)
 
     digital_service_reference = models.ForeignKey(DigitalService, on_delete = models.CASCADE, null = True)
+
+class PurchaseHistory(models.Model):
+    id_purchase = models.AutoField(primary_key=True)
+    product = models.ForeignKey(Product, on_delete = models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    state = models.CharField(max_length=15)
+    paid_price = models.DecimalField(max_digits=18, decimal_places=8)
+    creation_datetime = models.DateTimeField(auto_now_add=True)
