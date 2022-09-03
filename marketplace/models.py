@@ -24,7 +24,7 @@ class Product(models.Model):
 
 class PurchaseHistory(models.Model):
     id_purchase = models.AutoField(primary_key=True)
-    product = models.ForeignKey(Product, on_delete = models.CASCADE)
+    product = models.ForeignKey(Product, on_delete = models.SET_NULL, null=True)
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     state = models.CharField(max_length=15)
     paid_price = models.DecimalField(max_digits=18, decimal_places=8)
