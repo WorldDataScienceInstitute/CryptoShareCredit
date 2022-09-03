@@ -28,7 +28,7 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ product.digital_service_reference.name }}</h5>
                         <div class="d-grid gap-lg-4 d-md-block">
-                            <a class="btn btn-primary m-2" href="{% url 'marketplace:Product' id_product=product.id_product %}" role="button">Buy</a>
+                            <a class="btn btn-primary m-2" href="{% url 'marketplace:ProductInfo' id_product=product.id_product %}" role="button">Buy</a>
                         </div>
                     </div>
                 </div>

@@ -24,10 +24,10 @@
                 </div>
                 <div class="d-grid gap-2 col-6 mx-auto">
                     <a class="btn btn-primary {% if business.system_category != "DIGITAL_SERVICES" %} disabled {% endif %}" href="{% url 'businesses:CreateProduct' id_business=business.id_business %}" role="button">
-                        Add Product
+                        Add Product / Service
                     </a>
                     <a class="btn btn-primary" href="{% url 'businesses:ManageProduct' id_business=business.id_business %}" role="button">
-                        See Business Products
+                        See Business Products / Services
                     </a>
                     <!-- <button class="btn btn-primary" type="button">4</button> -->
                 </div>
