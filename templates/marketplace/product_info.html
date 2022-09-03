@@ -42,8 +42,14 @@
                             {{ product.object_reference.description }}
                         </p>
                     </div>
+                    
                     <div class="card-footer bg-transparent">
-                        <a href="#" class="btn btn-primary disabled">Buy</a>
+                        <form action="{% url 'marketplace:ProductBuy' id_product=product.id_product %}" method="POST">
+                            {% csrf_token %}
+                            <button style=text-align:center class="btn btn-primary" type="submit" id="button_details">
+                                Buy
+                            </button>
+                        </form>
                     </div>
                 </div>
 <!-- 

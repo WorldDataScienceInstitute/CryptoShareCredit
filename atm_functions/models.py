@@ -1,8 +1,10 @@
+from calendar import month
 from django.db import models
 from django.contrib.auth.models import User
 from businesses.models import Business
 from django.utils import timezone
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 # Create your models here.
 
@@ -179,6 +181,7 @@ class Insurance(models.Model):
     plan = models.CharField(max_length=10)
     amount = models.DecimalField(max_digits=18, decimal_places=8)
     creation_datetime = models.DateTimeField(auto_now_add=True)
+    expiration_datetime = models.DateTimeField(default=timezone.now() + relativedelta(months=6), null= True)
 
 
 # <--------------- INSURANCE ----------------->
