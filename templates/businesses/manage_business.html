@@ -16,9 +16,12 @@
 
         <div class="container mb-4">
             <div class="row gy-5">
-                <div class="d-grid col-6 mx-auto">
+                <div class="d-grid gap-2 col-6 mx-auto">
                     <a class="btn btn-primary" href="{% url 'businesses:Edit' %}?id={{ business.id_business }}" role="button">
                         Edit Business
+                    </a>
+                    <a class="btn btn-primary" href="{% url 'businesses:ManageSales' id_business=business.id_business %}" role="button">
+                        Business Sales
                     </a>
                     <!-- <button class="btn btn-primary" type="button">2</button> -->
                 </div>
@@ -27,7 +30,7 @@
                         Add Product / Service
                     </a>
                     <a class="btn btn-primary" href="{% url 'businesses:ManageProduct' id_business=business.id_business %}" role="button">
-                        See Business Products / Services
+                        Business Products / Services
                     </a>
                     <!-- <button class="btn btn-primary" type="button">4</button> -->
                 </div>

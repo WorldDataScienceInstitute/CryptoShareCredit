@@ -618,8 +618,6 @@ def transfer_received_cryptoshare_credits_notification(sender_email, sender, amo
     msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
     msg['To'] = sender_email
     
-
-
     html = f"""
     <html>
     <head></head>
@@ -637,6 +635,55 @@ def transfer_received_cryptoshare_credits_notification(sender_email, sender, amo
 
         <p>
             For further details please visit Cryptoshare or <a href="http://www.cryptoshareapp.com/atm/SendCryptoShareCredits/">CLICK THIS LINK</a>
+        </p>
+
+        <p>If you think this is an error, please contact support</p>
+        </body>
+    </html>
+    """
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
+    s.quit()
+    return
+
+def sale_owner_notification(sender_email, business_name, id_business, id_product, date, client_email):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare business sale"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = sender_email
+    
+    html = f"""
+    <html>
+    <head></head>
+        <body>
+        
+        <p>¡Hi there!</p>
+
+        <p>You are receiving this email because you have made a sell in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+
+        <p>Business Name: {business_name} </p>
+
+        <p>Product ID: {id_product} </p>
+        
+        <p>Date: {date} </p>
+
+        <p>
+            Please make sure to make contact with the client to the client email: <b>{client_email}</b> in the next 7 days, or the sale will be cancelled.
+        </p>
+
+        <p>
+            For further details please visit Cryptoshare or <a href="http://www.cryptoshareapp.com/businesses/manage/{id_business}/sales/">CLICK THIS LINK</a>
         </p>
 
         <p>If you think this is an error, please contact support</p>

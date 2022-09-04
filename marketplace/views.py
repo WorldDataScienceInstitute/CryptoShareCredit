@@ -7,7 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 
 from businesses.models import Business
-from atm_functions.models import Balance, DigitalCurrency, DynamicUsername
+from atm_functions.models import Balance, DigitalCurrency, DynamicUsername, Notification
+from common.emails import sale_owner_notification
 from .models import Product, PurchaseHistory
 
 from decimal import Decimal
@@ -63,6 +64,10 @@ def buy_product(request, id_product = None):
     
     product = Product.objects.get(id_product = id_product)
 
+    if product.business.owner == request.user:
+        messages.error(request, "You can't buy your own products", extra_tags='danger')
+        return redirect('marketplace:ProductInfo', id_product = id_product)
+
     # <-------------------- THIS NEEDS TO BE IN A UTILITY FUNCTION -------------------->
     # <-------------------- THIS NEEDS TO BE IN A UTILITY FUNCTION -------------------->
     # <-------------------- THIS NEEDS TO BE IN A UTILITY FUNCTION -------------------->
@@ -85,7 +90,7 @@ def buy_product(request, id_product = None):
     user_balance = Balance.objects.get(email = user_object, digital_currency_name = cryptoshare_credits_object)
 
     if user_balance.amount < product_price:
-        messages.error(request, "You don't have enough CSC to buy this product.")
+        messages.error(request, "You don't have enough CSC to buy this product.", extra_tags='danger')
         return redirect('marketplace:ProductInfo', id_product = id_product)
     
     user_balance.amount -= Decimal(product_price)
@@ -108,6 +113,24 @@ def buy_product(request, id_product = None):
         state = purchase_state,
         paid_price = product_price
     )
+
+    # sale_owner_notification(sender_email, business_name, id_business, id_product, date, client_email)
+    sale_owner_notification(
+        sender_email = str(product.business.owner),
+        business_name = product.business.official_name,
+        id_business = product.business.id_business,
+        id_product = product.id_product,
+        date = purchase_registry.creation_datetime,
+        client_email = str(user_object)
+    )
+
+    Notification.objects.create(
+                user = product.business.owner,
+                notification_lob = "BUSINESS",
+                notification_type = "SALE",
+                notification_state = "PENDING",
+                description = f"You just got sold a product / service from your {product.business.official_name} business."
+            )
 
     messages.success(request, success_message)
     return redirect('marketplace:PurchaseHistory')

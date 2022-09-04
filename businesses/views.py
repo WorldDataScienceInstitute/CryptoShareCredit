@@ -7,7 +7,7 @@ from django.http import Http404
 
 from .models import Business
 from atm_functions.models import Balance, DigitalCurrency, DynamicUsername
-from marketplace.models import Product, DigitalService
+from marketplace.models import Product, DigitalService, PurchaseHistory
 
 from decimal import Decimal
 
@@ -23,6 +23,26 @@ def businesses(request):
             }
             
     return render(request, 'businesses/businesses.html', context)
+
+@login_required()
+def manage_sales(request, id_business):
+
+    context = {}
+
+    business = Business.objects.get(
+        id_business = id_business
+        )
+
+    business_sales = PurchaseHistory.objects.filter(
+        product__business = business
+        )
+
+    context["business"] = business
+    context["business_sales"] = business_sales
+
+    return render(request, 'businesses/sales/manage_sales.html', context)
+
+    pass
 
 @login_required()
 def create_business(request):

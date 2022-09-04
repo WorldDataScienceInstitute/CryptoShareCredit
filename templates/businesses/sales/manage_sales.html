@@ -1,0 +1,112 @@
+{% load static %}
+{% load tz %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+<body>
+    {% include 'businesses/businesses_sidebar.html' %}
+
+    <div class="content-container">
+        {% include 'messages.html' %}
+
+        <h2 class="ml-4 text-primary">{{ business.official_name }} products</h2>
+        <br>
+        <div class="container table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <!-- <th scope="col">#</th> -->
+                        <th scope="col">Order ID</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">State</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Date</th>
+                        <th scope="col" class="align-middle" style="text-align: center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in business_sales %}
+                    <tr>
+                        <td>{{ sale.id_purchase }}</td>
+                        {% if sale.product.category == "DIGITAL_SERVICES" %}
+                        <td>{{ sale.product.digital_service_reference.name }}</td>
+                        {% else %}
+                        <td>NOT AVAILABLE</td>
+                        {% endif %}
+                        <td>{{ sale.state }}</td>
+                        <td>{{ sale.paid_price | floatformat:2 }}</td>
+                        <td>{{ sale.creation_datetime }} UTC</td>
+                        <td class="align-middle" style="text-align: center;">
+                            <!-- <form action="" method="POST"> -->
+                                <!-- {% csrf_token %} -->
+                            <button style=text-align:center class="btn btn-primary bg-warning text-light disabled" type="submit" id="file_claim">
+                                FILE A CLAIM
+                            </button>
+                            <!-- </form> -->
+
+                            <!-- <form action="" method="POST"> -->
+                                <!-- {% csrf_token %} -->
+                                <button style=text-align:center class="btn btn-primary bg-danger text-light disabled" type="submit" id="file_claim">
+                                    REFUND
+                                </button>
+                                <!-- </form> -->
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if not business_sales %}
+                        <tr>
+                            <th scope="row" style="text-align: center;" colspan="4">No sales</th>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+    
+    
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+        
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
