@@ -129,7 +129,7 @@ def buy_product(request, id_product = None):
                 notification_lob = "BUSINESS",
                 notification_type = "SALE",
                 notification_state = "PENDING",
-                description = f"You just got sold a product / service from your {product.business.official_name} business."
+                description = f"You just sold a product / service from your {product.business.official_name} business."
             )
 
     messages.success(request, success_message)
