@@ -11,6 +11,8 @@ urlpatterns = [
     path("edit/", views.edit_business, name="Edit"),
     path("search/", views.search_business, name="Search"),
 
+    path("manage/<int:id_business>/sales/", views.manage_sales, name="ManageSales"),
+
     path("create/product/<int:id_business>/", views.create_product, name="CreateProduct"),
     path("delete/product/<int:id_business>/<int:id_product>/", views.delete_product, name="DeleteProduct"),
     path("manage/product/<int:id_business>/", views.manage_products, name="ManageProduct"),
