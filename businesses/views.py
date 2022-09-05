@@ -121,6 +121,10 @@ def edit_business(request):
         business_category = request.POST.get("business_category", None)
         business_logo_url = request.POST.get("business_logo", None)
 
+        if len(business_logo_url) > 255:
+            messages.info(request, "Image name is too long, please rename it and try again.")
+            return redirect('businesses:Edit')
+
         business = Business.objects.get(id_business=business_id)
         business.category = business_category
         business.logo_url = business_logo_url
