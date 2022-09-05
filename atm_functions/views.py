@@ -1761,7 +1761,7 @@ def certificate_blockchain_will(request, id = None):
         cv2.putText(image, text, (textX, textY), FONT, 1, (0, 0, 0), 1, cv2.LINE_AA)
 
     def generate_certificate(name, transactionId, innerTransactionId, date):
-        template_url = os.path.join(django_settings.BASE_DIR, 'static/pdf_templates/Will_Certificate_Template.jpg')
+        template_url = os.path.join(django_settings.BASE_DIR, 'static/pdf_templates/Will_Certificate_Template2.jpg')
         temp_certificates = os.path.join(django_settings.BASE_DIR, 'static/temp_certificates')
         new_certificate = f"{temp_certificates}/{name.strip()}.pdf"
 
@@ -1780,7 +1780,7 @@ def certificate_blockchain_will(request, id = None):
             [1040 * 2, 1830 * 2],
         ]
 
-        write_text(certificate_template_image, transactionId.strip(), FONT, textsize, coordinates[0][0], coordinates[0][1])
+        # write_text(certificate_template_image, transactionId.strip(), FONT, textsize, coordinates[0][0], coordinates[0][1])
         write_text(certificate_template_image, date.strip(), FONT, textsize, coordinates[1][0], coordinates[1][1])
         write_text(certificate_template_image, innerTransactionId.strip(), FONT, textsize, coordinates[2][0], coordinates[2][1])
         write_text(certificate_template_image, name.strip(), FONT, textsize_name, coordinates[3][0], coordinates[3][1])
