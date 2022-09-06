@@ -1692,6 +1692,7 @@ def register_blockchain_will(request):
     grantor_email_3 = request.POST.get("grantor_email_3", None)
     grantor_selfie_photo_url = request.POST.get("grantor_selfie_photo", None)
     grantor_id_document_url = request.POST.get("grantor_id_document", None)
+    grantor_video_url = request.POST.get("grantor_selfie_video", None)
 
     blockchain_will.full_legal_name = grantor_fullname
     if grantor_birthdate:
@@ -1702,6 +1703,7 @@ def register_blockchain_will(request):
     blockchain_will.associated_email3 = grantor_email_3
     blockchain_will.selfie_photo_url = grantor_selfie_photo_url
     blockchain_will.document_id_url = grantor_id_document_url
+    blockchain_will.video_url = grantor_video_url
 
     #BENEFICIARY
 

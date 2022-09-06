@@ -127,7 +127,7 @@ def email(request):
 
             cryptoshare_credits = DigitalCurrency.objects.get(symbol="CSC")
 
-            new_user_csc_balance = Balance.objects.create(currency_type="DIGITAL", digital_currency_name=cryptoshare_credits, email = user, amount = 0)
+            new_user_csc_balance = Balance.objects.create(currency_type="DIGITAL", digital_currency_name=cryptoshare_credits, email = user, amount = 100)
 
             stripe.api_key = os.environ['STRIPE_SECRET_KEY']
 
@@ -152,23 +152,25 @@ def email(request):
                 )
 
             if referral_code:
-                REFERRING_BONUS = 10
                 
                 if DynamicUsername.objects.filter(id_username = referral_code, username_type ="USER").exists():
-                    referring_user = DynamicUsername.objects.get(id_username = referral_code, username_type ="USER").user_reference
+                    referring_username = DynamicUsername.objects.get(id_username = referral_code, username_type ="USER")
+                    referring_user = referring_username.user_reference
+                    referring_bonus = referring_username.referral_credits
+                    
 
                     Referral.objects.create(
                         referral_code = referral_code,
-                        credits = REFERRING_BONUS,
+                        credits = referring_bonus,
                         user_referring = referring_user,
                         user_referred = user
                     )
 
                     referring_user_balance = Balance.objects.get(email = referring_user, currency_type = "DIGITAL", digital_currency_name = cryptoshare_credits)
-                    referring_user_balance.amount += Decimal(REFERRING_BONUS)
+                    referring_user_balance.amount += Decimal(referring_bonus)
                     referring_user_balance.save()
 
-                    new_user_csc_balance.amount += Decimal(REFERRING_BONUS)
+                    new_user_csc_balance.amount += Decimal(referring_bonus)
                     new_user_csc_balance.save()
 
             

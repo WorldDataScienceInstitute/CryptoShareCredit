@@ -64,6 +64,7 @@ class DynamicUsername(models.Model):
     username_type = models.CharField(max_length=10, null=True) # USER or BUSINESS
     user_reference = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     business_reference = models.ForeignKey(Business, on_delete=models.CASCADE, null=True, related_name='user_owner_business')
+    referral_credits = models.DecimalField(max_digits=15, decimal_places=6, default=10)
 
 class WaitingList(models.Model):
     id_wl = models.AutoField(primary_key=True)

@@ -75,6 +75,16 @@
             </div>
             <small id="selfie_document_help" class="form-text" style="color: red; text-align: left; padding: 5px; "><b>*Write Down your Birth Date on a Sheet of Paper and take a Selfie with it (must match your face from ID and Remove Glasses/Head Gear)</b></small>
             <br>
+            <h4>Selfie Video</h4>
+            <div class="form-group">
+                <small id="selfie_document_help2" class="form-text" style="color: red; text-align: left; padding: 5px; "><b>Please upload your video into Youtube as "Unlisted" and paste the link here</b></small>
+                <br>
+                <label for="grantor_selfie_video">Insert a 3rd Email Associated with You</label>
+                <input type="text" class="form-control" id="grantor_selfie_video" aria-describedby="grantor_selfie_video" name="grantor_selfie_video"
+                    placeholder="Please insert your video link " value="{{ blockchain_will.video_url|default:'' }}" required>
+            </div>
+            <small id="selfie_document_help" class="form-text" style="color: red; text-align: left; padding: 5px; "><b>*Record a Video saying your Full Name, the Birth Date, & The Name(s) of your Beneficiary (Remove Glasses/Head Gear).</b></small>
+            <br>
             <h4>ID Document</h4>
             <div class="form-group">
                 <input type="hidden" data-tag="{{ blockchain_will.email }}" data-preview="true" data-maxFileSize="1" data-accepted="image/*" name="grantor_id_document" id="grantor_id_document" class="simple-file-upload" value="{{ blockchain_will.document_id_url|default:''}}">
@@ -228,6 +238,7 @@
                 grantor_email_3: $('#grantor_email_3').val(),
                 grantor_selfie_photo: $('#grantor_selfie_photo').val(),
                 grantor_id_document: $('#grantor_id_document').val(),
+                grantor_selfie_video: $('#grantor_selfie_video').val(),
                 
                 beneficiary_id: $('#beneficiary_id').val(),
                 beneficiary_fullname: $('#beneficiary_fullname').val(),
