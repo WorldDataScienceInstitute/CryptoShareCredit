@@ -307,10 +307,9 @@ def cryptoshare_wallet(request):
         # "savings_currencies": savings_currencies,
         "payments_currencies": payments_currencies,
         "erc20_tokens": erc20_tokens,
-        "static_currencies": static_currencies
+        "static_currencies": static_currencies,
     }
 
-    
 
     return render(request, 'cryptoshare_wallet.html', context)
 
@@ -984,9 +983,11 @@ def send_cryptoshare_wallet(request):
     context = {}
 
     # messages.info(request, "XRP, Ethereum, and ERC-20 tokens are currently not supported for sending funds.")
+    transactions = TransactionA.objects.filter(email=request.user).order_by("-id_a")
 
     balances = Balance.objects.filter(email=request.user, currency_name__isnull=False)
     context['balances'] = balances
+    context["transactions"] = transactions
     
     return render(request,'send_cryptoshare_wallet.html', context)
 
