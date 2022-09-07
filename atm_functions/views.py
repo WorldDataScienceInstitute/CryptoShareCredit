@@ -1563,6 +1563,8 @@ def my_addresses(request):
 
 @login_required()
 def my_transactions(request):
+    return redirect("atm_functions:Home")
+
     if request.session['country_code'] == "US":
         return redirect("atm_functions:Home")
 
@@ -1825,6 +1827,25 @@ def get_credit_grade(request):
         "credit_grade": user.credit_grade
     }
     return HttpResponse(json.dumps(test), content_type="application/json")
+
+@login_required()
+def get_account_data(request):
+    user = Account.objects.get(user = request.user)
+    csc_balance = Balance.objects.get(email=request.user, digital_currency_name__symbol = "CSC")
+    username = DynamicUsername.objects.get(user_reference = request.user, username_type = "USER").id_username
+
+    data = { 
+        "emaiL": user.email,
+        "credit_grade": user.credit_grade,
+        "country": user.country,
+        "state": user.state,
+        "birthdate": user.birthdate.strftime('%Y-%m-%d'),
+        "username": username,
+        "net_worth": float(user.net_worth),
+        "csc_balance": round(float(csc_balance.amount), 0)
+    }
+    # print(data)
+    return HttpResponse(json.dumps(data), content_type="application/json")
 
 def get_currencies_balance_widget(request):
     user = request.user

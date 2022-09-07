@@ -62,6 +62,7 @@ urlpatterns = [
      #API ENDPOINTS
      path("SimpleSwapAPI/", views.simpleswap_api, name="SimpleSwapAPI"),
      path("GetCreditGrade/", views.get_credit_grade, name="GetCreditGrade"),
+     path("GetAccountData/", views.get_account_data, name="GetAccountData"),
      path("CurrenciesWidget/", views.get_currencies_balance_widget, name="CurrenciesWidget"),
 
 
