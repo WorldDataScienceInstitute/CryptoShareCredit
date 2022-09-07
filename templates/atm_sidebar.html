@@ -14,6 +14,17 @@
             {% if request.user.is_authenticated %}
 
             {% include 'currencies_widget.html' %}
+
+            {% if not "Mobile" in request.META.HTTP_USER_AGENT %}
+            <h5 id="credits_balance_tb" class="text-light">CSC: ...</h5>
+            {% endif %}
+
+            <a href="{% url 'atm_functions:EditEstateNetWorth' %}" class="btn btn-primary btn-lg">
+                <i class="fa-solid fa-chart-line"></i>
+            </a>
+            <a href="{% url 'atm_functions:Profile' %}" class="btn btn-primary btn-lg">
+                <i class="bx bxs-user-circle"></i>
+            </a>
             {% endif %}
 
             <div class="header__toggle">
@@ -35,7 +46,9 @@
                 <span class="nav__logo-name mt-2" id="credit_grade" style="color: white;"><b>CREDIT GRADE: </b></span>
     
                 <span class="nav__name" ><a href="{% url 'atm_functions:BuyCredit' %}">(Improve Credit Grade)</a></span>
-                
+
+                <input class="nav__name form-control" id="sidebar_username"  type="text" style="text-align: center;" value="..." readonly onclick="$('#ClipboardUsername').toast('show'); navigator.clipboard.writeText(this.value);">
+
                 <a class="btn btn-primary nav__name" data-bs-toggle="offcanvas" href="#offcanvasRight" role="button" aria-controls="offcanvasRight">
                     <i class='bx bxs-bell' style="color: gold;"></i>
                 </a>
@@ -94,10 +107,6 @@
                                 <a href="{% url 'atm_functions:TransferMoney' %}" class="nav__link">
                                     <i class="nav__icon bx bxl-bitcoin" style="color: gold;"></i>
                                     <span class="nav__name">CRYPTO</span>
-                                </a>
-                                <a href="{% url 'atm_functions:MyTransactions' %}" class="nav__link">
-                                    <i class="nav__icon bx bxs-book" style="color: gold;"></i>
-                                    <span class="nav__name">TRANSACTIONS</span>
                                 </a>
                                 {% endif %}
                             </div>
@@ -224,7 +233,7 @@
     // document.getElementById("pay_amount").innerHTML = "Amount : "+ offerAmount;
 
     function GetCreditGrade(){
-        var url = "{% url 'atm_functions:GetCreditGrade' %}";
+        var url = "{% url 'atm_functions:GetAccountData' %}";
         var data = {
             csrfmiddlewaretoken: getCookie('csrftoken')
         };
@@ -234,9 +243,21 @@
             data: data,
             success: function(response){
                 document.getElementById("credit_grade").innerHTML = "CREDIT GRADE: "+ response["credit_grade"];
+
+                var user_agent = "{{ request.META.HTTP_USER_AGENT }}";
+                // console.log(user_agent);
+
+                if(!user_agent.includes("Mobile")){
+                    document.getElementById("credits_balance_tb").innerHTML = "CSC: "+ response["csc_balance"];                   
+                }
+
+                document.getElementById("sidebar_username").value = response["username"];                   
+                
             },
             error: function(response){
                 document.getElementById("credit_grade").innerHTML = "CREDIT GRADE: ERROR";
+                document.getElementById("credits_balance_tb").innerHTML = "CSC: " + "ERROR";    
+                document.getElementById("sidebar_username").value = "ERROR";                   
             }
         });
     };
@@ -270,5 +291,18 @@
           <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="NeverShowAgain" onclick="neverShowAgainModal()">Never show again</button>
         </div>
       </div>
+    </div>
+</div>
+
+<div class="position-fixed top-0 end-0" style="z-index: 10000">
+    <div id="ClipboardUsername" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Copied to clipboard</strong>
+            <small>Now</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            Your username has been copied to your clipboard
+        </div>
     </div>
 </div>
