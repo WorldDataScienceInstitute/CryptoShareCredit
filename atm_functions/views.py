@@ -1765,8 +1765,8 @@ def certificate_blockchain_will(request, id = None):
 
         cv2.putText(image, text, (textX, textY), FONT, 1, (0, 0, 0), 1, cv2.LINE_AA)
 
-    def generate_certificate(name, transactionId, innerTransactionId, date):
-        template_url = os.path.join(django_settings.BASE_DIR, 'static/pdf_templates/Will_Certificate_Template3.jpg')
+    def generate_certificate(name, transactionId, innerTransactionId, date, b_name, b_birthdate, b_country, b_relationship):
+        template_url = os.path.join(django_settings.BASE_DIR, 'static/pdf_templates/Will_Certificate_Template4.jpg')
         temp_certificates = os.path.join(django_settings.BASE_DIR, 'static/temp_certificates')
         new_certificate = f"{temp_certificates}/{name.strip()}.pdf"
 
@@ -1783,12 +1783,26 @@ def certificate_blockchain_will(request, id = None):
             [540 * 2, 1180 * 2],
             [100 * 2, 1590 * 2],
             [1040 * 2, 1830 * 2],
+
+            [100 * 2, 1700 * 2],
+
+            [100 * 2, 1760 * 2],
+            [100 * 2, 1790 * 2],
+            [100 * 2, 1820 * 2],
+            [100 * 2, 1850 * 2],
         ]
 
         # write_text(certificate_template_image, transactionId.strip(), FONT, textsize, coordinates[0][0], coordinates[0][1])
         write_text(certificate_template_image, date.strip(), FONT, textsize, coordinates[1][0], coordinates[1][1])
         write_text(certificate_template_image, innerTransactionId.strip(), FONT, textsize, coordinates[2][0], coordinates[2][1])
         write_text(certificate_template_image, name.strip(), FONT, textsize_name, coordinates[3][0], coordinates[3][1])
+
+        write_text(certificate_template_image, "BENEFICIARY:".strip(), FONT, textsize, coordinates[4][0], coordinates[4][1])
+
+        write_text(certificate_template_image, "NAME:           " + b_name.strip(), FONT, textsize, coordinates[5][0], coordinates[5][1])
+        write_text(certificate_template_image, "BIRTHDATE:      " + b_birthdate.strftime('%Y-%m-%d'), FONT, textsize, coordinates[6][0], coordinates[6][1])
+        write_text(certificate_template_image, "COUNTRY CODE:   " + b_country.strip(), FONT, textsize, coordinates[7][0], coordinates[7][1])
+        write_text(certificate_template_image, "RELATIONSHIP:   " + b_relationship.strip(), FONT, textsize, coordinates[8][0], coordinates[8][1])
 
         cv2_path = f"{temp_certificates}/{name.strip()}.jpg"
         cv2.imwrite(cv2_path, certificate_template_image)
@@ -1811,8 +1825,18 @@ def certificate_blockchain_will(request, id = None):
 
     if blockchain_will.transaction_id is None:
         blockchain_will.transaction_id = "18b513a31bc8381ca73258b98229c8661d562ae92e30df81936aa398c74e3118"
-
-    url = generate_certificate(user_name, blockchain_will.transaction_id, f"{id}|{blockchain_will.transaction_id}", f"{formats.date_format(blockchain_will.creation_datetime, 'DATETIME_FORMAT')} UTC")
+    
+    beneficiary = Beneficiary.objects.filter(blockchain_wills__in = [blockchain_will])[0]
+    url = generate_certificate(
+        user_name, 
+        blockchain_will.transaction_id, 
+        f"{id}|{blockchain_will.transaction_id}", 
+        f"{formats.date_format(blockchain_will.creation_datetime, 'DATETIME_FORMAT')} UTC",
+        beneficiary.full_legal_name,
+        beneficiary.birthdate,
+        beneficiary.birth_country,
+        beneficiary.relationship
+        )
 
     try:
         return FileResponse(open(url, 'rb'), content_type='application/pdf')
