@@ -41,6 +41,8 @@
                         <td class="align-middle" style="text-align: center;">
                             <!-- <form action="" method="POST"> -->
                                 <!-- {% csrf_token %} -->
+                            <a class="btn btn-info bg-info text-light" href="{% url 'businesses:SaleMessages' id_business=sale.product.business.id_business id_purchase=sale.id_purchase %}" role="button">MESSAGES</a>
+
                             <button style=text-align:center class="btn btn-primary bg-warning text-light disabled" type="submit" id="file_claim">
                                 FILE A CLAIM
                             </button>

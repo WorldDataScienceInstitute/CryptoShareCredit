@@ -84,7 +84,7 @@ def Account_Creation_Email(to_addr):
     return
 
 
-def code_creation_email(to_addr, pin):
+def code_creation_email(to_addr, pin, referral_code):
     port = settings.EMAIL_PORT
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "Crypto$hare PIN Confirmation"
@@ -104,6 +104,14 @@ def code_creation_email(to_addr, pin):
         <p>Your registered 6 digit pin for Crypto$hare is the following:</p>
 
         <big><big><big><big><b>{pin}</b></big></big></big></big>
+
+        <p>Your referral code is the following:</p>
+
+        <big><big><big><big><b>{referral_code}</b></big></big></big></big>
+
+        <p>Use this code to refer your friends and family to Crypto$hare and earn 10 Cryptoshar Credits for every account created using your referral code.</p>
+
+        <p>For personalizing your referral code, please visit this link: <a href="http://www.cryptoshareapp.com/atm/Profile/">Crypto$hare</a></p>
 
         <p>If this was not you, please secure your account at <a href="http://www.cryptoshareapp.com/">Crypto$hare</a></p>
         </body>
@@ -703,6 +711,54 @@ def sale_owner_notification(sender_email, business_name, id_business, id_product
     s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
     s.quit()
     return
+
+def sale_business_send_message(sender_email, business_name, id_product, date, business_message):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare Order Message"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = sender_email
+    
+    html = f"""
+    <html>
+    <head></head>
+        <body>
+        
+        <p>¡Hi there!</p>
+
+        <p>You are receiving this email because you have received a message from the business you bought a product / service in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+
+        <p>Business Name: {business_name} </p>
+
+        <p>Product ID: {id_product} </p>
+        
+        <p>Date: {date} </p>
+
+        <p>
+            Message:
+
+            {business_message}
+        </p>
+
+        <p>If you think this is an error, please contact support</p>
+        </body>
+    </html>
+    """
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
+    s.quit()
+    return
+
 
 def test_email(user_email):
     port = settings.EMAIL_PORT

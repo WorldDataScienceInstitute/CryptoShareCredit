@@ -131,20 +131,25 @@ def email(request):
 
             stripe.api_key = os.environ['STRIPE_SECRET_KEY']
 
+            try:
+                response = stripe.Customer.create(
+                    description = f"CID-{user.id}",
+                    email = user.email,
+                    name = f"{user.first_name} {user.last_name}"
+                )
+            
+                stripe_account = StripeAccount.objects.create(
+                    user = user,
+                    stripe_customer_id = response.id,
+                    description = f"CID-{user.id}",
+                )
+            except:
+                messages.info(request, "There was an error creating your account. Please contact support with code ERR500-SA102.")
 
-            response = stripe.Customer.create(
-                description = f"CID-{user.id}",
-                email = user.email,
-                name = f"{user.first_name} {user.last_name}"
-            )
-
-            stripe_account = StripeAccount.objects.create(
-                user = user,
-                stripe_customer_id = response.id,
-                description = f"CID-{user.id}",
-            )
-
-            code_creation_email(to_addr=email, pin=pin)
+            try:
+                code_creation_email(to_addr=email, pin=pin, referral_code=new_username.id_username)
+            except:
+                messages.info(request, "There was an error sending your email. Please contact support with code ERR500-AE103.")
             
             messages.success(request, mark_safe(
                 f"""A confirmation email has been sent to you from {settings.DEFAULT_FROM_EMAIL}.<br>

@@ -12,6 +12,8 @@ urlpatterns = [
     path("search/", views.search_business, name="Search"),
 
     path("manage/<int:id_business>/sales/", views.manage_sales, name="ManageSales"),
+    path("manage/<int:id_business>/sales/messages/<int:id_purchase>", views.sale_messages, name="SaleMessages"),
+    path("manage/<int:id_business>/sales/messages/<int:id_purchase>/send", views.sale_send_message, name="SaleSendMessage"),
 
     path("create/product/<int:id_business>/", views.create_product, name="CreateProduct"),
     path("delete/product/<int:id_business>/<int:id_product>/", views.delete_product, name="DeleteProduct"),
