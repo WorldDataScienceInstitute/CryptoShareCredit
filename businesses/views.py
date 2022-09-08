@@ -5,7 +5,9 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 
-from .models import Business
+from common.emails import sale_business_send_message
+
+from .models import Business, BusinessMessages
 from atm_functions.models import Balance, DigitalCurrency, DynamicUsername
 from marketplace.models import Product, DigitalService, PurchaseHistory
 
@@ -270,6 +272,57 @@ def manage_products(request, id_business = None):
     context["products"] = products
 
     return render(request, 'businesses/products/manage_products.html', context)
+
+@login_required()
+def sale_messages(request, id_business = None, id_purchase = None):
+    if not Business.objects.filter(id_business = id_business, owner = request.user).exists() or not PurchaseHistory.objects.filter(id_purchase = id_purchase, product__business__id_business = id_business).exists():
+        raise Http404()
+
+    context = {}
+
+    business = Business.objects.get(id_business = id_business)
+
+    business_messages = BusinessMessages.objects.filter(
+        id_purchase = id_purchase
+    )
+
+    context["business"] = business
+    context["id_purchase"] = id_purchase
+    context["business_messages"] = business_messages
+
+    return render(request, 'businesses/sales/sale_messages.html', context)
+
+def sale_send_message(request, id_business = None, id_purchase = None):
+    print("TEST")
+    if not Business.objects.filter(id_business = id_business).exists() or not PurchaseHistory.objects.filter(id_purchase = id_purchase, product__business__id_business = id_business).exists():
+        raise Http404()
+
+    if request.method == "GET":
+        return redirect('businesses:SaleMessages', id_business=id_business, id_purchase=id_purchase)
+
+    context = {}
+
+    business = Business.objects.get(id_business = id_business)
+
+    if request.method == "POST":
+
+        message = request.POST.get("message", None)
+
+        purchase = PurchaseHistory.objects.get(id_purchase = id_purchase)
+
+        new_message = BusinessMessages.objects.create(
+            id_purchase = purchase,
+            message_sender = "BUSINESS",
+            message = message
+        )
+
+        sale_business_send_message(str(purchase.user), purchase.product.business.official_name, purchase.product.id_product, new_message.creation_datetime, message)
+        print("Sending message...")
+        print("Message: " + message)
+
+        messages.success(request, "Message sent successfully.")
+
+        return redirect('businesses:ManageSales', id_business=id_business)
 
 def test(request):
     raise Http404()

@@ -704,6 +704,54 @@ def sale_owner_notification(sender_email, business_name, id_business, id_product
     s.quit()
     return
 
+def sale_business_send_message(sender_email, business_name, id_product, date, business_message):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare Order Message"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = sender_email
+    
+    html = f"""
+    <html>
+    <head></head>
+        <body>
+        
+        <p>¡Hi there!</p>
+
+        <p>You are receiving this email because you have received a message from the business you bought a product / service in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+
+        <p>Business Name: {business_name} </p>
+
+        <p>Product ID: {id_product} </p>
+        
+        <p>Date: {date} </p>
+
+        <p>
+            Message:
+
+            {business_message}
+        </p>
+
+        <p>If you think this is an error, please contact support</p>
+        </body>
+    </html>
+    """
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
+    s.quit()
+    return
+
+
 def test_email(user_email):
     port = settings.EMAIL_PORT
     msg = MIMEMultipart('alternative')

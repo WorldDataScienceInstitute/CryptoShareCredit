@@ -161,9 +161,9 @@ SESSION_COOKIE_AGE = 60*60
 
 # SMTP/email configuration
 EMAIL_HOST = 'mail.cryptoshareapp.com'
-EMAIL_HOST_USER = 'help@cryptoshareapp.com'
+EMAIL_HOST_USER = 'no-reply@cryptoshareapp.com'
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'help@cryptoshareapp.com'
+DEFAULT_FROM_EMAIL = 'no-reply@cryptoshareapp.com'
 EMAIL_PORT = 587
 NO_REPLY_PASSWORD = os.environ['NO_REPLY_PASSWORD']
 X_FRAME_OPTIONS = 'SAMEORIGIN'
