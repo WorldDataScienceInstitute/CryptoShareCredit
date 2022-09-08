@@ -84,7 +84,7 @@ def Account_Creation_Email(to_addr):
     return
 
 
-def code_creation_email(to_addr, pin):
+def code_creation_email(to_addr, pin, referral_code):
     port = settings.EMAIL_PORT
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "Crypto$hare PIN Confirmation"
@@ -104,6 +104,14 @@ def code_creation_email(to_addr, pin):
         <p>Your registered 6 digit pin for Crypto$hare is the following:</p>
 
         <big><big><big><big><b>{pin}</b></big></big></big></big>
+
+        <p>Your referral code is the following:</p>
+
+        <big><big><big><big><b>{referral_code}</b></big></big></big></big>
+
+        <p>Use this code to refer your friends and family to Crypto$hare and earn 10 Cryptoshar Credits for every account created using your referral code.</p>
+
+        <p>For personalizing your referral code, please visit this link: <a href="http://www.cryptoshareapp.com/atm/Profile/">Crypto$hare</a></p>
 
         <p>If this was not you, please secure your account at <a href="http://www.cryptoshareapp.com/">Crypto$hare</a></p>
         </body>
