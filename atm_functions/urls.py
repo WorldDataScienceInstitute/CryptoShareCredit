@@ -13,13 +13,13 @@ urlpatterns = [
      path("Referrals/", views.referrals, name="Referrals"),
      path("ReferralsAdmin/", views.referrals_admin, name="ReferralsAdmin"),
 
-     path("EstateNetWorth/", views.estate_net_worth, name="EstateNetWorth"),
-     path("EditEstateNetWorth/", views.edit_estate_net_worth, name="EditEstateNetWorth"),
+     # path("EstateNetWorth/", views.estate_net_worth, name="EstateNetWorth"),
+     # path("EditEstateNetWorth/", views.edit_estate_net_worth, name="EditEstateNetWorth"),
 
-     path("BlockchainWills/", views.blockchain_wills, name="BlockchainWills"),
-     path("RegisterBlockchainWill/", views.register_blockchain_will, name="RegisterBlockchainWill"),
-     path("CertificateBlockchainWill/", views.certificate_blockchain_will, name="CertificateBlockchainWill"),     
-     path("CertificateBlockchainWill/<int:id>/", views.certificate_blockchain_will, name="CertificateBlockchainWill"),    
+     # path("BlockchainWills/", views.blockchain_wills, name="BlockchainWills"),
+     # path("RegisterBlockchainWill/", views.register_blockchain_will, name="RegisterBlockchainWill"),
+     # path("CertificateBlockchainWill/", views.certificate_blockchain_will, name="CertificateBlockchainWill"),     
+     # path("CertificateBlockchainWill/<int:id>/", views.certificate_blockchain_will, name="CertificateBlockchainWill"),    
 
      path("BuyCrypto/", views.buy_crypto, name="BuyCrypto"),
      path("BuyCredit/", views.buy_credit, name="BuyCredit"),
