@@ -1,4 +1,5 @@
 # from time import timezone
+from itertools import product
 from django.conf import settings as django_settings
 from django.contrib import messages
 from django.urls import reverse
@@ -404,7 +405,7 @@ def stripe_checkout(request):
         amount = products_amount[selected_product]
     else:
         messages.error(request, "Invalid product, please try again.", extra_tags='danger')
-        return redirect("atm_functions:BuyCredit")
+        return redirect("atm_functions:BuildCredit")
 
     user_stripe_account = StripeAccount.objects.get(user=request.user)
     customer_id = user_stripe_account.stripe_customer_id
@@ -886,6 +887,92 @@ def buy_credit(request):
         name = None
     context = {'name': name}
     return render(request, 'buy_credit.html', context)
+
+@login_required()
+def buy_credit_with_crypto(request, code = None):
+    products = {
+        "CSC50": 50,
+        "CSC100": 100,
+        "CSC600": 600,
+        "CSC10-000": 10000,
+        "CSC60-000": 60000,
+        "CSC100-000": 100000,
+        "CSC600-000": 600000,
+    }
+
+    product_names = {
+        "CSC50": "50 CSC",
+        "CSC100": "100 CSC",
+        "CSC600": "600 CSC",
+        "CSC10-000": "10,000 CSC",
+        "CSC60-000": "60,000 CSC",
+        "CSC100-000": "100,000 CSC",
+        "CSC600-000": "600,000 CSC",
+    }
+
+    if request.method == "GET":
+        if not code:
+            return redirect('atm_functions:BuildCredit')
+            
+        elif code not in products:
+            return redirect('atm_functions:BuildCredit')
+        
+        product_price = products[code]
+
+        
+        excluding_currencies = ["TEST_COIN","ethereum_ropsten"]
+
+        crypto_balances = Balance.objects.filter(email=request.user, currency_type="CRYPTO").exclude(currency_name__in=excluding_currencies).select_related("currency_name")
+        
+        for balance in crypto_balances:
+            print(product_price, balance.currency_name.exchange_rate, balance.currency_name.currency_name)
+            balance.to_pay = round(product_price / balance.currency_name.exchange_rate, 6)
+
+        context = {
+            "balances": crypto_balances,
+            "product_name": product_names[code],
+            "code": code
+            }
+
+        return render(request, 'buildcredit/buy_credit_with_crypto.html', context)
+
+    elif request.method == "POST":
+
+        selected_crypto = request.POST.get("selectedCrypto", None)
+
+        if not selected_crypto:
+            messages.info(request, "Please select a cryptocurrency.")
+            return redirect('atm_functions:BuildCredit')
+        
+        selected_crypto_symbol = selected_crypto.split("|")[0]
+
+        selected_crypto_object = Cryptocurrency.objects.get(symbol=selected_crypto_symbol)
+
+        balance = Balance.objects.get(email=request.user, currency_name=selected_crypto_object)
+        print(code)
+        credits_amount = products[code]
+        to_pay_amount = round(credits_amount / balance.currency_name.exchange_rate, 6)
+
+        if balance.amount < to_pay_amount:
+            messages.info(request, "You don't have enough funds.")
+            return redirect('atm_functions:BuildCredit')
+
+        balance.amount -= Decimal(to_pay_amount)
+        balance.save()
+
+        csc_balance = Balance.objects.get(email=request.user, digital_currency_name__symbol="CSC")
+        csc_balance.amount += Decimal(credits_amount)
+        csc_balance.save()
+
+        messages.info(request, "Your purchase was completed successfully!")
+        return redirect('atm_functions:Home')
+
+        
+    
+
+
+
+
 
 @login_required()
 def atm_settings(request):

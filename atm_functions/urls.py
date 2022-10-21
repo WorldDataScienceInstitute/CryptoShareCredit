@@ -22,8 +22,10 @@ urlpatterns = [
      # path("CertificateBlockchainWill/<int:id>/", views.certificate_blockchain_will, name="CertificateBlockchainWill"),    
 
      path("BuyCrypto/", views.buy_crypto, name="BuyCrypto"),
-     path("BuyCredit/", views.buy_credit, name="BuyCredit"),
+     path("BuildCredit/", views.buy_credit, name="BuildCredit"),
      path("BuyCryptoWidget/", views.buy_crypto_widget, name="BuyCryptoWidget"),
+
+     path("BuildCreditCrypto/<str:code>/", views.buy_credit_with_crypto, name="BuildCreditCrypto"),
 
      path("CheckCredit/", views.check_balance, name="CheckCredit"),
      path("CreditGrades/", views.credit_grades, name="CreditGrades"),
