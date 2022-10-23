@@ -2504,3 +2504,8 @@ def test_receiver(request):
 
     
     return HttpResponse(status=200)
+
+def test_client(request):
+
+    return render(request, 'test/test_client.html')
+    pass

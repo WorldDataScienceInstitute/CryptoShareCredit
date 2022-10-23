@@ -1,0 +1,232 @@
+{% load static %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+<body>
+    {% include 'atm_sidebar.html' %}
+    {% if auth_level > 0 %}
+    {% include 'a_sessiontimeout.html' %}
+    {% endif %}
+    <div class="content-container">
+        {% include 'messages.html' %}
+        <h2 class="ml-4">User Profile</h2>
+        <div class="text-center" style="margin-top: 5%;">
+            <img src="{% static '/images/logo.png' %}" class="rounded-circle border-primary"  style="height: 200px; width: auto;"" alt="...">
+        </div>
+        
+
+        <div class="container text-center">
+
+            <div class="card text-white bg-primary m-3">
+                <h3 class="card-header">Crypto$hare Usernames</h3>
+                <div class="card-body">
+
+                    <h5 class="card-title m-2">Personal Username</h5>
+                    <i class="fa-solid fa-circle-question" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-trigger="hover focus" title="Referral Code" data-bs-content="You can use your username as a Referral Code and get 10 CryptoShare Credits for each user that signs up!"></i>
+                    <div class="form-group">
+                        <div class="list-group">                            
+                            <button type="button" class="list-group-item list-group-item-action" onclick="$('#ClipboardAlert').toast('show'); navigator.clipboard.writeText('{{ user.system_username }}');">
+                                {{ user.system_username }}
+                            </button>
+                        </div>
+                        <div class="mx-auto m-3">
+                            <button type="button" class="btn btn-info" id="submit" onclick="$('#BuyUsername').modal('toggle');">Change Personal Username</button>
+                        </div>
+                    </div>
+
+                    <h5 class="card-title m-2">Business Usernames</h5>
+                    <div class="form-group">
+                        <div class="list-group">
+                            {% for username in usernames %}
+                                <button type="button" class="list-group-item list-group-item-action" onclick="$('#ClipboardAlert').toast('show'); navigator.clipboard.writeText('{{ username.id_username }}');">
+                                    {{ username.id_username }}
+                                </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <p class="card-text">
+                        You can use this usernames for receiving payments.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card text-white bg-primary m-3">
+                <h3 class="card-header">Personal Information</h3>
+                <div class="card-body">
+                    <form action="{% url 'atm_functions:Profile' %}?action=UpdateProfileInfo" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="first_name">First Name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.user.first_name }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.user.last_name }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.user.email }}" readonly disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                                <select type="text" class="form-control" name="country" id="country" required {% if request.session.country_code == "US" %} readonly disabled {% endif %}>
+                                <!-- If user.country is none, put select country -->
+                                {% if user.user.country is none %}
+                                    <option value="" disabled selected>Select Country</option>
+                                {% endif %}
+                                {% for country in countries %}
+                                <option value="{{ country.0 }}" {% if user.country == country.0 %}selected{% endif %}>{{ country.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% if user.state is not none %}
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" class="form-control" id="state" name="state" value="{{ user.state }}" required>
+                        </div>
+                        {% endif %}
+                        <div class="form-group">
+                            <label for="birthdate">Birthdate</label>
+                            <input type="date" class="form-control" id="birthdate" name="birthdate" value="{{ user.birthdate|date:'Y-m-d'|default:'' }}" onkeydown="event.preventDefault()" required>
+                        </div>
+                        <!-- 
+                            Country
+                            State (if applicable)
+                            Birthdate
+                        -->
+                        <button type="submit" class="btn btn-info m-4">Change Info</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+    
+    
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+        
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function(){
+            $('[data-bs-toggle="popover"]').popover();
+        });
+    </script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+<div class="position-fixed top-0 end-0" style="z-index: 10000">
+    <div id="ClipboardAlert" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Copied to clipboard</strong>
+            <small>Now</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            The username has been copied to your clipboard.
+        </div>
+    </div>
+</div>
+</html>
+
+<script>
+    function TestClient(){
+        var url = "https://api.cryptosharepay.com/v1/protected/api-keys/api-key-no-account/TEST";
+        var data = {
+            'data': {
+                'email': 'testaccount@cryptosharepay.com'
+            }
+        };
+        var headers = {
+            'X-Email': 'testaccount@cryptosharepay.com'
+        }
+        $.ajax({
+            type: "GET",
+            dataType : "json",
+            contentType: "application/json; charset=utf-8",
+            url: url,
+            headers: headers,
+            // data: JSON.stringify(data),
+
+            success: function(response){
+                console.log(response);         
+                
+            },
+            error: function(response){
+                alert("error");
+                console.log(response);                
+            }
+        });
+    };
+</script>
+<!-- Modal -->
+<div class="modal fade" id="BuyUsername" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">BUY NEW USERNAME</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'atm_functions:Profile' %}?action=BuyUsername" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p>Buying and modifying personalized username has a cost of:</p>
+                    <p class="text-info" style="text-align: center;">
+                        <b>
+                            10 Cryptoshare Credits
+                        </b>
+                    </p>
+                        <div class="mb-3">
+                            <p style="text-align: center;">Please enter your new username</p>
+                            <input type="text" class="form-control text-center" id="newUsername" name="newUsername"
+                                placeholder="Your new username" maxlength="30">
+                        </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success" id="NeverShowAgain">
+                        Change Username
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

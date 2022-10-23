@@ -81,6 +81,7 @@ urlpatterns = [
 
      path("RegisterWaitlistEmail/", views.register_waitlist_email, name="RegisterWaitlistEmail"),
      
-     path("TestReceiver/", views.test_receiver, name="TestReceiver")
+     path("TestReceiver/", views.test_receiver, name="TestReceiver"),
+     # path("TestClient/", views.test_client, name="TestClient")
      # path("NotificationService/", views.notification_service, name="NotificationService")
 ]
