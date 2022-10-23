@@ -44,7 +44,8 @@
                 <span class="nav__logo-name mt-2" id="credit_grade" style="color: white;"><b>CREDIT GRADE: </b></span>
     
                 <span class="nav__name" ><a href="{% url 'atm_functions:BuildCredit' %}">(Improve Credit Grade)</a></span>
-
+                
+                <label class="nav__name" style="text-align: center; margin-bottom: -10%; padding: 0px; color: white;">Username</label>
                 <input class="nav__name form-control" id="sidebar_username"  type="text" style="text-align: center;" value="..." readonly onclick="$('#ClipboardUsername').toast('show'); navigator.clipboard.writeText(this.value);">
 
                 <a class="btn btn-primary nav__name" data-bs-toggle="offcanvas" href="#offcanvasRight" role="button" aria-controls="offcanvasRight">
@@ -111,12 +112,12 @@
                         </div>
                     </div>
 
-                    <a href="{% url 'atm_functions:Insurance' %}" class="nav__link">
+                    <!-- <a href="{% url 'atm_functions:Insurance' %}" class="nav__link">
                         <i class="nav__icon bx bxs-lock-alt" style="color: gold;"></i>
                         <span class="nav__name">INSURANCE</span>
-                    </a>
+                    </a> -->
 
-                    <div class="nav__dropdown nav__link2">
+                    <!-- <div class="nav__dropdown nav__link2">
                         <a class="nav__link">
                             <i class="nav__icon bx bxs-briefcase" style="color: gold;"></i>
                             <span class="nav__name">BUSINESSES</span>
@@ -135,7 +136,7 @@
                                 </a>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="nav__dropdown nav__link2">
                         <a href="#" class="nav__link">
@@ -274,6 +275,12 @@
         <div class="modal-body">
             <p>This is a Message from CryptoShare.</p>
             <b><p>We Require 1% of each Crypto Deposit of our members. This is used to Create Reserves and Maintain the Platform.</p></b>
+
+            <b>
+                <p>
+                    *Our Policy doesn't Apply to US Residents
+                </p>
+            </b>
         </div>
         <div class="modal-footer justify-content-center">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
