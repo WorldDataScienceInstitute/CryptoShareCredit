@@ -31,6 +31,8 @@ urlpatterns = [
      path("CreditGrades/", views.credit_grades, name="CreditGrades"),
      path("CryptoShareWallet/", views.cryptoshare_wallet, name="CryptoShareWallet"),
 
+     path("CreditRatings/", views.credit_rankings, name="CreditRatings"),
+
      path("StripeCheckout/", views.stripe_checkout, name="StripeCheckout"),
      path("StripeCheckoutResult/", views.stripe_checkout_result, name="StripeCheckoutResult"),
 

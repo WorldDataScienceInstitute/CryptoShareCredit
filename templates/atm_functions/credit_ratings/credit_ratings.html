@@ -1,0 +1,112 @@
+{% load static %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+
+<body>
+    {% include 'atm_sidebar.html' %}
+    <div class="content-container" style="margin-top: 5%;">
+        {% include 'messages.html' %}
+                <h2 class="text-center text-secondary" style="font-size: 25px;">Transaction History</h2>
+        <div class="container table-responsive" style="padding: 0;">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center" scope="col">Username</th>
+                        <th class="text-center" scope="col">Credit Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for account in accounts %}
+                    <tr class="text-center">
+                        <td>
+                            {{ account.username }}
+                        </td>
+                        <td>
+                            {{ account.credit_grade }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+
+
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+
+        function changeReceiverForm(hideForm, showForm) {
+            var hideElement = document.getElementById(hideForm);
+            var showElement = document.getElementById(showForm);
+
+            hideElement.style.display = "none";
+            showElement.style.display = "block";
+
+            var contactInput = document.getElementById("user_contact");
+            var usernameInput = document.getElementById("recipient_user");
+
+            if (showForm == "receiver_contact") {
+                contactInput.setAttribute("required", "")
+                usernameInput.removeAttribute("required", "")
+            }
+
+            if (showForm == "receiver_username") {
+                usernameInput.setAttribute("required", "")
+                contactInput.removeAttribute("required", "")
+            }
+
+            document.getElementById('submit_button').setAttribute('disabled', '')
+
+        }
+    </script>
+
+    <!-- <div class="hero" style="></div> -->
+
+
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+{% include 'atm_footer.html' %}
+
+</html>

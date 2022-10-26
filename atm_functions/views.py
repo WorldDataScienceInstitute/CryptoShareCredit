@@ -249,6 +249,23 @@ def check_balance(request):
     return render(request, 'check_balance.html', context)
 
 @login_required()
+def credit_rankings(request):
+    context = {}
+
+    # accounts = Account.objects.all().order_by('-credit_grade')
+
+    accounts = Account.objects.all().order_by('credit_grade')
+
+
+    for account in accounts:
+        account.username = DynamicUsername.objects.get(user_reference = account.user, username_type = "USER").id_username
+    # users = DynamicUsername.objects.filter(username_type = "USER").annotate(credit_grade = Account.objects.get(user = "user_reference_id")).order_by("credit_grade")
+
+    context["accounts"] = accounts
+
+    return render(request, 'atm_functions/credit_ratings/credit_ratings.html', context)
+
+@login_required()
 def cryptoshare_wallet(request):
     if request.session['country_code'] == "US":
         return redirect("atm_functions:Home")
