@@ -931,16 +931,16 @@ def buy_credit(request):
     elif request.method == "POST":
         start_pin = request.POST.get("spc", None)
         if not start_pin:
-            messages.error(request, "Invalid PIN.")
+            messages.error(request, "Invalid PIN.", extra_tags='danger')
             return redirect('atm_functions:BuildCredit')
         
         end_pin = request.POST.get("newPin", None).replace(" ", "")
         if not end_pin:
-            messages.error(request, "Invalid PIN.")
+            messages.error(request, "Invalid PIN.", extra_tags='danger')
             return redirect('atm_functions:BuildCredit')
         
         if len(end_pin) != 6 or not end_pin.isdigit():
-            messages.error(request, "Invalid PIN.")
+            messages.error(request, "Invalid PIN.", extra_tags='danger')
             return redirect('atm_functions:BuildCredit')
 
         account = Account.objects.get(user = request.user)

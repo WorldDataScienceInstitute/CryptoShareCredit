@@ -285,7 +285,9 @@
             <form action="{% url 'atm_functions:BuildCredit' %}" method="post">
                 {% csrf_token %}
                 <div class="modal-body">
-                    <p>CryptosharePay Card Registration & Get 100 Cryptoshare Credits</p>
+                    {% include 'messages.html' %}
+
+                    <b><h3 style="text-align: center;">CryptosharePay Card Registration & Get 100 Cryptoshare Credits</h3></b>
                     <p>CryptosharePay is a "Digital Decentralized Credit Card" that allows you to pay InPerson or Online with a Username and 12 Digit Pin Code.</p>
                     
                     <input type="hidden" name="spc" value="{{ new_pin_start }}">
@@ -302,7 +304,7 @@
                     <div class="mb-3">
                         <p style="text-align: center;">Please enter your next 6 digits of your new pin</p>
                         <input type="text" class="form-control text-center" id="newPin" name="newPin"
-                            placeholder="Your new pin" maxlength="6">
+                            placeholder="Your new pin" maxlength="6" required>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="cb_name_change" name="cb_name_change" required>
