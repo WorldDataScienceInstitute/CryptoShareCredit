@@ -759,6 +759,46 @@ def sale_business_send_message(sender_email, business_name, id_product, date, bu
     s.quit()
     return
 
+def crypto_credit_card_message(sender_email):
+    port = settings.EMAIL_PORT
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "Crypto$hare Decentralized Credit Card"
+
+    msg['From'] = f"Crypto$hare <{settings.EMAIL_HOST_USER}>"
+    msg['To'] = sender_email
+
+    html = f"""
+    <html>
+    <head></head>
+        <body>
+        
+        <p>¡Hi there!</p>
+
+        <p>You are receiving this email because ...</p>
+        
+        <p>Your Decentralized Credit Card is Ready! </p>
+        
+        <p>You have 100 Cryptoshare Credits & can be used in the Cryptoshare Marketplace or wherever CryptosharePay is accepted </p>
+        
+        <p> Go check it out in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>!</p>
+
+        <p>If this was not you, please secure your account at <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>.</p>
+        </body>
+    </html>
+    """
+
+    part1 = MIMEText(html, 'html')
+
+    msg.attach(part1)
+
+    context = ssl.create_default_context()
+    s = smtplib.SMTP(settings.EMAIL_HOST,port)
+    s.starttls(context=context)
+    s.ehlo()
+    s.login(settings.EMAIL_HOST_USER, settings.NO_REPLY_PASSWORD)
+    s.sendmail(settings.EMAIL_HOST_USER, sender_email, msg.as_string())
+    s.quit()
+    return
 
 def test_email(user_email):
     port = settings.EMAIL_PORT

@@ -19,7 +19,7 @@ from atm_functions.models import Account, Address, Balance, Cryptocurrency, Digi
 from businesses.models import Business
 # from common.utils import currency_list
 from common.utils import get_currencies_exchange_rate, calculate_credit_grade, swap_crypto_info, countries_tuples, FIAT_CURRENCIES
-from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email, payment_request_notification, transfer_sent_cryptoshare_credits_notification, transfer_received_cryptoshare_credits_notification
+from common.emails import sent_funds_email, sent_funds_cryptoshare_wallet_email, deposit_funds_email, revoked_address_email, expired_transactionb_email, inprogress_transactionb_email, test_email, payment_request_notification, transfer_sent_cryptoshare_credits_notification, transfer_received_cryptoshare_credits_notification, crypto_credit_card_message
 from common.cryptoapis import CryptoApis
 from common.cryptoapis_utils import CryptoApisUtils
 from common.simpleswap import SimpleSwap
@@ -33,6 +33,8 @@ import os
 
 import requests
 import json
+import random
+import string
 
 import cv2
 from PIL import Image
@@ -897,12 +899,69 @@ def swap_crypto(request):
 
 @login_required()
 def buy_credit(request):
-    if request.user.is_authenticated:
-        u = User.objects.get(pk=request.user.pk)
-        name = u.first_name
-    else:
-        name = None
-    context = {'name': name}
+    def generate_pin():
+        return ''.join(random.choice(string.digits) for i in range(6))
+    context = {}
+
+    if request.method == "GET":
+        if request.user.is_authenticated:
+            u = User.objects.get(pk=request.user.pk)
+            name = u.first_name
+        else:
+            name = None
+
+        username = DynamicUsername.objects.get(user_reference=request.user, username_type="USER").id_username
+
+        account = Account.objects.get(user = request.user)
+        has_pin = True
+        new_pin_start = None
+
+        print(account.card_pin)
+        if not account.card_pin:
+            has_pin = False
+            new_pin_start = generate_pin()
+
+        context = {
+            'name': name,
+            "new_pin_start": new_pin_start,
+            "has_pin": has_pin,
+            "username": username
+            }
+    
+    elif request.method == "POST":
+        start_pin = request.POST.get("spc", None)
+        if not start_pin:
+            messages.error(request, "Invalid PIN.")
+            return redirect('atm_functions:BuildCredit')
+        
+        end_pin = request.POST.get("newPin", None).replace(" ", "")
+        if not end_pin:
+            messages.error(request, "Invalid PIN.")
+            return redirect('atm_functions:BuildCredit')
+        
+        if len(end_pin) != 6 or not end_pin.isdigit():
+            messages.error(request, "Invalid PIN.")
+            return redirect('atm_functions:BuildCredit')
+
+        account = Account.objects.get(user = request.user)
+        full_pin = start_pin + end_pin
+
+        account.card_pin = full_pin
+        account.save()
+
+        cryptoshare_credits_object = DigitalCurrency.objects.get(symbol="CSC")
+        credits_balance = Balance.objects.get(
+            email = request.user,
+            digital_currency_name = cryptoshare_credits_object
+        )
+
+        credits_balance.amount += 100
+        credits_balance.save()
+
+        crypto_credit_card_message(str(request.user))
+
+        messages.success(request, "Your Decentralized Credit Card is Ready, you have 100 Cryptoshare Credits & can be used in the Cryptoshare Marketplace or wherever CryptosharePay is accepted")
+
     return render(request, 'buy_credit.html', context)
 
 @login_required()

@@ -261,3 +261,62 @@
     </div>
     
 </div>
+
+<script>
+    window.onload = function() {
+        if ({{ request.user.is_authenticated|yesno:"true,false" }}){
+            GetCreditGrade();
+            GetNotifications();
+            if ({{ has_pin|yesno:"false,true" }}){
+                $('#CryptoCard').modal('toggle');
+            }
+        }
+    }
+</script>
+<!-- onclick="$('#BuyUsername').modal('toggle');" -->
+<!-- Modal -->
+<div class="modal fade" id="CryptoCard" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">THIS SCREEN IS REQUIRED</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'atm_functions:BuildCredit' %}" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p>CryptosharePay Card Registration & Get 100 Cryptoshare Credits</p>
+                    <p>CryptosharePay is a "Digital Decentralized Credit Card" that allows you to pay InPerson or Online with a Username and 12 Digit Pin Code.</p>
+                    
+                    <input type="hidden" name="spc" value="{{ new_pin_start }}">
+                    <div class="mb-3">
+                        <p style="text-align: center;">Your username</p>
+                        <input type="text" class="form-control text-center" id="username" name="username"
+                            placeholder="Your new pin" maxlength="6" value="{{ username }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <p style="text-align: center;">Generated pin</p>
+                        <input type="text" class="form-control text-center" id="startPin" name="startPin"
+                            placeholder="Your new pin" maxlength="6" value="{{ new_pin_start }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <p style="text-align: center;">Please enter your next 6 digits of your new pin</p>
+                        <input type="text" class="form-control text-center" id="newPin" name="newPin"
+                            placeholder="Your new pin" maxlength="6">
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="cb_name_change" name="cb_name_change" required>
+                        <label class="form-check-label" for="cb_name_change">
+                            I acknowledge by clicking this Checkbox, I have put my 12 Digit Pin in a safe place and "Cryptoshare" is not Responsible for Recovery of my 12 Digit Pin. Username and 12 digit code can be used as a payment method anywhere "CryptoSharePay" Logo is seen.
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="submit" class="btn btn-success" id="NeverShowAgain">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

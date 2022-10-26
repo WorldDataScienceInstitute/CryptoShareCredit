@@ -23,7 +23,8 @@ class Account(models.Model):
     state = models.CharField(max_length=57, null=True)
     birthdate = models.DateField(null=True)
     system_username = models.CharField(max_length=30, unique=True, null=True)
-    net_worth = models.DecimalField(max_digits=20, decimal_places=2, default=0) 
+    net_worth = models.DecimalField(max_digits=20, decimal_places=2, default=0)
+    card_pin = models.CharField(max_length=12, null=True)
 
 class StripeAccount(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
