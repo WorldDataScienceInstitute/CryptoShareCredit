@@ -1555,7 +1555,7 @@ def send_money_confirmation(request):
         #     return redirect('atm_functions:SendCryptoShareWallet')
 
         pre_amount = form_response["sendingAmount"]
-        amount = str(float(form_response["sendingAmount"]) * 0.99)
+        amount = str(float(form_response["sendingAmount"]) * 0.97)
         recipient_address = form_response["recipientUser"]
 
         currency_object = Cryptocurrency.objects.get(currency_name=sending_currency)

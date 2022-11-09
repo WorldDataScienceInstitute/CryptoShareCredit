@@ -23,5 +23,6 @@ urlpatterns = [
     path('businesses/', include('businesses.urls', namespace='businesses')),
     path('webhooks/', include('webhooks.urls', namespace='webhooks')),
     path('marketplace/', include('marketplace.urls', namespace='marketplace')),
+    path('cryptosharepay/', include('cryptosharepay.urls', namespace='cryptosharepay')),
     # path('admin/', admin.site.urls),
 ]
