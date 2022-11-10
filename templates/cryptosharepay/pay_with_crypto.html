@@ -13,29 +13,42 @@
     <div class="content-container">
         {% include 'messages.html' %}
         {% include 'a_sessiontimeout.html' %}
-        <h2 class="ml-4 text-primary">Pay with cryptoshare wallet</h2>
+        <h2 class="ml-4 text-primary">Pay with Cryptoshare Wallet</h2>
         <br>
         {% if transaction_exists %}
-        <div class="container my-4">
-            {% include 'messages.html' %}
+        <div class="container gap-2 col-6">
             <form action="{% url 'cryptosharepay:PayWithCryptoshare' transaction_id=transaction_id %}" method="POST">
                 {% csrf_token %}
                 <div class="mb-4 row">
-                    <label for="contact_name" class="col-sm-2 col-form-label">Contact Name</label>
+                    <label for="transaction_id" class="col-sm-2 col-form-label">Transaction ID</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" id="contact_name" name="contact_name" placeholder="Ex: Mom, Dad, Friend" maxlength="30" required>
+                      <input type="text" class="form-control" id="transaction_id" name="transaction_id" value="{{ transaction_id }}" readonly disabled required>
                     </div>
                 </div>
 
                 <div class="mb-4 row">
-                    <label for="contact_username" class="col-sm-2 col-form-label">Cryptoshare Username</label>
+                    <label for="payment_crypto" class="col-sm-2 col-form-label">Crypto to Pay</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" id="contact_username" name="contact_username" maxlength="30" required>
+                      <input type="text" class="form-control" id="payment_crypto" name="payment_crypto" value="{{ currency_object.symbol }}" readonly required>
                     </div>
                 </div>
 
+                <div class="mb-4 row">
+                    <label for="crypto_amount" class="col-sm-2 col-form-label">Crypto Amount</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="crypto_amount" name="crypto_amount" value="{{ transaction_data.cryptocurrency_amount }} + FEE" readonly required>
+                    </div>
+                </div>
+                
+                <!-- Current balnce -->
+                <div class="mb-4 row">
+                    <label for="current_balance" class="col-sm-2 col-form-label">Current Crypto Balance In CryptoShare Wallet</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="current_balance" name="current_balance" value="{{ balance_object.amount }}" readonly required>
+                    </div>
+
                 <div class="d-grid gap-2 col-6 mx-auto">
-                    <button type="submit" class="btn btn-primary" id="submit">Create Contact</button>
+                    <button type="submit" class="btn btn-primary" id="submit">Pay Transaction</button>
                 </div>
             </form>
             <br>

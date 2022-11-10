@@ -37,6 +37,9 @@ def pay_with_cryptoshare(request, transaction_id = None):
     context = {
         "transaction_exists": False,
         "transaction_id": transaction_id,
+        "transaction_data": None,
+        "balance_object": None,
+        "currency_object": None
     }
 
     if not transaction_id:
@@ -57,13 +60,29 @@ def pay_with_cryptoshare(request, transaction_id = None):
         return render(request, "cryptosharepay/pay_with_crypto.html", context)
 
     transaction_data = transaction["data"]["transaction"]
+    context["transaction_data"] = transaction_data
+
     cryptocurrency_symbol = transaction_data["cryptocurrency_code"]
 
     try:
         cryptocurrency_object = Cryptocurrency.objects.get(symbol=cryptocurrency_symbol)
+        context["currency_object"] = cryptocurrency_object
     except:
         messages.info(request, "Cryptocurrency not supported.")
         context["transaction_exists"] = False
+        return render(request, "cryptosharepay/pay_with_crypto.html", context)
+
+    user_object = request.user
+
+    try:
+        balance_object = Balance.objects.get(
+            email = user_object,
+            currency_name = cryptocurrency_object
+        )
+        context["balance_object"] = balance_object
+    except:
+        messages.error(request, f"You don't have enough {cryptocurrency_object.symbol} funds to pay for this transaction, please deposit more funds.", extra_tags='danger')
+        return redirect('atm_functions:CryptoShareWallet')
 
     if request.method == "POST":
         total_amount = transaction_data["cryptocurrency_amount"]
@@ -73,31 +92,16 @@ def pay_with_cryptoshare(request, transaction_id = None):
             amount_to_pay = total_amount - amount_received
         else:
             amount_to_pay = total_amount
-        
-        user_object = request.user
-
-        try:
-            balance_object = Balance.objects.get(
-                email = user_object,
-                currency_name = cryptocurrency_object
-            )
-            if balance_object.amount < amount_to_pay:
-                messages.error(request, "You don't have enough funds to pay for this transaction, please deposit more funds.")
-                return redirect('atm_functions:CryptoShareWallet')
-        except:
-            messages.error(request, "You don't have enough funds to pay for this transaction, please deposit more funds.")
-            return redirect('atm_functions:CryptoShareWallet')
-
-
+    
         # TRANSFER FUNDS CODECHUNK
 
-        amount = str(float(amount_to_pay) * 0.97)
+        amount = str(float(amount_to_pay) * 1.02)
         recipient_address = transaction_data["address"]
 
         sending_address_object = Address.objects.get(currency_name=cryptocurrency_object, email=request.user)
 
         if float(balance_object.amount) < float(amount):
-            messages.info(request, "Insufficient funds.")
+            messages.info(request, f"You don't have enough {cryptocurrency_object.symbol} funds to pay for this transaction, please deposit more funds.")
             return redirect('atm_functions:SendCryptoShareWallet')
 
         cryptoapis_client = CryptoApis()
@@ -105,7 +109,8 @@ def pay_with_cryptoshare(request, transaction_id = None):
         is_valid_address = cryptoapis_client.is_valid_address(cryptocurrency_object.blockchain, "mainnet", recipient_address)
         if not is_valid_address:
             messages.info(request, "Invalid address. Please try again.")
-            return redirect('atm_functions:SendCryptoShareWallet')
+            return redirect('atm_functions:CryptoShareWallet')
+
 
         if cryptocurrency_object.currency_name in wallet_currencies:
             #MISSING ENDPOINT
@@ -113,7 +118,11 @@ def pay_with_cryptoshare(request, transaction_id = None):
             # print(request)
         else:
         # elif sending_currency in address_currencies:
-            transaction_response = cryptoapis_client.generate_coins_transaction_from_address(cryptocurrency_object.blockchain, "mainnet",sending_address_object.address, recipient_address, amount)
+            if cryptocurrency_object.symbol == "ETH":
+                transaction_response = cryptoapis_client.generate_coins_transaction_from_address(cryptocurrency_object.blockchain, "mainnet",sending_address_object.address, recipient_address, amount)
+            elif cryptocurrency_object.extra_data:
+                transaction_response = cryptoapis_client.generate_token_transaction_from_address(cryptocurrency_object.blockchain, "mainnet", sending_address_object.address, cryptocurrency_object.extra_data, recipient_address, amount)
+
         # print(request)
         if cryptocurrency_object.currency_name in wallet_currencies:
             total_transaction_amount = transaction_response["totalTransactionAmount"]
@@ -131,12 +140,9 @@ def pay_with_cryptoshare(request, transaction_id = None):
 
         sent_funds_cryptoshare_wallet_email(str(transaction_a.email), "CrytosharePay Transaction Payment", transaction_a.currency_name.currency_name ,transaction_a.amount, "PENDING", transaction_a.creation_datetime, receiver=recipient_address)
         calculate_credit_grade(request.user)
-                
 
-
-
-
-        print(transaction)
+        messages.success(request, f"Your transaction has been payed. Please wait for the transaction to be confirmed on cryptosharepay.")
+        return redirect('atm_functions:Home')
 
 
     return render(request, "cryptosharepay/pay_with_crypto.html", context)

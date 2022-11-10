@@ -1543,8 +1543,10 @@ def send_money_confirmation(request):
                             "XRP": True,
                             "Ethereum": True,
                             "USD Coin": True,
-                            "Thether": True
+                            "Tether": True
         }
+
+        
 
         sending_account = form_response["sendingAccount"].split("|")
         sending_currency = sending_account[0]
@@ -1575,11 +1577,16 @@ def send_money_confirmation(request):
 
         if sending_currency in wallet_currencies:
             transaction_response = cryptoapis_client.generate_coins_transaction_from_wallet(sending_blockchain, "mainnet", recipient_address, amount)
-            # print(request)
+
+            # transaction_response = cryptoapis_client.generate_coins_transaction_from_address(sending_blockchain, "mainnet",sending_address_object.address ,recipient_address, amount)
+
         else:
         # elif sending_currency in address_currencies:
-            transaction_response = cryptoapis_client.generate_coins_transaction_from_address(sending_blockchain, "mainnet",sending_address_object.address ,recipient_address, amount)
-        # print(request)
+            if currency_object.symbol == "ETH":
+                transaction_response = cryptoapis_client.generate_coins_transaction_from_address(currency_object.blockchain, "mainnet",sending_address_object.address, recipient_address, amount)
+            elif currency_object.extra_data:
+                transaction_response = cryptoapis_client.generate_token_transaction_from_address(currency_object.blockchain, "mainnet", sending_address_object.address, currency_object.extra_data, recipient_address, amount)
+
         if sending_currency in wallet_currencies:
             total_transaction_amount = transaction_response["totalTransactionAmount"]
         else:
