@@ -52,8 +52,8 @@ def pay_with_cryptoshare(request, transaction_id = None):
         transaction = cryptosharepay_client.get_transaction(transaction_id)
 
         if transaction["data"]["transaction"]["status"] != "PENDING":
-            # return render(request, "cryptosharepay/pay_with_crypto.html", context)
-            context["transaction_exists"] = True
+            return render(request, "cryptosharepay/pay_with_crypto.html", context)
+            # context["transaction_exists"] = True
         else:
             context["transaction_exists"] = True
     except:
