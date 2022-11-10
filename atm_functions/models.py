@@ -99,6 +99,7 @@ class Cryptocurrency(models.Model):
     symbol = models.CharField(max_length=10)
     currency_type = models.CharField(max_length=10)
     exchange_rate = models.DecimalField(max_digits=15, decimal_places=6)
+    extra_data = models.CharField(max_length=50, null=True)
 
 class Currency(models.Model):
     id_currency = models.AutoField(primary_key=True)

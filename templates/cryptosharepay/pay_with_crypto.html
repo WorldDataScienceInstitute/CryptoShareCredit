@@ -1,0 +1,111 @@
+{% load static %}
+{% load tz %}
+{% static "images" as baseUrl %}
+
+<!doctype html>
+<html lang="en">
+{% include 'header.html' %}
+
+<body>
+    {% if iframe is None %}
+    {% include 'atm_sidebar.html' %}
+    {% endif %}
+    <div class="content-container">
+        {% include 'messages.html' %}
+        {% include 'a_sessiontimeout.html' %}
+        <h2 class="ml-4 text-primary">Pay with Cryptoshare Wallet</h2>
+        <br>
+        {% if transaction_exists %}
+        <div class="container gap-2 col-6">
+            <form action="{% url 'cryptosharepay:PayWithCryptoshare' transaction_id=transaction_id %}" method="POST">
+                {% csrf_token %}
+                <div class="mb-4 row">
+                    <label for="transaction_id" class="col-sm-2 col-form-label">Transaction ID</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="transaction_id" name="transaction_id" value="{{ transaction_id }}" readonly disabled required>
+                    </div>
+                </div>
+
+                <div class="mb-4 row">
+                    <label for="payment_crypto" class="col-sm-2 col-form-label">Crypto to Pay</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="payment_crypto" name="payment_crypto" value="{{ currency_object.symbol }}" readonly required>
+                    </div>
+                </div>
+
+                <div class="mb-4 row">
+                    <label for="crypto_amount" class="col-sm-2 col-form-label">Crypto Amount</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="crypto_amount" name="crypto_amount" value="{{ transaction_data.cryptocurrency_amount }} + FEE" readonly required>
+                    </div>
+                </div>
+                
+                <!-- Current balnce -->
+                <div class="mb-4 row">
+                    <label for="current_balance" class="col-sm-2 col-form-label">Current Crypto Balance In CryptoShare Wallet</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="current_balance" name="current_balance" value="{{ balance_object.amount }}" readonly required>
+                    </div>
+
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button type="submit" class="btn btn-primary" id="submit">Pay Transaction</button>
+                </div>
+            </form>
+            <br>
+        </div>
+        {% else %}
+        <div class="container my-4">
+            <h3>Invalid transaction</h3>
+        </div>
+        {% endif %}
+        
+    </div>
+    </div>
+    </div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                autoDisplay: false
+            }, 'google_translate_element'); //remove the layout
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+    </script>
+
+
+    <script type="text/javascript">
+        function triggerHtmlEvent(element, eventName) {
+            var event;
+            if (document.createEvent) {
+                event = document.createEvent('HTMLEvents');
+                event.initEvent(eventName, true, true);
+                element.dispatchEvent(event);
+            } else {
+                event = document.createEventObject();
+                event.eventType = eventName;
+                element.fireEvent('on' + event.eventType, event);
+            }
+        }
+
+        $('.translation-links a').click(function (e) {
+            e.preventDefault();
+            var lang = $(this).data('lang');
+            $('#google_translate_element select option').each(function () {
+                if ($(this).text().indexOf(lang) > -1) {
+                    $(this).parent().val($(this).val());
+                    var container = document.getElementById('google_translate_element');
+                    var select = container.getElementsByTagName('select')[0];
+                    triggerHtmlEvent(select, 'change');
+                }
+            });
+        });
+    </script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>
