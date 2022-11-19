@@ -8,21 +8,21 @@
 <body>
     {% include 'atm_sidebar.html' %}
     <div class="content-container">
-        {% include 'banner.html' %}
-        <div class="container my-4">
+
+        <!-- <div class="container my-4">
             <div class="row" style="margin:0px;">
                 <video src="{% static '/images/Cryptoshare_PAY.mp4' %}" id="cs_pay"
                 style="margin-left:auto;margin-right:auto;zoom:85%;max-width: 100vw;" autoplay loop muted playsinline>
             </div>
             <script> $( window ).load(function() { $('#cs_pay').get(0).play();}); </script>
-        </div>
+        </div> -->
         <div class="container my-4" style="padding-bottom: 200px;">
             <h4 style="text-align:center ;">Already have an Account? <a href="{% url 'authentication:Login' %}">Login here!</a></h4>
             <div class="row">
                     {% include 'messages.html' %}
                     <form method="POST">
                         {% csrf_token %}
-                        <h2 class="text-primary" style="text-align:center;">Create your CryptoShare Banq Membership</h2>
+                        <h2 class="text-primary" style="text-align:center;">Create your CryptoShare Credit</h2>
                         <br>
                         <div class="mb-3">
                             <label for="email">Enter your email:</label>
@@ -149,12 +149,6 @@
                         </div>
                         <div class="form-row col-12">
                             <div id='pin_match'></div>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="confirm_terms" name="confirm_terms" required>
-                            <label class="form-check-label" for="confirm_terms">
-                                <em>I accept the 1% Commission for my Banq Membership on all transactions</em>
-                            </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="" id="confirm_terms3" name="confirm_terms3" required>
