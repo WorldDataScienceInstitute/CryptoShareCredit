@@ -14,6 +14,7 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
+                        <th class="text-center" scope="col">#</th>
                         <th class="text-center" scope="col">Username</th>
                         <th class="text-center" scope="col">Credit Grade</th>
                     </tr>
@@ -21,6 +22,9 @@
                 <tbody>
                     {% for account in accounts %}
                     <tr class="text-center">
+                        <td>
+                            {{ forloop.counter }}
+                        </td>
                         <td>
                             {{ account.username }}
                         </td>
