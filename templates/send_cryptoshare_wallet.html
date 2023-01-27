@@ -10,7 +10,7 @@
     <div class="container" style="margin-top: 5%;">
         {% include 'messages.html' %}
         <div style="text-align:center" class="ml-4 mt-4" style="width:30%;min-width:400px;">
-            <form action="/atm/SendMoneyConfirmation/?wallet=credits" method="post">
+            <form action="/atm/SendMoneyConfirmation/?wallet=cryptoshare" method="post">
                 {% csrf_token %}
                 <div class="mb-3">
                     <label for="sendingAccount"><b>Your Account (You are the Sender)</b></label>
