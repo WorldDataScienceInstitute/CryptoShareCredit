@@ -1604,6 +1604,14 @@ def send_money_confirmation(request):
         sent_funds_cryptoshare_wallet_email(str(transaction_a.email), "SENT FUNDS REQUEST", transaction_a.currency_name.currency_name ,transaction_a.amount, "PENDING", transaction_a.creation_datetime, receiver=recipient_address)
         calculate_credit_grade(request.user)
 
+        Notification.objects.create(
+            user = request.user,
+            notification_lob = "PAYMENTS",
+            notification_type = "TRANSFER",
+            notification_state = "COMPLETED",
+            description = f"You just transfered {amount} {currency_object.symbol} to {recipient_address}"
+        )
+
         messages.success(request, "Your withdrawal request has been created")
 
         return redirect('atm_functions:CheckCredit')

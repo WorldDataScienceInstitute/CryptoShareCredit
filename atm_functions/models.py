@@ -48,7 +48,7 @@ class Contact(models.Model):
 class Notification(models.Model):
     id_notification = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    notification_lob = models.CharField(max_length=20, null=True)
+    notification_lob = models.CharField(max_length=20, null=True) #Line Of Business
     notification_type = models.CharField(max_length=20, null=True)
     notification_state = models.CharField(max_length=15)
     description = models.CharField(max_length=255, null=True)
