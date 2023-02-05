@@ -57,7 +57,7 @@ def create_business(request):
         business_username = request.POST.get("business_username", None).lower().replace(" ", "")
         business_system_name = business_official_name.lower()
         business_category = request.POST.get("business_category", None)
-        business_price = 50      #PRICE IN CRYPTOSHARE CREDITS
+        business_price = 50      #PRICE IN CRYPTOSHARECREDITS
 
         business_username = business_username.replace(" ", "")
 
@@ -75,7 +75,7 @@ def create_business(request):
         user_balance = Balance.objects.get(email = request.user, digital_currency_name = digital_currency_object)
 
         if user_balance.amount < business_price:
-            messages.info(request, "You do not have enough funds to create a business. Please buy more CryptoShare Credits.")
+            messages.info(request, "You do not have enough funds to create a business. Please buy more CryptoshareCredits.")
             return redirect('atm_functions:Home')
         
         user_balance.amount -= Decimal(business_price)

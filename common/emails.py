@@ -778,7 +778,7 @@ def crypto_credit_card_message(sender_email):
         
         <p>Your Decentralized Credit Card is Ready! </p>
         
-        <p>You have 100 Cryptoshare Credits & can be used in the Cryptoshare Marketplace or wherever CryptosharePay is accepted </p>
+        <p>You have 100 CryptoshareCredits & can be used in the Cryptoshare Marketplace or wherever CryptosharePay is accepted </p>
         
         <p> Go check it out in <a href="http://www.cryptoshareapp.com/">Crypto$hare</a>!</p>
 

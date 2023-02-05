@@ -79,7 +79,7 @@ def profile(request):
             user_balance = Balance.objects.get(email=request.user, digital_currency_name=cryptoshare_credits_object)
 
             if user_balance.amount < USERNAME_PRICE:
-                messages.warning(request, "You need at least 10 CryptoShare Credits to buy a username")
+                messages.warning(request, "You need at least 10 CryptoshareCredits to buy a username")
                 return redirect("atm_functions:Profile")
 
             new_username = request.POST.get('newUsername','').lower().replace(" ", "")
@@ -473,7 +473,7 @@ def stripe_checkout_result(request):
     }
 
     if result == "success":
-        messages.success(request, f"Processing payment of {products_amount[product]} CryptoShare Credits", extra_tags='success')
+        messages.success(request, f"Processing payment of {products_amount[product]} CryptoshareCredits", extra_tags='success')
         return redirect("atm_functions:Home")
     elif result == "cancel":
         messages.error(request, "Payment cancelled!", extra_tags='danger')
@@ -960,7 +960,7 @@ def buy_credit(request):
 
         crypto_credit_card_message(str(request.user))
 
-        messages.success(request, "Your Decentralized Credit Card is Ready, you have 100 Cryptoshare Credits & can be used in the Cryptoshare Marketplace or wherever CryptosharePay is accepted")
+        messages.success(request, "Your Decentralized Credit Card is Ready, you have 100 CryptoshareCredits & can be used in the Cryptoshare Marketplace or wherever CryptosharePay is accepted")
 
     return render(request, 'buy_credit.html', context)
 
@@ -1799,10 +1799,10 @@ def blockchain_wills(request):
         digital_currency_object = DigitalCurrency.objects.get(symbol="CSC")
         user_balance = Balance.objects.get(email = request.user, digital_currency_name = digital_currency_object)
 
-        blockchain_will_price = 100      #PRICE IN CRYPTOSHARE CREDITS
+        blockchain_will_price = 100      #PRICE IN CRYPTOSHARECREDITS
 
         if user_balance.amount < blockchain_will_price:
-            messages.info(request, "You do not have enough funds to create a business. Please buy more CryptoShare Credits.")
+            messages.info(request, "You do not have enough funds to create a business. Please buy more CryptoShareCredits.")
             return redirect('atm_functions:Home')
             
         user_balance.amount -= Decimal(blockchain_will_price)
