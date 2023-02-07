@@ -70,6 +70,14 @@
                         {% endfor %}
                     </select>
                 </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="confirm_checkbox" name="confirm_checkbox" required>
+                    <label class="form-check-label" for="confirm_checkbox">
+                        <em>I confirm that the previous information is correct and transactions are irreversible.</em>
+                    </label>
+                </div>
+                
                 <div class="d-grid gap-2 col-6 mx-auto">
                     <button id="submit_button" type="submit" class="btn btn-primary" disabled>Send Credits</button>
                 </div>
