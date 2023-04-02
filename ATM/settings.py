@@ -98,7 +98,7 @@ DATABASES = {
         'NAME': "cryptosharecredit",
         'USER': "BanqDBAdmin",
         'PASSWORD': "BanqCredit",
-        'HOST': "cryptosharecredit.cbgd6lobri5z.us-east-1.rds.amazonaws.com",
+        'HOST': "cryptosharecredit-test.cbgd6lobri5z.us-east-1.rds.amazonaws.com",
         'PORT': '5432'
     }
 }
