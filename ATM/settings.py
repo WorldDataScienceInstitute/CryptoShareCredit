@@ -12,9 +12,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-import django_heroku
 from dotenv import load_dotenv
 load_dotenv()
+
+import _locale
+_locale._getdefaultlocale = (lambda *args: ['en_US', 'utf8'])
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +30,7 @@ SECRET_KEY = 'django-insecure-1he#65^9)$u1rfq++qax+q8te-!*54ia93itmz0al!fipu7&+_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = (os.getenv('DEBUG', 'False') == 'True')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -92,8 +94,12 @@ WSGI_APPLICATION = 'ATM.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': "cryptosharecredit",
+        'USER': "BanqDBAdmin",
+        'PASSWORD': "BanqCredit",
+        'HOST': "cryptosharecredit.cbgd6lobri5z.us-east-1.rds.amazonaws.com",
+        'PORT': '5432'
     }
 }
 
@@ -195,5 +201,3 @@ MOESIF_MIDDLEWARE = {
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 # DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-django_heroku.settings(locals(), staticfiles=False)

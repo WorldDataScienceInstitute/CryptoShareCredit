@@ -19,7 +19,7 @@ import stripe
 import random
 import string
 
-user_count, last_check = get_user_count()
+user_count, last_check = (0, 0)
 
 
 def home(request):
