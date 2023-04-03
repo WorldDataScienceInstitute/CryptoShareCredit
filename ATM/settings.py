@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-import django_heroku
+# import django_heroku
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -92,8 +92,12 @@ WSGI_APPLICATION = 'ATM.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'cryptosharecredit',
+        'USER': 'BanqDBAdmin',
+        'PASSWORD': 'BanqCredit',
+        'HOST': 'cryptosharecredit.cbgd6lobri5z.us-east-1.rds.amazonaws.com',
+        'PORT': '5432'
     }
 }
 
@@ -171,23 +175,27 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 # LOGIN_URL = 'authentication:Login'
 LOGIN_URL = 'atm_functions:Home'
 
-#CELERY config
+# CELERY config
 # CELERY_BROKER_URL = 'redis://:p334a76fb64842055b48d0a15b2c5642e87b8ba2a89e8ad4717d2d078520af750@ec2-50-17-230-60.compute-1.amazonaws.com:29899'
 CELERY_BROKER_URL = os.environ['REDIS_URL']
 
-#Moesif config
+# Moesif config
+
+
 def identifyUser(req, res):
     if req.user and req.user.is_authenticated:
         return req.user.username
     else:
         return None
 
+
 MOESIF_MIDDLEWARE = {
     'APPLICATION_ID': 'eyJhcHAiOiI3MTA6Njc1IiwidmVyIjoiMi4wIiwib3JnIjoiMTYzOjI1OSIsImlhdCI6MTY1MTM2MzIwMH0.Tq7DPB2d6yeyiUCqwJLgJmk2OMfwaBjljrBVxotG9oo',
 
-    'CAPTURE_OUTGOING_REQUESTS': True, # Set to True to also capture outgoing calls to 3rd parties.
+    # Set to True to also capture outgoing calls to 3rd parties.
+    'CAPTURE_OUTGOING_REQUESTS': True,
 
-    'IDENTIFY_USER': identifyUser # Optional hook to link API calls to users
+    'IDENTIFY_USER': identifyUser  # Optional hook to link API calls to users
 }
 
 
@@ -196,4 +204,4 @@ MOESIF_MIDDLEWARE = {
 
 # DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-django_heroku.settings(locals(), staticfiles=False)
+# django_heroku.settings(locals(), staticfiles=False)
