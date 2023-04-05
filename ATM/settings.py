@@ -66,9 +66,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'ATM.urls'
 
-if not os.environ.get('testing'):
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
+# if not os.environ.get('testing'):
+#     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+#     SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
+
 
 TEMPLATES = [
     {
@@ -179,7 +181,7 @@ LOGIN_URL = 'atm_functions:Home'
 
 #CELERY config
 # CELERY_BROKER_URL = 'redis://:p334a76fb64842055b48d0a15b2c5642e87b8ba2a89e8ad4717d2d078520af750@ec2-50-17-230-60.compute-1.amazonaws.com:29899'
-CELERY_BROKER_URL = os.environ['REDIS_URL']
+# CELERY_BROKER_URL = os.environ['REDIS_URL']
 
 #Moesif config
 def identifyUser(req, res):
